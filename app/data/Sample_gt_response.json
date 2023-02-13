@@ -1,0 +1,21 @@
+{
+    "permit_no":"56",
+    "permit_type":"import",
+    "permit_details":{},
+    "container_no":"PONU5550244",
+    "truck_no":"APTS53276",
+    "iso_code":"45G1",
+    "liner_seal":"7865",
+    "custom_seal":"85443",
+    "refeer_temperature":89,
+    "is_empty":false,
+    "cargo_type":"oil",
+    "POD":"hyd",
+    "permit_date":"2020-11-27 19:02:28",
+    "permit_expiry_date":"2020-12-09 13:02:40",
+    "bill_info":{
+      "bill_no":"hg7864342",
+      "bill_type":"shipment_number",
+      "bill_date":""
+    }
+}

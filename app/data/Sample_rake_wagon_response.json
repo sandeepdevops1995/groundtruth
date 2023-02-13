@@ -1,0 +1,35 @@
+{
+    "track_number": "ICD",
+    "rake_number": "R887582612",
+    "rake_type": "AR",
+    "wagons_list": [
+        {
+            "wagon_number": {
+                "number": 61250313395,
+                "id": 1
+            }
+        }
+    ],
+    "container_list": [
+        {
+            "container_no": {
+                "value": "BAXU5047981"
+            },
+            "cargo_type": "ELECTRIC ITEM",
+            "liner_seal": {
+                "value": "ASR45"
+            },
+            "custom_seal": {
+                "value": "saf"
+            },
+            "POD": "MDPT",
+            "iso_code": {
+                "value": "45G1"
+            },
+            "wagon_number": {
+                "number": 61250313395,
+                "id": 1
+            }
+        }
+    ]
+}

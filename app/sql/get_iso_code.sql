@@ -1,0 +1,1 @@
+select ctr_iso_cd as iso_code, ctr_size as container_size, ctr_type as container_type  from tm_cctrisocd where ctr_size =:ctr_size and ctr_type=:ctr_type

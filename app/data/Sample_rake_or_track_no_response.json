@@ -1,0 +1,61 @@
+{
+    "track_number": "3",
+    "rake_number": "R1667602712",
+    "rake_type": "AR",
+    "wagons_list": [
+        {
+            "wagon_number": {
+                "number": 61250621049,
+                "id": 1
+            }
+        },
+        {
+            "wagon_number": {
+                "number": 62250951648,
+                "id": 45
+            }
+        }
+    ],
+    "container_list": [
+        {
+            "container_no": {
+                "value": "MSKU9877254"
+            },
+            "cargo_type": null,
+            "liner_seal": {
+                "value": "gcbfdsgz"
+            },
+            "custom_seal": {
+                "value": "gbfgh"
+            },
+            "POD": "DER",
+            "iso_code": {
+                "value": "42G1"
+            },
+            "wagon_number": {
+                "number": 61250621049,
+                "id": 1
+            }
+        },
+        {
+            "container_no": {
+                "value": "MSKU1747819"
+            },
+            "cargo_type": null,
+            "liner_seal": {
+                "value": "fdxsgcv"
+            },
+            "custom_seal": {
+                "value": "vcbcv"
+            },
+            "POD": "DER",
+            "iso_code": {
+                "value": "45G1"
+            },
+            "wagon_number": {
+                "number": 62250951648,
+                "id": 45
+            }
+        }
+    ]
+}

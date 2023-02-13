@@ -1,0 +1,7 @@
+INSERT INTO CCLS_DEV.TT_COUTWTRSUMM (WTR_NO,HLD_TRACK_NO,DT_WTR,IMP_EXP_FLG,REC_CNT,
+CNCL_FLG,TRNS_DT_TM,USER_ID,EQPT_ID,FRM_LOC) VALUES 
+(:wtr_no,:track_number,sysdate,'X',:wagon_count,
+NULL, sysdate,'TEST','RMG1','TKD')
+
+
+

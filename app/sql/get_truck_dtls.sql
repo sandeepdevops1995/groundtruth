@@ -1,0 +1,2 @@
+-- # Hardcoded truck info with "T_{value}" need to change this for actual data
+select 'T_GY12F2311' as gt_truck_no,'T_kalyan' as driver_name,'T_9685804572' as driver_number,'T_KSD7568' as driver_license from dual

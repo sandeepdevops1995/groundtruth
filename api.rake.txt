@@ -1,0 +1,97 @@
+get rake data by track_number or rake id
+url:/rake_data
+request type: GET
+request params: track_number=ICD or rake_number=wrq4324
+
+response:
+{
+    "rake_number": "R887582612",
+    "rake_type": "AR",
+    "wagons_list": [
+        {
+            "wagon_number": {
+                "number": 61250313395,
+                "id": 2
+            }
+        }
+    ]
+    "container_list": [
+        {
+            "container_no": "XXXU5855654",
+            "cargo_type": "ELECTRIC ITEM",
+            "liner_seal": "ASR45",
+            "custom_seal": "saf",
+            "POD": "MDPT",
+            "iso_code": "45G1",
+            "wagon_number": {
+                "number": 61250725914,
+                "id": 21
+        }
+    ]
+}
+
+
+
+get container details 
+
+url:/container_details
+request type: GET
+request params: container_number=BAXU5047981
+
+response:
+{
+    "container_list": [
+        {
+            "container_no": "XXXU5855654",
+            "cargo_type": "ELECTRIC ITEM",
+            "liner_seal": "ASR45",
+            "custom_seal": "saf",
+            "POD": "MDPT",
+            "iso_code": "45G1",
+            "wagon_number": {
+                "number": 61250725914,
+                "id": 21
+        }
+    ],
+    "rake_number": "R887582612",
+    "rake_type": "AR",
+    "wagons_list": [],
+    "track_number": "ICD"
+}
+
+
+get wagon details
+
+url:/wagon_details
+request type: GET
+request params: wagon_number=61250313395
+
+response:
+
+
+{
+    "track_number": "ICD",
+    "rake_number": "R887582612",
+    "rake_type": "AR",
+    "container_list": [
+        {
+            "container_no": "XXXU5855654",
+            "cargo_type": "ELECTRIC ITEM",
+            "liner_seal": "ASR45",
+            "custom_seal": "saf",
+            "POD": "MDPT",
+            "iso_code": "45G1",
+            "wagon_number": {
+                "number": 61250725914,
+                "id": 21
+        }
+    ],
+    "wagons_list": [
+        {
+            "wagon_number": {
+                "number": 61250313395,
+                "id": 2
+            }
+        }
+    ]
+}

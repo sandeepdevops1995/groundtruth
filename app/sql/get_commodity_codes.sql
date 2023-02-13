@@ -1,0 +1,1 @@
+select * from TM_CCOMMODITY

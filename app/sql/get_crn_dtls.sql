@@ -1,0 +1,1 @@
+SELECT tecsc.crn,tecsc.ctr_no FROM TP_EDI_CAR_SBILL_CAPTURE tecsc WHERE tecsc.crn =:crn_number

@@ -17,6 +17,21 @@ class Model(Resource):
             parser.add_argument(arg)
         return parser.parse_args()
 
+class TrainDetails(Model):
+    @custom_exceptions
+    def get(self):
+        train_number = request.args.get(Constants.TRAIN_NUMBER,None)
+        from_date = request.args.get(Constants.KEY_FROM_DATE,None)
+        to_date = request.args.get(Constants.KEY_TO_DATE,None)
+        if((not train_number)  and (not(from_date and to_date))):
+            message = "please provide query parameters"
+            return Response(json.dumps({"message":message}), status=400,mimetype='application/json')
+        logger.info('GT,Get request from the Rake service : {}'.format(train_number))
+        result = db_service.get_rake_details(train_number=train_number,from_date=from_date,to_date=to_date)
+        logger.info('Conainer details response')
+        print(result)
+        return Response(result, status=200, mimetype='application/json')
+
 class RakeData(Model):
     @custom_exceptions
     # @jwt_auth_required

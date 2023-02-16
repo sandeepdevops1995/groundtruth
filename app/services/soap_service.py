@@ -107,7 +107,7 @@ def update_container_details(data):
         result = {}
     return result
 
-def get_rake_data(train_number='',from_date='', to_date = ''):
+def get_train_data(train_number='',from_date='', to_date = ''):
     try:
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/RakeReadOperation/rakereadproocess_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 

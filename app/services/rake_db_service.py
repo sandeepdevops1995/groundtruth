@@ -12,6 +12,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.constants import GroundTruthType
 from app.models import CCLSRake
 from app.services import soap_service
+from app.services.gt_upload_service import commit
 from app.models import *
 
 
@@ -33,15 +34,8 @@ class RakeDbService:
                 data = [dict(zip(tuple (query.keys()) ,i)) for i in query.cursor]
                 return RakeDbService.map_CCLS_response(data)
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-                result = {}
-                if from_date and to_date:
-                    result == soap_service.get_rake_data(from_date=from_date,to_date=to_date)
-                elif rake_number:
-                    result = soap_service.get_rake_data(rake_number)
-                print(result)
-                if result:
-                    return result
-            data = CCLSRake.query.filter_by(train_number=rake_number).all()
+               pass
+            data = CCLSRake.query.filter_by(rake_number=rake_number).all()
             return RakeDbService.format_rake_data(data)
             
         except:
@@ -49,6 +43,75 @@ class RakeDbService:
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
                 RakeDbService.get_rake_details_by_rake_number(rake_number,rake_type,from_date,to_date,count,isRetry)
+                
+    @query_debugger()
+    def get_rake_details_by_train_number(train_number,from_date=None,to_date=None,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                result = {}
+                if from_date and to_date:
+                    result == soap_service.get_train_data(from_date=from_date,to_date=to_date)
+                elif train_number:
+                    result = soap_service.get_train_data(train_number)
+                if result:
+                    data = RakeDbService.save_in_db(result)
+                    return RakeDbService.format_rake_data(data)
+                    
+            data = CCLSRake.query.filter_by(train_number=train_number).all()
+            return RakeDbService.format_rake_data(data)
+            
+        except:
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                RakeDbService.get_rake_details_by_train_number(train_number,from_date,to_date,count,isRetry)
+
+    def save_in_db(data_list):
+        final_data = []
+        for each in data_list:
+            wagon = {}
+            wagon["container_number"] = each["ctrNo"]
+            wagon["container_life_number"] = each["ctrLifeNo"]
+            wagon["sline_code"] = each["slineCd"]
+            wagon["iso_code"] = each["ctrIsoCd"]
+            wagon["container_size"] = each["ctrSize"]
+            wagon["container_type"] = each["ctrType"]
+            wagon["cargo_type"] = each["crgType"]
+            wagon["ldd_mt_flg"] = each["lddMtFlg"]
+            wagon["fcl_lcl_flg"] = each["fclLclFlg"]
+            wagon["station_cd"] = each["stnCd"]
+            wagon["train_number"] = each["trnNo"]
+            wagon["wagon_number"] = each["wgnNo"]
+            wagon["wagon_type"] = each["wgnType"]
+            wagon["gw_port_cd"] = each["gwPortCd"]
+            wagon["container_stg_flag"] = each["ctrStgFlg"]
+            wagon["error_flg"] = each["errFlg"]
+            wagon["container_iwb_flag"] = each["ctrIwbFlg"]
+            wagon["remark"] = each["rmrk"]
+            wagon["cancel_flg"] = each["cnclFlg"]
+            wagon["trans_date"] = each["trnsDtTm"]
+            wagon["user_id"] = each["userId"]
+            wagon["wagon_life_number"] = each["wgnLifeNo"]
+            wagon["smtp_no"] = each["smtpNo"]
+            wagon["smtp_date"] = each["smtpDt"]
+            wagon["container_gross_weight"] = each["ctrWt"]
+            wagon["port_name"] = each["portNam"]
+            wagon["train_dept"] = each["trnDep"]
+            
+            query_fields = {"wagon_number" : wagon["wagon_number"],
+             "container_number" : wagon["container_number"],
+            "container_life_number" : wagon["container_life_number"],
+            "trans_date" : wagon["trans_date"],
+            "train_number" : wagon["train_number"]},
+            wagon_model = CCLSRake(**wagon)
+            final_data.append(wagon_model)
+            result = CCLSRake.query.filter_by(**query_fields).all()
+            if not result:
+                db.session.add(wagon_model)
+        commit()
+        return final_data
 
     def format_rake_data(data):
         response = {}
@@ -149,12 +212,14 @@ class RakeDbService:
                 response[Constants.CONTAINER_LIST].append(each)
         return response
 
-    def get_rake_details(rake_number=None, track_number=None,rake_type=None,wagon_number=None,container_number=None,from_date=None,to_date=None):
+    def get_rake_details(rake_number=None, track_number=None,rake_type=None,wagon_number=None,container_number=None,train_number=None,from_date=None,to_date=None):
         result = None
         if track_number:
             result = RakeDbService.get_rake_details_by_track_number(track_number=track_number,rake_type=rake_type)
-        elif rake_number or (from_date and to_date):
-            result = RakeDbService.get_rake_details_by_rake_number(rake_number=rake_number,rake_type=rake_type,from_date=from_date,to_date=to_date)
+        elif rake_number:
+            result = RakeDbService.get_rake_details_by_rake_number(rake_number=rake_number,rake_type=rake_type)
+        elif train_number or (from_date and to_date):
+            result = RakeDbService.get_rake_details_by_train_number(train_number=train_number,from_date=from_date,to_date=to_date)
         return result
 
 

@@ -52,7 +52,7 @@ class RakeDbService:
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 result = {}
                 if from_date and to_date:
-                    result == soap_service.get_train_data(from_date=from_date,to_date=to_date)
+                    result = soap_service.get_train_data(from_date=from_date,to_date=to_date)
                 elif train_number:
                     result = soap_service.get_train_data(train_number)
                 if result:
@@ -72,45 +72,54 @@ class RakeDbService:
         final_data = []
         for each in data_list:
             wagon = {}
-            wagon["container_number"] = each["ctrNo"]
-            wagon["container_life_number"] = each["ctrLifeNo"]
-            wagon["sline_code"] = each["slineCd"]
-            wagon["iso_code"] = each["ctrIsoCd"]
-            wagon["container_size"] = each["ctrSize"]
-            wagon["container_type"] = each["ctrType"]
-            wagon["cargo_type"] = each["crgType"]
-            wagon["ldd_mt_flg"] = each["lddMtFlg"]
-            wagon["fcl_lcl_flg"] = each["fclLclFlg"]
-            wagon["station_cd"] = each["stnCd"]
-            wagon["train_number"] = each["trnNo"]
-            wagon["wagon_number"] = each["wgnNo"]
-            wagon["wagon_type"] = each["wgnType"]
-            wagon["gw_port_cd"] = each["gwPortCd"]
-            wagon["container_stg_flag"] = each["ctrStgFlg"]
-            wagon["error_flg"] = each["errFlg"]
-            wagon["container_iwb_flag"] = each["ctrIwbFlg"]
-            wagon["remark"] = each["rmrk"]
-            wagon["cancel_flg"] = each["cnclFlg"]
-            wagon["trans_date"] = each["trnsDtTm"]
-            wagon["user_id"] = each["userId"]
-            wagon["wagon_life_number"] = each["wgnLifeNo"]
-            wagon["smtp_no"] = each["smtpNo"]
-            wagon["smtp_date"] = each["smtpDt"]
-            wagon["container_gross_weight"] = each["ctrWt"]
-            wagon["port_name"] = each["portNam"]
-            wagon["train_dept"] = each["trnDep"]
+            wagon["container_number"] = each["ctrNo"][0]
+            wagon["container_life_number"] = each["ctrLifeNo"][0]
+            wagon["sline_code"] = each["slineCd"][0]
+            wagon["iso_code"] = each["ctrIsoCd"][0]
+            wagon["container_size"] = each["ctrSize"][0]
+            wagon["container_type"] = each["ctrType"][0]
+            wagon["cargo_type"] = each["crgType"][0]
+            wagon["ldd_mt_flg"] = each["lddMtFlg"][0]
+            wagon["fcl_lcl_flg"] = each["fclLclFlg"][0]
+            wagon["station_cd"] = each["stnCd"][0]
+            wagon["train_number"] = each["trnNo"][0]
+            wagon["wagon_number"] = each["wgnNo"][0]
+            wagon["wagon_type"] = each["wgnType"][0]
+            wagon["gw_port_cd"] = each["gwPortCd"][0]
+            wagon["container_stg_flag"] = each["ctrStgFlg"][0]
+            wagon["error_flg"] = each["errFlg"][0]
+            wagon["container_iwb_flag"] = each["ctrIwbFlg"][0]
+            wagon["remark"] = each["rmrk"][0]
+            wagon["cancel_flg"] = each["cnclFlg"][0]
+            wagon["trans_date"] = each["trnsDtTm"][0]
+            wagon["user_id"] = each["userId"][0]
+            wagon["wagon_life_number"] = each["wgnLifeNo"][0]
+            wagon["smtp_no"] = each["smtpNo"][0]
+            wagon["smtp_date"] = each["smtpDt"][0]
+            wagon["container_gross_weight"] = each["ctrWt"][0]
+            wagon["port_name"] = each["portNam"][0]
+            wagon["train_dept"] = each["trnDep"][0]
             
             query_fields = {"wagon_number" : wagon["wagon_number"],
              "container_number" : wagon["container_number"],
             "container_life_number" : wagon["container_life_number"],
             "trans_date" : wagon["trans_date"],
-            "train_number" : wagon["train_number"]},
+            "train_number" : wagon["train_number"]}
             wagon_model = CCLSRake(**wagon)
             final_data.append(wagon_model)
-            result = CCLSRake.query.filter_by(**query_fields).all()
-            if not result:
-                db.session.add(wagon_model)
-        commit()
+            try:
+                result = CCLSRake.query.filter_by(**query_fields).all()
+                if not result:
+                    db.session.add(wagon_model)
+                else:
+                    print("wagon already exists in db")
+            except Exception as e:
+                print(e)
+        try:
+            commit()
+        except Exception as e:
+            print(e)
+        
         return final_data
 
     def format_rake_data(data):

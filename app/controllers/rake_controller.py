@@ -29,7 +29,6 @@ class TrainDetails(Model):
         logger.info('GT,Get request from the Rake service : {}'.format(train_number))
         result = db_service.get_rake_details(train_number=train_number,from_date=from_date,to_date=to_date)
         logger.info('Conainer details response')
-        print(result)
         return Response(result, status=200, mimetype='application/json')
 
 class RakeData(Model):

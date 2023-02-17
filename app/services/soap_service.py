@@ -64,43 +64,6 @@ def update_container_details(data):
         
         result = soap.service.process(**post_data)
         print(result)
-        if result:
-            final_data = []
-            for each in result:
-                data = {}
-                data['train_number'] = each['TRAIN_NUMBER'][0]
-                data['container_number'] = each['ctrNo'][0]
-                data['container_life_number'] = each['ctrLifeNo'][0]
-                data['container_size'] = each['ctrSize'][0]
-                data['container_type'] = each['ctrType'][0]
-                data['sline_code'] = each['slineCd'][0]
-                data['ldd_mt_flg'] = each['lddMtFlg'][0]
-                data['wagon_number'] = each['wgnNo'][0]
-                data['wagon_type'] = each['wgnType'][0]
-                data['iso_code'] = each['ctrIsoCd'][0]
-                data['container_stg_flag'] = each['crgType'][0]
-                data['fcl_lcl_flg'] = each['fclLclFlg'][0]
-                data['station_cd'] = each['stnCd'][0]
-                # data[''] = each['trnNo'][0]
-                data['gw_port_cd'] = each['gwPortCd'][0]
-                data['container_stg_flag'] = each['ctrStgFlg'][0]
-                data['error_flg'] = each['errFlg'][0]
-                data['container_iwb_flag'] = each['ctrIwbFlg'][0]
-                data['remark'] = each['rmrk'][0]
-                data['cancel_flg'] = each['cnclFlg'][0]
-                data['trans_date'] = each['trnsDtTm'][0]
-                data['user_id'] = each['userId'][0]
-                data['wagon_life_number'] = each['wgnLifeNo'][0]
-                data['smtp_no'] = each['smtpNo'][0]
-                data['smtp_date'] = each['smtpDt'][0]
-                data['container_gross_weight'] = each['ctrWt'][0]
-                data['port_name'] = each['portNam'][0]
-                data['train_dept'] = each['trnDep'][0]
-                final_data.append(data)
-                wagon_object= CCLSRake(**data)
-                db.session.add(wagon_object)
-        commit()      
-        return final_data
         
     except Exception as e:
         print(e)
@@ -115,7 +78,7 @@ def get_train_data(train_number='',from_date='', to_date = ''):
                         port_name="RakeReadProocess_pt")
         rake_data = {'TrainNumber': train_number, 'From': from_date,'To':to_date }
         result = soap.service.process(**rake_data)
-        print(result)
+        # print(result)
         return result
     except Exception as e:
         print(e)

@@ -15,6 +15,8 @@ ISO_6346_CODE_ENDPOINT = "/map_ccls_iso_code"
 TIME_FORMAT ="%Y-%m-%d %H:%M:%S"
 #Keys
 KEY_CN_NUMBER= "container_number"
+KEY_CN_LIFE_NUMBER = "container_life_number"
+KEY_TRANS_DATE = "trans_date"
 KEY_PERMIT_NUMBER ="permit_number"
 KEY_CRN_NUMBER= "crn_number"
 KEY_RETRY="isRetry"

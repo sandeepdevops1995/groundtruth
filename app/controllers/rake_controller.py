@@ -21,13 +21,29 @@ class TrainDetails(Model):
     @custom_exceptions
     def get(self):
         train_number = request.args.get(Constants.TRAIN_NUMBER,None)
+        wagon_number = request.args.get(Constants.WAGON_NUMBER,None)
+        container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
+        container_life_number = request.args.get(Constants.KEY_CN_LIFE_NUMBER,None)
+        trans_date = request.args.get(Constants.KEY_TRANS_DATE,None)
         from_date = request.args.get(Constants.KEY_FROM_DATE,None)
         to_date = request.args.get(Constants.KEY_TO_DATE,None)
-        if((not train_number)  and (not(from_date and to_date))):
+        data = {}
+        if train_number:
+            data["train_number"]=train_number
+        if wagon_number:
+            data["wagon_number"]=wagon_number
+        if container_number:
+            data["container_number"] = container_number
+        if container_life_number:
+            data["container_life_number"] = container_life_number
+        if trans_date:
+            data["trans_date"] = trans_date
+        
+        if((not data)  and (not(from_date and to_date))):
             message = "please provide query parameters"
             return Response(json.dumps({"message":message}), status=400,mimetype='application/json')
         logger.info('GT,Get request from the Rake service : {}'.format(train_number))
-        result = db_service.get_rake_details(train_number=train_number,from_date=from_date,to_date=to_date)
+        result = db_service.get_train_details(data,from_date=from_date,to_date=to_date)
         logger.info('Conainer details response')
         return Response(result, status=200, mimetype='application/json')
 

@@ -45,7 +45,7 @@ class RakeDbService:
                 RakeDbService.get_rake_details_by_rake_number(rake_number,rake_type,from_date,to_date,count,isRetry)
                 
     @query_debugger()
-    def get_rake_details_by_train_number(train_number,from_date=None,to_date=None,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+    def get_train_details(query_values,from_date=None,to_date=None,wagon_number=None,container_number=None,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
         try:
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
@@ -53,20 +53,20 @@ class RakeDbService:
                 result = {}
                 if from_date and to_date:
                     result = soap_service.get_train_data(from_date=from_date,to_date=to_date)
-                elif train_number:
-                    result = soap_service.get_train_data(train_number)
+                # elif train_number:
+                #     result = soap_service.get_train_data(query_values["train_number"])
                 if result:
                     data = RakeDbService.save_in_db(result)
-                    return RakeDbService.format_rake_data(data)
-                    
-            data = CCLSRake.query.filter_by(train_number=train_number).all()
+                    return RakeDbService.format_rake_data(data)            
+            data = CCLSRake.query.filter_by(**query_values).order_by('trans_date').all()
             return RakeDbService.format_rake_data(data)
             
-        except:
+        except Exception as e:
+            print(e)
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
-                RakeDbService.get_rake_details_by_train_number(train_number,from_date,to_date,count,isRetry)
+                RakeDbService.get_train_details(query_values,from_date,to_date,count,isRetry)
 
     def save_in_db(data_list):
         final_data = []

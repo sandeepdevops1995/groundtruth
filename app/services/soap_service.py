@@ -4,7 +4,9 @@ import config
 from datetime import datetime
 from app.models import CCLSRake
 from app import postgres_db as db
+from app.logger import logger
 from app.services.gt_upload_service import commit
+from app.models import db_format
 import json
 
 
@@ -16,10 +18,11 @@ def get_permit_details(permit_number):
         #                 service_name="emptytrailerbpel_client_ep",
         #                 port_name="EmptyTrailerBPEL_pt")
         soap = zeep.Client(config.WSDL_FILE)
+        logger.debug('Get Permit, soap service request with permit_number : '+permit_number)
         result = soap.service.process(permit_number)
-        print(result)
+        logger.debug('Get Permit, soap service response : '+json.loads(db_format(result)))
     except Exception as e:
-        print(e)
+        logger.exception('Get Permit, Exception : '+str(e))
         result = {}
     return result
 
@@ -55,18 +58,17 @@ def update_container_details(data):
         post_data["SEAL_STAT"] = "Y" if ("seal_no" in data) and data["seal_no"] else "N"
         post_data["DMG_FLG"] =  "Y" if "damage_status" in data  and data["damage_status"] else "N"
         post_data["HAZ_FLG"] =  "Y" if "hazard_status" in data and data["hazard_status"] else "N" 
-
-        print(post_data)
+        logger.debug('Update Container Details, soap service request with data : '+ json.loads(db_format(post_data)))
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="gatewriteoperation_client_ep",
                         port_name="GateWriteOperation_pt")
         
         
         result = soap.service.process(**post_data)
-        print(result)
+        logger.debug('Update Container Details, soap service response : '+ json.loads(db_format(result)))
         
     except Exception as e:
-        print(e)
+        logger.exception('Update Container Details, Exception : '+str(e))
         result = {}
     return result
 
@@ -77,10 +79,11 @@ def get_train_data(train_number='',from_date='', to_date = ''):
                         service_name="rakereadproocess_client_ep",
                         port_name="RakeReadProocess_pt")
         rake_data = {'TrainNumber': train_number, 'From': from_date,'To':to_date }
+        logger.debug('Get Train Details, soap service request with data : '+ json.loads(db_format(rake_data)))
         result = soap.service.process(**rake_data)
-        # print(result)
+        logger.debug('Get Train Details, soap service response : '+ json.loads(db_format(result)))
         return result
     except Exception as e:
-        print(e)
+        logger.exception('Get Train Details, Exception : '+str(e))
         result = {}
         return result

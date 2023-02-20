@@ -1,6 +1,6 @@
 import app.constants as Constants
 import config
-from datetime import datetime
+from datetime import datetime, date
 import json
 from datetime import datetime, timedelta
 from sqlalchemy.sql import text
@@ -132,8 +132,8 @@ class GateDbService:
             if result:
                 if result['PermitDateTime'] and isinstance(result['PermitDateTime'], datetime):
                     result['PermitDateTime']=result['PermitDateTime'].strftime("%Y-%m-%d %H:%M:%S")
-                if result['CtrLifeNumber'] and isinstance(result['CtrLifeNumber'], datetime):
-                    result['CtrLifeNumber']=result['CtrLifeNumber'].strftime("%Y-%m-%d %H:%M:%S")
+                if result['CtrLifeNumber'] and isinstance(result['CtrLifeNumber'], date):
+                    result['CtrLifeNumber']=result['CtrLifeNumber'].strftime("%Y-%m-%d")
                 final_data = {
                                 "permit_no":result['PermitNumber'],
                                 "permit_date":result['PermitDateTime'],
@@ -147,7 +147,7 @@ class GateDbService:
                                 "container_life_no" : result['CtrLifeNumber'],
                                 "health" : result['DamageStatus'],
                                 "gate_in_time" : result['VehicleGateInDateTime'],
-                                "iso_code":None,
+                                "iso_code": str(result['ContainerSize'])+str(result['ContainerType']),
                                 "is_empty_or_laden": "Empty" if "E" in result['ContainerStatus'] else "Laden",
                                 "pod":None,
                                 "cargo_type":None,

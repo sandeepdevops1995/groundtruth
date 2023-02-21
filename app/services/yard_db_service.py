@@ -33,11 +33,11 @@ class YardDbService:
     @query_debugger()
     def update_container_location(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
         try:
-            if config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 data["stk_loc"] = data["stack_location"]
                 result = GateDbService().update_ctr_stack_info(data)
                 return result
-            elif config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 return update_container_stack_location(data)
             return {}
         except Exception as e:

@@ -538,22 +538,3 @@ class Iso6346CodeService:
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
                 self.validate(iso_code,count,isRetry)
 
-class YardDbService:
-    @query_debugger()
-    def get_master_data(self,sql_filename,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
-        try:
-            print("sql file ",sql_filename)
-            conn = e.connect()
-            sqlFile = open(os.path.join(config.SQL_DIR,sql_filename))
-            command = text(sqlFile.read())
-            query = conn.execute(command)
-            sqlFile.close()
-            conn.close()
-            data = [dict(zip(tuple (query.keys()) ,i)) for i in query.cursor]
-            return json.dumps(data)
-        except:
-            if isRetry and count >= 0 :
-                count=count-1 
-                time.sleep(Constants.KEY_RETRY_TIMEDELAY)
-                self.get_master_data(sql_filename,count,isRetry)
-    

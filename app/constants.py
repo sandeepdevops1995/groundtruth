@@ -8,6 +8,7 @@ CONTAINER_DETAILS_ENDPOINT = "/container_details"
 WAGON_DETAILS_ENDPOINT = "/wagon_details"
 UPDATE_WTR_ENDPOINT = "/update_wtr"
 WAREHOUSE_DATA_ENDPOINT = "/warehouse_details"
+STACK_LOCATION = "/stack_location"
 GROUND_TRUTH_TABLE_NAME = "Ground_truth"
 ISO_6346_CODE_ENDPOINT = "/map_ccls_iso_code"
 

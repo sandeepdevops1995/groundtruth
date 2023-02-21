@@ -1,6 +1,8 @@
+from flask_restful import Resource, reqparse
 import app.constants as Constants
-from app.services.database_service import YardDbService
+from app.services.yard_db_service import YardDbService
 from flask import json, Response,request
+from app.services.decorator_service import custom_exceptions, jwt_auth_required
 from app.logger import logger
 
 # this is a common function to retrieve master data from CCLS tables
@@ -29,3 +31,30 @@ def get_master_data_common(name):
         return Response(status=409)
     result = YardDbService().get_master_data(sql_filename)
     return Response(result, status=200, mimetype='application/json')
+
+
+class Model(Resource):
+    
+    def add_arguments_to_parser(self, args_list):
+        for arg in args_list:
+            parser.add_argument(arg)
+        return parser.parse_args()
+    
+    
+class StackLocation(Model):
+    @custom_exceptions
+    #@jwt_auth_required
+    def post(self):
+        data = request.get_json()
+        result = YardDbService.update_container_location(data)
+        logger.info('Conainer Stack Location  details response: {}'.format(result))
+        if result:
+            if 'Error' in result:
+                if result['Error']:
+                    return Response(json.dumps({"message":"Failed to save record","error":str(result["Error"]),"error_message":str(result['ErrorMessage'])}), status=400, mimetype='application/json')
+                else:        
+                    return Response(json.dumps({"message":str(result["Result"])}), status=200, mimetype='application/json')                                
+            else:
+                return Response(result, status=200, mimetype='application/json')
+        else:
+            return Response(json.dumps({"message":"Soap Service unavailable"}), status=503, mimetype='application/json')

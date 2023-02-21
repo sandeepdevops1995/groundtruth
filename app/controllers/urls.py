@@ -5,6 +5,7 @@ from app.controllers.gate_controller import ContainerData,CclsData,GateInModel,G
 from app.controllers.rake_controller import TrainDetails, RakeData, RakeContainer,RakeWagon, UpdateWTR, WagonTypes, SlineCodes, IcdLocations, PodCodes, ContainerTypes, CommodityCodes, CommodityTypes, ActivityTypes, ContainerTypes, PortCodes, OutLocation, OutPortCodes, CargoTypes, UserList
 from app.controllers.warehouse_controller import WarehouseData
 from app.controllers.GT_upload_controller import TrainSummary
+from app.controllers.yard_controller import StackLocation
 
 import app.constants as Constants 
 
@@ -35,6 +36,7 @@ def register_controllers():
     api.add_resource(UserList,'/user_list')
     api.add_resource(ISO6346Data, Constants.ISO_6346_CODE_ENDPOINT)
     api.add_resource(WarehouseData,Constants.WAREHOUSE_DATA_ENDPOINT)
+    api.add_resource(StackLocation,Constants.STACK_LOCATION)
     
     # To upload Ground Truth
     api.add_resource(TrainSummary,'/upload_train_summary')

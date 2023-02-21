@@ -29,7 +29,7 @@ def is_valid_api_key(headers):
         if res.status_code == 200:
             status = True
     except Exception as e:
-        print("Iam service not available")
+        return Response({'status': 'Iam service not available'}, 503, mimetype='application/json')
     return status
 
 def validate_auth():
@@ -39,7 +39,7 @@ def validate_auth():
                 return func(*args, **kwargs)
             else:
                 print("Unauthorized to access this api...")
-            return Response({ 'status': 'authentication failed (JWT token maybe missing/invalid/expired.)'}, 401)
+            return Response({ 'status': 'authentication failed (JWT token maybe missing/invalid/expired.)'}, 401, mimetype='application/json')
         return new_func
     return decorator
 jwt_auth_required = validate_auth()

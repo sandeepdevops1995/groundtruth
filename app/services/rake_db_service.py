@@ -3,6 +3,7 @@ import config
 import json
 from app.logger import logger
 from sqlalchemy.sql import text
+from sqlalchemy import cast, DATE
 from app import engine as e
 import os
 from app.services.decorator_service import query_debugger
@@ -53,12 +54,18 @@ class RakeDbService:
                 result = {}
                 if from_date and to_date:
                     result = soap_service.get_train_data(from_date=from_date,to_date=to_date)
+                    return result
                 # elif train_number:
                 #     result = soap_service.get_train_data(query_values["train_number"])
                 if result:
                     data = RakeDbService.save_in_db(result)
-                    return RakeDbService.format_rake_data(data)            
-            data = CCLSRake.query.filter_by(**query_values).order_by('trans_date').all()
+                    return RakeDbService.format_rake_data(data)                        
+            if "trans_date" in query_values:
+                data = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)==query_values["trans_date"])
+                query_values.pop('trans_date')
+                data = data.filter_by(**query_values).order_by('trans_date').all()
+            else:
+                data = CCLSRake.query.filter_by(**query_values).order_by('trans_date').all()
             return RakeDbService.format_rake_data(data)
             
         except Exception as e:

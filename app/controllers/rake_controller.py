@@ -8,6 +8,7 @@ from app.logger import logger
 from app.services.rake_db_service import RakeDbService as db_service
 from app.services.decorator_service import custom_exceptions, jwt_auth_required
 from app.constants import GroundTruthType
+from datetime import date, datetime
 parser = reqparse.RequestParser()
 
 class Model(Resource):
@@ -37,7 +38,7 @@ class TrainDetails(Model):
         if container_life_number:
             data["container_life_number"] = container_life_number
         if trans_date:
-            data["trans_date"] = trans_date
+            data["trans_date"] = datetime.strptime(trans_date, '%Y-%m-%d %H:%M:%S').date()
         
         if((not data)  and (not(from_date and to_date))):
             message = "please provide query parameters"

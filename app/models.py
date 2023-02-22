@@ -801,3 +801,12 @@ class Comm(db.Model):
     trns_dt_tm = db.Column(db.DateTime())
     
     __tablename__ = 'TM_COMM'
+    
+    
+class Diagnostics(db.Model):
+    id =  db.Column(db.BigInteger(), primary_key=True)
+    url = db.Column(db.String(200))
+    request = db.Column(db.JSON)
+    response =  db.Column(db.JSON)
+    
+    __tablename__ = 'Diagnostics'

@@ -2,10 +2,11 @@
 import zeep
 import config
 from datetime import datetime
+from app import constants as Constants
 from app.models import CCLSRake
 from app import postgres_db as db
 from app.logger import logger
-from app.services.gt_upload_service import commit
+from app.services.gt_upload_service import commit,save_in_diagnostics
 from app.models import db_format
 import json
 from zeep.transports import Transport
@@ -22,6 +23,7 @@ def get_permit_details(permit_number):
         soap = zeep.Client(config.WSDL_FILE,transport=transport)
         logger.debug('Get Permit, soap service request with permit_number : '+permit_number)
         result = soap.service.process(permit_number)
+        save_in_diagnostics(Constants.CCLS_DATA_ENDPOINT,{"permit_number":permit_number},{"output":str(result)})
         logger.debug('Get Permit, soap service response : '+str(result))
     except Exception as e:
         logger.exception('Get Permit, Exception : '+str(e))
@@ -67,6 +69,7 @@ def update_container_details(data):
         
         
         result = soap.service.process(**post_data)
+        save_in_diagnostics("/updateContainerInfo",{"data":str(post_data)},{"output":str(result)})
         logger.debug('Update Container Details, soap service response : '+ str(result))
         
     except Exception as e:
@@ -83,6 +86,7 @@ def get_train_data(train_number='',from_date='', to_date = ''):
         rake_data = {'TrainNumber': train_number, 'From': from_date,'To':to_date }
         logger.debug('Get Train Details, soap service request with data : '+ str(rake_data))
         result = soap.service.process(**rake_data)
+        save_in_diagnostics(Constants.TRAIN_DETAILS_ENDPOINT,{"data":str(rake_data)},{"output":str(result)})
         logger.debug('Get Train Details, soap service response : '+ str(result))
         return result
     except Exception as e:
@@ -106,6 +110,7 @@ def update_container_stack_location(data):
                         service_name="yardwriteoperation_client_ep",
                         port_name="YardWriteOperation_pt")
         result = soap.service.process(**stack_data)
+        save_in_diagnostics(Constants.STACK_LOCATION,{"data":str(stack_data)},{"output":str(result)})
         logger.debug('Update Container Stack Location,soap service response : '+ str(result))
         return result
     except Exception as e:

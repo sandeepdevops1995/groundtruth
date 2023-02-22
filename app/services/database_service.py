@@ -175,6 +175,8 @@ class GateDbService:
                                 "hazard":[],
                                 "un_number":[]
                             }
+                if result['ContainerStatus']:
+                    final_data['is_empty_or_laden']= "Empty" if "E" in result['ContainerStatus'] else "Laden"
                 if final_data:
                     return json.dumps(final_data)
           

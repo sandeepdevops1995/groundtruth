@@ -22,6 +22,7 @@ class TrainDetails(Model):
     @custom_exceptions
     def get(self):
         train_number = request.args.get(Constants.TRAIN_NUMBER,None)
+        track_number = request.args.get(Constants.TRACK_NUMBER,None)
         wagon_number = request.args.get(Constants.WAGON_NUMBER,None)
         container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
         container_life_number = request.args.get(Constants.KEY_CN_LIFE_NUMBER,None)
@@ -44,9 +45,36 @@ class TrainDetails(Model):
             message = "please provide query parameters"
             return Response(json.dumps({"message":message}), status=400,mimetype='application/json')
         logger.info('GT,Get request from the Rake service : {}'.format(train_number))
-        result = db_service.get_train_details(data,from_date=from_date,to_date=to_date)
+        result = db_service.get_train_details(data,track_number,from_date=from_date,to_date=to_date)
         logger.info('Conainer details response')
         return Response(result, status=200, mimetype='application/json')
+
+class TrackDetails(Model):
+    @custom_exceptions
+    def get(self):
+        train_number = request.args.get(Constants.TRAIN_NUMBER,None)
+        track_number = request.args.get(Constants.TRACK_NUMBER,None)
+        trans_date = request.args.get(Constants.KEY_TRANS_DATE,None)
+        data = {}
+        if train_number:
+            data["train_no"]=train_number
+        if track_number:
+            data["track_no"]=track_number
+        if trans_date:
+            data["trans_date"] = datetime.strptime(trans_date, '%Y-%m-%d %H:%M:%S').date()
+            
+        logger.info('GT,Get request from the Rake service')
+        result = db_service.get_track_details(data)
+        logger.info('Track details response')
+        return Response(result, status=200, mimetype='application/json')
+    
+    def post(self):
+        data = request.get_json()
+        success,message = db_service.post_track_details(data)
+        if success:
+            return Response(json.dumps({"message":"Saved successfully"}), status=201, mimetype='application/json')
+        else:
+            return Response(json.dumps({"message":message}),status=400,mimetype='application/json')
 
 class RakeData(Model):
     @custom_exceptions
@@ -63,21 +91,18 @@ class RakeData(Model):
     def get(self):
         rake_number = request.args.get(Constants.RAKE_NUMBER,None)
         track_number = request.args.get(Constants.TRACK_NUMBER,None)
-        from_date = request.args.get(Constants.KEY_FROM_DATE,None)
-        to_date = request.args.get(Constants.KEY_TO_DATE,None)
-        
         rake_type = request.args.get(Constants.RAKE_TYPE,"AR")
-        if((not rake_number) and (not track_number) and (not(from_date and to_date))):
+        if not rake_number and not track_number:
             message = "please provide query parameters"
             return Response(json.dumps({"message":message}), status=204,mimetype='application/json')
-        if(rake_type not in ["AR","DE"]):
-            message = "please provide proper Rake Type"
-            return Response(json.dumps({"message":message}), status=204,mimetype='application/json')
-        logger.info('GT,Get request from the Rake service : {}'.format(rake_number))
-        result = db_service.get_rake_details(rake_number=rake_number,track_number=track_number,rake_type=rake_type,from_date=from_date,to_date=to_date)
-        logger.info('Conainer details response')
-        print(result)
-        return Response(result, status=200, mimetype='application/json')
+        logger.info('GT,Get request from the Rake service : {} {}'.format(rake_number,track_number))
+        success,result = db_service.get_rake_details(rake_number=rake_number,track_number=track_number,rake_type=rake_type)
+        if success:
+            logger.info('Conainer details response')
+            print(result)
+            return Response(result, status=200, mimetype='application/json')
+        else:
+            return Response(json.dumps({"message":result}), status=400, mimetype='application/json')
 
 
 

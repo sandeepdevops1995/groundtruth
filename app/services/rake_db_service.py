@@ -46,7 +46,57 @@ class RakeDbService:
                 RakeDbService.get_rake_details_by_rake_number(rake_number,rake_type,from_date,to_date,count,isRetry)
                 
     @query_debugger()
-    def get_train_details(query_values,from_date=None,to_date=None,wagon_number=None,container_number=None,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+    def get_track_details(query_values,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            if "trans_date" in query_values:
+                data = Track.query.filter(cast(Track.trans_date, DATE)==query_values["trans_date"])
+                query_values.pop('trans_date')
+                data = data.filter_by(**query_values).order_by('trans_date').all()
+            else:
+                data = Track.query.filter_by(**query_values).all()
+            return db_functions(data).as_json()
+            
+        except Exception as e:
+            print(e)
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                RakeDbService.get_track_details(query_values,count,isRetry)
+                
+    @query_debugger()
+    def post_track_details(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            if isinstance(data, list):
+                for item in data:
+                    track =Track(**item)
+                    db.session.add(track)
+            else:
+                track = Track(**data)
+                db.session.add(track)
+            try:   
+                commit()
+                return True,"success"
+            except Exception as e:
+                print(e)
+                return False,str(e)
+            
+        except Exception as e:
+            print(e)
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                RakeDbService.post_track_details(data,count,isRetry)
+    
+    @query_debugger()
+    def get_train_details(query_values,track_number=None,from_date=None,to_date=None,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
         try:
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
@@ -54,18 +104,24 @@ class RakeDbService:
                 result = {}
                 if from_date and to_date:
                     result = soap_service.get_train_data(from_date=from_date,to_date=to_date)
-                    return result
-                # elif train_number:
+                    if result:
+                        data = RakeDbService.save_in_db(result)
+                        return RakeDbService.format_rake_data(data)                        
+                    return []
+                # elif "train_number" in query_values["train_number"]:
                 #     result = soap_service.get_train_data(query_values["train_number"])
-                if result:
-                    data = RakeDbService.save_in_db(result)
-                    return RakeDbService.format_rake_data(data)                        
             if "trans_date" in query_values:
                 data = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)==query_values["trans_date"])
                 query_values.pop('trans_date')
                 data = data.filter_by(**query_values).order_by('trans_date').all()
             else:
                 data = CCLSRake.query.filter_by(**query_values).order_by('trans_date').all()
+            if data and track_number:
+                from app.models import Track
+                track_details = Track.query.filter(Track.track_no == track_number, Track.trans_date <= data[0].trans_date).first()
+                track_details.train_no = data[0].train_number
+                track_details.trans_date = data[0].trans_date
+                commit()
             return RakeDbService.format_rake_data(data)
             
         except Exception as e:
@@ -73,7 +129,7 @@ class RakeDbService:
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
-                RakeDbService.get_train_details(query_values,from_date,to_date,count,isRetry)
+                RakeDbService.get_train_details(query_values,track_number,from_date,to_date,count,isRetry)
 
     def save_in_db(data_list):
         final_data = []
@@ -150,8 +206,7 @@ class RakeDbService:
                 container_record[Constants.ISO_CODE] = {Constants.VALUE : data[i].attribute_4 if data[i].attribute_4 else str(data[0].container_size)+str(data[0].container_type) if data[0].container_size and data[0].container_type else None}
                 container_record[Constants.WAGON_NUMBER] = { Constants.NUMBER : data[i].wagon_number,Constants.KEY_ID:data[i].wagon_sequence_number}
                 response[Constants.CONTAINER_LIST].append(container_record)
-            return json.dumps(response)    
-        return data
+        return json.dumps(response)
     
     @query_debugger()
     def get_rake_details_by_track_number(track_number,rake_type="AR",count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
@@ -169,7 +224,15 @@ class RakeDbService:
                 data = [dict(zip(tuple (query.keys()) ,i)) for i in query.cursor]
                 return RakeDbService.map_CCLS_response(data)
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-                pass
+                track = Track.query.filter_by(track_no=track_number).first()
+                if track:
+                    if track.train_no and track.trans_date:
+                        query_values = {"train_number":track.train_no, "trans_date":track.trans_date.date()}
+                        return True, RakeDbService.get_train_details(query_values)
+                    else: 
+                        return False, "No train available in the given track"
+                else:
+                    return False, "No such Track Exists"
         except:
             if isRetry and count >= 0 :
                 count=count-1 
@@ -229,14 +292,12 @@ class RakeDbService:
                 response[Constants.CONTAINER_LIST].append(each)
         return response
 
-    def get_rake_details(rake_number=None, track_number=None,rake_type=None,wagon_number=None,container_number=None,train_number=None,from_date=None,to_date=None):
+    def get_rake_details(rake_number=None, track_number=None,rake_type=None):
         result = None
         if track_number:
             result = RakeDbService.get_rake_details_by_track_number(track_number=track_number,rake_type=rake_type)
         elif rake_number:
             result = RakeDbService.get_rake_details_by_rake_number(rake_number=rake_number,rake_type=rake_type)
-        elif train_number or (from_date and to_date):
-            result = RakeDbService.get_rake_details_by_train_number(train_number=train_number,from_date=from_date,to_date=to_date)
         return result
 
 

@@ -11,6 +11,7 @@ WAREHOUSE_DATA_ENDPOINT = "/warehouse_details"
 STACK_LOCATION = "/stack_location"
 GROUND_TRUTH_TABLE_NAME = "Ground_truth"
 ISO_6346_CODE_ENDPOINT = "/map_ccls_iso_code"
+TRACK_DETAILS = '/track_details'
 
 #time format in db:
 TIME_FORMAT ="%Y-%m-%d %H:%M:%S"

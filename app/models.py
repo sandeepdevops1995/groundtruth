@@ -802,6 +802,16 @@ class Comm(db.Model):
     
     __tablename__ = 'TM_COMM'
     
+class Track(db.Model):
+    id =  db.Column(db.BigInteger(), primary_key=True)
+    track_no = db.Column(db.String(75), unique= True)
+    train_no = db.Column(db.String(75), unique= True, nullable=True)
+    trans_date = db.Column(db.DateTime())
+    user_id = db.Column(db.String(75))
+    created_at = db.Column(db.DateTime(), default = datetime.now)
+    updated_at = db.Column(db.DateTime(), default = datetime.now, onupdate=datetime.now)
+    
+    __tablename__ = 'Track'
     
 class Diagnostics(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)

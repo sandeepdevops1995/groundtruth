@@ -118,10 +118,12 @@ class RakeDbService:
                 data = CCLSRake.query.filter_by(**query_values).order_by('trans_date').all()
             if data and track_number:
                 from app.models import Track
-                track_details = Track.query.filter(Track.track_no == track_number, Track.trans_date <= data[0].trans_date).first()
-                track_details.train_no = data[0].train_number
-                track_details.trans_date = data[0].trans_date
-                commit()
+                track_details = Track.query.filter(Track.track_no == track_number).first()
+                if (track_details.trans_date == None ) or (track_details.trans_date <= data[0].trans_date) : 
+                    track_details.train_no = data[0].train_number
+                    track_details.trans_date = data[0].trans_date
+                    commit()
+                    logger.info("updated track details")
             return RakeDbService.format_rake_data(data)
             
         except Exception as e:

@@ -39,7 +39,8 @@ class RakeDbService:
             data = CCLSRake.query.filter_by(rake_number=rake_number).all()
             return RakeDbService.format_rake_data(data)
             
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -61,7 +62,7 @@ class RakeDbService:
             return db_functions(data).as_json()
             
         except Exception as e:
-            print(e)
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -89,7 +90,7 @@ class RakeDbService:
                 return False,str(e)
             
         except Exception as e:
-            print(e)
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -127,7 +128,7 @@ class RakeDbService:
             return RakeDbService.format_rake_data(data)
             
         except Exception as e:
-            print(e)
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -179,11 +180,11 @@ class RakeDbService:
                 else:
                     print("wagon already exists in db")
             except Exception as e:
-                print(e)
+                logger.exception(str(e))
         try:
             commit()
         except Exception as e:
-            print(e)
+            logger.exception(str(e))
         
         return final_data
 
@@ -237,7 +238,8 @@ class RakeDbService:
                         return False, "No train available in the given track"
                 else:
                     return False, "No such Track Exists"
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -252,6 +254,95 @@ class RakeDbService:
             return RakeDbService.format_rake_data(data)
         else:
             return {}
+        
+        
+    @query_debugger()
+    def update_inward_rake_details(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                result = soap_service.update_inward_rake()
+                return result
+        except Exception as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                RakeDbService.update_inward_rake_details(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE)
+                    
+    
+    @query_debugger()
+    def update_outward_rake_details(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                result = soap_service.update_outward_rake()
+                return result
+        except Exception as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                RakeDbService.update_outward_rake_details(count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE)
+
+
+    @query_debugger()
+    def get_ground_truth_details(train_number, trans_date, count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+
+        trans_date = datetime.strptime(trans_date, '%Y-%m-%d %H:%M:%S').date()
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            
+            data = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)==trans_date, train_number==train_number).all()
+            if data:
+                return db_functions(data).as_json()
+            else:
+                return json.dumps({})
+            
+        except Exception as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                RakeDbService.get_ground_truth_details(train_number, trans_date, count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE)
+
+    @query_debugger()
+    def post_ground_truth_details(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            for each in data:
+                if "id" in each:
+                        each.pop("id")
+                result = CCLSRake.query.filter_by(train_number = each['train_number'],wagon_number= each['wagon_number'],container_number= each['container_number'],container_life_number= each['container_life_number']).all()
+                if not result:
+                    wagon = CCLSRake(**each)
+                    db.session.add(wagon)
+                else:
+                    print(each["train_number"],each["wagon_number"],each["container_number"])
+                    logger.info("corresponding train, wagon and container exists in given trans_date")
+            try:
+                commit()
+                return True,"Saved Successfully"
+            except Exception as e:
+                logger.exception(str(e))
+                return False,str(e)
+            
+        except Exception as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                RakeDbService.post_ground_truth_details(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE)
+
+
 
     @query_debugger()
     def get_wagon_data(wagon_number,rake_type="DE",count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
@@ -277,12 +368,12 @@ class RakeDbService:
                 return RakeDbService.format_rake_data(data)
             else:
                 return {}
-        except SQLAlchemyError as exe:
-                print(exe)
-                if isRetry and count >= 0 :
-                    count=count-1 
-                    time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
-                    RakeDbService.get_wagon_data(wagon_number,rake_type,count,isRetry)
+        except SQLAlchemyError as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                RakeDbService.get_wagon_data(wagon_number,rake_type,count,isRetry)
 
     def update_rake_wagon_data(data,wagon_number=None):
         response = data.copy()
@@ -352,7 +443,8 @@ class RakeDbService:
                     sqlFile.close()
                     conn.close()
                 return        
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -396,7 +488,8 @@ class RakeDbService:
                     sqlFile.close()
                     conn.close()
                 return        
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -443,7 +536,7 @@ class RakeDbService:
             return db_functions(data).as_json()
             
         except Exception as e:
-            print(e)
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -465,7 +558,8 @@ class RakeDbService:
                 pass
             data = SlineConv.query.all()
             return db_functions(data).as_json()
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -487,7 +581,8 @@ class RakeDbService:
                 pass
             data = IcdLoc.query.all()
             return db_functions(data).as_json()
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -509,7 +604,8 @@ class RakeDbService:
                 pass
             data = PodConv.query.all()
             return db_functions(data).as_json()
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -531,7 +627,8 @@ class RakeDbService:
                 pass
             data = CtrType.query.all()
             return db_functions(data).as_json()
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -553,7 +650,8 @@ class RakeDbService:
                 pass
             data = Commodity.query.all()
             return db_functions(data).as_json()
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -577,7 +675,8 @@ class RakeDbService:
             return db_functions(data).as_json()
             
             
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -599,7 +698,8 @@ class RakeDbService:
                 pass
             data = Acty.query.all()
             return db_functions(data).as_json()
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -622,7 +722,8 @@ class RakeDbService:
             data = Port.query.all()
             return db_functions(data).as_json()
             
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -645,7 +746,8 @@ class RakeDbService:
             data = OutLoc.query.all()
             return db_functions(data).as_json()
             
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -668,7 +770,8 @@ class RakeDbService:
             data = OutPort.query.all()
             return db_functions(data).as_json()
             
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -688,7 +791,8 @@ class RakeDbService:
                 return  json.dumps(data)
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 pass
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
@@ -711,7 +815,8 @@ class RakeDbService:
             data = UserDtls.query.all()
             return db_functions(data).as_json()
             
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             if isRetry and count >= 0 :
                 count=count-1
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 

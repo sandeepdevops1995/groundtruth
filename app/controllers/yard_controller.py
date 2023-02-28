@@ -4,6 +4,7 @@ from app.services.yard_db_service import YardDbService
 from flask import json, Response,request
 from app.services.decorator_service import custom_exceptions, jwt_auth_required
 from app.logger import logger
+from app.controllers.rake_controller import soap_API_response
 
 # this is a common function to retrieve master data from CCLS tables
 def get_master_data_common(name):
@@ -48,13 +49,4 @@ class StackLocation(Model):
         data = request.get_json()
         result = YardDbService.update_container_location(data)
         logger.info('Conainer Stack Location  details response: {}'.format(result))
-        if result:
-            if 'Error' in result:
-                if result['Error']:
-                    return Response(json.dumps({"message":"Failed to save record","error":str(result["Error"]),"error_message":str(result['ErrorMessage'])}), status=400, mimetype='application/json')
-                else:        
-                    return Response(json.dumps({"message":str(result["Result"])}), status=200, mimetype='application/json')                                
-            else:
-                return Response(result, status=200, mimetype='application/json')
-        else:
-            return Response(json.dumps({"message":"Soap Service unavailable"}), status=503, mimetype='application/json')
+        return soap_API_response(result)

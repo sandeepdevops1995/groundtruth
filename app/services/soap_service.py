@@ -94,6 +94,58 @@ def get_train_data(train_number='',from_date='', to_date = ''):
         result = {}
         return result
     
+
+def update_inward_rake():
+    try:
+        rake_data = {}
+        rake_data['trnNo'] =  'Test'
+        rake_data['wgnNo'] = 'Test'
+        rake_data['ctrNo'] = 'Test'
+        rake_data['sealNo'] = 'Test'
+        rake_data['dmgCode'] = 'N'
+        rake_data['hazardiousStatus'] = 'N'
+        rake_data['hldTrackNo'] = 'H1'
+        
+        wsdl_url = config.WSDL_URL+'/soa-infra/services/default/RakeInwardWriteOperation/rakewriteinward_client_ep?WSDL'
+        soap = zeep.Client(wsdl=wsdl_url, 
+                        service_name="rakewriteinward_client_ep",
+                        port_name="RakeWriteInward_pt")
+        logger.debug('Update Inward Rake Details, soap service request with data : '+ str(rake_data))
+        result = soap.service.process(**rake_data)
+        save_in_diagnostics(Constants.TRAIN_DETAILS_ENDPOINT,{"data":str(rake_data)},{"output":str(result)})
+        logger.debug('Update Inward Rake Details, soap service response : '+ str(result))
+        return result
+    except Exception as e:
+        logger.exception('Update Inward Rake Details, Exception : '+str(e))
+        result = {}
+        return result
+    
+def update_outward_rake():
+    try:
+        rake_data = {}
+        rake_data['trnNo'] =  'Test'
+        rake_data['wgnNo'] = 'Test'
+        rake_data['ctrNo'] = 'Test'
+        rake_data['sealNo'] = 'Test'
+        rake_data['dmgCode'] = 'N'
+        rake_data['hazardiousStatus'] = 'N'
+        rake_data['hldTrackNo'] = 'H1'
+        
+        wsdl_url = config.WSDL_URL+'/soa-infra/services/default/RakeOutwardWriteOperation/rakeoutwardwrite_client_ep?WSDL'
+        soap = zeep.Client(wsdl=wsdl_url, 
+                        service_name="rakeoutwardwrite_client_ep",
+                        port_name="RakeOutwardWrite_pt")
+        logger.debug('Update Outward Rake Details, soap service request with data : '+ str(rake_data))
+        result = soap.service.process(**rake_data)
+        save_in_diagnostics(Constants.TRAIN_DETAILS_ENDPOINT,{"data":str(rake_data)},{"output":str(result)})
+        logger.debug('Update Outward Rake Details, soap service response : '+ str(result))
+        return result
+    except Exception as e:
+        logger.exception('Update Outward Rake Details, Exception : '+str(e))
+        result = {}
+        return result
+            
+
 def update_container_stack_location(data):
     try:
         stack_data = {}

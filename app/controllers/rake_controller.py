@@ -11,6 +11,19 @@ from app.constants import GroundTruthType
 from datetime import date, datetime
 parser = reqparse.RequestParser()
 
+
+def soap_API_response(result):
+    if result:
+        if 'Error' in result:
+            if result['Error']:
+                return Response(json.dumps({"message":"Failed to save record","error":str(result["Error"]),"error_message":str(result['ErrorMessage'])}), status=400, mimetype='application/json')
+            else:        
+                return Response(json.dumps({"message":str(result["Result"])}), status=200, mimetype='application/json')                                
+        else:
+            return Response(json.dumps(result), status=200, mimetype='application/json')
+    else:
+        return Response(json.dumps({"message":"Unable to save transaction"}), status=400, mimetype='application/json')
+
 class Model(Resource):
 
     def add_arguments_to_parser(self, args_list):
@@ -104,8 +117,49 @@ class RakeData(Model):
         else:
             return Response(json.dumps({"message":result}), status=400, mimetype='application/json')
 
+class UpdateInwardRakeDetails(Model):
+    @custom_exceptions
+    def post(self):
+        data = request.get_json()
+        result = {}
+        result =  db_service.update_inward_rake_details(data)
+        return soap_API_response(result)
 
 
+class UpdateOutwardRakeDetails(Model):
+    @custom_exceptions
+    def post(self):
+        data = request.get_json()
+        result = {}
+        result =  db_service.update_inward_rake_details(data)
+        return soap_API_response(result)
+    
+class GroundTruthData(Model):
+    @custom_exceptions
+    def post(self):
+        data = request.get_json()
+        success,message = db_service.post_ground_truth_details(data)
+        if success:
+            return Response(json.dumps({"message":"Saved successfully"}), status=201, mimetype='application/json')
+        else:
+            return Response(json.dumps({"message":message}),status=400,mimetype='application/json')
+    
+    @custom_exceptions
+    def get(self):
+        train_number = request.args.get(Constants.TRAIN_NUMBER,None)
+        trans_date = request.args.get(Constants.KEY_TRANS_DATE,None)
+        if train_number and trans_date:
+            response =  db_service.get_ground_truth_details(train_number,trans_date)
+            if response:
+                # logger.info('Ground truth found for given train_number ',train_number, 'for trans_date ',trans_date)
+                return Response(response, status=200, mimetype='application/json')
+            else:
+                # logger.info('Ground truth does not exist for given train_number ',train_number, 'for trans_date ',trans_date)
+                return Response(json.dumps({"message":"No transaction found with given train_number and trans_date"}), status=204, mimetype='application/json')
+        return Response(json.dumps({"message":"please provide train_number and trans_date to fetch details"}),status=400, mimetype='application/json')
+    
+    
+    
 class RakeContainer(Model):
     @custom_exceptions
     # @jwt_auth_required 

@@ -1,6 +1,7 @@
 from app.services.decorator_service import query_debugger
 from app.services.soap_service import *
 from app.services.database_service import GateDbService
+from app.models import KyclContainerLocation
 from app.logger import logger
 from app.constants import GroundTruthType
 import app.constants as Constants
@@ -38,8 +39,14 @@ class YardDbService:
                 result = GateDbService().update_ctr_stack_info(data)
                 return result
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-                return update_container_stack_location(data)
-            return {}
+                result =  update_container_stack_location(data)
+                if result:
+                    return result
+            container_location = KyclContainerLocation(container_no = data["container_number"] ,to_loc = data["stack_location"] )
+            db.session.add(container_location)
+            if commit():
+                return {"message" : "saved in postgres db"}
+
         except Exception as e:
             logger.exception('Update Container Location, Exception : '+str(e))
             if isRetry and count >= 0 :

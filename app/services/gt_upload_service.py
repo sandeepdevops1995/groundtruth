@@ -7,11 +7,12 @@ import json
 def commit():
     try:
         db.session.commit()
+        return True
     except SQLAlchemyError as e :
-        print(str(e))
         db.session.rollback()
         db.session.remove()
-        raise abort(Response(json.dumps({"message":str(e.orig)}), status=400, mimetype='application/json')) 
+        return False
+        # raise abort(Response(json.dumps({"message":str(e.orig)}), status=400, mimetype='application/json')) 
 
 
 def upload_ccls_rake_date(rake_data):

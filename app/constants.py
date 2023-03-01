@@ -297,5 +297,7 @@ class GroundTruthType(enum.Enum):
     SOAP = 1
     POSTGRES = 2
 
-    
+rake_write_required_fields = [KEY_TRAIN_NUMBER,KEY_CONTAINER_NUMBER,KEY_CONTAINER_LIFE_NUMBER,KEY_SLINE_CODE,
+                            KEY_CONTAINER_SIZE,KEY_CONTAINER_TYPE,KEY_FCL_LCL_FLG,KEY_WAGON_NUMBER,
+                            KEY_WAGON_LIFE_NUMBER,KEY_DAMAGE_FLAG,SEAL_NUMBER,HAZARD_STATUS]  
     

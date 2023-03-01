@@ -29,10 +29,126 @@ KEY_RETRY_COUNT=3
 KEY_RETRY_TIMEDELAY=2
 KEY_TIME = "TIME"
 KEY_ID = "id"
-KEY_ISO_CODE = "iso_code"
-KEY_SLINE_CODE      = "sline_code" 
 KEY_FROM_DATE = "from_date"
 KEY_TO_DATE = "to_date"
+
+
+# RAKE 
+KEY_TRAIN_NUMBER = 'train_number'
+KEY_RAKE_NUMBER = "rake_number"
+KEY_IMP_EXP_FLG = 'imp_exp_flg'
+KEY_FROM_LOC = 'frmLoc'
+KEY_TO_LOC = 'toLoc'
+KEY_DT_ACTUAL_DEPART = "dt_actual_depart"
+KEY_TOTAL_WAGON_CONT = 'total_wagon_count'
+KEY_CURRENT_WAGON_COUNT = 'current_wagon_count'
+KEY_NO_LOADED_TEU_DEPART = "no_loaded_teu_depart"
+KEY_NO_EMPTY_TEU_DEPART = "no_empty_teu_depart"
+KEY_NO_LOADED_TEU_ARRIVAL = "no_loaded_teu_arrival"
+KEY_NO_EMPTY_TEU_ARRIVAL = "no_empty_teu_arrival"
+KEY_CONTAINER_NUMBER = "container_number"
+KEY_CONTAINER_LIFE_NUMBER = "container_life_number"
+KEY_SLINE_CODE = "sline_code"
+KEY_ISO_CODE = "iso_code"
+KEY_CONTAINER_TYPE = "container_type"
+KEY_CONTAINER_SIZE = "container_size"
+KEY_CONTAINER_WEIGHT = "container_weight"
+KEY_CARGO_TYPE = "cargo_type"
+KEY_LDD_MT_FLG = "ldd_mt_flg"
+KEY_FCL_LCL_FLG = "fcl_lcl_flg"
+KEY_WAGON_NUMBER = "wagon_number"
+KEY_WAGON_LIFE_NUMBER = "wagon_life_number"
+KEY_WAGON_TYPE = "wagon_type"
+KEY_DAMAGE_FLAG = "damage_flg"
+KEY_PLACEMENT_REMARK = "placement_remark"
+KEY_HLD_TRACK_NUMBER = "hld_track_number"
+KEY_GATEWAY_PORT_CD =  "gateway_port_cd"
+KEY_SEAL_NUMBER = "seal_number"
+KEY_SEAL_STATUS = "seal_status"
+KEY_DAMAGE_CODE = "damage_code"
+KEY_HAZARD_STATUS = "hazard_status"
+KEY_WAGON_DEST = "wagon_destination"
+KEY_DT_PLACEMENT = "dt_placement"
+KEY_EQUIPMENT_ID = "equipment_id"
+KEY_ATTRIBUTE1 = "attribute1"
+KEY_ATTRIBUTE2 = "attribute2"
+KEY_ATTRIBUTE3 = "attribute3"
+KEY_ATTRIBUTE4 = "attribute4"
+KEY_ATTRIBUTE5 = "attribute5"
+KEY_ATTRIBUTE6 = "attribute6"
+KEY_ATTRIBUTE7 = "attribute7"
+KEY_CREATED_AT = "created_at"
+KEY_CREATED_BY = "created_by"
+KEY_UPDATED_AT = "updated_at"
+KEY_UPDATED_BY = "updated_by"
+KEY_ERROR_MSG = "error_msg"
+KEY_STATUS_FLG = "status_flg"
+KEY_READ_FLG = "read_flg"
+KEY_DT_DESP = "dt_desp"
+KEY_DT_WTR = "dt_wtr"
+KEY_FIRST_POD = "first_pod"
+KEY_ORIGIN_STATION = "origin_station"
+KEY_DEST_STATION = "dest_station"
+
+
+# RAKE SOAP KEYS
+KEY_SOAP_TRAIN_NUMBER = 'trnNo'
+KEY_SOAP_RAKE_NUMBER = "rakeNo"
+KEY_SOAP_IMP_EXP_FLG = 'impExpFlg'
+KEY_SOAP_FROM_LOC = 'frmLoc'
+KEY_SOAP_TO_LOC = 'toLoc'
+KEY_SOAP_DT_ACTUAL_DEPART = "dtActDep"
+KEY_SOAP_TOTAL_WAGON_CONT = 'totWgnCnt'
+KEY_SOAP_CURRENT_WAGON_COUNT = 'wgnCntCurr'
+KEY_SOAP_NO_LOADED_TEU_DEPART = "noLddTeuDep"
+KEY_SOAP_NO_EMPTY_TEU_DEPART = "noMtTeuDep"
+KEY_SOAP_NO_LOADED_TEU_ARRIVAL = "noLddTeuArr"
+KEY_SOAP_NO_EMPTY_TEU_ARRIVAL = "noMtTeuArr"
+KEY_SOAP_CONTAINER_NUMBER = "ctrNo"
+KEY_SOAP_CONTAINER_LIFE_NUMBER = "ctrLifeNo"
+KEY_SOAP_SLINE_CODE = "slineCd"
+KEY_SOAP_ISO_CODE = "ctrIsoCd"
+KEY_SOAP_CONTAINER_TYPE = "ctrType"
+KEY_SOAP_CONTAINER_SIZE = "ctrSize"
+KEY_SOAP_CONTAINER_WEIGHT = "ctrWt"
+KEY_SOAP_CARGO_TYPE = "crgType"
+KEY_SOAP_LDD_MT_FLG = "lddMtFlg"
+KEY_SOAP_FCL_LCL_FLG = "fclLclFlg"
+KEY_SOAP_WAGON_NUMBER = "wgnNo"
+KEY_SOAP_WAGON_LIFE_NUMBER = "wgnLifeNo"
+KEY_SOAP_WAGON_TYPE = "wgnType"
+KEY_SOAP_DAMAGE_FLAG = "dmgFlg"
+KEY_SOAP_PLACEMENT_REMARK = "plcmtRmk"
+KEY_SOAP_HLD_TRACK_NUMBER = "hldTrackNo"
+KEY_SOAP_GATEWAY_PORT_CD =  "gwPortCd"
+KEY_SOAP_SEAL_NUMBER = "sealNo"
+KEY_SOAP_SEAL_STATUS = "sealStat"
+KEY_SOAP_DAMAGE_CODE = "dmgCode"
+KEY_SOAP_HAZARD_STATUS = "hazardiousStatus"
+KEY_SOAP_WAGON_DEST = "wgnDestn"
+KEY_SOAP_DT_PLACEMENT = "dtPlcmt"
+KEY_SOAP_EQUIPMENT_ID = "eqptId"
+KEY_SOAP_ATTRIBUTE1 = "attribute1"
+KEY_SOAP_ATTRIBUTE2 = "attribute2"
+KEY_SOAP_ATTRIBUTE3 = "attribute3"
+KEY_SOAP_ATTRIBUTE4 = "attribute4"
+KEY_SOAP_ATTRIBUTE5 = "attribute5"
+KEY_SOAP_ATTRIBUTE6 = "attribute6"
+KEY_SOAP_ATTRIBUTE7 = "attribute7"
+KEY_SOAP_CREATED_AT = "createdDate"
+KEY_SOAP_CREATED_BY = "createdBy"
+KEY_SOAP_UPDATED_AT = "updatedDate"
+KEY_SOAP_UPDATED_BY = "updatedBy"
+KEY_SOAP_ERROR_MSG = "errorMsg"
+KEY_SOAP_STATUS_FLG = "statusFlag"
+KEY_SOAP_READ_FLG = "readFlag"
+KEY_SOAP_DT_DESP = "dtDesp"
+KEY_SOAP_DT_WTR = "dtWtr"
+KEY_SOAP_FIRST_POD = "firPod"
+KEY_SOAP_ORIGIN_STATION = "orgStn"
+KEY_SOAP_DEST_STATION = "destStn"
+
+
 
 
 #RABBIT_MQ QUEUES
@@ -172,9 +288,14 @@ CONTAINER_DETAILS = 'TM_CPHYCTRDTLS'
 ACTIVITY_CODES = 'TM_CACTY'
 EQUIPMENT_DETAILS = 'TM_CEQPTDTLS_NEW'
 
+
+
+
 import enum
 class GroundTruthType(enum.Enum):
     ORACLE = 0
     SOAP = 1
     POSTGRES = 2
+
+    
     

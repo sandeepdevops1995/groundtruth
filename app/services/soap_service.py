@@ -95,17 +95,8 @@ def get_train_data(train_number='',from_date='', to_date = ''):
         return result
     
 
-def update_inward_rake():
-    try:
-        rake_data = {}
-        rake_data['trnNo'] =  'Test'
-        rake_data['wgnNo'] = 'Test'
-        rake_data['ctrNo'] = 'Test'
-        rake_data['sealNo'] = 'Test'
-        rake_data['dmgCode'] = 'N'
-        rake_data['hazardiousStatus'] = 'N'
-        rake_data['hldTrackNo'] = 'H1'
-        
+def update_inward_rake(rake_data):
+    try: 
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/RakeInwardWriteOperation/rakewriteinward_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="rakewriteinward_client_ep",
@@ -120,17 +111,8 @@ def update_inward_rake():
         result = {}
         return result
     
-def update_outward_rake():
-    try:
-        rake_data = {}
-        rake_data['trnNo'] =  'Test'
-        rake_data['wgnNo'] = 'Test'
-        rake_data['ctrNo'] = 'Test'
-        rake_data['sealNo'] = 'Test'
-        rake_data['dmgCode'] = 'N'
-        rake_data['hazardiousStatus'] = 'N'
-        rake_data['hldTrackNo'] = 'H1'
-        
+def update_outward_rake(rake_data):
+    try: 
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/RakeOutwardWriteOperation/rakeoutwardwrite_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="rakeoutwardwrite_client_ep",

@@ -412,7 +412,7 @@ class RakeDbService:
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 pass
             
-            data = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)==trans_date, train_number==train_number).all()
+            data = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)==trans_date).filter_by(train_number=train_number).all()
             if data:
                 return db_functions(data).as_json()
             else:

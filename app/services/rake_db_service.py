@@ -15,6 +15,7 @@ from app.models import CCLSRake
 from app.services import soap_service
 from app.services.gt_upload_service import commit
 from app.models import *
+from datetime import datetime,timedelta
 
 
 class RakeDbService:
@@ -112,8 +113,10 @@ class RakeDbService:
                 # elif "train_number" in query_values["train_number"]:
                 #     result = soap_service.get_train_data(query_values["train_number"])
             if "trans_date" in query_values:
-                data = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)==query_values["trans_date"])
-                query_values.pop('trans_date')
+                trans_date = query_values.pop('trans_date')
+                start_date = trans_date - timedelta(days = 2)
+                end_date =  trans_date + timedelta(days = 2)
+                data = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)>=start_date, cast(CCLSRake.trans_date, DATE)<=end_date)
                 data = data.filter_by(**query_values).order_by('trans_date').all()
             else:
                 data = CCLSRake.query.filter_by(**query_values).order_by('trans_date').all()
@@ -168,7 +171,7 @@ class RakeDbService:
             
             query_fields = {"wagon_number" : wagon["wagon_number"],
              "container_number" : wagon["container_number"],
-            "container_life_number" : wagon["container_life_number"],
+            # "container_life_number" : wagon["container_life_number"],
             "trans_date" : wagon["trans_date"],
             "train_number" : wagon["train_number"]}
             wagon_model = CCLSRake(**wagon)
@@ -177,14 +180,11 @@ class RakeDbService:
                 result = CCLSRake.query.filter_by(**query_fields).all()
                 if not result:
                     db.session.add(wagon_model)
+                    commit()
                 else:
                     print("wagon already exists in db")
             except Exception as e:
                 logger.exception(str(e))
-        try:
-            commit()
-        except Exception as e:
-            logger.exception(str(e))
         
         return final_data
 

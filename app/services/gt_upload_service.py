@@ -1,4 +1,5 @@
 from app.models import CCLSRake, Diagnostics
+from app.logger import logger
 from app import postgres_db as db
 from sqlalchemy.exc import SQLAlchemyError
 from flask import Response, abort
@@ -9,6 +10,7 @@ def commit():
         db.session.commit()
         return True
     except SQLAlchemyError as e :
+        logger.exception(str(e))
         db.session.rollback()
         db.session.remove()
         return False

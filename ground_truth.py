@@ -12,7 +12,7 @@ def scheduleTask():
         from app.services.rake_db_service import RakeDbService
         from datetime import datetime, timedelta
         from app.logger import logger
-        from_date = (datetime.now()-timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
+        from_date = (datetime.now()-timedelta(days = 1)).strftime("%Y-%m-%dT%H:%M:%S")
         to_date = (datetime.now()+timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
         result = RakeDbService.get_train_details({},from_date=from_date,to_date=to_date)
         logger.info("Task Scheduled from_date: "+from_date+" to_date: "+to_date)

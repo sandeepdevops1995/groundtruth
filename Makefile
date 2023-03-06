@@ -13,6 +13,7 @@ ENV_TEMPLATE="config.py.example"
 envHostPort="$$(sed -n -e "s/^.*PORT.*=//p" $(ENV_FILEPATH) | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
 envHostIP="$$(sed -n -e "s/^.*IP_ADDRESS.*=//p" $(ENV_FILEPATH) | tr -d \'\" | head -n 1 | xargs)"
 envDebugModeEnabled="$$(sed -n -e "s/^.*DEBUG.*=//p" $(ENV_FILEPATH) | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+envDBNameDetected="$$(sed -n -e "s/^.*PSQL_DATABASE.*=//p" $(ENV_FILEPATH) | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
 
 # Before anything else, check if the above commands are installed and available, if not throw error and abort.
 K := $(foreach exec,$(DEPENDENCIES), $(if $(shell which "$(exec)"),dependencies_ok,$(error ENVIRONMENT DEPENDENCIES CHECK FAILING: Could not find this command: "$(exec)", Cannot proceed)))
@@ -104,6 +105,17 @@ shell: | probe-pipenv; @python3 -m pipenv shell; ## Activate virtualenv shell
 ask-confirmation:
 	@printf "\n\nAre you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
 
+# Force kills the active database connections to a particular PSQL db.
+# Not recommended. TODO: find better alternative of gracefully "sql commit"ing and closing sessions.
+.PHONY: kill-active-db-connections
+kill-active-db-connections: ask-confirmation ## Force kills active connections made to the current postgres database
+	@db_name=$(envDBNameDetected); \
+	printf "\nDatabase Name: $$db_name\n\n"; \
+	printf "\nForce killing active client connections to the postgresql database...\n\n"; \
+	sudo -u postgres psql -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '$$db_name';" && \
+	{ printf "\n\nKilled all client connections successfully.\n\n"; } \
+	|| { printf "\n\nFailed to kill client connections to selected database.\n\n"; exit 1; };
+
 # This drops the lockfile in-case user wants to manually regenerate it.
 # This is especailly a terrible idea as you invariably destroy the reproducible environment your team has built, applies if version pinning isn't done in Pipfile.
 # if you need to run this target, don't. seek help.
@@ -129,6 +141,17 @@ reset-local-settings: ## Overwrites current environemnt file (if any) with a con
 probe-env-settings: ## Check environment settings file's existence (and create if missing)
 	@envSettingsPath=$(ENV_FILEPATH); \
 	[ ! -f "$$envSettingsPath" ] && { make reset-local-settings; } || { printf "[Info] successfully loaded environment from \"$$envSettingsPath\"...OK"; }
+
+# This target drops the existing database fully, recreatces it,
+# finally generates and applies all migrations.
+.PHONY: reinstate-db
+reinstate-db: | probe-pipenv probe-env-settings kill-active-db-connections ## Drops and recreates current psql database, regenerates all migrations and applies them
+	@db_name=$(envDBNameDetected); \
+	printf "\n\n[Info] Using database with name: $$db_name\n\n"; \
+    sudo -u postgres psql -c "drop database $$db_name;"; \
+    sudo -u postgres psql -c "create database $$db_name;" && \
+	printf "\n\nSuccessfuly reinstated database and applied migrations!\n\n" \
+	|| { printf "\nSomething went wrong with reinstating database. abort\n\n"; exit 1; };
 
 # This target starts the in-built wsgi server based on env settings.
 .PHONY: run

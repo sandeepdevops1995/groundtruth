@@ -978,6 +978,35 @@ class RakeDbService:
                 conn.execute(command,container_number=data[i][2],wagon_number=data[i][0])
             sqlFile.close()
             return
+        
+    def get_rake_file_data(self,file_obj):
+        import pandas as pd
+        try:
+            dframe = pd.read_excel(file_obj, engine='openpyxl')
+            data = dframe.to_json(orient = "records" )
+            j_data = json.loads(data)
+            print(j_data)
+            return j_data
+        except Exception as e:
+            logger.error('file format or data is missing', e)
+            j_data=[]
+            return j_data
+    
+    def save_rake_details(self,data):
+        for each in data:
+            wagon=CCLSRake(**each)
+            try:
+                result = CCLSRake.query.filter_by(train_number=each["train_number"],
+                                                  wagon_number=each["wagon_number"],
+                                                  container_number=each["container_number"]).first()
+                if not result:
+                    db.session.add(wagon)
+                else:
+                    result.update(dict(each))
+                    print("wagon already exists in db")
+            except Exception as e:
+                logger.exception(str(e))
+        commit()            
 
 def get_iso_by_type_and_size(container_type, container_size):
     iso_code="22G1"

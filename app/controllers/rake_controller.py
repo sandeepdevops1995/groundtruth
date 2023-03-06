@@ -93,11 +93,14 @@ class RakeData(Model):
     @custom_exceptions
     # @jwt_auth_required
     def post(self):
+        print("got rake post request===")
         if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
             db_service.push_test_data_arrival()
-            db_service.push_test_data_departure() 
+            db_service.push_test_data_departure()
+        file = request.files['file']   
+        rake_data = db_service().get_rake_file_data(file)
+        response = db_service().save_rake_details(rake_data) 
         return Response(None, status=200, mimetype='application/json')
-
 
     @custom_exceptions
     # @jwt_auth_required 

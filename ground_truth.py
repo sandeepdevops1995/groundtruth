@@ -2,6 +2,7 @@
 from app import app,scheduler
 from app.controllers.urls import register_controllers
 from app.services.ground_truth_service import start_rabbitMQ_service
+from app.services.rake_directory_watcher_service import RakeDataEvents
 import config
 
 #from app.servicecs.gate_groundtruth_service
@@ -20,6 +21,7 @@ def scheduleTask():
 if __name__ == '__main__':
     #register all end points 
     register_controllers()
+    RakeDataEvents()
     # start_rabbitMQ_service()
     with app.app_context():
         from app import postgres_db

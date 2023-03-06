@@ -985,7 +985,6 @@ class RakeDbService:
             dframe = pd.read_excel(file_obj, engine='openpyxl')
             data = dframe.to_json(orient = "records" )
             j_data = json.loads(data)
-            print(j_data)
             return j_data
         except Exception as e:
             logger.error('file format or data is missing', e)
@@ -998,12 +997,12 @@ class RakeDbService:
             try:
                 result = CCLSRake.query.filter_by(train_number=each["train_number"],
                                                   wagon_number=each["wagon_number"],
-                                                  container_number=each["container_number"]).first()
-                if not result:
-                    db.session.add(wagon)
-                else:
+                                                  container_number=each["container_number"])
+                if result.all():
                     result.update(dict(each))
-                    print("wagon already exists in db")
+                    logger.info("Updated existing wagon")
+                else:
+                    db.session.add(wagon)
             except Exception as e:
                 logger.exception(str(e))
         commit()            

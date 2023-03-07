@@ -150,8 +150,26 @@ reinstate-db: | probe-pipenv probe-env-settings kill-active-db-connections ## Dr
 	printf "\n\n[Info] Using database with name: $$db_name\n\n"; \
     sudo -u postgres psql -c "drop database $$db_name;"; \
     sudo -u postgres psql -c "create database $$db_name;" && \
+	python3 -m pipenv run flask db init && \
+	make --no-print-directory run-migrations && \
 	printf "\n\nSuccessfuly reinstated database and applied migrations!\n\n" \
 	|| { printf "\nSomething went wrong with reinstating database. abort\n\n"; exit 1; };
+
+
+.PHONY: create-migrations
+create-migrations: | probe-pipenv probe-env-settings ## Invokes Django's makemigrations command for specified inline apps
+	@printf "\n\nCreating database migrations...\n\n"; \
+	python3 -m pipenv run  flask db migrate;
+
+.PHONY: apply-migrations
+apply-migrations: | probe-pipenv probe-env-settings ## Attempts to apply any unapplied django database migrations
+	@printf "\n\nApplying database migrations...\n\n"; \
+	python3 -m pipenv run flask db upgrade;
+
+.PHONY: run-migrations
+run-migrations: | probe-pipenv probe-env-settings ## Bursts python cache, generates django db migrations freshly, and applies them
+	@make create-migrations && make apply-migrations;
+
 
 # This target starts the in-built wsgi server based on env settings.
 .PHONY: run

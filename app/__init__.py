@@ -8,6 +8,7 @@ import config
 from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy as sa
 from flask_apscheduler import APScheduler
+from flask_migrate import Migrate
 
 oracle_url = sa.engine.URL.create(
     drivername=config.SQL_DRIVER,
@@ -31,6 +32,7 @@ engine = create_engine(oracle_url,echo=config.SQl_ECHO)
 app.config["SQLALCHEMY_DATABASE_URI"] = postgres_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 postgres_db = SQLAlchemy(app)
+migrate = Migrate(app, postgres_db)
 
 
 scheduler = APScheduler()
@@ -52,6 +54,7 @@ def get(name):
 CORS(app)
 api = Api(app)
 
+from app.models import *
  
 
  

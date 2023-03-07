@@ -23,11 +23,6 @@ if __name__ == '__main__':
     register_controllers()
     RakeDataEvents()
     # start_rabbitMQ_service()
-    with app.app_context():
-        from app import postgres_db
-        from app.models import Permit
-        postgres_db.create_all()
-        print("db created")
     app.run(host=config.IP_ADDRESS,port=config.PORT, debug=config.DEBUG)
     # socketio.run(app, host=config.IP_ADDRESS,port=config.PORT, debug=config.DEBUG)
 

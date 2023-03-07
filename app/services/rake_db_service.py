@@ -98,7 +98,7 @@ class RakeDbService:
                 RakeDbService.post_track_details(data,count,isRetry)
     
     @query_debugger()
-    def get_train_details(query_values,track_number=None,from_date=None,to_date=None,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+    def get_train_details(query_values,rake_id=None,track_number=None,from_date=None,to_date=None,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
         try:
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
@@ -116,18 +116,18 @@ class RakeDbService:
                 trans_date = query_values.pop('trans_date')
                 start_date = trans_date - timedelta(days = 2)
                 end_date =  trans_date + timedelta(days = 2)
-                data = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)>=start_date, cast(CCLSRake.trans_date, DATE)<=end_date)
-                data = data.filter_by(**query_values).order_by('trans_date').all()
+                rake_query = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)>=start_date, cast(CCLSRake.trans_date, DATE)<=end_date)
+                rake_query = rake_query.filter_by(**query_values)
             else:
-                data = CCLSRake.query.filter_by(**query_values).order_by('trans_date').all()
-            if data and track_number:
-                from app.models import Track
-                track_details = Track.query.filter(Track.track_no == track_number).first()
-                if (track_details.trans_date == None ) or (track_details.trans_date <= data[0].trans_date) : 
-                    track_details.train_no = data[0].train_number
-                    track_details.trans_date = data[0].trans_date
-                    commit()
-                    logger.info("updated track details")
+                rake_query = CCLSRake.query.filter_by(**query_values)
+            update_data = {}
+            if track_number:
+                update_data['track_number'] = track_number
+            if rake_id :
+                update_data['rake_id'] = rake_id
+            rake_query.update(dict(update_data))
+            commit()
+            data = rake_query.order_by('trans_date').all()
             return RakeDbService.format_rake_data(data)
             
         except Exception as e:
@@ -191,7 +191,8 @@ class RakeDbService:
     def format_rake_data(data):
         response = {}
         if len(data)>0:
-            response[Constants.TRACK_NUMBER] = data[0].attribute_1
+            response[Constants.RAKE_ID] = data[0].rake_id
+            response[Constants.TRACK_NUMBER] = data[0].track_number
             response[Constants.RAKE_NUMBER]  = data[0].rake_number
             response[Constants.TRAIN_NUMBER]  = data[0].train_number
             response[Constants.RAKE_TYPE] = data[0].rake_type

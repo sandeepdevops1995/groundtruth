@@ -36,6 +36,7 @@ class TrainDetails(Model):
     def get(self):
         train_number = request.args.get(Constants.TRAIN_NUMBER,None)
         track_number = request.args.get(Constants.TRACK_NUMBER,None)
+        rake_id = request.args.get(Constants.RAKE_ID,None)
         wagon_number = request.args.get(Constants.WAGON_NUMBER,None)
         container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
         container_life_number = request.args.get(Constants.KEY_CN_LIFE_NUMBER,None)
@@ -58,7 +59,7 @@ class TrainDetails(Model):
             message = "please provide query parameters"
             return Response(json.dumps({"message":message}), status=400,mimetype='application/json')
         logger.info('GT,Get request from the Rake service : {}'.format(train_number))
-        result = db_service.get_train_details(data,track_number,from_date=from_date,to_date=to_date)
+        result = db_service.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
         logger.info('Conainer details response')
         return Response(result, status=200, mimetype='application/json')
 
@@ -106,19 +107,24 @@ class RakeData(Model):
     # @jwt_auth_required 
     def get(self):
         rake_number = request.args.get(Constants.RAKE_NUMBER,None)
+        rake_id = request.args.get(Constants.RAKE_ID,None)
         track_number = request.args.get(Constants.TRACK_NUMBER,None)
         rake_type = request.args.get(Constants.RAKE_TYPE,"AR")
-        if not rake_number and not track_number:
+        data = {}        
+        if rake_id:
+            data["rake_id"]=rake_id
+        if track_number:
+            data["track_number"]=track_number
+        if rake_number:
+            data["rake_number"] = rake_number
+            
+        if not rake_number and not track_number and not rake_id:
             message = "please provide query parameters"
             return Response(json.dumps({"message":message}), status=204,mimetype='application/json')
-        logger.info('GT,Get request from the Rake service : {} {}'.format(rake_number,track_number))
-        success,result = db_service.get_rake_details(rake_number=rake_number,track_number=track_number,rake_type=rake_type)
-        if success:
-            logger.info('Conainer details response')
-            print(result)
-            return Response(result, status=200, mimetype='application/json')
-        else:
-            return Response(json.dumps({"message":result}), status=400, mimetype='application/json')
+        logger.info('GT,Get request from the Rake service : {} {} {}'.format(rake_id,rake_number,track_number))
+        result = db_service.get_train_details(data)
+        logger.info('Conainer details response')
+        return Response(result, status=200, mimetype='application/json')
 
 class UpdateInwardRakeDetails(Model):
     @custom_exceptions

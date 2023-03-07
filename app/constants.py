@@ -205,6 +205,7 @@ TRUCK               = "truck"
 
 #Rake table details
 #CONTAINER_NUMBER    = "container_no"
+RAKE_ID             = "rake_id"
 CONTAINER_SIZE      = "container_size"
 CONTAINER_TYPE      = "container_type"
 CONTAINER_HEIGHT    = "container_height"

@@ -102,6 +102,7 @@ class Permit(db.Model):
 
 class CCLSRake(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
+    rake_id = db.Column(db.BigInteger())
     train_number = db.Column(db.String(10))
     train_origin_station = db.Column(db.String(25))
     train_destination_station = db.Column(db.String(25))
@@ -157,6 +158,7 @@ class CCLSRake(db.Model):
     adv_boe_flg = db.Column(db.String(2), nullable=True)
     error_msg = db.Column(db.String(100))
     status_flg = db.Column(db.String(1), nullable=True)
+    track_number = db.Column(db.String(10), nullable=True)
     
     __tablename__ = 'xxccls_rake_trnsdtls_tbl'
 

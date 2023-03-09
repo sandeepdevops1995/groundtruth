@@ -1004,9 +1004,10 @@ class RakeDbService:
                     logger.info("Updated existing wagon")
                 else:
                     db.session.add(wagon)
+                commit()
             except Exception as e:
                 logger.exception(str(e))
-        commit()            
+                    
 
 def get_iso_by_type_and_size(container_type, container_size):
     iso_code="22G1"

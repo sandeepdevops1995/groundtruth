@@ -23,6 +23,7 @@ postgres_url = sa.engine.URL.create(
     username=config.PSQL_USERNAME,
     password=config.PSQL_PASSOWRD,
     host=config.PSQL_IP,
+    port=config.PSQL_PORT,
     database=config.PSQL_DATABASE,
 )
 

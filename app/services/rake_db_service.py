@@ -199,7 +199,7 @@ class RakeDbService:
             response[Constants.WAGON_LIST] = []
             response[Constants.CONTAINER_LIST] = []
             for i in range(len(data)):
-                wagon_record = {Constants.WAGON_NUMBER :{ Constants.NUMBER : data[i].wagon_number,Constants.KEY_ID:data[i].wagon_sequence_number}}
+                wagon_record = {Constants.WAGON_NUMBER :{ Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:data[i].wagon_sequence_number}}
                 response[Constants.WAGON_LIST].append(wagon_record)
                 container_record ={}
                 container_record[Constants.CONTAINER_NUMBER] = {Constants.VALUE : data[i].container_number}
@@ -210,7 +210,7 @@ class RakeDbService:
                 container_record[Constants.ISO_CODE] = {Constants.VALUE : data[i].iso_code if data[i].iso_code else str(data[i].container_size)+str(data[i].container_type) if data[i].container_size and data[i].container_type else None}
                 container_record[Constants.LDD_MT_FLAG] = {Constants.VALUE : data[i].ldd_mt_flg} 
                 container_record[Constants.KEY_SLINE_CODE] =  {Constants.VALUE : data[i].sline_code}
-                container_record[Constants.WAGON_NUMBER] = { Constants.NUMBER : data[i].wagon_number,Constants.KEY_ID:data[i].wagon_sequence_number}
+                container_record[Constants.WAGON_NUMBER] = { Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:data[i].wagon_sequence_number}
                 response[Constants.CONTAINER_LIST].append(container_record)
         return json.dumps(response)
     

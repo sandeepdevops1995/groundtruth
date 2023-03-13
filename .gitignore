@@ -1,3 +1,7 @@
 Pipfile.lock
 app/logs/*
 migrations/*
+# ignore compliled files
+__pycache__/
+*.pyc
+*.log

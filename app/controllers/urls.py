@@ -3,7 +3,8 @@ from flask_restful import Resource
 from app import api
 from app.controllers.gate_controller import *
 from app.controllers.rake_controller import *
-from app.controllers.warehouse_controller import WarehouseData
+# from app.controllers.warehouse_controller import WarehouseData
+from app.controllers.warehouse_controller import JobDetails,WarehouseTallySheet
 from app.controllers.GT_upload_controller import TrainSummary
 from app.controllers.yard_controller import StackLocation
 
@@ -35,11 +36,13 @@ def register_controllers():
     api.add_resource(CargoTypes,'/cargo_types')
     api.add_resource(UserList,'/user_list')
     api.add_resource(ISO6346Data, Constants.ISO_6346_CODE_ENDPOINT)
-    api.add_resource(WarehouseData,Constants.WAREHOUSE_DATA_ENDPOINT)
+    # api.add_resource(WarehouseData,Constants.WAREHOUSE_DATA_ENDPOINT)
     api.add_resource(StackLocation,Constants.STACK_LOCATION)
     api.add_resource(TrackDetails,Constants.TRACK_DETAILS)
     api.add_resource(UpdateInwardRakeDetails,Constants.UPDATE_INWARD_WTR_ENDPOINT)
     api.add_resource(UpdateOutwardRakeDetails,Constants.UPDATE_OUTWARD_WTR_ENDPOINT)
+    api.add_resource(JobDetails,'/warehouse_details')
+    api.add_resource(WarehouseTallySheet,'/api/warehouse_tallysheet')
     
     # To upload Ground Truth
     api.add_resource(TrainSummary,'/upload_train_summary')

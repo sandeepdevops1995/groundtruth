@@ -21,6 +21,7 @@ class WarehouseTallySheetView(object):
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value:
             job_order = request.args.get('gpm_number',0)
             filter_data = {"gpm_number":job_order}
+        filter_data.update({'job_type':job_type})
         result = WarehouseDB().get_final_job_details(filter_data)
         return result
     

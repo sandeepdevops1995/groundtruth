@@ -82,6 +82,7 @@ class CCLSJobOrderSchema(ma.SQLAlchemyAutoSchema):
     total_package_count = fields.Method("get_total_package_count")
     warehouse_name = fields.Method("get_warehouse_name")
     gate_number = fields.Method("get_gate_number")
+    container_id = fields.String(data_key='container_number')
     stacking_type = fields.Method("get_stacking_type")
     fcl_or_lcl = fields.Number(data_key='container_flag')
     block_locations = fields.Method("get_block_locations")
@@ -116,7 +117,7 @@ class CCLSJobOrderSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CCLSJobOrder
-        fields = ("carting_order_number","crn_number","gpm_number","total_package_count","job_type","fcl_or_lcl","warehouse_name","gate_number","stacking_type","cargo_details","block_locations","rack_locations","equipment_id","created_on_epoch")
+        fields = ("carting_order_number","crn_number","gpm_number","total_package_count","job_type","fcl_or_lcl","warehouse_name","gate_number","stacking_type","cargo_details","block_locations","rack_locations","equipment_id","created_on_epoch",'container_id')
         include_relationships = True
 
     

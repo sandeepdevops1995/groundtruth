@@ -141,7 +141,7 @@ class WarehouseDB(object):
             each_bill_info = DataFormater().ccls_cargo_details_table_formater(each_bill_info)
             commodity_id = self.get_commodity_instance(commodity_code,commodity_description)
             each_bill_info.update({"job_order_id":job_order_id,"commodity_id":commodity_id})
-            filter_data = {filter_key:each_bill_info[filter_key]}
+            filter_data = {filter_key:each_bill_info[filter_key],"job_order_id":job_order_id}
             query_object = db.session.query(CCLSCargoDetails).filter_by(**filter_data)
             # db_object = query_object.first()
             if query_object.first():

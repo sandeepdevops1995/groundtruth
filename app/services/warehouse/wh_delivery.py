@@ -33,7 +33,8 @@ class WarehouseDelivery(object):
         return result
 
     def save_data_db(self,job_order_details):
-        filter_data = {"gpm_number":job_order_details['gpm_number'],"status":JobStatus.COMPLETED.value}
+        filter_data = {"gpm_number":job_order_details['gpm_number']}
+        # ,"status":JobStatus.COMPLETED.value
         bill_details_list = job_order_details.pop('bill_details_list')
         # truck_details = job_order_details.pop('truck_details')
         query_object = db.session.query(CCLSJobOrder).filter_by(**filter_data)

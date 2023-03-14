@@ -172,8 +172,8 @@ class WarehouseDB(object):
             db.session.add(db_object)
             db.session.commit()
             db.session.refresh(db_object)
-            self.update_ctms_job_order_in_ccls_job_order(db_object.id,filter_data)
             logger.info("job orders created successfully")
+            self.update_ctms_job_order_in_ccls_job_order(db_object.id,filter_data)
         return db_object.id
     
     def update_ctms_job_order_in_ccls_job_order(self,ctms_job_order_id,filter_data):
@@ -208,12 +208,17 @@ class WarehouseDB(object):
                 db.session.add(db_object, _warn=False)
                 db.session.commit()
                 db.session.refresh(db_object)
-                self.update_ctms_cargo_details_in_ccls_cargo_details(db_object.id,shipping_bill)
+                
                 logger.info("CTMS cargo details created successfully")
+                self.update_ctms_cargo_details_in_ccls_cargo_details(db_object.id,shipping_bill,job_order_id)
 
-    def update_ctms_cargo_details_in_ccls_cargo_details(self,cargo_id,shipping_bill):
+    def update_ctms_cargo_details_in_ccls_cargo_details(self,cargo_id,shipping_bill,job_order_id):
         # filter_data = {}
-        query_object = db.session.query(CCLSCargoDetails).filter(shipping_bill==shipping_bill)
+        query_obj  = db.session.query(CCLSJobOrder).filter(CCLSJobOrder.ctms_job_order_id==job_order_id).first()
+        if  query_obj:
+            job_order_id = query_obj.id
+            print("job_order_id--------",job_order_id)
+        query_object = db.session.query(CCLSCargoDetails).filter(shipping_bill==shipping_bill,job_order_id==job_order_id)
         if query_object:
             query_object.update(dict({'ctms_cargo_id':cargo_id}))
             db.session.commit()

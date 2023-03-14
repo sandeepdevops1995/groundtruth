@@ -139,7 +139,7 @@ class DataFormater(object):
              each_cargo_details[key_list['bill_number_key']] = each_bill[key_list['ccls_bill_number_key']]
              if 'bill_number_key_one' in key_list:
                  each_cargo_details[key_list['bill_number_key_one']] = each_bill[key_list['ccls_bill_number_key_one']]
-            #  each_cargo_details['sline_code'] = job_order_details.get(constants.CCLS_SHIPPING_LINER_CODE,None)
+             each_cargo_details['sline_code'] = job_order_details.get('sline_code',"AA1233")
              each_cargo_details['cha_code'] = job_order_details.get(constants.CCLS_CHA_CODE,None)
              each_cargo_details['commodity_details'] = []
              total_package_count+=int(each_bill[constants.CCLS_NO_OF_PACKAGES_DECLARED])

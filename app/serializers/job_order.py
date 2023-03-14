@@ -68,11 +68,11 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
         return obj.commodity.COMM_DESC
     
     def get_sline_code(self, obj):
-        return "AD427"
+        return "AA1233"
 
     class Meta:
         model = CCLSCargoDetails
-        fields = ("shipping_bill", "bill_of_entry","bill_of_lading","bill_date","importer_code","importer_name","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","sline_code","cha_code","commodity_code","commodity_description","no_of_packages_damaged","area_damaged")
+        fields = ("shipping_bill", "bill_of_entry","bill_of_lading","bill_date","importer_code","importer_name","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","area_damaged","sline_code")
 
 
 class CCLSJobOrderSchema(ma.SQLAlchemyAutoSchema):
@@ -89,6 +89,9 @@ class CCLSJobOrderSchema(ma.SQLAlchemyAutoSchema):
     rack_locations = fields.Method("get_rack_locations")
     equipment_id = fields.Method("get_equipment_id")
     created_on_epoch = fields.Method("get_created_on_epoch")
+    start_time = fields.Method("get_job_start_time")
+    end_time = fields.Method("get_job_end_time")
+    shipping_liner_code  = fields.String(data_key='sline_code')
 
     def get_total_package_count(self, obj):
         return obj.ctms_job.total_package_count
@@ -110,14 +113,20 @@ class CCLSJobOrderSchema(ma.SQLAlchemyAutoSchema):
         return []
     
     def get_equipment_id(self,obj):
-        return 1
+        return obj.ctms_job.equipment_id
+    
+    def get_job_start_time(self,obj):
+        return obj.ctms_job.job_start_time
+    
+    def get_job_end_time(self,obj):
+        return obj.ctms_job.job_end_time
     
     def get_created_on_epoch(self,obj):
-        return 1678351776
+        return obj.ctms_job.created_on_epoch
 
     class Meta:
         model = CCLSJobOrder
-        fields = ("carting_order_number","crn_number","gpm_number","total_package_count","job_type","fcl_or_lcl","warehouse_name","gate_number","stacking_type","cargo_details","block_locations","rack_locations","equipment_id","created_on_epoch",'container_id')
+        fields = ("carting_order_number","crn_number","gpm_number","total_package_count","job_type","fcl_or_lcl","warehouse_name","gate_number","stacking_type","cargo_details","block_locations","rack_locations","equipment_id","created_on_epoch",'container_id','start_time','end_time','shipping_liner_code')
         include_relationships = True
 
     

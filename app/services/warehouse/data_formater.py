@@ -27,6 +27,7 @@ class DataFormater(object):
         tally_sheet_job_order_obj['warehouse_name'] = tallysheet_data[constants.BACKEND_WAREHOUSE_NAME] if constants.BACKEND_WAREHOUSE_NAME in tallysheet_data else None
         tally_sheet_job_order_obj['job_start_time'] = tallysheet_data[constants.BACKEND_START_TIME] if constants.BACKEND_START_TIME in tallysheet_data else None
         tally_sheet_job_order_obj['job_end_time'] = tallysheet_data[constants.BACKEND_END_TIME] if constants.BACKEND_END_TIME in tallysheet_data else None
+        tally_sheet_job_order_obj['created_on_epoch'] = int(tallysheet_data['created_on_epoch']) if 'created_on_epoch' in tallysheet_data else None
         return tally_sheet_job_order_obj
     
     def ctms_cargo_details_table_formater(self,tallysheet_bill_details):
@@ -88,7 +89,7 @@ class DataFormater(object):
         bill_detail_obj['no_of_packages_declared'] = bill_details[constants.CCLS_NO_OF_PACKAGES_DECLARED] if constants.CCLS_NO_OF_PACKAGES_DECLARED in bill_details else None
         bill_detail_obj['package_weight'] = bill_details[constants.CCLS_PACKAGE_WEIGHT] if constants.CCLS_PACKAGE_WEIGHT in bill_details else None
         bill_detail_obj['job_order_id'] = bill_details[constants.CCLS_JOB_ORDER_ID] if constants.CCLS_JOB_ORDER_ID in bill_details else None
-        bill_detail_obj['cha_code'] = bill_detail_obj[constants.CCLS_CHA_CODE] if constants.CCLS_CHA_CODE in bill_detail_obj else None
+        bill_detail_obj['cha_code'] = bill_details[constants.CCLS_CHA_CODE] if constants.CCLS_CHA_CODE in bill_details else None
         return bill_detail_obj
     
     def build_carting_response_obj(self,job_order_details,container_flag):
@@ -129,7 +130,7 @@ class DataFormater(object):
     
     def build_response_obj(self,job_order_details,key_list,job_obj):
         bill_details= job_order_details[key_list['job_list_key_name']]
-        result = {"crn_number":None,"cargo_carting_number":None,"gpm_number":None,"container_number":None,'sline_code':job_order_details.get('sline_code')}
+        result = {"crn_number":None,"cargo_carting_number":None,"gpm_number":None,"container_number":None,'sline_code':job_order_details.get('sline_code','AA1233')}
         result.update(job_obj)
         cargo_details = []
         total_package_count = 0

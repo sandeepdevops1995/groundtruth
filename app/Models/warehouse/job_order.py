@@ -35,6 +35,7 @@ class CCLSJobOrder(db.Model):
     ctms_job_order_id = db.Column(db.Integer, db.ForeignKey('ctms_job_details.id'))
     ctms_job = db.relationship("CTMSJobOrder")
     status = db.Column(db.Integer(),default=JobStatus.INPROGRESS.value)
+    
     # vehicle_nos
     created_at = db.Column(db.DateTime(), default=datetime.utcnow())
     
@@ -72,5 +73,6 @@ class CTMSJobOrder(db.Model):
     # container_id = db.Column(db.Integer, db.ForeignKey('container.id'))
     # vehicle_nos
     created_at = db.Column(db.DateTime(), default=datetime.utcnow())
+    created_on_epoch = db.Column(db.BigInteger(), nullable=True)
     
     __tablename__ = 'ctms_job_details'

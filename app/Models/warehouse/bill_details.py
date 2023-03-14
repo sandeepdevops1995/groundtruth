@@ -1,6 +1,7 @@
 from app import postgres_db as db
 from datetime import datetime
 from app.Models.utils import IntegerDateTime
+from sqlalchemy import JSON
 
 class CCLSCargoDetails(db.Model):
     def __init__(self, **kwargs):
@@ -13,7 +14,7 @@ class CCLSCargoDetails(db.Model):
     shipping_bill = db.Column(db.Integer(), nullable=True)
     bill_of_entry = db.Column(db.Integer(), nullable=True)
     bill_of_lading = db.Column(db.Integer(), nullable=True)
-    bill_date = db.Column(IntegerDateTime(), nullable=True)
+    bill_date = db.Column(db.BigInteger(), nullable=True)
     importer_code = db.Column(db.String(30), nullable=True)
     importer_name = db.Column(db.String(100), nullable=True)
     package_code = db.Column(db.String(10), nullable=True)
@@ -43,14 +44,14 @@ class CTMSCargoDetails(db.Model):
     area = db.Column(db.Integer(), nullable=True)
     grid_number = db.Column(db.Integer(), nullable=True)
     area_damaged = db.Column(db.Integer(), nullable=True)
-    grid_locations = db.Column(db.ARRAY(db.Integer()),nullable=True)
+    grid_locations = db.Column(JSON,nullable=True)
     cha_code = db.Column(db.String(10), nullable=True)
     package_weight = db.Column(db.Float(), nullable=True)
     damaged_packages_weight = db.Column(db.Float(), nullable=True)
     truck_number = db.Column(db.String(15), nullable=True)
-    container_number = db.Column(db.String(15), nullable=True)
-    start_time = db.Column(IntegerDateTime(), nullable=True)
-    end_time = db.Column(IntegerDateTime(), nullable=True)
+    # container_number = db.Column(db.String(15), nullable=True)
+    start_time = db.Column(db.BigInteger(), nullable=True)
+    end_time = db.Column(db.BigInteger(), nullable=True)
     # ctms_job_order = db.relationship("FinalJobOrder", back_populates="bill_details")
     # job_order_id = db.Column(db.Integer, db.ForeignKey('final_job_order.id'))
     created_at = db.Column(db.DateTime(), default=datetime.utcnow())

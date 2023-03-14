@@ -9,7 +9,6 @@ class WarehouseTallySheetView(object):
 
     def get_tally_sheet_info(self,request):
         job_type = int(request.args.get('job_type',0))
-        print("job_type----------",job_type)
         if job_type==JobOrderType.CARTING_FCL.value:
             job_order = request.args.get('crn_number',0)
             filter_data = {"crn_number":job_order}
@@ -26,7 +25,6 @@ class WarehouseTallySheetView(object):
         return result
     
     def process_tally_sheet_info(self,tally_sheet_data):
-        print("tally_sheet_data--------",tally_sheet_data)
         job_type = tally_sheet_data['job_type']
         if job_type==JobOrderType.CARTING_FCL.value:
             crn_number = tally_sheet_data.get('crn_number')
@@ -39,12 +37,12 @@ class WarehouseTallySheetView(object):
             filter_data = {"carting_order_number":carting_order_number}
             cargo_filter_key = 'shipping_bill'
         elif job_type==JobOrderType.STUFFING_FCL.value or job_type==JobOrderType.STUFFING_LCL.value:
-            container_number = tally_sheet_data['cargo_details'][0].get('container_number')
+            container_number = tally_sheet_data.get('container_number')
             query_object = db.session.query(CTMSJobOrder).join(CCLSJobOrder).filter(CCLSJobOrder.container_id==container_number)
             filter_data = {"container_id":container_number}
             cargo_filter_key = 'shipping_bill'
         elif job_type==JobOrderType.DE_STUFFING_FCL.value or job_type==JobOrderType.DE_STUFFING_LCL.value:
-            container_number = tally_sheet_data['cargo_details'][0].get('container_number')
+            container_number = tally_sheet_data.get('container_number')
             query_object = db.session.query(CTMSJobOrder).join(CCLSJobOrder).filter(CCLSJobOrder.container_id==container_number)
             filter_data = {"container_id":container_number}
             cargo_filter_key= "bill_of_entry" if job_type==JobOrderType.DE_STUFFING_FCL.value else "bill_of_lading"

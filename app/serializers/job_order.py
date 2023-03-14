@@ -3,13 +3,14 @@ import json
 from app.Models.warehouse.job_order import CCLSJobOrder
 from app.Models.warehouse.bill_details import CCLSCargoDetails
 from app import ma
+from app.Models.warehouse.commodity import WarehouseCommodity
 
 class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
     # area = fields.Number(data_key='area_of_cargo')
     # area_damaged = fields.Number(data_key='area_of_damaged_cargo')
     # package_weight = fields.Number(data_key='packages_weight')
     truck_number = fields.Method("get_truck_number")
-    container_number = fields.Method("get_container_number")
+    # container_number = fields.Method("get_container_number")
     package_count = fields.Method("get_package_count")
     package_weight = fields.Method("get_package_weight",data_key='packages_weight')
     no_of_packages_damaged = fields.Method("get_damaged_count",data_key='damaged_count')
@@ -27,8 +28,8 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
     def get_truck_number(self, obj):
         return obj.ctms_cargo.truck_number
     
-    def get_container_number(self, obj):
-        return obj.ctms_cargo.container_number
+    # def get_container_number(self, obj):
+    #     return obj.ctms_cargo.container_number
 
     def get_package_count(self, obj):
         return obj.ctms_cargo.package_count
@@ -71,7 +72,7 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CCLSCargoDetails
-        fields = ("shipping_bill", "bill_of_entry","bill_of_lading","bill_date","importer_code","importer_name","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","container_number","start_time","end_time","sline_code","cha_code","commodity_code","commodity_description","no_of_packages_damaged","area_damaged")
+        fields = ("shipping_bill", "bill_of_entry","bill_of_lading","bill_date","importer_code","importer_name","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","sline_code","cha_code","commodity_code","commodity_description","no_of_packages_damaged","area_damaged")
 
 
 class CCLSJobOrderSchema(ma.SQLAlchemyAutoSchema):
@@ -117,3 +118,11 @@ class CCLSJobOrderSchema(ma.SQLAlchemyAutoSchema):
         model = CCLSJobOrder
         fields = ("carting_order_number","crn_number","gpm_number","total_package_count","job_type","fcl_or_lcl","warehouse_name","gate_number","stacking_type","cargo_details","block_locations","rack_locations","equipment_id","created_on_epoch")
         include_relationships = True
+
+    
+class CCLSCommodityList(ma.SQLAlchemyAutoSchema):
+    COMM_CD = fields.String(data_key='commodity_code')
+    COMM_DESC = fields.String(data_key='commodity_description')
+    class Meta:
+        model = WarehouseCommodity
+        fields = ("COMM_CD",'COMM_DESC')

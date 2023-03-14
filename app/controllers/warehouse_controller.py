@@ -6,7 +6,7 @@ from app.services.decorator_service import custom_exceptions
 from app.logger import logger
 from app.services.warehouse.wh_job_view import WarehouseJobView
 from app.services.warehouse.wh_tallysheet import WarehouseTallySheetView
-
+from app.services.warehouse.wh_commodity import WarehouseCommodityView
 
 parser = reqparse.RequestParser()
 
@@ -53,3 +53,13 @@ class WarehouseTallySheet(View):
         tally_sheet_data=request.json
         WarehouseTallySheetView().process_tally_sheet_info(tally_sheet_data)
         return Response(json.dumps({"message":"tallysheet updated successfully"}), status=200, mimetype='application/json')
+    
+class WarehouseCommodities(View):
+    def get(self):
+        logger.info('GT,Get request from the Warehouse service to fetch commodities')
+        result=WarehouseCommodityView().get_commodity_details()
+        if result:
+            # logger.info('response: {}'.format(result))
+            return Response(json.dumps(result), status=200, mimetype='application/json')
+        else:
+            return Response(None, status=404, mimetype='application/json')

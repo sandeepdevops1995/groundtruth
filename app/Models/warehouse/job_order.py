@@ -61,6 +61,7 @@ class CTMSJobOrder(db.Model):
     total_no_of_packages_excess = db.Column(db.Integer(), nullable=True)
     total_no_of_packages_short = db.Column(db.Integer(), nullable=True)
     gate_number = db.Column(db.String(10), nullable=True)
+    container_number = db.Column(db.String(15), nullable=True)
     # cargo_weight_in_crn = db.Column(db.Float(), nullable=True)
     # weight_remaining = db.Column(db.Float(), nullable=True)
     # private_or_concor_labour_flag = db.Column(db.Boolean(),nullable=True)

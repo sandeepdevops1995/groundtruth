@@ -25,22 +25,24 @@ class DataFormater(object):
         tally_sheet_job_order_obj['total_no_of_packages_short'] = tallysheet_data[constants.BACKEND_TOTAL_NO_OF_PACKAGES_SHORT] if constants.BACKEND_TOTAL_NO_OF_PACKAGES_SHORT in tallysheet_data else None
         tally_sheet_job_order_obj['gate_number'] = tallysheet_data[constants.BACKEND_GATE_NUMBER] if constants.BACKEND_GATE_NUMBER in tallysheet_data else None
         tally_sheet_job_order_obj['warehouse_name'] = tallysheet_data[constants.BACKEND_WAREHOUSE_NAME] if constants.BACKEND_WAREHOUSE_NAME in tallysheet_data else None
+        tally_sheet_job_order_obj['job_start_time'] = tallysheet_data[constants.BACKEND_START_TIME] if constants.BACKEND_START_TIME in tallysheet_data else None
+        tally_sheet_job_order_obj['job_end_time'] = tallysheet_data[constants.BACKEND_END_TIME] if constants.BACKEND_END_TIME in tallysheet_data else None
         return tally_sheet_job_order_obj
     
     def ctms_cargo_details_table_formater(self,tallysheet_bill_details):
         tallysheet_bill_detail_obj = {}
-        tallysheet_bill_detail_obj['package_weight'] = tallysheet_bill_details[constants.CCLS_PACKAGE_WEIGHT] if constants.CCLS_PACKAGE_WEIGHT in tallysheet_bill_details else None
-        tallysheet_bill_detail_obj['damaged_packages_weight'] = tallysheet_bill_details[constants.CCLS_PACKAGE_WEIGHT] if constants.CCLS_PACKAGE_WEIGHT in tallysheet_bill_details else None
-        tallysheet_bill_detail_obj['package_count'] = tallysheet_bill_details[constants.CCLS_PACKAGE_WEIGHT] if constants.CCLS_PACKAGE_WEIGHT in tallysheet_bill_details else None
-        tallysheet_bill_detail_obj['no_of_packages_damaged'] = tallysheet_bill_details[constants.CCLS_PACKAGE_WEIGHT] if constants.CCLS_PACKAGE_WEIGHT in tallysheet_bill_details else None
-        tallysheet_bill_detail_obj['cha_code'] = tallysheet_bill_details[constants.CCLS_CHA_CODE] if constants.CCLS_CHA_CODE in tallysheet_bill_details else None
+        tallysheet_bill_detail_obj['package_weight'] = tallysheet_bill_details[constants.BACKEND_PACKAGE_WEIGHT] if constants.BACKEND_PACKAGE_WEIGHT in tallysheet_bill_details else None
+        tallysheet_bill_detail_obj['damaged_packages_weight'] = tallysheet_bill_details[constants.BACKEND_DAMAGED_PACKAGES_WEIGHT] if constants.BACKEND_DAMAGED_PACKAGES_WEIGHT in tallysheet_bill_details else None
+        tallysheet_bill_detail_obj['package_count'] = tallysheet_bill_details[constants.BACKEND_PACKAGE_COUNT] if constants.BACKEND_PACKAGE_COUNT in tallysheet_bill_details else None
+        tallysheet_bill_detail_obj['no_of_packages_damaged'] = tallysheet_bill_details[constants.BACKEND_NO_OF_PACKAGES_DAMAGED] if constants.BACKEND_NO_OF_PACKAGES_DAMAGED in tallysheet_bill_details else None
+        tallysheet_bill_detail_obj['cha_code'] = tallysheet_bill_details[constants.BACKEND_CHA_CODE] if constants.BACKEND_CHA_CODE in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['full_or_part_destuff'] = tallysheet_bill_details[constants.BACKEND_FULL_OR_PART_DESTUFF] if constants.BACKEND_FULL_OR_PART_DESTUFF in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['area'] = tallysheet_bill_details[constants.BACKEND_AREA] if constants.BACKEND_AREA in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['area_damaged'] = tallysheet_bill_details[constants.BACKEND_AREA_DAMAGED] if constants.BACKEND_AREA_DAMAGED in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['grid_number'] = tallysheet_bill_details[constants.BACKEND_GRID_NUMBER] if constants.BACKEND_GRID_NUMBER in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['grid_locations'] = tallysheet_bill_details[constants.BACKEND_GRID_LOCATIONS] if constants.BACKEND_GRID_LOCATIONS in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['truck_number'] = tallysheet_bill_details[constants.BACKEND_TRUCK_NUMBER] if constants.BACKEND_TRUCK_NUMBER in tallysheet_bill_details else None
-        tallysheet_bill_detail_obj['container_number'] = tallysheet_bill_details[constants.BACKEND_CONTAINER_NUMBER] if constants.BACKEND_CONTAINER_NUMBER in tallysheet_bill_details else None
+        # tallysheet_bill_detail_obj['container_number'] = tallysheet_bill_details[constants.BACKEND_CONTAINER_NUMBER] if constants.BACKEND_CONTAINER_NUMBER in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['start_time'] = tallysheet_bill_details[constants.BACKEND_START_TIME] if constants.BACKEND_START_TIME in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['end_time'] = tallysheet_bill_details[constants.BACKEND_END_TIME] if constants.BACKEND_END_TIME in tallysheet_bill_details else None
         return tallysheet_bill_detail_obj
@@ -92,15 +94,15 @@ class DataFormater(object):
     def build_carting_response_obj(self,job_order_details,container_flag):
         print("job_order_details----------------",job_order_details)
         if container_flag==ContainerFlag.FCL.value:
-            carting_job_obj = {'crn_number' : job_order_details[constants.CCLS_CRN_NUMBER]}
+            carting_job_obj = {'crn_number' : job_order_details[constants.CCLS_CRN_NUMBER],'truck_details':job_order_details['truck_details']}
         else:
-            carting_job_obj = {'cargo_carting_number' : job_order_details[constants.CCLS_CON_NUMBER]}
+            carting_job_obj = {'cargo_carting_number' : job_order_details[constants.CCLS_CON_NUMBER],'truck_details':job_order_details['truck_details']}
         key_list = {'bill_number_key':'shipping_bill','ccls_bill_number_key':constants.CCLS_SHIPPING_BILL_NUMBER,'job_list_key_name':'shipping_bill_details_list'}
         result = self.build_response_obj(job_order_details,key_list,carting_job_obj)
         return result
 
     def build_stuffing_response_obj(self,job_order_details):
-        stuffing_job_obj = {'crn_number' : job_order_details[constants.CCLS_CRN_NUMBER],'container_number' : job_order_details[constants.CCLS_CONTAINER_NUMBER]}
+        stuffing_job_obj = {'crn_number' : job_order_details[constants.CCLS_CRN_NUMBER],'container_number' : job_order_details[constants.CCLS_CONTAINER_NUMBER],"stuffing_job_order":job_order_details['stuffing_job_order']}
         key_list = {'bill_number_key':'shipping_bill','ccls_bill_number_key':constants.CCLS_SHIPPING_BILL_NUMBER,'job_list_key_name':'shipping_bill_details_list'}
         result = self.build_response_obj(job_order_details,key_list,stuffing_job_obj)
         return result
@@ -112,13 +114,13 @@ class DataFormater(object):
         else:
             bill_number_key = 'bill_of_lading'
             ccls_bill_number_key =  constants.CCLS_BILL_OF_LADEN_NUMBER
-        destuffing_job_obj = {'container_number' : job_order_details[constants.CCLS_CONTAINER_NUMBER]}
+        destuffing_job_obj = {'container_number' : job_order_details[constants.CCLS_CONTAINER_NUMBER],'destuffing_job_order':job_order_details['destuffing_job_order']}
         key_list = {'bill_number_key':bill_number_key,'ccls_bill_number_key':ccls_bill_number_key,'job_list_key_name':'bill_details_list'}
         result = self.build_response_obj(job_order_details,key_list,destuffing_job_obj)
         return result
 
     def build_delivery_response_obj(self,job_order_details,container_flag):
-        delivery_job_obj = {'gpm_number' : job_order_details[constants.CCLS_GPM_NUMBER]}
+        delivery_job_obj = {'gpm_number' : job_order_details[constants.CCLS_GPM_NUMBER],'truck_details':job_order_details['truck_details']}
         key_list = {'bill_number_key':'bill_of_entry','ccls_bill_number_key':constants.CCLS_BILL_OF_ENTRY_NUMBER,'job_list_key_name':'bill_details_list'}
         if container_flag==ContainerFlag.LCL.value:
             key_list.update({'bill_number_key_one':'bill_of_entry','ccls_bill_number_key_one':constants.CCLS_BILL_OF_LADEN_NUMBER})
@@ -127,7 +129,7 @@ class DataFormater(object):
     
     def build_response_obj(self,job_order_details,key_list,job_obj):
         bill_details= job_order_details[key_list['job_list_key_name']]
-        result = {"crn_number":None,"cargo_carting_number":None,"gpm_number":None,"container_number":None}
+        result = {"crn_number":None,"cargo_carting_number":None,"gpm_number":None,"container_number":None,'sline_code':job_order_details.get('sline_code')}
         result.update(job_obj)
         cargo_details = []
         total_package_count = 0
@@ -136,7 +138,7 @@ class DataFormater(object):
              each_cargo_details[key_list['bill_number_key']] = each_bill[key_list['ccls_bill_number_key']]
              if 'bill_number_key_one' in key_list:
                  each_cargo_details[key_list['bill_number_key_one']] = each_bill[key_list['ccls_bill_number_key_one']]
-             each_cargo_details['sline_code'] = job_order_details.get(constants.CCLS_SHIPPING_LINER_CODE,None)
+            #  each_cargo_details['sline_code'] = job_order_details.get(constants.CCLS_SHIPPING_LINER_CODE,None)
              each_cargo_details['cha_code'] = job_order_details.get(constants.CCLS_CHA_CODE,None)
              each_cargo_details['commodity_details'] = []
              total_package_count+=int(each_bill[constants.CCLS_NO_OF_PACKAGES_DECLARED])

@@ -7,8 +7,9 @@ from app.logger import logger
 from app import postgres_db as db
 from app.services.warehouse.data_formater import DataFormater
 from sqlalchemy.orm import joinedload
-from app.serializers.job_order import CCLSJobOrderSchema
+from app.serializers.job_order import CCLSJobOrderSchema,CCLSCommodityList
 from app.enums import JobStatus
+from app.Models.warehouse.commodity import WarehouseCommodity
 
 class WarehouseDB(object):
 
@@ -251,4 +252,13 @@ class WarehouseDB(object):
         if query_object:
             result = CCLSJobOrderSchema().dump(query_object)
         print("result------------",result)
+        return result
+    
+    def get_commodities(self):
+        result = {}
+        query_object = db.session.query(WarehouseCommodity).all()
+        if query_object:
+            print('query_object--------',query_object)
+            result = CCLSCommodityList().dump(query_object,many=True)
+        print("result from db------------",result)
         return result

@@ -4,7 +4,7 @@ from app import api
 from app.controllers.gate_controller import *
 from app.controllers.rake_controller import *
 # from app.controllers.warehouse_controller import WarehouseData
-from app.controllers.warehouse_controller import JobDetails,WarehouseTallySheet
+from app.controllers.warehouse_controller import JobDetails,WarehouseTallySheet,WarehouseCommodities
 from app.controllers.GT_upload_controller import TrainSummary
 from app.controllers.yard_controller import StackLocation
 
@@ -43,6 +43,7 @@ def register_controllers():
     api.add_resource(UpdateOutwardRakeDetails,Constants.UPDATE_OUTWARD_WTR_ENDPOINT)
     api.add_resource(JobDetails,'/warehouse_details')
     api.add_resource(WarehouseTallySheet,'/api/warehouse_tallysheet')
+    api.add_resource(WarehouseCommodities,'/fetch_commodities')
     
     # To upload Ground Truth
     api.add_resource(TrainSummary,'/upload_train_summary')

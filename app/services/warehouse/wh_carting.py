@@ -7,7 +7,7 @@ from app.services.warehouse.data_formater import DataFormater
 from app.enums import ContainerFlag
 from app.Models.warehouse.job_order import CCLSJobOrder
 from app import postgres_db as db
-from app.enums import JobStatus
+from app.enums import JobStatus,JobOrderType
 
 class WarehouseCarting(object):
     def __init__(self) -> None:
@@ -17,13 +17,15 @@ class WarehouseCarting(object):
         with open(CCLS_SAMPLE_RESPONSE_FILE, 'r') as f:
             self.warehouse_info = json.load(f)
 
-    def get_carting_details(self,crn_number,job_type,container_flag):
+    def get_carting_details(self,crn_number,job_type):
         carting_details = call_api(crn_number,"CWHCartingRead","cwhcartingreadbpel_client_ep","CWHCartingReadBPEL_pt")
         #carting_details = self.warehouse_info['carting_response']
-        if container_flag==ContainerFlag.FCL.value:
-            filter_data = {"crn_number":crn_number,"status":JobStatus.INPROGRESS.value}
+        if job_type==JobOrderType.CARTING_FCL.value:
+            filter_data = {"crn_number":crn_number}
+            container_flag=ContainerFlag.FCL.value
         else:
-            filter_data = {"carting_order_number":crn_number,"status":JobStatus.COMPLETED.value}
+            filter_data = {"carting_order_number":crn_number}
+            container_flag=ContainerFlag.LCL.value
         # carting_details['crn_number'] = crn_number
         carting_details['job_type'] = job_type
         carting_details['fcl_or_lcl'] = container_flag

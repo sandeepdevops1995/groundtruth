@@ -170,7 +170,7 @@ class ISOcode(db.Model):
     ctr_type = db.Column(db.String(2))
     ctr_iso_cd = db.Column(db.String(4))
     
-    __tablename__ = 'TM_CCTRISOCD'
+    __tablename__ = 'tm_cctrisocd'
     
     
 class CtrSize(db.Model):
@@ -181,7 +181,7 @@ class CtrSize(db.Model):
     user_id = db.Column(db.String(100))
     teu = db.Column(db.Float(precision=1))
     
-    __tablename__ = 'TM_CCTRSIZE'
+    __tablename__ = 'tm_cctrsize'
     
 
 class CtrType(db.Model):
@@ -190,7 +190,7 @@ class CtrType(db.Model):
     ctr_type_desc = db.Column(db.String(25))
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_CCTRTYPE'
+    __tablename__ = 'tm_cctrtype'
 
 class Ctry(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -198,7 +198,7 @@ class Ctry(db.Model):
     ctry_nam = db.Column(db.String(30))
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_CCTRY'
+    __tablename__ = 'tm_cctry'
     
 class CtryCustom(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -206,7 +206,7 @@ class CtryCustom(db.Model):
     ctry_nam = db.Column(db.String(30))
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_CCTRY_CUSTOM'
+    __tablename__ = 'tm_cctry_custom'
     
 class ChaCustom(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -216,7 +216,7 @@ class ChaCustom(db.Model):
     adr2 = db.Column(db.String(100))
     city = db.Column(db.String(25))
     
-    __tablename__ = 'TM_CCHA_CUSTOM'
+    __tablename__ = 'tm_ccha_custom'
     
 class Cha(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -252,7 +252,7 @@ class Cha(db.Model):
     prov_gstin_no = db.Column(db.String(15))
     cin_no = db.Column(db.String(50))
     
-    __tablename__ = 'TM_CCHA'
+    __tablename__ = 'tm_ccha'
     
 class ChaDirectory(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -262,7 +262,7 @@ class ChaDirectory(db.Model):
     cha_regn = db.Column(db.DateTime())
     cha_expry = db.Column(db.DateTime())
     
-    __tablename__ = 'TM_CCHA_DIRECTORY'
+    __tablename__ = 'tm_ccha_directory'
     
     
 class ImprExprCustom(db.Model):
@@ -271,7 +271,7 @@ class ImprExprCustom(db.Model):
     party_nam = db.Column(db.String(100))
     party_adr = db.Column(db.String(40))
     
-    __tablename__ = 'TM_CIMPREXPR_CUSTOM'
+    __tablename__ = 'tm_cimprexpr_custom'
     
 class PortCustom(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -280,7 +280,7 @@ class PortCustom(db.Model):
     ctry_cd = db.Column(db.String(5))
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_CPORT_CUSTOM'
+    __tablename__ = 'tm_cport_custom'
     
 class CustEmail(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -291,7 +291,7 @@ class CustEmail(db.Model):
     sent_flg = db.Column(db.String(1))
     sent_dt_tm = db.Column(db.DateTime())
     
-    __tablename__ = 'TM_CUST_EMAIL'
+    __tablename__ = 'tm_cust_email'
     
 class CustDtls(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -309,7 +309,7 @@ class CustDtls(db.Model):
     trns_dt_tm = db.Column(db.DateTime())
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_CUSTOMER_DTLS'
+    __tablename__ = 'tm_customer_dtls'
 
 
 class Acty(db.Model):
@@ -321,7 +321,7 @@ class Acty(db.Model):
     to_loc = db.Column(db.String(3))
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_CACTY'
+    __tablename__ = 'tm_cacty'
     
 class Agency(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -329,7 +329,7 @@ class Agency(db.Model):
     agency_nam = db.Column(db.String(25))
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_CAGENCY'
+    __tablename__ = 'tm_cagency'
     
 class BlWhrf(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -350,7 +350,7 @@ class BlWhrf(db.Model):
     max_chrg_20 = db.Column(db.Integer())
     max_chrg_40 = db.Column(db.Integer())
     
-    __tablename__ = 'TM_CBLWHRF'
+    __tablename__ = 'tm_cblwhrf'
     
 class Cfs(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -359,7 +359,7 @@ class Cfs(db.Model):
     user_id = db.Column(db.String(100))
     trans_dt_tm = db.Column(db.DateTime())
     
-    __tablename__ = 'TM_CCFS'
+    __tablename__ = 'tm_ccfs'
     
 class CncrWgnDtls(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -367,7 +367,7 @@ class CncrWgnDtls(db.Model):
     wgn_type = db.Column(db.String(1))
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_CCNCRWGNDTLS'
+    __tablename__ = 'tm_ccnrwgndtls'
     
 class Cnsldtor(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -383,7 +383,7 @@ class Cnsldtor(db.Model):
     trns_dt_tm = db.Column(db.DateTime())
     actv_flg = db.Column(db.String(1))
     
-    __tablename__ = 'TM_CCNSLDTOR'
+    __tablename__ = 'tm_ccnsldtor'
     
 class Commodity(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -407,7 +407,7 @@ class Commodity(db.Model):
     rail_gst_code = db.Column(db.String(10))
     rail_gst_applicable = db.Column(db.String(1))
     
-    __tablename__ = 'TM_CCOMMODITY'
+    __tablename__ = 'tm_ccommodity'
     
 class CtrTarewt(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -418,7 +418,7 @@ class CtrTarewt(db.Model):
     trans_dt_tm = db.Column(db.DateTime())
     ldd_ctr_wt = db.Column(db.Float(precision=2))
     
-    __tablename__ = 'TM_CCTR_TAREWT'
+    __tablename__ = 'tm_cctr_tarewt'
     
 class CtrDtls(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -457,7 +457,7 @@ class CtrDtls(db.Model):
     frm_loc = db.Column(db.String(9))
     fac_dep_by_road = db.Column(db.String(1))
     
-    __tablename__ = 'TM_CCTRDTLS'
+    __tablename__ = 'tm_cctrdtls'
     
 class EqptDtls(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -468,7 +468,7 @@ class EqptDtls(db.Model):
     user_id = db.Column(db.String(100))
     wh_flg = db.Column(db.String(1))
     
-    __tablename__ = 'TM_CEQPTDTLS'
+    __tablename__ = 'tm_ceqptdtls'
     
 class EqptMst(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -482,7 +482,7 @@ class EqptMst(db.Model):
     lst_upd_dt = db.Column(db.DateTime())
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_CEQPTMST'
+    __tablename__ = 'tm_ceqptmst'
 
     
 class ErrorMessages(db.Model):
@@ -490,7 +490,7 @@ class ErrorMessages(db.Model):
     error_code = db.Column(db.String(6))
     error_description = db.Column(db.String(150))
     
-    __tablename__ = 'TM_CERRORMESSAGES'
+    __tablename__ = 'tm_cerrormessages'
 
 class Gwport(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -500,7 +500,7 @@ class Gwport(db.Model):
     user_id = db.Column(db.String(100))
     port_type = db.Column(db.String(1))
     
-    __tablename__ = 'TM_CGWPORT'
+    __tablename__ = 'tm_cgwport'
     
 class GwportState(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -513,7 +513,7 @@ class GwportState(db.Model):
     gstin_stat_cd = db.Column(db.String(2))
     sline_cd  = db.Column(db.String(5))
     
-    __tablename__ = 'TM_CGWPORT_STATE'
+    __tablename__ = 'tm_cgwport_state'
     
 class ChaEmail(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -524,7 +524,7 @@ class ChaEmail(db.Model):
     user_id = db.Column(db.String(100))
     email_id5 = db.Column(db.String(75))
     
-    __tablename__ = 'TM_CHAEMAIL'
+    __tablename__ = 'tm_chaemail'
     
 class HldTrack(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -533,7 +533,7 @@ class HldTrack(db.Model):
     user_id = db.Column(db.String(75))
     hld_track_desc = db.Column(db.String(75))
     
-    __tablename__ = 'TM_CHLDTRACK'
+    __tablename__ = 'tm_chldtrack'
     
 
 class Hndg(db.Model):
@@ -545,7 +545,7 @@ class Hndg(db.Model):
     user_id = db.Column(db.String(100))
     ldd_mt_flg = db.Column(db.String(1))
     
-    __tablename__ = 'TM_CHNDG'
+    __tablename__ = 'tm_chndg'
     
 class HndgActy(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -555,7 +555,7 @@ class HndgActy(db.Model):
     prev_acty_comp_flg = db.Column(db.String(1))
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_CHNDGACTY'
+    __tablename__ = 'tm_chndgacty'
     
 class IcdLoc(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -563,7 +563,7 @@ class IcdLoc(db.Model):
     icd_loc_desc = db.Column(db.String(25))
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_CICDLOC'
+    __tablename__ = 'tm_cicdloc'
 
 class Pkg(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -575,7 +575,7 @@ class Pkg(db.Model):
     user_id = db.Column(db.String(100))
     trns_dt_tm = db.Column(db.DateTime())
     
-    __tablename__ = 'TM_CPKG'
+    __tablename__ = 'tm_cpkg'
     
 
 class UsrFiling(db.Model):
@@ -602,7 +602,7 @@ class UsrFiling(db.Model):
     pki_serial = db.Column(db.String(100))
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_USRFILING'
+    __tablename__ = 'tm_usrfiling'
     
 class WgnMst(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -619,7 +619,7 @@ class WgnMst(db.Model):
     old_wgn = db.Column(db.String(50))
     conv_dt = db.Column(db.DateTime())
     
-    __tablename__ = 'TM_WGNMST'
+    __tablename__ = 'tm_wgnmst'
     
 class WgnMstEtms(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -640,7 +640,7 @@ class WgnMstEtms(db.Model):
     mapped_wgn = db.Column(db.String(15))
     dt_conversion = db.Column(db.DateTime())
     
-    __tablename__ = 'TMC_WGNMST_ETMS'
+    __tablename__ = 'tmc_wgnmst_etms'
         
 class BlActy(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -657,7 +657,7 @@ class BlActy(db.Model):
     min_chrgs = db.Column(db.Float(precision=2))
     trns_dt_tm = db.Column(db.DateTime())
     
-    __tablename__ = 'TH_TM_CBLACTY'
+    __tablename__ = 'th_tm_cblacty'
     
     
 class WgnType(db.Model):
@@ -667,7 +667,7 @@ class WgnType(db.Model):
     cncl_flg = db.Column(db.String(1))
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_CWGNTYPE'
+    __tablename__ = 'tm_cwgntype'
     
 
 class SlineConv(db.Model):
@@ -677,7 +677,7 @@ class SlineConv(db.Model):
     trns_dt_tm = db.Column(db.DateTime())
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_FSLINECONV'
+    __tablename__ = 'tm_fslineconv'
     
     
 class PodConv(db.Model):
@@ -687,7 +687,7 @@ class PodConv(db.Model):
     trns_dt_tm = db.Column(db.DateTime())
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_FPODCONV'
+    __tablename__ = 'tm_fpodconv'
     
     
 class Port(db.Model):
@@ -698,7 +698,7 @@ class Port(db.Model):
     ctry_nam = db.Column(db.String(30))
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_CPORT'
+    __tablename__ = 'tm_cport'
 
 class PortConv(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -710,7 +710,7 @@ class PortConv(db.Model):
     user_id = db.Column(db.String(100))
     trns_dt_tm = db.Column(db.DateTime())
     
-    __tablename__ = 'TM_CPORTCONV'
+    __tablename__ = 'tm_cportconv'
     
 
 class OutLoc(db.Model):
@@ -720,7 +720,7 @@ class OutLoc(db.Model):
     nom_flg = db.Column(db.String(1))
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_COUTLOC'
+    __tablename__ = 'tm_coutloc'
     
 class OutPort(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -729,7 +729,7 @@ class OutPort(db.Model):
     trns_dt_tm = db.Column(db.DateTime())
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_COUTPORT'
+    __tablename__ = 'tm_coutport'
     
 class UserDtls(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -744,14 +744,14 @@ class UserDtls(db.Model):
     role = db.Column(db.String(50))
     designation = db.Column(db.String(50))
     
-    __tablename__ = 'TM_USERDTLS'
+    __tablename__ = 'tm_userdtls'
     
 class Station(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
     station_cd = db.Column(db.String(5))
     station_name = db.Column(db.String(50))
     
-    __tablename__ = 'TM_STATION'
+    __tablename__ = 'tm_station'
     
     
 class ModuleCd(db.Model):
@@ -762,7 +762,7 @@ class ModuleCd(db.Model):
     trns_dt_tm = db.Column(db.DateTime())
     proj_code = db.Column(db.String(15))
         
-    __tablename__ = 'TM_MODULE_CD'
+    __tablename__ = 'tm_module_cd'
     
 
 class GwPortConv(db.Model):
@@ -772,7 +772,7 @@ class GwPortConv(db.Model):
     trns_dt_tm = db.Column(db.DateTime())
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_FGWPORTCONV'
+    __tablename__ = 'tm_fgwportconv'
     
 
 class CfsConv(db.Model):
@@ -782,7 +782,7 @@ class CfsConv(db.Model):
     trns_dt_tm = db.Column(db.DateTime())
     user_id = db.Column(db.String(100))
     
-    __tablename__ = 'TM_FCFSCONV'
+    __tablename__ = 'tm_fcfsconv'
     
 
 class Comm(db.Model):
@@ -802,7 +802,7 @@ class Comm(db.Model):
     user_id = db.Column(db.String(100))
     trns_dt_tm = db.Column(db.DateTime())
     
-    __tablename__ = 'TM_COMM'
+    __tablename__ = 'tm_comm'
     
 class Track(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)

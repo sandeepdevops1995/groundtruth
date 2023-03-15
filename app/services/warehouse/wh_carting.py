@@ -18,7 +18,7 @@ class WarehouseCarting(object):
             self.warehouse_info = json.load(f)
 
     def get_carting_details(self,crn_number,job_type):
-        carting_details = call_api(crn_number,"CWHCartingRead","cwhcartingreadbpel_client_ep","CWHCartingReadBPEL_pt")
+        carting_details = call_api(crn_number,"CWHCartingRead","cwhcartingreadbpel_client_ep","CWHCartingReadBPEL_pt",job_type)
         #carting_details = self.warehouse_info['carting_response']
         if job_type==JobOrderType.CARTING_FCL.value:
             filter_data = {"crn_number":crn_number}

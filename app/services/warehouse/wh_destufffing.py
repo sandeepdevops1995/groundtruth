@@ -18,7 +18,7 @@ class WarehouseDeStuffing(object):
             self.warehouse_info = json.load(f)
 
     def get_destuffing_details(self,container_number,job_type):
-        destuffing_details = call_api(container_number,"CWHDeStuffingRead","cwhdestuffingreadbpel_client_ep","CWHDeStuffingReadBPEL_pt")
+        destuffing_details = call_api(container_number,"CWHDeStuffingRead","cwhdestuffingreadbpel_client_ep","CWHDeStuffingReadBPEL_pt",job_type)
         #destuffing_details = self.warehouse_info['destuffing_response']
         if job_type==JobOrderType.DE_STUFFING_FCL.value:
             container_flag = ContainerFlag.FCL.value

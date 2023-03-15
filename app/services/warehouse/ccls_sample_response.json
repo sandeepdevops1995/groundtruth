@@ -1,0 +1,184 @@
+{
+    "carting_response":{
+      "cha_code": "817924",
+      "crn_date": "1673481600000",
+      "crn_number": "1002",
+      "gw_port_code": "10909652",
+      "is_cargo_generated": "True",
+      "max_date_unloading": "1680134400000",
+      "no_of_packages_damaged": "20",
+      "no_of_packages_unloaded": "350",
+      "party_code": "D2BN5",
+      "reverse_flag": "False",
+      "shipping_bill_details_list": [
+         {
+            "commodity_code": "101",
+            "commodity_description": "RICE",
+            "no_of_packages_declared": "200",
+            "package_code": "1010",
+            "package_type": "ACV",
+            "package_weight": "400",
+            "shipping_bill_date": "15/01/23",
+            "shipping_bill_number": "555555"
+         },
+         {
+            "commodity_code": "209",
+            "commodity_description": "COMPUTERS",
+            "no_of_packages_declared": "500",
+            "package_code": "2090",
+            "package_type": "TGF",
+            "package_weight": "800",
+            "shipping_bill_date": "15/01/23",
+            "shipping_bill_number": "555555"
+         }
+      ],
+      "shipping_liner_code": "AD724",
+      "total_no_area": "50",
+      "truck_details": [
+         {
+            "truck_arrival_date": "11/01/2023",
+            "truck_number": "TS13EM4661"
+         },
+         {
+            "truck_arrival_date": "10/01/23",
+            "truck_number": "AP9AH9405"
+         }
+      ]
+   }
+,
+
+    "stuffing_response":{
+          "cargo_weight_in_crn": 510,
+          "container_iso_code": 8016,
+          "container_location_code": 20194562,
+          "container_number": "MRKU1122351",
+          "stuffing_job_order": 64378,
+          "container_type": 2,
+          "container_size": 20,
+          "crn_date": 1676419200000,
+          "crn_number": "1597",
+          "gross_weight": 550,
+          "gw_port_code": 10852641,
+          "shipping_bill_details_list": [
+            {
+              "commodity_code": 790,
+              "commodity_description": "xxx",
+              "no_of_packages_declared": 120,
+              "package_type": "DBA",
+              "package_code": 465,
+              "package_weight": 400,
+              "shipping_bill_number": 89997,
+              "shipping_bill_date": 65463476
+            },
+            {
+              "commodity_code": 790,
+              "commodity_description": "xxx",
+              "no_of_packages_declared": 120,
+              "package_type": "DBA",
+              "package_code": 465,
+              "package_weight": 400,
+              "shipping_bill_number": 89997,
+              "shipping_bill_date": 65463476
+            }
+          ],
+          "weight_remaining": 40
+      },
+    "destuffing_response":{
+          "bill_details_list": [
+            {
+              "bill_date": 65463476,
+              "bill_number": 41925,
+              "commodity_code": 672,
+              "commodity_description": "IDOLS",
+              "importer_code": 7748,
+              "importer_name": "GK",
+              "no_of_packages_declared": 220,
+              "package_code": "IJN",
+              "package_type": "IJN",
+              "package_weight": 440
+            },
+            {
+              "bill_date": 65463476,
+              "bill_number": 41925,
+              "commodity_code": 672,
+              "commodity_description": "IDOLS",
+              "importer_code": 7748,
+              "importer_name": "GK",
+              "no_of_packages_declared": 220,
+              "package_code": "IJN",
+              "package_type": "IJN",
+              "package_weight": 440
+            }
+          ],
+          "cargo_gross_weight": 500,
+          "container_life": 180,
+          "container_number": "BHHKJ80989",
+          "container_size": 40,
+          "container_type": "FCL",
+          "destuffing_job_order": 6546,
+          "handling_code": "RFDAVIPH",
+          "icd_location_code": 1054,
+          "private_or_concor_labour_flag": true,
+          "shipping_liner_code": "SL19073"
+      },
+    "delivery_response":{
+              "bill_details_list": [
+                {
+                  "bill_date": 65463476,
+                  "bill_number": 41925,
+                  "commodity_code": 672,
+                  "commodity_description": "IDOLS",
+                  "no_of_packages_declared": 220,
+                  "package_code": "IJN",
+                  "package_type": "IJN",
+                  "package_weight": 440
+                },
+                {
+                  "bill_date": 65463476,
+                  "bill_number": 41925,
+                  "commodity_code": 672,
+                  "commodity_description": "IDOLS",
+                  "no_of_packages_declared": 220,
+                  "package_code": "IJN",
+                  "package_type": "IJN",
+                  "package_weight": 440
+                }
+              ],
+              "cha_code": 75146,
+              "container_number": "KOCU4859449",
+              "container_size": 40,
+              "container_type": 1,
+              "gpm_created_date": 1675382400000,
+              "gpm_number": "GPM7099",
+              "shipping_line_code": "UJ165",
+              "truck_details": [
+                {
+                  "truck_arrival_date": "12/02/23",
+                  "truck_number": "AP9AH9405"
+                },
+                {
+                  "truck_arrival_date": "12/02/23",
+                  "truck_number": "AP9AH9405"
+                }
+              ]
+      },
+    "commodity":{
+        "root": {
+          "0": {
+            "commodity_code": 101,
+            "commodity_description": "RICE",
+            "created_on": 1675555200000
+          },
+          "1": {
+            "commodity_code": 102,
+            "commodity_description": "SOFAS",
+            "created_on": 1675555200000
+          },
+          "2": {
+            "commodity_code": 103,
+            "commodity_description": "TABLES",
+            "created_on": 1675555200000
+          }
+        }
+      }
+}

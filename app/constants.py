@@ -3,7 +3,7 @@
 UPLOAD_DATA_ENDPOINT ="/container_data"
 CCLS_DATA_ENDPOINT ="/ccls_data"
 TRAIN_DETAILS_ENDPOINT = "/train_details"
-PENDANCY_CONTAINERS_ENDPOINT = "/pendancy_containers"
+PENDANCY_CONTAINERS_ENDPOINT = "/pendency_containers"
 RAKE_PLAN_ENDPOINT = "/rake_plan"
 RAKE_UPLOAD_DATA_ENDPOINT = "/rake_data"
 CONTAINER_DETAILS_ENDPOINT = "/container_details"
@@ -20,6 +20,7 @@ TRACK_DETAILS = '/track_details'
 #time format in db:
 TIME_FORMAT ="%Y-%m-%d %H:%M:%S"
 #Keys
+KEY_NUMBER = "number"
 KEY_CN_NUMBER= "container_number"
 KEY_CN_LIFE_NUMBER = "container_life_number"
 KEY_TRANS_DATE = "trans_date"

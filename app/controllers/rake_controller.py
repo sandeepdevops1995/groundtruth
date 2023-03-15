@@ -8,7 +8,7 @@ from app.logger import logger
 from app.services.rake_db_service import RakeDbService as db_service
 from app.services.decorator_service import custom_exceptions, jwt_auth_required
 from app.constants import GroundTruthType
-from app.serializers import *
+from app.serializers.master_data_serializers import *
 from datetime import date, datetime
 parser = reqparse.RequestParser()
 
@@ -38,6 +38,7 @@ class TrainDetails(Model):
         train_number = request.args.get(Constants.TRAIN_NUMBER,None)
         track_number = request.args.get(Constants.TRACK_NUMBER,None)
         rake_id = request.args.get(Constants.RAKE_ID,None)
+        rake_type = request.args.get(Constants.RAKE_TYPE,"AR")
         wagon_number = request.args.get(Constants.WAGON_NUMBER,None)
         container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
         container_life_number = request.args.get(Constants.KEY_CN_LIFE_NUMBER,None)
@@ -60,7 +61,12 @@ class TrainDetails(Model):
             message = "please provide query parameters"
             return Response(json.dumps({"message":message}), status=400,mimetype='application/json')
         logger.info('GT,Get request from the Rake service : {}'.format(train_number))
-        result = db_service.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
+        if rake_type == "AR":
+            result = db_service.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
+        elif rake_type == "DE":
+            result = db_service.get_rake_plan(rake_id,train_number,track_number)
+        else:
+            return Response({"mesaage":"unknown rake type"}, status=400, mimetype='application/json')
         logger.info('Conainer details response')
         return Response(result, status=200, mimetype='application/json')
 
@@ -184,13 +190,15 @@ class WagonMaster(Model):
     
     @custom_exceptions
     def get(self):
-        wagon_number = request.args.get(Constants.KEY_WAGON_NUMBER)
+        wagon_number = request.args.get(Constants.KEY_NUMBER)
         if wagon_number:
             logger.info("GT,fetch wagon master data"+wagon_number)
             response =  db_service.get_wagon_master_data(wagon_number)
             response = WagonMasterSchema(many=True).dump(response)
-            return Response(json.dumps(response),status=200,mimetype='application/json')
-        
+            if response:
+                return Response(json.dumps(response),status=200,mimetype='application/json')
+            else:
+                return Response(None,status=204,mimetype='application/json')
 class GatewayPortsMaster(Model):
     @custom_exceptions
     def post(self):
@@ -205,7 +213,11 @@ class GatewayPortsMaster(Model):
         logger.info("GT,fetch gateway port master data")
         response = db_service.get_gateway_port_master_data()
         response = GateWayPortMasterSchema(many=True).dump(response)
-        return Response(json.dumps(response),status=200,mimetype='application/json')
+        if response:
+            return Response(json.dumps(response),status=200,mimetype='application/json')
+        else:
+            return Response(None,status=204,mimetype='application/json')
+    
             
 class UpdateInwardRakeDetails(Model):
     @custom_exceptions

@@ -36,7 +36,7 @@ class DataFormater(object):
         tallysheet_bill_detail_obj['damaged_packages_weight'] = tallysheet_bill_details[constants.BACKEND_DAMAGED_PACKAGES_WEIGHT] if constants.BACKEND_DAMAGED_PACKAGES_WEIGHT in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['package_count'] = tallysheet_bill_details[constants.BACKEND_PACKAGE_COUNT] if constants.BACKEND_PACKAGE_COUNT in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['no_of_packages_damaged'] = tallysheet_bill_details[constants.BACKEND_NO_OF_PACKAGES_DAMAGED] if constants.BACKEND_NO_OF_PACKAGES_DAMAGED in tallysheet_bill_details else None
-        tallysheet_bill_detail_obj['cha_code'] = tallysheet_bill_details[constants.BACKEND_CHA_CODE] if constants.BACKEND_CHA_CODE in tallysheet_bill_details else None
+        # tallysheet_bill_detail_obj['cha_code'] = tallysheet_bill_details[constants.BACKEND_CHA_CODE] if constants.BACKEND_CHA_CODE in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['full_or_part_destuff'] = tallysheet_bill_details[constants.BACKEND_FULL_OR_PART_DESTUFF] if constants.BACKEND_FULL_OR_PART_DESTUFF in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['area'] = tallysheet_bill_details[constants.BACKEND_AREA] if constants.BACKEND_AREA in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['area_damaged'] = tallysheet_bill_details[constants.BACKEND_AREA_DAMAGED] if constants.BACKEND_AREA_DAMAGED in tallysheet_bill_details else None
@@ -46,6 +46,8 @@ class DataFormater(object):
         # tallysheet_bill_detail_obj['container_number'] = tallysheet_bill_details[constants.BACKEND_CONTAINER_NUMBER] if constants.BACKEND_CONTAINER_NUMBER in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['start_time'] = tallysheet_bill_details[constants.BACKEND_START_TIME] if constants.BACKEND_START_TIME in tallysheet_bill_details else None
         tallysheet_bill_detail_obj['end_time'] = tallysheet_bill_details[constants.BACKEND_END_TIME] if constants.BACKEND_END_TIME in tallysheet_bill_details else None
+        tallysheet_bill_detail_obj['warehouse_name'] = tallysheet_bill_details[constants.BACKEND_WAREHOUSE_NAME] if constants.BACKEND_WAREHOUSE_NAME in tallysheet_bill_details else None
+        tallysheet_bill_detail_obj['stacking_type'] = tallysheet_bill_details[constants.BACKEND_STACKING_TYPE] if constants.BACKEND_STACKING_TYPE in tallysheet_bill_details else None
         return tallysheet_bill_detail_obj
 
     def ccls_job_order_table_formater(self,job_details):
@@ -140,7 +142,7 @@ class DataFormater(object):
              if 'bill_number_key_one' in key_list:
                  each_cargo_details[key_list['bill_number_key_one']] = each_bill[key_list['ccls_bill_number_key_one']]
              each_cargo_details['sline_code'] = job_order_details.get('sline_code',"AA1233")
-             each_cargo_details['cha_code'] = job_order_details.get(constants.CCLS_CHA_CODE,None)
+             each_cargo_details['cha_code'] = each_bill.get(constants.CCLS_CHA_CODE,None)
              each_cargo_details['commodity_details'] = []
              total_package_count+=int(each_bill[constants.CCLS_NO_OF_PACKAGES_DECLARED])
              each_cargo_details['commodity_details'].append({'commodity_code':int(each_bill[constants.CCLS_COMMODITY_CODE]),'commodity_description':each_bill[constants.CCLS_COMMODITY_DESCRIPTION],'package_code':each_bill[constants.CCLS_PACKAGE_CODE],'package_count':int(each_bill[constants.CCLS_NO_OF_PACKAGES_DECLARED]),'package_weight':int(each_bill[constants.CCLS_PACKAGE_WEIGHT])})

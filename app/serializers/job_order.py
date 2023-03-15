@@ -24,6 +24,8 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
     commodity_code = fields.Method("get_commodity_code")
     commodity_description = fields.Method("get_commodity_description")
     sline_code = fields.Method("get_sline_code")
+    warehouse_name = fields.Method("get_warehouse_name")
+    stacking_type = fields.Method("get_stacking_type")
 
     def get_truck_number(self, obj):
         return obj.ctms_cargo.truck_number
@@ -70,9 +72,14 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
     def get_sline_code(self, obj):
         return "AA1233"
 
+    def get_warehouse_name(self,obj):
+        return obj.ctms_cargo.warehouse_name
+    
+    def get_stacking_type(self,obj):
+        return obj.ctms_cargo.stacking_type
     class Meta:
         model = CCLSCargoDetails
-        fields = ("shipping_bill", "bill_of_entry","bill_of_lading","bill_date","importer_code","importer_name","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","area_damaged","sline_code")
+        fields = ("shipping_bill", "bill_of_entry","bill_of_lading","bill_date","importer_code","importer_name","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","area_damaged","sline_code","warehouse_name","stacking_type")
 
 
 class CCLSJobOrderSchema(ma.SQLAlchemyAutoSchema):
@@ -80,10 +87,10 @@ class CCLSJobOrderSchema(ma.SQLAlchemyAutoSchema):
     cargo_details = fields.Nested(CCLSCargoDetailsSchema, many=True)
     carting_order_number = fields.String(data_key='cargo_carting_number')
     total_package_count = fields.Method("get_total_package_count")
-    warehouse_name = fields.Method("get_warehouse_name")
+    
     gate_number = fields.Method("get_gate_number")
     container_id = fields.String(data_key='container_number')
-    stacking_type = fields.Method("get_stacking_type")
+    
     fcl_or_lcl = fields.Number(data_key='container_flag')
     block_locations = fields.Method("get_block_locations")
     rack_locations = fields.Method("get_rack_locations")
@@ -96,15 +103,10 @@ class CCLSJobOrderSchema(ma.SQLAlchemyAutoSchema):
     def get_total_package_count(self, obj):
         return obj.ctms_job.total_package_count
     
-    def get_warehouse_name(self,obj):
-        return obj.ctms_job.warehouse_name
-    
     def get_gate_number(self,obj):
         return obj.ctms_job.gate_number
     
-    def get_stacking_type(self,obj):
-        return 1
-        return obj.ctms_job.stacking_type
+    
     
     def get_block_locations(self,obj):
         return []
@@ -126,7 +128,7 @@ class CCLSJobOrderSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CCLSJobOrder
-        fields = ("carting_order_number","crn_number","gpm_number","total_package_count","job_type","fcl_or_lcl","warehouse_name","gate_number","stacking_type","cargo_details","block_locations","rack_locations","equipment_id","created_on_epoch",'container_id','start_time','end_time','shipping_liner_code')
+        fields = ("carting_order_number","crn_number","gpm_number","total_package_count","job_type","fcl_or_lcl","gate_number","cargo_details","block_locations","rack_locations","equipment_id","created_on_epoch",'container_id','start_time','end_time','shipping_liner_code')
         include_relationships = True
 
     

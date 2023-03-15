@@ -73,6 +73,7 @@ BACKEND_WEIGHT_REMAINING='weight_remaining'
 BACKEND_PRIVATE_OR_CONCOR_LABOUR_FLAG='private_or_concor_labour_flag'
 BACKEND_HANDLING_CODE='handling_code'
 BACKEND_WAREHOUSE_NAME='warehouse_name'
+BACKEND_STACKING_TYPE='stacking_type'
 
 
 

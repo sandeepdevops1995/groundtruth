@@ -392,7 +392,14 @@ class GateDbService:
                 conn.close()
                 return query.keys()     
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-                result= soap_service.update_container_details(data)
+                if data["is_container_trailer"]:
+                    update_data = GateDbService.get_soap_format_for_container(data)
+                else:
+                    update_data = GateDbService.get_soap_format_for_truck(data)
+                if update_data:
+                    result= soap_service.update_container_details(update_data)
+                else:
+                    logger.info('GT, please check whether required keys available or not')
                 if result:
                     logger.info('GT, Updated in soap service')
                     return True
@@ -409,6 +416,65 @@ class GateDbService:
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
                 self.update_container_info(data,count,isRetry)
+    
+    def get_soap_format_for_truck(data):
+        post_data = {}
+        try:
+            post_data[Constants.KEY_SOAP_G_VEH_NO] = data["vehicle_no"]
+            post_data[Constants.KEY_SOAP_G_GT_DOC_NO] = data["permit_no"]
+            post_data[Constants.KEY_SOAP_G_DT_GT_DOC] = datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S')
+            post_data[Constants.KEY_SOAP_G_DT_GT_DOC_VLD] =  datetime.strptime(data["permit_expiry_date"], '%Y-%m-%d %H:%M:%S')
+            post_data[Constants.KEY_SOAP_G_USER_ID] = data["user_id"]
+            post_data[Constants.KEY_SOAP_G_SLINE_CD] = data["sline_code"]
+            post_data[Constants.KEY_SOAP_G_XPMT_NO] = data["permit_no"]
+            post_data[Constants.KEY_SOAP_G_DT_XPMT_NO] = data["permit_no"]
+            post_data[Constants.KEY_SOAP_G_GATE_NO] = data["gate_no"] 
+            post_data[Constants.KEY_SOAP_G_STK_LOC] = data["stk_loc"] 
+            if "gate_in_time" in data:
+                post_data[Constants.KEY_SOAP_G_DT_VEH_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S')
+                post_data[Constants.KEY_SOAP_G_DT_ARR] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S')
+            if "gate_out_time" in data:
+                post_data[Constants.KEY_SOAP_G_DT_VEH_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S')
+                post_data[Constants.KEY_SOAP_G_DT_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S')
+            return post_data
+        except Exception as e:
+            logger.exception(str(e))
+
+
+    def get_soap_format_for_container(data):
+        post_data = {}
+        try:
+            post_data[Constants.KEY_SOAP_G_VEH_NO] = data["vehicle_no"]
+            post_data[Constants.KEY_SOAP_G_GT_DOC_NO] =  data["permit_no"]
+            post_data[Constants.KEY_SOAP_G_DT_GT_DOC] =  datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S')
+            post_data[Constants.KEY_SOAP_G_DT_GT_DOC_VLD] = datetime.strptime(data["permit_expiry_date"], '%Y-%m-%d %H:%M:%S')
+            post_data[Constants.KEY_SOAP_G_SEAL_STAT] = "Y" if ("seal_no" in data) and data["seal_no"] else "N"
+            post_data[Constants.KEY_SOAP_G_SEAL_NO] = data["seal_no"] 
+            post_data[Constants.KEY_SOAP_G_DMG_FLG] = "Y" if "damage_status" in data  and data["damage_status"] else "N"
+            post_data[Constants.KEY_SOAP_G_DMG_CODE] = data["damage_code"]
+            post_data[Constants.KEY_SOAP_G_CTR_NO] = data["container_no"]
+            post_data[Constants.KEY_SOAP_G_CTR_SIZE]= data["container_size"]
+            post_data[Constants.KEY_SOAP_G_CTR_TYPE] = data["container_type"]
+            post_data[Constants.KEY_SOAP_G_CTR_STAT] = "L" if data["is_empty_or_laden"]=="Laden" else "E" 
+            post_data[Constants.KEY_SOAP_G_USER_ID] = data["user_id"]
+            post_data[Constants.KEY_SOAP_G_SLINE_CD] = data["sline_code"]
+            post_data[Constants.KEY_SOAP_G_GATE_NO] = data["gate_no"] 
+            post_data[Constants.KEY_SOAP_G_CTR_LIFE_NO] = datetime.strptime(data["container_life_no"], '%Y-%m-%d %H:%M:%S')
+            post_data[Constants.KEY_SOAP_G_DT_SEAL] = datetime.strptime(data["dt_seal"], '%Y-%m-%d %H:%M:%S')
+            post_data[Constants.KEY_SOAP_G_HAZ_FLG] = "Y" if "hazard_status" in data and data["hazard_status"] else "N" 
+            post_data[Constants.KEY_SOAP_G_STK_LOC] = data["stk_loc"] 
+            if "gate_in_time" in data:
+                post_data[Constants.KEY_SOAP_G_DT_VEH_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S')
+                post_data[Constants.KEY_SOAP_G_ARR_PMT_NO] = data["permit_no"] if "permit_no" in data else "TEST"
+                post_data[Constants.KEY_SOAP_G_DT_ARR] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S')
+            if "gate_out_time" in data:
+                post_data[Constants.KEY_SOAP_G_DT_VEH_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S')
+                post_data[Constants.KEY_SOAP_G_DEP_PMT_NO] = data["permit_no"] if "permit_no" in data else "TEST"
+                post_data[Constants.KEY_SOAP_G_DT_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S')
+            return post_data
+        except Exception as e:
+            logger.exception(str(e))
+        
 
     @query_debugger()
     def update_ctr_stack_info(self,data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):

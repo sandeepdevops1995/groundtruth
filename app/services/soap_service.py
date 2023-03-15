@@ -30,46 +30,17 @@ def get_permit_details(permit_number):
         result = {}
     return result
 
-def update_container_details(data):
+def update_container_details(update_data):
     wsdl_url = config.WSDL_URL+"/soa-infra/services/default/GateWriteOperation/gatewriteoperation_client_ep?WSDL"
-    try:
-        post_data = {}
-        if "vehicle_no" in data:
-            post_data['VEH_NO'] = data["vehicle_no"]
-        if "user_id" in data:
-            post_data["USER_ID"] = data["user_id"]  
-        if "gate_no" in data:
-            post_data["GATE_NO"] = data["gate_no"]      #max 3 digits
-        if "stk_loc" in data:
-            post_data["STK_LOC"] = data["stk_loc"]  
-        if "container_no" in data:
-           post_data["CTR_NO"] = data["container_no"]
-        if "seal_no" in data:
-           post_data["SEAL_NO"] = data["seal_no"] 
-        if "dmg_code" in data:
-            post_data["DMG_CODE"] = data["dmg_code"] 
-        if "dt_seal" in data:    
-            post_data["DT_SEAL"] = datetime.strptime(data["dt_seal"], '%Y-%m-%d %H:%M:%S')
-        if "is_empty_or_laden" in data:
-            post_data["CTR_STAT"] = "L" if data["is_empty_or_laden"]=="Laden" else "E" 
-        if "gate_in_time" in data:
-            post_data["DT_VEH_ARR"] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S')
-            post_data["ARR_PMT_NO"] = data["permit_no"] if "permit_no" in data else "TEST"
-        if "gate_out_time" in data:
-            post_data["DT_VEH_DEP"] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S')
-            post_data["DEP_PMT_NO"] = data["permit_no"] if "permit_no" in data else "TEST"
-        
-        post_data["SEAL_STAT"] = "Y" if ("seal_no" in data) and data["seal_no"] else "N"
-        post_data["DMG_FLG"] =  "Y" if "damage_status" in data  and data["damage_status"] else "N"
-        post_data["HAZ_FLG"] =  "Y" if "hazard_status" in data and data["hazard_status"] else "N" 
-        logger.debug('Update Container Details, soap service request with data : '+ str(post_data))
+    try:      
+        logger.debug('Update Container Details, soap service request with data : '+ str(update_data))
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="gatewriteoperation_client_ep",
                         port_name="GateWriteOperation_pt")
         
         
-        result = soap.service.process(**post_data)
-        save_in_diagnostics("/updateContainerInfo",{"data":str(post_data)},{"output":str(result)})
+        result = soap.service.process(**update_data)
+        save_in_diagnostics("/updateContainerInfo",{"data":str(update_data)},{"output":str(result)})
         logger.debug('Update Container Details, soap service response : '+ str(result))
         
     except Exception as e:

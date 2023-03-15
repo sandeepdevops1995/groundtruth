@@ -58,6 +58,7 @@ CORS(app)
 api = Api(app)
 
 from app.models import *
+from app.Models import *
  
 
  

@@ -8,7 +8,7 @@ from app import postgres_db as db
 from app.services.warehouse.data_formater import DataFormater
 from sqlalchemy.orm import joinedload
 from app.serializers.job_order import CCLSJobOrderSchema,CCLSCommodityList
-from app.enums import JobStatus
+from app.enums import JobStatus,JobOrderType
 from app.Models.warehouse.commodity import WarehouseCommodity
 
 class WarehouseDB(object):
@@ -185,7 +185,7 @@ class WarehouseDB(object):
             db.session.commit()
             logger.info("update ctms job order object in ccls job order table")
     
-    def save_ctms_bill_details(self,bill_details,job_order_id,filter_key):
+    def save_ctms_bill_details(self,bill_details,job_order_id,filter_key,job_type):
         for each_bill_info in bill_details:
             # commodity_code = each_bill_info.pop('commodity_code')
             # commodity_description = each_bill_info.pop('commodity_description')
@@ -193,10 +193,21 @@ class WarehouseDB(object):
             # each_bill_info.update({"job_order_id":job_order_id,"commodity_id":commodity_id})
             # filter_data = {filter_key:each_bill_info['shipping_bill']}
             # filter_data = {'CCLSCargoDetails.shipping_bill':each_bill_info['shipping_bill']}
-            shipping_bill=each_bill_info[filter_key]
+            query_obj  = db.session.query(CCLSJobOrder).filter(CCLSJobOrder.ctms_job_order_id==job_order_id).first()
+            if  query_obj:
+                job_order_id = query_obj.id
+                print("job_order_id--------",job_order_id)
+            bill_number=each_bill_info[filter_key]
             each_bill_info = DataFormater().ctms_cargo_details_table_formater(each_bill_info)
             print("each_bill_info-----------",each_bill_info)
-            query_object = db.session.query(CTMSCargoDetails).join(CCLSCargoDetails).filter(CCLSCargoDetails.shipping_bill==shipping_bill)
+            if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value,JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value]:
+                query_object = db.session.query(CTMSCargoDetails).join(CCLSCargoDetails).filter(CCLSCargoDetails.shipping_bill==bill_number,CCLSCargoDetails.job_order_id==job_order_id)
+            elif job_type==JobOrderType.DE_STUFFING_FCL.value:
+                query_object = db.session.query(CTMSCargoDetails).join(CCLSCargoDetails).filter(CCLSCargoDetails.bill_of_entry==bill_number,CCLSCargoDetails.job_order_id==job_order_id)
+            elif job_type==JobOrderType.DE_STUFFING_LCL.value:
+                query_object = db.session.query(CTMSCargoDetails).join(CCLSCargoDetails).filter(CCLSCargoDetails.bill_of_lading==bill_number,CCLSCargoDetails.job_order_id==job_order_id)
+            elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value:
+                query_object = db.session.query(CTMSCargoDetails).join(CCLSCargoDetails).filter(CCLSCargoDetails.bill_of_entry==bill_number,CCLSCargoDetails.job_order_id==job_order_id)
             # .filter_by(**filter_data)
             db_object = query_object.first()
             if db_object:
@@ -210,15 +221,12 @@ class WarehouseDB(object):
                 db.session.refresh(db_object)
                 
                 logger.info("CTMS cargo details created successfully")
-                self.update_ctms_cargo_details_in_ccls_cargo_details(db_object.id,shipping_bill,job_order_id)
+                self.update_ctms_cargo_details_in_ccls_cargo_details(db_object.id,bill_number,job_order_id,filter_key)
 
-    def update_ctms_cargo_details_in_ccls_cargo_details(self,cargo_id,shipping_bill,job_order_id):
+    def update_ctms_cargo_details_in_ccls_cargo_details(self,cargo_id,bill_number,job_order_id,filter_key):
         # filter_data = {}
-        query_obj  = db.session.query(CCLSJobOrder).filter(CCLSJobOrder.ctms_job_order_id==job_order_id).first()
-        if  query_obj:
-            job_order_id = query_obj.id
-            print("job_order_id--------",job_order_id)
-        query_object = db.session.query(CCLSCargoDetails).filter(shipping_bill==shipping_bill,job_order_id==job_order_id)
+        
+        query_object = db.session.query(CCLSCargoDetails).filter_by(**{filter_key:bill_number,"job_order_id":job_order_id})
         if query_object:
             query_object.update(dict({'ctms_cargo_id':cargo_id}))
             db.session.commit()

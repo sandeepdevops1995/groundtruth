@@ -14,7 +14,7 @@ class WarehouseTallySheetView(object):
             filter_data = {"crn_number":job_order}
         elif job_type==JobOrderType.CARTING_LCL.value:
             job_order = request.args.get('cargo_carting_number',0)
-            filter_data = {"cargo_carting_number":job_order}
+            filter_data = {"carting_order_number":job_order}
         elif job_type==JobOrderType.STUFFING_FCL.value or job_type==JobOrderType.STUFFING_LCL.value or job_type==JobOrderType.DE_STUFFING_FCL.value or job_type==JobOrderType.DE_STUFFING_FCL.value:
             job_order = request.args.get('container_number',0)
             filter_data = {"container_id":job_order}
@@ -55,4 +55,4 @@ class WarehouseTallySheetView(object):
         bill_details = tally_sheet_data.pop('cargo_details')
         final_job_order_details = DataFormater().ctms_job_order_table_formater(tally_sheet_data)
         job_order_id = WarehouseDB().save_ctms_job_order(final_job_order_details,query_object,filter_data)
-        WarehouseDB().save_ctms_bill_details(bill_details,job_order_id,cargo_filter_key)
+        WarehouseDB().save_ctms_bill_details(bill_details,job_order_id,cargo_filter_key,job_type)

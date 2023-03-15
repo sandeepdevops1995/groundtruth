@@ -9,6 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy as sa
 from flask_apscheduler import APScheduler
 from flask_migrate import Migrate
+from flask_marshmallow import Marshmallow
 
 oracle_url = sa.engine.URL.create(
     drivername=config.SQL_DRIVER,
@@ -34,6 +35,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = postgres_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 postgres_db = SQLAlchemy(app)
 migrate = Migrate(app, postgres_db)
+ma = Marshmallow(app)
 
 
 scheduler = APScheduler()

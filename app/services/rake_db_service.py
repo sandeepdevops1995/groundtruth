@@ -177,12 +177,13 @@ class RakeDbService:
             wagon_model = CCLSRake(**wagon)
             final_data.append(wagon_model)
             try:
-                result = CCLSRake.query.filter_by(**query_fields).all()
-                if not result:
-                    db.session.add(wagon_model)
-                    commit()
+                result = CCLSRake.query.filter_by(**query_fields)
+                if result.all():
+                    result.update(dict(wagon))
+                    logger.info("Updated existing wagon")
                 else:
-                    print("wagon already exists in db")
+                    db.session.add(wagon)
+                commit()
             except Exception as e:
                 logger.exception(str(e))
         
@@ -244,7 +245,7 @@ class RakeDbService:
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
-                RakeDbService.get_rake_details_by_track_number(track_number,rake_type,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE)
+                RakeDbService.get_rake_details_by_track_number(track_number,rake_type,count=count,isRetry=Constants.KEY_RETRY_VALUE)
 
 
     def get_container_data(container_number):
@@ -271,7 +272,7 @@ class RakeDbService:
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
-                RakeDbService.update_inward_rake_details(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE)
+                RakeDbService.update_inward_rake_details(data,count=count,isRetry=Constants.KEY_RETRY_VALUE)
                     
     
     @query_debugger()
@@ -288,7 +289,7 @@ class RakeDbService:
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
-                RakeDbService.update_outward_rake_details(count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE)
+                RakeDbService.update_outward_rake_details(count=count,isRetry=Constants.KEY_RETRY_VALUE)
 
     
     def get_soap_format_for_rake(data):
@@ -424,7 +425,7 @@ class RakeDbService:
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
-                RakeDbService.get_ground_truth_details(train_number, trans_date, count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE)
+                RakeDbService.get_ground_truth_details(train_number, trans_date, count=count,isRetry=Constants.KEY_RETRY_VALUE)
 
     @query_debugger()
     def post_ground_truth_details(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
@@ -455,9 +456,144 @@ class RakeDbService:
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
-                RakeDbService.post_ground_truth_details(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE)
+                RakeDbService.post_ground_truth_details(data,count=count,isRetry=Constants.KEY_RETRY_VALUE)
 
 
+    @query_debugger()
+    def get_pendancy_list(gateway_ports,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            data = PendancyContainer.query.filter(PendancyContainer.gateway_port_code.in_(gateway_ports)).order_by(PendancyContainer.gateway_port_code).all()
+            return db_functions(data).as_json()
+        except Exception as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                RakeDbService.get_pendancy_list(data,count=count,isRetry=Constants.KEY_RETRY_VALUE)
+
+    @query_debugger()
+    def add_rake_plan(rake_data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                    pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            try:
+                print(type(rake_data))
+                containers =  rake_data.pop("containers")
+                for each in containers:
+                    each.update(rake_data)
+                    rake_plan_container = RakePlan(**each)
+                    db.session.add(rake_plan_container)
+                return commit()
+            except Exception as e:
+                logger.exception(str(e))
+                return False
+        except Exception as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY)
+                RakeDbService.add_rake_plan(rake_data,count)
+                
+    @query_debugger()
+    def get_rake_plan(rake_id,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                    pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            data = RakePlan.query.filter_by(rake_id=rake_id).all()
+            return db_functions(data).as_json()
+        except Exception as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY)
+                RakeDbService.get_rake_plan(rake_id,count)
+    
+    
+    @query_debugger()
+    def add_wagon_to_master_data(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            try:
+                for each in data:
+                    wagon = WgnMst(**each)
+                    db.session.add(wagon)
+                return commit()
+            except Exception as e:
+                logger.exception(str(e))
+                return False
+        except Exception as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY)
+                RakeDbService.add_wagon_to_master_data(data,count)
+        
+    
+    @query_debugger()
+    def get_wagon_master_data(wagon_number,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            data = WgnMst.query.filter(WgnMst.wgn_no.contains(wagon_number),WgnMst.active_flg=='Y').all()
+            return data
+        except Exception as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY)
+                RakeDbService.get_wagon_master_data(wagon_number,count)
+
+    @query_debugger()
+    def add_gateway_port_to_master_data(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            try:
+                for each in data:
+                    port = Gwport(**each)
+                    db.session.add(port)
+                return commit()
+            except Exception as e:
+                logger.exception(str(e))
+                return False
+        except Exception as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY)
+                RakeDbService.add_wagon_to_master_data(data,count)
+        
+    
+    @query_debugger()
+    def get_gateway_port_master_data(count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            data = Gwport.query.all()
+            return data
+        except Exception as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY)
+                RakeDbService.get_wagon_master_data(count)          
 
     @query_debugger()
     def get_wagon_data(wagon_number,rake_type="DE",count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):

@@ -8,6 +8,7 @@ from app.logger import logger
 from app.services.rake_db_service import RakeDbService as db_service
 from app.services.decorator_service import custom_exceptions, jwt_auth_required
 from app.constants import GroundTruthType
+from app.serializers import *
 from datetime import date, datetime
 parser = reqparse.RequestParser()
 
@@ -126,6 +127,86 @@ class RakeData(Model):
         logger.info('Conainer details response')
         return Response(result, status=200, mimetype='application/json')
 
+class PendancyList(Model):
+    @custom_exceptions
+    def get(self):
+        gateway_port = request.args.get(Constants.KEY_GATEWAY_PORT,None)
+        if gateway_port:
+            gateway_ports= gateway_port.split(",")
+            logger.info("GT, pendacy list for port"+str(gateway_ports))
+            response = db_service.get_pendancy_list(gateway_ports)
+            # response = self.format_data(response,gateway_ports)
+            return Response(response, status=200, mimetype='application/json')
+        else:
+            return Response(json.dumps({"message":"please provide gateway_port"}), status=400, mimetype='application/json')
+    
+    
+    def format_data(self,response,gateway_ports):
+        output = {}
+        for port in gateway_ports:
+            output[port] = []
+        for each in json.loads(response):
+            output[each["gateway_port_code"]].append(each)
+        final_output =[]    
+        for port in gateway_ports:
+            port_data ={}
+            port_data["gateway_port"] = port
+            port_data["containers"] = output[port]
+            final_output.append(port_data)
+        return json.dumps(final_output)
+            
+
+class RakePlanDetails(Model):
+    @custom_exceptions
+    def post(self):
+        data = request.get_json()
+        if data:
+            if db_service.add_rake_plan(data):
+                return Response(json.dumps({"message":"success"}),status=200,mimetype='application/json')
+    
+    @custom_exceptions
+    def get(self):
+        rake_id = request.args.get(Constants.KEY_RAKE_ID)
+        if rake_id:
+            logger.info("GT,fetch Rake plan details"+rake_id)
+            response =  db_service.get_rake_plan(rake_id)
+            return Response(response,status=200,mimetype='application/json')
+        
+
+class WagonMaster(Model):
+    @custom_exceptions
+    def post(self):
+        data = request.get_json()
+        if data:
+            if db_service.add_wagon_to_master_data(data):
+                return Response(json.dumps({"message":"success"}),status=200,mimetype='application/json')
+        return Response(json.dumps({"message":"failed to save"}),status=400,mimetype='application/json')
+    
+    @custom_exceptions
+    def get(self):
+        wagon_number = request.args.get(Constants.KEY_WAGON_NUMBER)
+        if wagon_number:
+            logger.info("GT,fetch wagon master data"+wagon_number)
+            response =  db_service.get_wagon_master_data(wagon_number)
+            response = WagonMasterSchema(many=True).dump(response)
+            return Response(json.dumps(response),status=200,mimetype='application/json')
+        
+class GatewayPortsMaster(Model):
+    @custom_exceptions
+    def post(self):
+        data = request.get_json()
+        if data:
+            if db_service.add_gateway_port_to_master_data(data):
+                return Response(json.dumps({"message":"success"}),status=200,mimetype='application/json')
+        return Response(json.dumps({"message":"failed to save"}),status=400,mimetype='application/json')
+    
+    @custom_exceptions
+    def get(self):
+        logger.info("GT,fetch gateway port master data")
+        response = db_service.get_gateway_port_master_data()
+        response = GateWayPortMasterSchema(many=True).dump(response)
+        return Response(json.dumps(response),status=200,mimetype='application/json')
+            
 class UpdateInwardRakeDetails(Model):
     @custom_exceptions
     def post(self):

@@ -3,6 +3,8 @@
 UPLOAD_DATA_ENDPOINT ="/container_data"
 CCLS_DATA_ENDPOINT ="/ccls_data"
 TRAIN_DETAILS_ENDPOINT = "/train_details"
+PENDANCY_CONTAINERS_ENDPOINT = "/pendancy_containers"
+RAKE_PLAN_ENDPOINT = "/rake_plan"
 RAKE_UPLOAD_DATA_ENDPOINT = "/rake_data"
 CONTAINER_DETAILS_ENDPOINT = "/container_details"
 WAGON_DETAILS_ENDPOINT = "/wagon_details"
@@ -31,9 +33,11 @@ KEY_TIME = "TIME"
 KEY_ID = "id"
 KEY_FROM_DATE = "from_date"
 KEY_TO_DATE = "to_date"
+KEY_GATEWAY_PORT = "gateway_port"
 
 
 # RAKE 
+KEY_RAKE_ID = "rake_id"
 KEY_TRAIN_NUMBER = 'train_number'
 KEY_RAKE_NUMBER = "rake_number"
 KEY_IMP_EXP_FLG = 'imp_exp_flg'

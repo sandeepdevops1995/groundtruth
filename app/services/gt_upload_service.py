@@ -1,4 +1,4 @@
-from app.models import CCLSRake, Diagnostics
+from app.models import CCLSRake, Diagnostics, PendancyContainer
 from app.logger import logger
 from app import postgres_db as db
 from sqlalchemy.exc import SQLAlchemyError
@@ -22,6 +22,13 @@ def upload_ccls_rake_date(rake_data):
         record = CCLSRake(**wagon)
         db.session.add(record)
     commit()
+    return True
+
+def upload_pendancy_data(data):
+    for container in data:
+        record = PendancyContainer(**container)
+        db.session.add(record)
+        commit()
     return True
 
 

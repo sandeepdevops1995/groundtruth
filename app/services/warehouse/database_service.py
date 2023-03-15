@@ -267,3 +267,19 @@ class WarehouseDB(object):
             result = CCLSCommodityList().dump(query_object,many=True)
         print("result from db------------",result)
         return result
+    
+    def save_commodities(self,commodity_data):
+        result = {}
+        for each_commodity in commodity_data:
+            commodity_code = int(each_commodity['commodity_code'])
+            commodity_description = each_commodity['commodity_description']
+            query_object = db.session.query(WarehouseCommodity).filter(WarehouseCommodity.COMM_CD==commodity_code)
+            if query_object:
+                query_object.update(dict({"COMM_DESC":commodity_description}))
+                logger.info("commodity details updated successfully")
+            else:
+                db_object = WarehouseCommodity(**{"COMM_CD":commodity_code,"COMM_DESC":commodity_description})
+                db.session.add(db_object, _warn=False)
+                db.session.commit()
+                db.session.refresh(db_object)
+                logger.info("commodity details created successfully")

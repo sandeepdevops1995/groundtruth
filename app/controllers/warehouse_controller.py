@@ -63,3 +63,9 @@ class WarehouseCommodities(View):
             return Response(json.dumps(result), status=200, mimetype='application/json')
         else:
             return Response(None, status=404, mimetype='application/json')
+
+    def post(self):
+        commodity_data=request.json
+        WarehouseCommodityView().process_commodity_details(commodity_data)
+        return Response(json.dumps({"message":"commodities uploaded successfully"}), status=200, mimetype='application/json')
+

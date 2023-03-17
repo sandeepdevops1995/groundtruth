@@ -96,10 +96,11 @@ class DataFormater(object):
     
     def build_carting_response_obj(self,job_order_details,container_flag):
         print("job_order_details----------------",job_order_details)
+        carting_job_obj = {'truck_details':job_order_details['truck_details'],"is_cargo_card_generated":job_order_details[constants.CCLS_IS_CARGO_CARD_GENERATED]}
         if container_flag==ContainerFlag.FCL.value:
-            carting_job_obj = {'crn_number' : job_order_details[constants.CCLS_CRN_NUMBER],'truck_details':job_order_details['truck_details']}
+            carting_job_obj.update({'crn_number' : job_order_details[constants.CCLS_CRN_NUMBER]})
         else:
-            carting_job_obj = {'cargo_carting_number' : job_order_details[constants.CCLS_CON_NUMBER],'truck_details':job_order_details['truck_details']}
+            carting_job_obj.update({'cargo_carting_number' : job_order_details[constants.CCLS_CON_NUMBER]})
         key_list = {'bill_number_key':'shipping_bill','ccls_bill_number_key':constants.CCLS_SHIPPING_BILL_NUMBER,'job_list_key_name':'shipping_bill_details_list'}
         result = self.build_response_obj(job_order_details,key_list,carting_job_obj)
         return result

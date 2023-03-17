@@ -126,7 +126,7 @@ class DataFormater(object):
         delivery_job_obj = {'gpm_number' : job_order_details[constants.CCLS_GPM_NUMBER],'truck_details':job_order_details['truck_details']}
         key_list = {'bill_number_key':'bill_of_entry','ccls_bill_number_key':constants.CCLS_BILL_OF_ENTRY_NUMBER,'job_list_key_name':'bill_details_list'}
         if container_flag==ContainerFlag.LCL.value:
-            key_list.update({'bill_number_key_one':'bill_of_entry','ccls_bill_number_key_one':constants.CCLS_BILL_OF_LADEN_NUMBER})
+            key_list.update({'bill_number_key_one':'bill_of_lading','ccls_bill_number_key_one':constants.CCLS_BILL_OF_LADEN_NUMBER})
         result = self.build_response_obj(job_order_details,key_list,delivery_job_obj)
         return result
     

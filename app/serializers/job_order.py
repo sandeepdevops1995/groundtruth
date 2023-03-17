@@ -79,7 +79,7 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
         return obj.ctms_cargo.stacking_type
     class Meta:
         model = CCLSCargoDetails
-        fields = ("shipping_bill", "bill_of_entry","bill_of_lading","bill_date","importer_code","importer_name","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","area_damaged","sline_code","warehouse_name","stacking_type")
+        fields = ("shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","area_damaged","sline_code","warehouse_name","stacking_type")
 
 
 class CCLSJobOrderSchema(ma.SQLAlchemyAutoSchema):

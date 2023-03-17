@@ -6,9 +6,8 @@ from app.Models.warehouse.container import Container
 from app.logger import logger
 from app import postgres_db as db
 from app.services.warehouse.data_formater import DataFormater
-from sqlalchemy.orm import joinedload
 from app.serializers.job_order import CCLSJobOrderSchema,CCLSCommodityList
-from app.enums import JobStatus,JobOrderType
+from app.enums import JobOrderType
 from app.Models.warehouse.commodity import WarehouseCommodity
 
 class WarehouseDB(object):
@@ -258,22 +257,19 @@ class WarehouseDB(object):
                 db.session.refresh(db_object)
                 logger.info("truck created successfully")
 
-    def get_final_job_details(self,filter_data):
+    def get_final_job_details(self,query_object):
         result = {}
-        print("filter_data-----------",filter_data)
-        query_object = db.session.query(CCLSJobOrder).options(joinedload(CCLSJobOrder.cargo_details)).filter_by(**filter_data).first()
         if query_object:
             result = CCLSJobOrderSchema().dump(query_object)
-        print("result------------",result)
+        logger.info("job details from database------------%s",result)
         return result
     
     def get_commodities(self):
         result = {}
         query_object = db.session.query(WarehouseCommodity).all()
         if query_object:
-            print('query_object--------',query_object)
             result = CCLSCommodityList().dump(query_object,many=True)
-        print("result from db------------",result)
+        logger.info("commodities from db------------",result)
         return result
     
     def save_commodities(self,commodity_data):

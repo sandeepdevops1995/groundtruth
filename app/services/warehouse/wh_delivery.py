@@ -4,7 +4,7 @@ from app.services.warehouse.database_service import WarehouseDB
 from app.logger import logger
 import app.services.warehouse.constants as constants
 from app.services.warehouse.data_formater import DataFormater
-from app.enums import JobStatus,JobOrderType,ContainerFlag
+from app.enums import JobOrderType,ContainerFlag
 from app.Models.warehouse.job_order import CCLSJobOrder
 from app import postgres_db as db
 
@@ -17,7 +17,7 @@ class WarehouseDelivery(object):
             self.warehouse_info = json.load(f)
 
     def get_delivery_details(self,gpm_number,job_type):
-        delivery_details = call_api(gpm_number,"CWHDeliveryRead","cwhdeliveryreadbpel_client_ep","CWHDeliveryReadBPEL_pt",job_type)
+        delivery_details = call_api(gpm_number,"CWHDeliveryRead","cwhdeliveryreadbpel_client_ep","CWHDeliveryReadBPEL_pt")
         #delivery_details = self.warehouse_info['delivery_response']
         if job_type==JobOrderType.DELIVERY_FCL.value:
             container_flag = ContainerFlag.FCL.value
@@ -25,7 +25,6 @@ class WarehouseDelivery(object):
             container_flag = ContainerFlag.LCL.value
         else:
             container_flag = ContainerFlag.FCL.value
-        delivery_details['gpm_number'] = gpm_number
         delivery_details['job_type'] = job_type
         delivery_details['fcl_or_lcl'] = container_flag
         result = DataFormater().build_delivery_response_obj(delivery_details,container_flag)

@@ -72,8 +72,8 @@ class DataFormater(object):
         job_order_obj['private_or_concor_labour_flag'] = job_details[constants.CCLS_PRIVATE_OR_CONCOR_LABOUR_FLAG] if constants.CCLS_PRIVATE_OR_CONCOR_LABOUR_FLAG in job_details else None
         job_order_obj['handling_code'] = job_details[constants.CCLS_HANDLING_CODE] if constants.CCLS_HANDLING_CODE in job_details else None
         job_order_obj['icd_location_code'] = job_details[constants.CCLS_ICD_LOCATION_CODE] if constants.CCLS_ICD_LOCATION_CODE in job_details else None
-        job_order_obj['is_cargo_card_generated'] = job_details[constants.CCLS_IS_CARGO_CARD_GENERATED] if constants.CCLS_IS_CARGO_CARD_GENERATED in job_details else None
-        job_order_obj['reserve_flag'] = job_details[constants.CCLS_REVERSE_FLAG] if constants.CCLS_REVERSE_FLAG in job_details else None
+        job_order_obj['is_cargo_card_generated'] = bool(job_details[constants.CCLS_IS_CARGO_CARD_GENERATED]) if constants.CCLS_IS_CARGO_CARD_GENERATED in job_details else None
+        job_order_obj['reserve_flag'] = bool(job_details[constants.CCLS_REVERSE_FLAG]) if constants.CCLS_REVERSE_FLAG in job_details else None
         job_order_obj['job_type'] = job_details[constants.BACKEND_JOB_TYPE] if constants.BACKEND_JOB_TYPE in job_details else None
         job_order_obj['fcl_or_lcl'] = job_details[constants.BACKEND_CONTAINER_FLAG] if constants.BACKEND_CONTAINER_FLAG in job_details else None
         return job_order_obj

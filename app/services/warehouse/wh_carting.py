@@ -7,7 +7,7 @@ from app.services.warehouse.data_formater import DataFormater
 from app.enums import ContainerFlag
 from app.Models.warehouse.job_order import CCLSJobOrder
 from app import postgres_db as db
-from app.enums import JobStatus,JobOrderType
+from app.enums import JobOrderType
 
 class WarehouseCarting(object):
     def __init__(self) -> None:
@@ -18,7 +18,7 @@ class WarehouseCarting(object):
             self.warehouse_info = json.load(f)
 
     def get_carting_details(self,crn_number,job_type):
-        carting_details = call_api(crn_number,"CWHCartingRead","cwhcartingreadbpel_client_ep","CWHCartingReadBPEL_pt",job_type)
+        carting_details = call_api(crn_number,"CWHCartingRead","cwhcartingreadbpel_client_ep","CWHCartingReadBPEL_pt")
         #carting_details = self.warehouse_info['carting_response']
         if job_type==JobOrderType.CARTING_FCL.value:
             filter_data = {"crn_number":crn_number}
@@ -26,7 +26,6 @@ class WarehouseCarting(object):
         else:
             filter_data = {"carting_order_number":crn_number}
             container_flag=ContainerFlag.LCL.value
-        # carting_details['crn_number'] = crn_number
         carting_details['job_type'] = job_type
         carting_details['fcl_or_lcl'] = container_flag
         result = DataFormater().build_carting_response_obj(carting_details,container_flag)

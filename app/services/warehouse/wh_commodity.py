@@ -9,5 +9,4 @@ class WarehouseCommodityView(object):
         return result
     
     def process_commodity_details(self,commodity_data):
-        print("commodity_data--------",commodity_data)
         WarehouseDB().save_commodities(commodity_data)

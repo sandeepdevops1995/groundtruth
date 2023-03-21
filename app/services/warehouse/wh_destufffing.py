@@ -4,10 +4,9 @@ from app.services.warehouse.database_service import WarehouseDB
 from app.logger import logger
 import app.services.warehouse.constants as constants
 from app.services.warehouse.data_formater import DataFormater
-from app.enums import ContainerFlag,JobStatus,JobOrderType
+from app.enums import ContainerFlag,JobOrderType
 from app.Models.warehouse.job_order import CCLSJobOrder
 from app import postgres_db as db
-from app.Models.warehouse.container import Container
 
 class WarehouseDeStuffing(object):
     def __init__(self) -> None:
@@ -18,13 +17,12 @@ class WarehouseDeStuffing(object):
             self.warehouse_info = json.load(f)
 
     def get_destuffing_details(self,container_number,job_type):
-        destuffing_details = call_api(container_number,"CWHDeStuffingRead","cwhdestuffingreadbpel_client_ep","CWHDeStuffingReadBPEL_pt",job_type)
+        destuffing_details = call_api(container_number,"CWHDeStuffingRead","cwhdestuffingreadbpel_client_ep","CWHDeStuffingReadBPEL_pt")
         #destuffing_details = self.warehouse_info['destuffing_response']
         if job_type==JobOrderType.DE_STUFFING_FCL.value:
             container_flag = ContainerFlag.FCL.value
         else:
             container_flag = ContainerFlag.LCL.value
-        destuffing_details['container_number'] = container_number
         destuffing_details['job_type'] = job_type
         destuffing_details['fcl_or_lcl'] = container_flag
         result = DataFormater().build_destuffing_response_obj(destuffing_details,container_flag)

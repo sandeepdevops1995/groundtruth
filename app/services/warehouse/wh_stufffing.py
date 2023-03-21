@@ -4,9 +4,8 @@ from app.logger import logger
 import app.services.warehouse.constants as constants
 from app.services.warehouse.data_formater import DataFormater
 from app.Models.warehouse.job_order import CCLSJobOrder
-from app.Models.warehouse.container import Container
 from app import postgres_db as db
-from app.enums import JobStatus,JobOrderType,ContainerFlag
+from app.enums import JobOrderType,ContainerFlag
 
 class WarehouseStuffing(object):
     def __init__(self) -> None:
@@ -17,7 +16,7 @@ class WarehouseStuffing(object):
             self.warehouse_info = json.load(f)
 
     def get_stuffing_details(self,container_number,job_type):
-        stuffing_details = call_api(container_number,"CWHStuffingRead","cwhstuffingreadbpel_client_ep","CWHStuffingReadBPEL_pt",job_type)
+        stuffing_details = call_api(container_number,"CWHStuffingRead","cwhstuffingreadbpel_client_ep","CWHStuffingReadBPEL_pt")
         #stuffing_details = self.warehouse_info['stuffing_response']
         
         if job_type==JobOrderType.STUFFING_FCL.value:
@@ -26,10 +25,8 @@ class WarehouseStuffing(object):
             container_flag = ContainerFlag.LCL.value
         else:
             container_flag = ContainerFlag.FCL.value
-        stuffing_details['container_number'] = container_number
         stuffing_details['job_type'] = job_type
         stuffing_details['fcl_or_lcl'] = container_flag
-        print("result----------",stuffing_details)
         result = DataFormater().build_stuffing_response_obj(stuffing_details)
         
         self.save_data_db(stuffing_details,container_number)

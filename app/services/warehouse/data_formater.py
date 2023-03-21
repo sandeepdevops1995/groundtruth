@@ -72,8 +72,8 @@ class DataFormater(object):
         job_order_obj['private_or_concor_labour_flag'] = job_details[constants.CCLS_PRIVATE_OR_CONCOR_LABOUR_FLAG] if constants.CCLS_PRIVATE_OR_CONCOR_LABOUR_FLAG in job_details else None
         job_order_obj['handling_code'] = job_details[constants.CCLS_HANDLING_CODE] if constants.CCLS_HANDLING_CODE in job_details else None
         job_order_obj['icd_location_code'] = job_details[constants.CCLS_ICD_LOCATION_CODE] if constants.CCLS_ICD_LOCATION_CODE in job_details else None
-        job_order_obj['is_cargo_card_generated'] = job_details[constants.CCLS_IS_CARGO_CARD_GENERATED] if constants.CCLS_IS_CARGO_CARD_GENERATED in job_details else None
-        job_order_obj['reserve_flag'] = job_details[constants.CCLS_REVERSE_FLAG] if constants.CCLS_REVERSE_FLAG in job_details else None
+        job_order_obj['is_cargo_card_generated'] = bool(job_details[constants.CCLS_IS_CARGO_CARD_GENERATED]) if constants.CCLS_IS_CARGO_CARD_GENERATED in job_details else None
+        job_order_obj['reserve_flag'] = bool(job_details[constants.CCLS_REVERSE_FLAG]) if constants.CCLS_REVERSE_FLAG in job_details else None
         job_order_obj['job_type'] = job_details[constants.BACKEND_JOB_TYPE] if constants.BACKEND_JOB_TYPE in job_details else None
         job_order_obj['fcl_or_lcl'] = job_details[constants.BACKEND_CONTAINER_FLAG] if constants.BACKEND_CONTAINER_FLAG in job_details else None
         return job_order_obj
@@ -96,10 +96,11 @@ class DataFormater(object):
     
     def build_carting_response_obj(self,job_order_details,container_flag):
         print("job_order_details----------------",job_order_details)
+        carting_job_obj = {'truck_details':job_order_details['truck_details'],"is_cargo_card_generated":job_order_details[constants.CCLS_IS_CARGO_CARD_GENERATED]}
         if container_flag==ContainerFlag.FCL.value:
-            carting_job_obj = {'crn_number' : job_order_details[constants.CCLS_CRN_NUMBER],'truck_details':job_order_details['truck_details']}
+            carting_job_obj.update({'crn_number' : job_order_details[constants.CCLS_CRN_NUMBER]})
         else:
-            carting_job_obj = {'cargo_carting_number' : job_order_details[constants.CCLS_CON_NUMBER],'truck_details':job_order_details['truck_details']}
+            carting_job_obj.update({'cargo_carting_number' : job_order_details[constants.CCLS_CON_NUMBER]})
         key_list = {'bill_number_key':'shipping_bill','ccls_bill_number_key':constants.CCLS_SHIPPING_BILL_NUMBER,'job_list_key_name':'shipping_bill_details_list'}
         result = self.build_response_obj(job_order_details,key_list,carting_job_obj)
         return result
@@ -126,7 +127,7 @@ class DataFormater(object):
         delivery_job_obj = {'gpm_number' : job_order_details[constants.CCLS_GPM_NUMBER],'truck_details':job_order_details['truck_details']}
         key_list = {'bill_number_key':'bill_of_entry','ccls_bill_number_key':constants.CCLS_BILL_OF_ENTRY_NUMBER,'job_list_key_name':'bill_details_list'}
         if container_flag==ContainerFlag.LCL.value:
-            key_list.update({'bill_number_key_one':'bill_of_entry','ccls_bill_number_key_one':constants.CCLS_BILL_OF_LADEN_NUMBER})
+            key_list.update({'bill_number_key_one':'bill_of_lading','ccls_bill_number_key_one':constants.CCLS_BILL_OF_LADEN_NUMBER})
         result = self.build_response_obj(job_order_details,key_list,delivery_job_obj)
         return result
     

@@ -7,6 +7,8 @@ from app.logger import logger
 from app.services.warehouse.wh_job_view import WarehouseJobView
 from app.services.warehouse.wh_tallysheet import WarehouseTallySheetView
 from app.services.warehouse.wh_commodity import WarehouseCommodityView
+from app.services.warehouse.wh_upload_tallysheet import WarehouseUploadTallySheetView
+import pandas as pd
 
 parser = reqparse.RequestParser()
 
@@ -32,7 +34,9 @@ class JobDetails(View):
             return Response(None, status=404, mimetype='application/json')
         
     def post(self):
-        tally_sheet_data=request.json
+        request_data=request.json
+        print("request_data--------",request_data)
+        WarehouseUploadTallySheetView().upload_tallysheet(request_data)
         return Response(json.dumps({"message":"tallysheet uploaded successfully"}), status=200, mimetype='application/json')
 
 class WarehouseTallySheet(View):
@@ -65,7 +69,12 @@ class WarehouseCommodities(View):
             return Response(None, status=404, mimetype='application/json')
 
     def post(self):
-        commodity_data=request.json
+        # commodity_data=request.json
+        file = request.files['file']
+        if not file:
+            return "No file"
+        df = pd.read_csv(file, encoding='unicode_escape')
+        commodity_data = json.loads(df.to_json(orient="records"))
         WarehouseCommodityView().process_commodity_details(commodity_data)
         return Response(json.dumps({"message":"commodities uploaded successfully"}), status=200, mimetype='application/json')
 

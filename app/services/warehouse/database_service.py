@@ -6,9 +6,8 @@ from app.Models.warehouse.container import Container
 from app.logger import logger
 from app import postgres_db as db
 from app.services.warehouse.data_formater import DataFormater
-from sqlalchemy.orm import joinedload
 from app.serializers.job_order import CCLSJobOrderSchema,CCLSCommodityList
-from app.enums import JobStatus,JobOrderType
+from app.enums import JobOrderType
 from app.Models.warehouse.commodity import WarehouseCommodity
 
 class WarehouseDB(object):
@@ -162,7 +161,7 @@ class WarehouseDB(object):
         # .filter_by(**filter_data)
         db_object = query_object.first()
         if db_object:
-            db.session.query(CTMSJobOrder).filter(id==db_object.id).update(dict(job_order_details))
+            db.session.query(CTMSJobOrder).filter(CTMSJobOrder.id==db_object.id).update(dict(job_order_details))
             # db.session.add(db_object)
             db.session.commit()
             # db.session.refresh(db_object)
@@ -199,21 +198,21 @@ class WarehouseDB(object):
                 print("job_order_id--------",job_order_id)
             bill_number=each_bill_info[filter_key]
             each_bill_info = DataFormater().ctms_cargo_details_table_formater(each_bill_info)
-            print("each_bill_info-----------",each_bill_info)
-            if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value,JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value]:
+            print("each_bill_info-----------save_ctms_bill_details",each_bill_info)
+            if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value,JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value]:
                 query_object = db.session.query(CTMSCargoDetails).join(CCLSCargoDetails).filter(CCLSCargoDetails.shipping_bill==bill_number,CCLSCargoDetails.job_order_id==job_order_id)
             elif job_type==JobOrderType.DE_STUFFING_FCL.value:
                 query_object = db.session.query(CTMSCargoDetails).join(CCLSCargoDetails).filter(CCLSCargoDetails.bill_of_entry==bill_number,CCLSCargoDetails.job_order_id==job_order_id)
             elif job_type==JobOrderType.DE_STUFFING_LCL.value:
                 query_object = db.session.query(CTMSCargoDetails).join(CCLSCargoDetails).filter(CCLSCargoDetails.bill_of_lading==bill_number,CCLSCargoDetails.job_order_id==job_order_id)
-            elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value:
+            elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
                 query_object = db.session.query(CTMSCargoDetails).join(CCLSCargoDetails).filter(CCLSCargoDetails.bill_of_entry==bill_number,CCLSCargoDetails.job_order_id==job_order_id)
             # .filter_by(**filter_data)
             db_object = query_object.first()
             if db_object:
-                db.session.query(CTMSCargoDetails).filter(id == db_object.id).update(dict(each_bill_info))
+                update_obj = db.session.query(CTMSCargoDetails).filter(CTMSCargoDetails.id == db_object.id).update(dict(each_bill_info))
                 db.session.commit()
-                logger.info("CTMS cargo details updated successfully")
+                logger.info("CTMS cargo details updated successfully %s",update_obj)
             else:
                 db_object = CTMSCargoDetails(**each_bill_info)
                 db.session.add(db_object, _warn=False)
@@ -258,36 +257,36 @@ class WarehouseDB(object):
                 db.session.refresh(db_object)
                 logger.info("truck created successfully")
 
-    def get_final_job_details(self,filter_data):
+    def get_final_job_details(self,query_object):
         result = {}
-        print("filter_data-----------",filter_data)
-        query_object = db.session.query(CCLSJobOrder).options(joinedload(CCLSJobOrder.cargo_details)).filter_by(**filter_data).first()
         if query_object:
             result = CCLSJobOrderSchema().dump(query_object)
-        print("result------------",result)
+        logger.info("job details from database------------%s",result)
         return result
     
     def get_commodities(self):
         result = {}
         query_object = db.session.query(WarehouseCommodity).all()
         if query_object:
-            print('query_object--------',query_object)
             result = CCLSCommodityList().dump(query_object,many=True)
-        print("result from db------------",result)
+        logger.info("commodities from db------------",result)
         return result
     
     def save_commodities(self,commodity_data):
-        result = {}
         for each_commodity in commodity_data:
-            commodity_code = int(each_commodity['commodity_code'])
-            commodity_description = each_commodity['commodity_description']
-            query_object = db.session.query(WarehouseCommodity).filter(WarehouseCommodity.COMM_CD==commodity_code)
-            if query_object:
-                query_object.update(dict({"COMM_DESC":commodity_description}))
-                logger.info("commodity details updated successfully")
-            else:
-                db_object = WarehouseCommodity(**{"COMM_CD":commodity_code,"COMM_DESC":commodity_description})
-                db.session.add(db_object, _warn=False)
-                db.session.commit()
-                db.session.refresh(db_object)
-                logger.info("commodity details created successfully")
+            try:
+                commodity_code = int(each_commodity['COMM_CD'])
+                logger.info("commodity_code--------%d",commodity_code)
+                each_commodity['SRVC_EXMP_CAT_FLG'] = str(int(each_commodity['SRVC_EXMP_CAT_FLG'])) if 'SRVC_EXMP_CAT_FLG' in each_commodity and each_commodity['SRVC_EXMP_CAT_FLG']!=None else None
+                query_object = db.session.query(WarehouseCommodity).filter(WarehouseCommodity.COMM_CD==commodity_code)
+                if query_object.first():
+                    query_object.update(dict(each_commodity))
+                    logger.info("commodity details updated successfully")
+                else:
+                    db_object = WarehouseCommodity(**each_commodity)
+                    db.session.add(db_object, _warn=False)
+                    db.session.commit()
+                    db.session.refresh(db_object)
+                    logger.info("commodity details created successfully")
+            except Exception as e:
+                logger.error("getting error while saving commodities %s",e)

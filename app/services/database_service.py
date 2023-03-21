@@ -134,6 +134,10 @@ class GateDbService:
                     result['PermitDateTime']=result['PermitDateTime'].strftime("%Y-%m-%d %H:%M:%S")
                 if result['CtrLifeNumber'] and isinstance(result['CtrLifeNumber'], date):
                     result['CtrLifeNumber']=result['CtrLifeNumber'].strftime("%Y-%m-%d")
+                if result['ContainerSize'] and  result['ContainerType']:
+                    iso_code = str(result['ContainerSize'])+str(result['ContainerType'])
+                else:
+                    iso_code = None
                 final_data = {
                                 "permit_no":result['PermitNumber'],
                                 "permit_date":result['PermitDateTime'],
@@ -147,7 +151,7 @@ class GateDbService:
                                 "container_life_no" : result['CtrLifeNumber'],
                                 "health" : result['DamageStatus'],
                                 "gate_in_time" : result['VehicleGateInDateTime'],
-                                "iso_code": str(result['ContainerSize'])+str(result['ContainerType']),
+                                "iso_code": iso_code,
                                 "is_empty_or_laden": "Empty" if "E" in result['ContainerStatus'] else "Laden",
                                 "pod":None,
                                 "cargo_type":None,

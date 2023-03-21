@@ -61,6 +61,7 @@ class TrainDetails(Model):
             message = "please provide query parameters"
             return Response(json.dumps({"message":message}), status=400,mimetype='application/json')
         logger.info('GT,Get request from the Rake service : {}'.format(train_number))
+        result = {}
         if rake_type == "AR":
             result = db_service.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
         elif rake_type == "DE":

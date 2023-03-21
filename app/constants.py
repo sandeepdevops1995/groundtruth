@@ -16,6 +16,8 @@ STACK_LOCATION = "/stack_location"
 GROUND_TRUTH_TABLE_NAME = "Ground_truth"
 ISO_6346_CODE_ENDPOINT = "/map_ccls_iso_code"
 TRACK_DETAILS = '/track_details'
+CGI_SURVEY_ENDPOINT = '/cgi_survey'
+UPDATE_RAKE_CONTAINER_ENDPOINT = '/update_rake_container'
 
 #time format in db:
 TIME_FORMAT ="%Y-%m-%d %H:%M:%S"
@@ -40,6 +42,7 @@ KEY_GATEWAY_PORT = "gateway_port"
 # RAKE 
 KEY_RAKE_ID = "rake_id"
 KEY_TRAIN_NUMBER = 'train_number'
+KEY_TRACK_NUMBER = "track_number"
 KEY_RAKE_NUMBER = "rake_number"
 KEY_IMP_EXP_FLG = 'imp_exp_flg'
 KEY_FROM_LOC = 'from_loc'

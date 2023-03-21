@@ -9,6 +9,7 @@ from app.services.rake_db_service import RakeDbService as db_service
 from app.services.decorator_service import custom_exceptions, jwt_auth_required
 from app.constants import GroundTruthType
 from app.serializers.master_data_serializers import *
+from app.services.rake.rake_inward_write import RakeInwardWriteService
 from datetime import date, datetime
 parser = reqparse.RequestParser()
 
@@ -179,6 +180,24 @@ class RakePlanDetails(Model):
             response =  db_service.get_rake_plan(rake_id)
             return Response(response,status=200,mimetype='application/json')
         
+class UpdateInwardContainerTrackDetails(Model):
+    @custom_exceptions
+    def post(self):
+        data = request.get_json()
+        if data:
+            response = RakeInwardWriteService.update_track_for_container(data)    
+            return soap_API_response(response)
+        return Response(json.dumps({"message":"please provide valid data"}),status=400,mimetype='application/json')
+        
+class UpdateCGISurvey(Model):
+    @custom_exceptions
+    def post(self):
+        data = request.get_json()
+        if data:
+            response = RakeInwardWriteService.update_CGI_survey(data)    
+            return soap_API_response(response)
+        return Response(json.dumps({"message":"please provide valid data"}),status=400,mimetype='application/json')
+   
 
 class WagonMaster(Model):
     @custom_exceptions

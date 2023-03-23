@@ -182,7 +182,7 @@ class RakeDbService:
                     result.update(dict(wagon))
                     logger.info("Updated existing wagon")
                 else:
-                    db.session.add(wagon)
+                    db.session.add(wagon_model)
                 commit()
             except Exception as e:
                 logger.exception(str(e))

@@ -7,6 +7,7 @@ from app.logger import logger
 import app.constants as Constants
 import config
 import time
+from datetime import datetime
 
 
 
@@ -22,19 +23,22 @@ class RakeInwardWriteService():
         if Constants.KEY_CONTAINER_NUMBER in data:
             rake_data[Constants.KEY_SOAP_CONTAINER_NUMBER] = data[Constants.KEY_CONTAINER_NUMBER]
         if Constants.KEY_CONTAINER_LIFE_NUMBER in data:
-            rake_data[Constants.KEY_SOAP_CONTAINER_LIFE_NUMBER] = data[Constants.KEY_CONTAINER_LIFE_NUMBER]
+            rake_data[Constants.KEY_SOAP_CONTAINER_LIFE_NUMBER] = datetime.strptime(data[Constants.KEY_CONTAINER_LIFE_NUMBER], '%Y-%m-%d %H:%M:%S') 
         if Constants.KEY_CONTAINER_SIZE in data:
             rake_data[Constants.KEY_SOAP_CONTAINER_SIZE] = data[Constants.KEY_CONTAINER_SIZE]
         if Constants.KEY_CONTAINER_TYPE in data:
             rake_data[Constants.KEY_SOAP_CONTAINER_TYPE] = data[Constants.KEY_CONTAINER_TYPE]
-        if Constants.KEY_CONTAINER_STAT in data:
-            rake_data[Constants.KEY_SOAP_CONTAINER_STAT] = data[Constants.KEY_CONTAINER_STAT]
+        # Container stat field is not supported in Rake Inward
+        # if Constants.KEY_CONTAINER_STAT in data:
+        #     rake_data[Constants.KEY_SOAP_CONTAINER_STAT] = data[Constants.KEY_CONTAINER_STAT]
         if Constants.KEY_SEAL_NUMBER in data:
             rake_data[Constants.KEY_SOAP_SEAL_NUMBER] = data[Constants.KEY_SEAL_NUMBER]
         if Constants.KEY_HAZARD_STATUS in data:
             rake_data[Constants.KEY_SOAP_HAZARD_STATUS] = data[Constants.KEY_HAZARD_STATUS]
         if Constants.KEY_DAMAGE_FLAG in data:
             rake_data[Constants.KEY_SOAP_DAMAGE_FLAG] = data[Constants.KEY_DAMAGE_FLAG]
+        if "equipment_name" in data:
+            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = data["equipment_name"]
         if Constants.KEY_EQUIPMENT_ID in data:
             rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = data[Constants.KEY_EQUIPMENT_ID]
         print(rake_data)

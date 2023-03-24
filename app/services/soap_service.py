@@ -66,7 +66,7 @@ def get_train_data(train_number='',from_date='', to_date = ''):
         return result
     
 
-def update_inward_rake(rake_data):
+def update_inward_rake(rake_data,api_url="Inward Write"):
     try: 
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/RakeInwardWriteOperation/rakewriteinward_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 
@@ -74,7 +74,7 @@ def update_inward_rake(rake_data):
                         port_name="RakeWriteInward_pt")
         logger.debug('Update Inward Rake Details, soap service request with data : '+ str(rake_data))
         result = soap.service.process(**rake_data)
-        save_in_diagnostics(Constants.TRAIN_DETAILS_ENDPOINT,{"data":str(rake_data)},{"output":str(result)})
+        save_in_diagnostics(api_url,{"data":str(rake_data)},{"output":str(result)})
         logger.debug('Update Inward Rake Details, soap service response : '+ str(result))
         return result
     except Exception as e:
@@ -82,7 +82,7 @@ def update_inward_rake(rake_data):
         result = {}
         return result
     
-def update_outward_rake(rake_data):
+def update_outward_rake(rake_data,api_url="Outward Write"):
     try: 
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/RakeOutwardWriteOperation/rakeoutwardwrite_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 
@@ -90,7 +90,7 @@ def update_outward_rake(rake_data):
                         port_name="RakeOutwardWrite_pt")
         logger.debug('Update Outward Rake Details, soap service request with data : '+ str(rake_data))
         result = soap.service.process(**rake_data)
-        save_in_diagnostics(Constants.TRAIN_DETAILS_ENDPOINT,{"data":str(rake_data)},{"output":str(result)})
+        save_in_diagnostics(api_url,{"data":str(rake_data)},{"output":str(result)})
         logger.debug('Update Outward Rake Details, soap service response : '+ str(result))
         return result
     except Exception as e:

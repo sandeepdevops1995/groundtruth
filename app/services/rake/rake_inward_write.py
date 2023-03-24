@@ -53,7 +53,7 @@ class RakeInwardWriteService():
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 ccls_data = RakeInwardWriteService.format_data_to_ccls_format(data)
-                result = soap_service.update_inward_rake(ccls_data)
+                result = soap_service.update_inward_rake(ccls_data,Constants.UPDATE_RAKE_CONTAINER_ENDPOINT)
                 return result
             return {}
         except Exception as e:
@@ -70,7 +70,7 @@ class RakeInwardWriteService():
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 ccls_data = RakeInwardWriteService.format_data_to_ccls_format(data)
-                result = soap_service.update_inward_rake(ccls_data)
+                result = soap_service.update_inward_rake(ccls_data,Constants.CGI_SURVEY_ENDPOINT)
                 return result
             return {}
         except Exception as e:

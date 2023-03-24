@@ -23,6 +23,7 @@ xmltodict = "==0.13.0"
 Flask-APScheduler = "==1.12.4"
 flask-marshmallow = "==0.14.0"
 marshmallow-sqlalchemy = "==0.28.1"
+gunicorn = "==20.1.0"
 
 [dev-packages]
 

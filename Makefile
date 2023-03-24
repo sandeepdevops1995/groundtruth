@@ -177,6 +177,11 @@ run: | probe-pipenv probe-env-settings kill-server ## Spawn dev server
 	@printf "\nStarting Ground Truth microservice...\n\n"; \
 	python3 -m pipenv run python ground_truth.py;
 
+.PHONY: run-gunicorn-server
+run-gunicorn-server: | probe-pipenv probe-env-settings kill-server ## Spawn dev server
+	@printf "\nStarting Ground Truth microservice...\n\n"; \
+	python3 -m pipenv run gunicorn --bind 0.0.0.0:8040 ground_truth:app;
+
 .PHONY: list
 list: ## Parse the Make database and display available targets
 	@printf "\nAvailable Makefile commands:\n\n" && $(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' && printf "\n\n"

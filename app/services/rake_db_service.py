@@ -128,6 +128,12 @@ class RakeDbService:
             rake_query.update(dict(update_data))
             commit()
             data = rake_query.order_by('trans_date').all()
+            if not data and "train_number" in query_values:
+                logger.info("fetch train details from soap service for train number "+query_values['train_number'])
+                result = soap_service.get_train_data(train_number=query_values['train_number'])
+                if result:
+                    logger.info("Data exists in Soap Servcie for given train number "+query_values['train_number'])
+                    data = RakeDbService.save_in_db(result)
             return RakeDbService.format_rake_data(data)
             
         except Exception as e:

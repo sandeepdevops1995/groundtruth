@@ -174,6 +174,8 @@ class RakeDbService:
             wagon["container_gross_weight"] = each["ctrWt"][0]
             wagon["port_name"] = each["portNam"][0]
             wagon["train_dept"] = each["trnDep"][0]
+            if "SEAL_NO" in each:
+                wagon["seal_number"] = each["SEAL_NO"][0 ]
             
             query_fields = {"wagon_number" : wagon["wagon_number"],
              "container_number" : wagon["container_number"],

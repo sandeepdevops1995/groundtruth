@@ -69,6 +69,8 @@ class PendancySummary(Model):
         data = get_xml_file_data_to_dict()
         if "RR_EXP_LDD_LST" in data:
             container_list = self.process_pendancy_summary(data['RR_EXP_LDD_LST'])
+        elif "RR_EXP_MT_LST_LIVE" in data:
+            container_list = self.process_pendancy_summary(data['RR_EXP_MT_LST_LIVE'])
         else:
             return Response(json.dumps({"message":"unknown file format"}),status=400,mimetype='application/json')
         if upload_pendancy_data(container_list):
@@ -93,24 +95,36 @@ class PendancySummary(Model):
             data = [data]
         for pendancy_container in data:
             container = {}
-            container["container_number"] = pendancy_container["CTR_NO"]
-            if pendancy_container["CTR_LIFE_NO"]:
-                container["container_life_number"] = datetime.strptime(pendancy_container["CTR_LIFE_NO"], '%d-%m-%Y %H:%M:%S') 
-            container["container_stat"] = pendancy_container["CTR_STAT"]
-            container["container_size"] = int(pendancy_container["CTR_SIZE"])
-            container["container_type"] = pendancy_container["CTR_TYPE"]
-            container["container_weight"] = float(pendancy_container["WT"])
-            container["container_acty_code"] = pendancy_container["CTR_ACTY_CD"]
-            container["icd_loc_code"] = pendancy_container["LOC_CD"]
-            container["stuffed_at"] = pendancy_container["STF_AT"]
-            container["stack_loc"] = pendancy_container["STK_LOC"]
-            container["sline_code"] = pendancy_container["SLINE_CD"]
             container["gateway_port_code"] = gateway_port_code
-            if pendancy_container["ARR_DATE"]:
+            if "CTR_NO" in pendancy_container:
+                container["container_number"] = pendancy_container["CTR_NO"]
+            if "CTR_LIFE_NO" in pendancy_container and pendancy_container["CTR_LIFE_NO"]:
+                container["container_life_number"] = datetime.strptime(pendancy_container["CTR_LIFE_NO"], '%d-%m-%Y %H:%M:%S') 
+            if "CTR_STAT" in pendancy_container:
+                container["container_stat"] = pendancy_container["CTR_STAT"]
+            if "CTR_SIZE" in pendancy_container:
+                container["container_size"] = int(pendancy_container["CTR_SIZE"])
+            if "CTR_TYPE" in pendancy_container:
+                container["container_type"] = pendancy_container["CTR_TYPE"]
+            if "WT" in pendancy_container:
+                container["container_weight"] = float(pendancy_container["WT"])
+            if "CTR_ACTY_CD" in pendancy_container:
+                container["container_acty_code"] = pendancy_container["CTR_ACTY_CD"]
+            if "LOC_CD" in pendancy_container:
+                container["icd_loc_code"] = pendancy_container["LOC_CD"]
+            if "STF_AT" in pendancy_container:
+                container["stuffed_at"] = pendancy_container["STF_AT"]
+            if "STK_LOC" in pendancy_container:
+                container["stack_loc"] = pendancy_container["STK_LOC"]
+            if "SLINE_CD" in pendancy_container:
+                container["sline_code"] = pendancy_container["SLINE_CD"]
+            if "ARR_DATE" in pendancy_container and pendancy_container["ARR_DATE"]:
                 container["arrival_date"] =  datetime.strptime(pendancy_container["ARR_DATE"], '%d-%m-%Y %H:%M:%S')
-            if pendancy_container["SEAL_DATE"]:
+            if "SEAL_DATE" in pendancy_container and pendancy_container["SEAL_DATE"]:
                 container["seal_date"] =  datetime.strptime(pendancy_container["SEAL_DATE"], '%d-%m-%Y %H:%M:%S')
-            container["odc_flag"] = pendancy_container["ODC_FLG"]
-            container["hold_rels_flg"] = pendancy_container["HOLD_RELS_FLG"]
+            if "ODC_FLG" in pendancy_container:
+                container["odc_flag"] = pendancy_container["ODC_FLG"]
+            if "HOLD_RELS_FLG" in pendancy_container:
+                container["hold_rels_flg"] = pendancy_container["HOLD_RELS_FLG"]
             container_list.append(container)
         return container_list

@@ -37,7 +37,10 @@ CCLS_GROUND_TRUTH = True #set it true to get data from test oracle db
 CONTAINERS_DATA_DIRECTORY = "containers_data" #folder  to listen for the new files
 RAKE_DATA_DIRECTORY = 'rake_data'
 GROUND_TRUTH = GroundTruthType.SOAP.value
-WSDL_URL = "http://10.1.100.101:8001"
+
+#logstash config
+LOGSTASH_IP = '10.60.62.55'
+LOGSTASH_PORT = 5044
 
 
 #CCLS / other config details:

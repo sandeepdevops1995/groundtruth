@@ -4,7 +4,7 @@ import logging
 import sys
 import getpass
 import config
-
+import logstash
 
 if not os.path.isdir(config.LOG_DIRECTORY_PATH):
     os.makedirs(config.LOG_DIRECTORY_PATH)
@@ -26,4 +26,8 @@ logger.addHandler(fh)
 sh = logging.StreamHandler(sys.stdout)
 sh.setLevel(logging.DEBUG)
 sh.setFormatter(formatter)
+logger.addHandler(sh)
+
+#TCP handler to write logs in logstash
+sh = logstash.TCPLogstashHandler(config.LOGSTASH_IP,config.LOGSTASH_PORT,tags=['ground-truth'])
 logger.addHandler(sh)

@@ -39,7 +39,7 @@ probe-pipenv: | probe-pip3; @python3 -m pipenv --version >/dev/null 2>&1 && echo
 .PHONY: daemonize
 daemonize: kill-server ## Fork server into background
 	@newbg() { session_name="new_$$(tmux ls 2>/dev/null | wc -l)"; tmux new-session -d -s "$$session_name" > /dev/null 2>&1; tmux send-keys "$$1" C-m; tmux detach -s "$$session_name" > /dev/null 2>&1; printf "\n\n[Info] Success. started server process in background. You can run 'make attach-bg' from anywhere to activate it again.\n\n"; }; \
-	newbg "make run"; \
+	newbg "make run-gunicorn-server"; \
 	$$(> $(tmuxSessionIDStore) && echo "$$session_name" > $(tmuxSessionIDStore));
 
 # Look up to read what daemonize does.

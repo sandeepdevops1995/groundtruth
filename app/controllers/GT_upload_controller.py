@@ -69,8 +69,12 @@ class PendancySummary(Model):
         data = get_xml_file_data_to_dict()
         if "RR_EXP_LDD_LST" in data:
             container_list = self.process_pendancy_summary(data['RR_EXP_LDD_LST'])
+        elif "RR_EXP_LDD_BLK" in data:
+            container_list = self.process_pendancy_summary(data['RR_EXP_LDD_BLK'])
         elif "RR_EXP_MT_LST_LIVE" in data:
             container_list = self.process_pendancy_summary(data['RR_EXP_MT_LST_LIVE'])
+        elif  "RR_EXP_LDD_LST_JNPTMIX" in data:
+            container_list = self.process_each_gateway_port(data["RR_EXP_LDD_LST_JNPTMIX"]["LIST_G_CTR_NO"]["G_CTR_NO"],None)
         else:
             return Response(json.dumps({"message":"unknown file format"}),status=400,mimetype='application/json')
         if upload_pendancy_data(container_list):
@@ -82,7 +86,7 @@ class PendancySummary(Model):
         if isinstance(gateway_port_list,dict):
             gateway_port_list = [gateway_port_list]
         for port in gateway_port_list:
-            gateway_port_code =  port["GW_PORT_CD"]
+            gateway_port_code =  port["GW_PORT_CD"] if "GW_PORT_CD" in port else None
             data = self.process_each_gateway_port(port["LIST_G_CTR_NO"]["G_CTR_NO"],gateway_port_code)
             final_container_list+=data
         return final_container_list
@@ -90,12 +94,15 @@ class PendancySummary(Model):
     
     def process_each_gateway_port(self,data,port_code):
         container_list = []
-        gateway_port_code =  port_code
         if isinstance(data,dict):
             data = [data]
         for pendancy_container in data:
             container = {}
-            container["gateway_port_code"] = gateway_port_code
+            container["sline_code"] = "OOCL"
+            container["container_weight"] = 10
+            container["container_type"] = "GL"
+            if port_code:
+                container["gateway_port_code"] = port_code
             if "CTR_NO" in pendancy_container:
                 container["container_number"] = pendancy_container["CTR_NO"]
             if "CTR_LIFE_NO" in pendancy_container and pendancy_container["CTR_LIFE_NO"]:
@@ -108,6 +115,8 @@ class PendancySummary(Model):
                 container["container_type"] = pendancy_container["CTR_TYPE"]
             if "WT" in pendancy_container:
                 container["container_weight"] = float(pendancy_container["WT"])
+            if "CTR_WT" in pendancy_container:
+                container["container_weight"] = float(pendancy_container["CTR_WT"])
             if "CTR_ACTY_CD" in pendancy_container:
                 container["container_acty_code"] = pendancy_container["CTR_ACTY_CD"]
             if "LOC_CD" in pendancy_container:
@@ -120,11 +129,15 @@ class PendancySummary(Model):
                 container["sline_code"] = pendancy_container["SLINE_CD"]
             if "ARR_DATE" in pendancy_container and pendancy_container["ARR_DATE"]:
                 container["arrival_date"] =  datetime.strptime(pendancy_container["ARR_DATE"], '%d-%m-%Y %H:%M:%S')
+            if "SEAL_NO" in pendancy_container:
+                container["seal_number"] =  pendancy_container["SEAL_NO"]
             if "SEAL_DATE" in pendancy_container and pendancy_container["SEAL_DATE"]:
                 container["seal_date"] =  datetime.strptime(pendancy_container["SEAL_DATE"], '%d-%m-%Y %H:%M:%S')
             if "ODC_FLG" in pendancy_container:
                 container["odc_flag"] = pendancy_container["ODC_FLG"]
             if "HOLD_RELS_FLG" in pendancy_container:
                 container["hold_rels_flg"] = pendancy_container["HOLD_RELS_FLG"]
+            if "GW_PORT_CD" in pendancy_container:
+                container["gateway_port_code"] = pendancy_container["GW_PORT_CD"]
             container_list.append(container)
         return container_list

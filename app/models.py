@@ -177,7 +177,7 @@ class PendancyContainer(db.Model):
     sline_code = db.Column(db.String(10))
     gateway_port_code = db.Column(db.String(10))
     arrival_date = db.Column(db.DateTime())
-    seal_number = db.Column(db.String(10))
+    seal_number = db.Column(db.String(20))
     seal_date = db.Column(db.DateTime())
     sbill_number = db.Column(db.String(10))
     sbill_date = db.Column(db.DateTime())

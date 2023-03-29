@@ -63,7 +63,7 @@ from app.Models import *
 from app.controllers.urls import register_controllers
 from app.services.rake_directory_watcher_service import RakeDataEvents
 
-@scheduler.task('cron', id='CCLS Rake Data', day='*', misfire_grace_time=900)
+@scheduler.task('cron', id='CCLS Rake Data', day='*/3', misfire_grace_time=900)
 def scheduleTask():
     with scheduler.app.app_context():
         from app.services.rake_db_service import RakeDbService

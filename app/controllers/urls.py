@@ -25,6 +25,7 @@ def register_controllers():
     api.add_resource(PendancyList,Constants.PENDANCY_CONTAINERS_ENDPOINT)
     api.add_resource(UpdateInwardContainerTrackDetails,Constants.UPDATE_RAKE_CONTAINER_ENDPOINT)
     api.add_resource(UpdateCGISurvey,Constants.CGI_SURVEY_ENDPOINT)
+    api.add_resource(UpdateCGOSurvey,Constants.CGO_SURVEY_ENDPOINT)
     api.add_resource(WagonTypes,'/wagon_types')
     api.add_resource(SlineCodes,'/sline_codes')
     api.add_resource(PodCodes,'/pod_codes')

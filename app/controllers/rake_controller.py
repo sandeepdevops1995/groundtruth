@@ -10,6 +10,7 @@ from app.services.decorator_service import custom_exceptions, jwt_auth_required
 from app.constants import GroundTruthType
 from app.serializers.master_data_serializers import *
 from app.services.rake.rake_inward_write import RakeInwardWriteService
+from app.services.rake.rake_outward_write import RakeOutwardWriteService
 from datetime import date, datetime
 parser = reqparse.RequestParser()
 
@@ -198,7 +199,15 @@ class UpdateCGISurvey(Model):
             return soap_API_response(response)
         return Response(json.dumps({"message":"please provide valid data"}),status=400,mimetype='application/json')
    
-
+class UpdateCGOSurvey(Model):
+    @custom_exceptions
+    def post(self):
+        data = request.get_json()
+        if data:
+            response = RakeOutwardWriteService.update_CGO_survey(data)    
+            return soap_API_response(response)
+        return Response(json.dumps({"message":"please provide valid data"}),status=400,mimetype='application/json')
+   
 class WagonMaster(Model):
     @custom_exceptions
     def post(self):

@@ -17,6 +17,7 @@ GROUND_TRUTH_TABLE_NAME = "Ground_truth"
 ISO_6346_CODE_ENDPOINT = "/map_ccls_iso_code"
 TRACK_DETAILS = '/track_details'
 CGI_SURVEY_ENDPOINT = '/cgi_survey'
+CGO_SURVEY_ENDPOINT = '/cgo_survey'
 UPDATE_RAKE_CONTAINER_ENDPOINT = '/update_rake_container'
 
 #time format in db:

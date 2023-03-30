@@ -254,7 +254,7 @@ class UpdateInwardRakeDetails(Model):
         data = request.get_json()
         if set(Constants.rake_write_required_fields).issubset(set(data.keys())):
             result = {}
-            result =  db_service.update_inward_rake_details(data)
+            result =  RakeInwardWriteService.update_inward_train_summary(data)
             return soap_API_response(result)
         else:
             return Response(json.dumps({"message":"please provide all required fields", "required fields" :Constants.rake_write_required_fields}), status=400, mimetype='application/json')
@@ -266,7 +266,7 @@ class UpdateOutwardRakeDetails(Model):
         data = request.get_json()
         if set(Constants.rake_write_required_fields).issubset(set(data.keys())):
             result = {}
-            result =  db_service.update_inward_rake_details(data)
+            result =  RakeOutwardWriteService.update_outward_train_summary(data)
             return soap_API_response(result)
         else:
             return Response(json.dumps({"message":"please provide all required fields", "required fields" :Constants.rake_write_required_fields}), status=400, mimetype='application/json')

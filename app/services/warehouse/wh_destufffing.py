@@ -5,7 +5,7 @@ from app.logger import logger
 import app.services.warehouse.constants as constants
 from app.services.warehouse.data_formater import DataFormater
 from app.enums import ContainerFlag,JobOrderType
-from app.Models.warehouse.job_order import CCLSJobOrder
+from app.models.warehouse.job_order import CCLSJobOrder
 from app import postgres_db as db
 
 class WarehouseDeStuffing(object):

@@ -2,10 +2,10 @@ from app.services.warehouse.data_formater import DataFormater
 from app.services.warehouse.database_service import WarehouseDB
 import app.services.warehouse.constants as constants
 from app.enums import JobOrderType
-from app.Models.warehouse.job_order import CCLSJobOrder,CTMSJobOrder
+from app.models.warehouse.job_order import CCLSJobOrder,CTMSJobOrder
 from app import postgres_db as db
 from sqlalchemy.orm import contains_eager
-from app.Models.warehouse.bill_details import CCLSCargoDetails
+from app.models.warehouse.bill_details import CCLSCargoDetails
 
 class WarehouseTallySheetView(object):
 

@@ -9,7 +9,8 @@ from app import engine as e
 from app.services.decorator_service import query_debugger
 from app.services import soap_service
 from app.constants import GroundTruthType
-from app.models import Permit,db_format,db_functions
+from app.models import Permit
+from app.models.utils import db_format,db_functions
 from app.logger import logger
 from app import postgres_db
 import random

@@ -58,7 +58,6 @@ CORS(app)
 api = Api(app)
 
 from app.models import *
-from app.Models import *
  
 from app.controllers.urls import register_controllers
 from app.services.rake_directory_watcher_service import RakeDataEvents

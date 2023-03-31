@@ -1,14 +1,14 @@
-from app.Models.warehouse.bill_details import CCLSCargoDetails,CTMSCargoDetails
-from app.Models.warehouse.job_order import CCLSJobOrder,CTMSJobOrder
-from app.Models.warehouse.commodity import WarehouseCommodity
-from app.Models.warehouse.truck import TruckDetails
-from app.Models.warehouse.container import Container
+from app.models.warehouse.bill_details import CCLSCargoDetails,CTMSCargoDetails
+from app.models.warehouse.job_order import CCLSJobOrder,CTMSJobOrder
+from app.models.warehouse.commodity import WarehouseCommodity
+from app.models.warehouse.truck import TruckDetails
+from app.models.warehouse.container import Container
 from app.logger import logger
 from app import postgres_db as db
 from app.services.warehouse.data_formater import DataFormater
 from app.serializers.job_order import CCLSJobOrderSchema,CCLSCommodityList
 from app.enums import JobOrderType
-from app.Models.warehouse.commodity import WarehouseCommodity
+from app.models.warehouse.commodity import WarehouseCommodity
 
 class WarehouseDB(object):
 

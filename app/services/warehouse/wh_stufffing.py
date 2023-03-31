@@ -3,7 +3,7 @@ from app.services.warehouse.database_service import WarehouseDB
 from app.logger import logger
 import app.services.warehouse.constants as constants
 from app.services.warehouse.data_formater import DataFormater
-from app.Models.warehouse.job_order import CCLSJobOrder
+from app.models.warehouse.job_order import CCLSJobOrder
 from app import postgres_db as db
 from app.enums import JobOrderType,ContainerFlag
 

@@ -1,261 +1,4 @@
 from app import postgres_db as db
-from datetime import datetime
-import json
-
-
-def db_format(data):
-    for value in data:
-        if isinstance(data[value],dict):
-            data[value] = json.dumps(data[value])
-        elif isinstance(data[value],list):
-            data[value] = json.dumps(data[value])
-    return data
-            
-class db_functions():
-    def __init__(self,data):
-        self.data = data
-        if isinstance(data,list):
-            self.many = True
-        else:
-            self.many = False
-        
-    def as_dict(self):
-        def dict_data(table):
-            return {c.name: getattr(table, c.name) for c in table.__table__.columns}
-            
-        if self.many:
-            final_data = []
-            for table in self.data:
-                final_data.append(dict_data(table))
-            return final_data
-        else:
-           return dict_data(self.data) 
-    
-    def as_json(self):
-        def json_data(table):
-            data = {}
-            for c in table.__table__.columns:
-                value = getattr(table, c.name)
-                if isinstance(value, datetime):
-                    value = value.strftime("%Y-%m-%d %H:%M:%S")
-                if isinstance(value, str):
-                    try:
-                        value = json.loads(value)
-                    except:
-                        pass
-                data[c.name] = value
-            return data
-    
-        if self.many:
-            
-            final_data = []
-            for table in self.data:
-                final_data.append(json_data(table))
-            return json.dumps(final_data)
-        else:
-            return json.dumps(json_data(self.data)) 
-        
-            
-class Permit(db.Model):
-    # currently using fields
-    permit_no = db.Column(db.String(50),primary_key=True)
-    permit_date = db.Column(db.DateTime())
-    permit_expiry_date = db.Column(db.DateTime())
-    container_no = db.Column(db.String(50))
-    container_size = db.Column(db.String(50)) 
-    container_type = db.Column(db.String(50))
-    container_status = db.Column(db.String(50))         #permit_details
-    container_life_no = db.Column(db.DateTime())        #permit details
-    hazard_status = db.Column(db.Boolean())
-    damage_status = db.Column(db.Boolean())
-    sline_code = db.Column(db.String(50))               #permit_details
-    sline_no = db.Column(db.String(50))
-    crn_no = db.Column(db.String(50))
-    seal_count = db.Column(db.Integer())
-    seal_no = db.Column(db.String(50))
-    seal_type = db.Column(db.String(50))
-    vehicle_no =  db.Column(db.String(50))
-    gate_in_time = db.Column(db.DateTime())
-    gate_out_time = db.Column(db.DateTime())
-    user_id = db.Column(db.String(50))
-    gate_no = db.Column(db.String(3))
-    stk_loc = db.Column(db.String(20))
-    dmg_code = db.Column(db.String(20))
-    dt_seal = db.Column(db.DateTime())
-    
-    #Fields may require in future
-    permit_type = db.Column(db.String(50))
-    container_type = db.Column(db.String(50))
-    iso_code = db.Column(db.String(50))
-    liner_seal = db.Column(db.String(50))
-    custom_seal = db.Column(db.String(50), nullable=True)
-    reefer = db.Column(db.String(50), nullable=True)
-    is_empty_or_laden = db.Column(db.String(10))
-    cargo_type = db.Column(db.String(50))
-    POD = db.Column(db.String(50))
-    permit_details = db.Column(db.Text)
-    bill_info = db.Column(db.Text)
-    truck = db.Column(db.Text)
-    hazard = db.Column(db.Text)
-    un_number = db.Column(db.Text)
-    
-
-class CCLSRake(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    rake_id = db.Column(db.BigInteger())
-    train_number = db.Column(db.String(10))
-    train_origin_station = db.Column(db.String(25))
-    train_destination_station = db.Column(db.String(25))
-    rake_type = db.Column(db.String(5))
-    rake_number = db.Column(db.String(25))
-    wagon_type =  db.Column(db.String(3))
-    wagon_number = db.Column(db.BigInteger())
-    wagon_sequence_number = db.Column(db.Integer())
-    wagon_ldd_mt = db.Column(db.String(1), nullable=True)
-    wagon_owner = db.Column(db.String(25))
-    container_number = db.Column(db.String(11))
-    container_life_number = db.Column(db.DateTime()) 
-    container_size = db.Column(db.Integer())
-    container_type = db.Column(db.String(2))
-    container_status = db.Column(db.String(2))
-    container_gross_weight = db.Column(db.Float())
-    container_origin_station = db.Column(db.String(25))
-    container_destination_station = db.Column(db.String(25))
-    iso_code = db.Column(db.String(25))
-    container_stg_flag = db.Column(db.String(1), nullable=True)
-    container_iwb_flag = db.Column(db.String(1), nullable=True)
-    cargo_type = db.Column(db.String(25))
-    fcl_lcl_flg = db.Column(db.String(3), nullable=True)
-    station_cd = db.Column(db.String(25))
-    gw_port_cd = db.Column(db.String(25))
-    error_flg = db.Column(db.String(1), nullable=True)
-    remark = db.Column(db.String(100))
-    cancel_flg = db.Column(db.String(1), nullable=True)
-    trans_date = db.Column(db.DateTime())
-    user_id = db.Column(db.String(100))
-    wagon_life_number = db.Column(db.DateTime())
-    smtp_no = db.Column(db.String(25))
-    smtp_date = db.Column(db.DateTime())
-    port_name = db.Column(db.String(25))
-    train_dept = db.Column(db.DateTime())
-    seal_number = db.Column(db.String(10))
-    hazardious_status = db.Column(db.String(2))
-    sline_code = db.Column(db.String(6))
-    attribute_1 = db.Column(db.String(25))
-    attribute_2 = db.Column(db.String(25))
-    attribute_3 = db.Column(db.String(25))
-    attribute_4 = db.Column(db.String(25))
-    attribute_5 = db.Column(db.String(25))
-    attribute_6 = db.Column(db.DateTime())
-    attribute_7 = db.Column(db.DateTime())
-    created_date = db.Column(db.DateTime(), default = datetime.now)
-    created_by = db.Column(db.String(25))
-    updated_date = db.Column(db.DateTime(), default = datetime.now, onupdate=datetime.now)
-    updated_by = db.Column(db.String(25))
-    date_actual_departure =  db.Column(db.DateTime())
-    ldd_mt_flg = db.Column(db.String(2))
-    imp_exp_flg = db.Column(db.String(1), nullable=True)
-    adv_boe_flg = db.Column(db.String(2), nullable=True)
-    error_msg = db.Column(db.String(100))
-    status_flg = db.Column(db.String(1), nullable=True)
-    track_number = db.Column(db.String(10), nullable=True)
-    
-    __tablename__ = 'xxccls_rake_trnsdtls_tbl'
-
-class PendancyContainer(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    container_number = db.Column(db.String(11))
-    container_life_number = db.Column(db.DateTime())
-    container_stat = db.Column(db.String(2))
-    container_size = db.Column(db.Integer())
-    container_type = db.Column(db.String(2))
-    container_weight = db.Column(db.Float())
-    container_acty_code = db.Column(db.String(10))
-    icd_loc_code = db.Column(db.String(10))
-    stuffed_at = db.Column(db.String(10))
-    stack_loc = db.Column(db.String(10))
-    sline_code = db.Column(db.String(10))
-    gateway_port_code = db.Column(db.String(10))
-    arrival_date = db.Column(db.DateTime())
-    seal_number = db.Column(db.String(20))
-    seal_date = db.Column(db.DateTime())
-    sbill_number = db.Column(db.String(10))
-    sbill_date = db.Column(db.DateTime())
-    pid_number = db.Column(db.String(10))
-    odc_flag = db.Column(db.String(10))
-    hold_rels_flg = db.Column(db.String(10))
-    hold_rels_flg_next = db.Column(db.String(10))
-    
-class RakePlan(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    rake_id = db.Column(db.BigInteger())
-    train_number = db.Column(db.String(10))
-    dt_desp = db.Column(db.DateTime())
-    rake_number = db.Column(db.String(25))
-    hld_track_number = db.Column(db.String(10))
-    dt_wtr = db.Column(db.DateTime())
-    equipment_id = db.Column(db.String(25))
-    gateway_port_cd= db.Column(db.String(25))
-    container_number = db.Column(db.String(11))
-    container_life_number = db.Column(db.DateTime())
-    wagon_number = db.Column(db.String(25))
-    wagon_life_number = db.Column(db.DateTime())
-    damage_flg =  db.Column(db.String(1))
-    sline_code = db.Column(db.String(6))
-    container_size = db.Column(db.Integer())
-    container_type = db.Column(db.String(2))
-    container_status = db.Column(db.String(2))
-    iso_code = db.Column(db.String(25))
-    ldd_mt_flg = db.Column(db.String(2))
-    damage_code = db.Column(db.String(25))
-    container_weight = db.Column(db.Float())
-    first_pod = db.Column(db.String(25))
-    origin_station = db.Column(db.String(25))
-    dest_station = db.Column(db.String(25))
-    attribute_1 = db.Column(db.String(25))
-    attribute_2 = db.Column(db.String(25))
-    attribute_3 = db.Column(db.String(25))
-    attribute_4 = db.Column(db.String(25))
-    attribute_5 = db.Column(db.String(25))
-    attribute_6 = db.Column(db.DateTime())
-    attribute_7 = db.Column(db.DateTime())
-    created_date = db.Column(db.DateTime(), default = datetime.now)
-    created_by = db.Column(db.String(25))
-    updated_date = db.Column(db.DateTime(), default = datetime.now, onupdate=datetime.now)
-    updated_by = db.Column(db.String(25))
-    error_msg = db.Column(db.String(100))
-    status_flg = db.Column(db.String(1), nullable=True)
-    read_flg  = db.Column(db.String(1), nullable=True)
-    
-    
-    
-class ISOcode(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    ctr_size = db.Column(db.Integer())
-    ctr_type = db.Column(db.String(2))
-    ctr_iso_cd = db.Column(db.String(4))
-    
-    __tablename__ = 'tm_cctrisocd'
-    
-    
-class CtrSize(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    ctr_size = db.Column(db.Integer())
-    ctr_tare_wt = db.Column(db.Float(precision=2))
-    ldd_ctr_wt = db.Column(db.Float(precision=2))
-    user_id = db.Column(db.String(100))
-    teu = db.Column(db.Float(precision=1))
-    
-    __tablename__ = 'tm_cctrsize'
-    
-
-class CtrType(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    ctr_type =  db.Column(db.String(2))
-    ctr_type_desc = db.Column(db.String(25))
-    user_id = db.Column(db.String(100))
-    
-    __tablename__ = 'tm_cctrtype'
 
 class Ctry(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -474,80 +217,11 @@ class Commodity(db.Model):
     
     __tablename__ = 'tm_ccommodity'
     
-class CtrTarewt(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    ctr_size = db.Column(db.Integer())
-    ctr_type = db.Column(db.String(2))
-    ctr_tare_wt = db.Column(db.Float(precision=2))
-    user_id = db.Column(db.String(100))
-    trans_dt_tm = db.Column(db.DateTime())
-    ldd_ctr_wt = db.Column(db.Float(precision=2))
+
     
-    __tablename__ = 'tm_cctr_tarewt'
+
     
-class CtrDtls(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    ctr_no = db.Column(db.String(12))
-    ctr_life_no = db.Column(db.DateTime())
-    ctr_iso_cd = db.Column(db.String(4))
-    sline_cd = db.Column(db.String(5))
-    ctr_size = db.Column(db.Integer())
-    ctr_type = db.Column(db.String(2))
-    ctr_stat = db.Column(db.String(2))
-    hold_rels_flg = db.Column(db.String(1))
-    ldd_mt_flg = db.Column(db.String(1))
-    imp_exp_flg = db.Column(db.String(1))
-    fcl_lcl_flg = db.Column(db.String(3))
-    seal_stat = db.Column(db.String(1))
-    seal_no = db.Column(db.String(1))
-    dmg_flg = db.Column(db.String(1))
-    ctr_stg_flg = db.Column(db.String(1))
-    ctr_nom_flg = db.Column(db.String(1))
-    ctr_loc_flg = db.Column(db.String(1))
-    acty_cd = db.Column(db.String(3))
-    dt_acty = db.Column(db.DateTime())
-    icd_loc_cd = db.Column(db.String(3))
-    stk_loc = db.Column(db.String(9))
-    dt_arr = db.Column(db.DateTime())
-    dt_dep = db.Column(db.DateTime())
-    mode_arr = db.Column(db.String(1))
-    mode_dep = db.Column(db.String(1))
-    gw_port_cd = db.Column(db.String(4))
-    dt_start = db.Column(db.DateTime())
-    trns_dt_tm = db.Column(db.DateTime())
-    user_id = db.Column(db.String(100))
-    ctr_ht = db.Column(db.String(2))
-    ctr_ht_cat = db.Column(db.String(1))
-    dmg_code = db.Column(db.String(5))
-    frm_loc = db.Column(db.String(9))
-    fac_dep_by_road = db.Column(db.String(1))
-    
-    __tablename__ = 'tm_cctrdtls'
-    
-class EqptDtls(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    eqpt_id = db.Column(db.String(4))
-    eqpt_desc = db.Column(db.String(30))
-    eqpt_type = db.Column(db.String(1))
-    eqpt_stat = db.Column(db.String(1))
-    user_id = db.Column(db.String(100))
-    wh_flg = db.Column(db.String(1))
-    
-    __tablename__ = 'tm_ceqptdtls'
-    
-class EqptMst(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    eqpt_id = db.Column(db.String(10))
-    acty_cd = db.Column(db.String(30))
-    party_cd = db.Column(db.String(10))
-    commisioned_on = db.Column(db.DateTime())
-    active_flg = db.Column(db.String(1))
-    deccommisioned_on = db.Column(db.DateTime())
-    ins_dt = db.Column(db.DateTime())
-    lst_upd_dt = db.Column(db.DateTime())
-    user_id = db.Column(db.String(100))
-    
-    __tablename__ = 'tm_ceqptmst'
+
 
     
 class ErrorMessages(db.Model):
@@ -557,16 +231,7 @@ class ErrorMessages(db.Model):
     
     __tablename__ = 'tm_cerrormessages'
 
-class Gwport(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    gw_port_cd = db.Column(db.String(4))
-    gw_port_nam = db.Column(db.String(30))
-    pay_facility = db.Column(db.String(1))
-    user_id = db.Column(db.String(100))
-    port_type = db.Column(db.String(1))
-    
-    __tablename__ = 'tm_cgwport'
-    
+
 class GwportState(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
     gw_port_cd = db.Column(db.String(4))
@@ -591,14 +256,7 @@ class ChaEmail(db.Model):
     
     __tablename__ = 'tm_chaemail'
     
-class HldTrack(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    hld_track_no = db.Column(db.String(75))
-    trns_dt_tm = db.Column(db.DateTime())
-    user_id = db.Column(db.String(75))
-    hld_track_desc = db.Column(db.String(75))
-    
-    __tablename__ = 'tm_chldtrack'
+
     
 
 class Hndg(db.Model):
@@ -669,22 +327,7 @@ class UsrFiling(db.Model):
     
     __tablename__ = 'tm_usrfiling'
     
-class WgnMst(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    rake_no = db.Column(db.String(50))
-    wgn_no = db.Column(db.String(50))
-    wgn_typ = db.Column(db.String(5))
-    commisioned_on = db.Column(db.DateTime())
-    ccls_wgn = db.Column(db.String(25))
-    usr_id = db.Column(db.String(100))
-    ins_dt = db.Column(db.DateTime())
-    lst_upd_dt = db.Column(db.DateTime())
-    trns_trml_id = db.Column(db.String(5))
-    active_flg = db.Column(db.String(1))
-    old_wgn = db.Column(db.String(50))
-    conv_dt = db.Column(db.DateTime())
-    
-    __tablename__ = 'tm_wgnmst'
+
     
 class WgnMstEtms(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -868,30 +511,3 @@ class Comm(db.Model):
     trns_dt_tm = db.Column(db.DateTime())
     
     __tablename__ = 'tm_comm'
-    
-class Track(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    track_no = db.Column(db.String(75), unique= True)
-    train_no = db.Column(db.String(75), unique= True, nullable=True)
-    trans_date = db.Column(db.DateTime())
-    user_id = db.Column(db.String(75))
-    created_at = db.Column(db.DateTime(), default = datetime.now)
-    updated_at = db.Column(db.DateTime(), default = datetime.now, onupdate=datetime.now)
-    
-    __tablename__ = 'Track'
-    
-class KyclContainerLocation(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    container_no = db.Column(db.String(11))
-    to_loc = db.Column(db.String(15))
-    che_id = db.Column(db.String(10))
-    created_at = db.Column(db.DateTime(), default = datetime.now)
-    
-class Diagnostics(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    url = db.Column(db.String(200))
-    request = db.Column(db.JSON)
-    response =  db.Column(db.JSON)
-    created_at = db.Column(db.DateTime(), default = datetime.now)
-    
-    __tablename__ = 'Diagnostics'

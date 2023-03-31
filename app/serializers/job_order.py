@@ -1,9 +1,9 @@
 from marshmallow import fields
 import json
-from app.Models.warehouse.job_order import CCLSJobOrder
-from app.Models.warehouse.bill_details import CCLSCargoDetails
+from app.models.warehouse.job_order import CCLSJobOrder
+from app.models.warehouse.bill_details import CCLSCargoDetails
 from app import ma
-from app.Models.warehouse.commodity import WarehouseCommodity
+from app.models.warehouse.commodity import WarehouseCommodity
 
 class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
     # area = fields.Number(data_key='area_of_cargo')

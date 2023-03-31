@@ -1,5 +1,5 @@
 from app import postgres_db as db
-from app.Models.utils import IntegerDateTime
+from app.models.utils import IntegerDateTime
 from datetime import datetime
 
 class TruckDetails(db.Model):

@@ -1,6 +1,6 @@
 from app import postgres_db as db
 from datetime import datetime
-from app.Models.utils import IntegerDateTime
+from app.models.utils import IntegerDateTime
 from sqlalchemy import JSON
 
 class CCLSCargoDetails(db.Model):

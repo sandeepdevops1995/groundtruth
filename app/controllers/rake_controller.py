@@ -73,32 +73,6 @@ class TrainDetails(Model):
         logger.info('Conainer details response')
         return Response(result, status=200, mimetype='application/json')
 
-class TrackDetails(Model):
-    @custom_exceptions
-    def get(self):
-        train_number = request.args.get(Constants.TRAIN_NUMBER,None)
-        track_number = request.args.get(Constants.TRACK_NUMBER,None)
-        trans_date = request.args.get(Constants.KEY_TRANS_DATE,None)
-        data = {}
-        if train_number:
-            data["train_no"]=train_number
-        if track_number:
-            data["track_no"]=track_number
-        if trans_date:
-            data["trans_date"] = datetime.strptime(trans_date, '%Y-%m-%d %H:%M:%S').date()
-            
-        logger.info('GT,Get request from the Rake service')
-        result = db_service.get_track_details(data)
-        logger.info('Track details response')
-        return Response(result, status=200, mimetype='application/json')
-    
-    def post(self):
-        data = request.get_json()
-        success,message = db_service.post_track_details(data)
-        if success:
-            return Response(json.dumps({"message":"Saved successfully"}), status=201, mimetype='application/json')
-        else:
-            return Response(json.dumps({"message":message}),status=400,mimetype='application/json')
 
 class RakeData(Model):
     @custom_exceptions

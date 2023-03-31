@@ -15,6 +15,7 @@ from app.models import CCLSRake
 from app.services import soap_service
 from app.services.gt_upload_service import commit
 from app.models import *
+from app.models.utils import db_format,db_functions
 from datetime import datetime,timedelta
 
 
@@ -47,55 +48,6 @@ class RakeDbService:
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
                 RakeDbService.get_rake_details_by_rake_number(rake_number,rake_type,from_date,to_date,count,isRetry)
                 
-    @query_debugger()
-    def get_track_details(query_values,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
-        try:
-            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
-                pass
-            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-                pass
-            if "trans_date" in query_values:
-                data = Track.query.filter(cast(Track.trans_date, DATE)==query_values["trans_date"])
-                query_values.pop('trans_date')
-                data = data.filter_by(**query_values).order_by('trans_date').all()
-            else:
-                data = Track.query.filter_by(**query_values).all()
-            return db_functions(data).as_json()
-            
-        except Exception as e:
-            logger.exception(str(e))
-            if isRetry and count >= 0 :
-                count=count-1 
-                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
-                RakeDbService.get_track_details(query_values,count,isRetry)
-                
-    @query_debugger()
-    def post_track_details(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
-        try:
-            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
-                pass
-            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-                pass
-            if isinstance(data, list):
-                for item in data:
-                    track =Track(**item)
-                    db.session.add(track)
-            else:
-                track = Track(**data)
-                db.session.add(track)
-            try:   
-                commit()
-                return True,"success"
-            except Exception as e:
-                print(e)
-                return False,str(e)
-            
-        except Exception as e:
-            logger.exception(str(e))
-            if isRetry and count >= 0 :
-                count=count-1 
-                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
-                RakeDbService.post_track_details(data,count,isRetry)
     
     @query_debugger()
     def get_train_details(query_values,rake_id=None,track_number=None,from_date=None,to_date=None,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
@@ -239,15 +191,9 @@ class RakeDbService:
                 data = [dict(zip(tuple (query.keys()) ,i)) for i in query.cursor]
                 return RakeDbService.map_CCLS_response(data)
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-                track = Track.query.filter_by(track_no=track_number).first()
-                if track:
-                    if track.train_no and track.trans_date:
-                        query_values = {"train_number":track.train_no, "trans_date":track.trans_date.date()}
-                        return True, RakeDbService.get_train_details(query_values)
-                    else: 
-                        return False, "No train available in the given track"
-                else:
-                    return False, "No such Track Exists"
+                query_values = {"track_number":track_number}
+                return True, RakeDbService.get_train_details(query_values)
+    
         except Exception as e:
             logger.exception(str(e))
             if isRetry and count >= 0 :

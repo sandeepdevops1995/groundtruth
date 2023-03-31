@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse
 import app.constants as Constants
-from app.services.yard_db_service import YardDbService
+from app.services.yard.yard_db_service import YardDbService
 from flask import json, Response,request
 from app.services.decorator_service import custom_exceptions, jwt_auth_required
 from app.logger import logger

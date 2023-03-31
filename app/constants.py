@@ -2,6 +2,7 @@
 #Endpoints constants
 UPLOAD_DATA_ENDPOINT ="/container_data"
 CCLS_DATA_ENDPOINT ="/ccls_data"
+UPDATE_CONTAINER_DETAILS_ENDPOINT = "/updateContainerInfo"
 TRAIN_DETAILS_ENDPOINT = "/train_details"
 PENDANCY_CONTAINERS_ENDPOINT = "/pendency_containers"
 RAKE_PLAN_ENDPOINT = "/rake_plan"
@@ -12,12 +13,14 @@ UPDATE_INWARD_WTR_ENDPOINT = "/update_inward_rake"
 UPDATE_OUTWARD_WTR_ENDPOINT = "/update_outward_rake"
 UPDATE_WTR_ENDPOINT = "/update_wtr"
 WAREHOUSE_DATA_ENDPOINT = "/warehouse_details"
-STACK_LOCATION = "/stack_location"
+STACK_LOCATION_ENDPOINT = "/stack_location"
 GROUND_TRUTH_TABLE_NAME = "Ground_truth"
 ISO_6346_CODE_ENDPOINT = "/map_ccls_iso_code"
 TRACK_DETAILS = '/track_details'
 CGI_SURVEY_ENDPOINT = '/cgi_survey'
 CGO_SURVEY_ENDPOINT = '/cgo_survey'
+WAGON_ENDPOINT = '/wagon'
+GATEWAY_PORT_ENDPOINT = '/gateway_port'
 UPDATE_RAKE_CONTAINER_ENDPOINT = '/update_rake_container'
 
 #time format in db:

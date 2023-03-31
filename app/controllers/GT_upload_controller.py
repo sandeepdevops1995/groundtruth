@@ -1,6 +1,6 @@
 from app.controllers.gate_controller import Model
 from app.services.decorator_service import custom_exceptions, jwt_auth_required
-from app.services.gt_upload_service import upload_ccls_rake_date, upload_pendancy_data
+from app.services.rake.gt_upload_service import upload_ccls_rake_date, upload_pendancy_data
 
 import xmltodict
 import json

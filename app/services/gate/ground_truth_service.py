@@ -3,7 +3,7 @@ from threading import Thread
 import app.constants as Constants
 import config
 from app.logger import logger
-from app.services.database_service import GateDbService as db_service
+from app.services.gate.database_service import GateDbService as db_service
 from app.services.decorator_service import is_valid_api_key
 
 def start_rabbitMQ_service():

@@ -2,7 +2,7 @@
 from app.constants import GroundTruthType
 from app.services.decorator_service import query_debugger
 from app.services import soap_service
-from app.services.gt_upload_service import commit
+from app.services.rake.gt_upload_service import commit
 from app.logger import logger
 import app.constants as Constants
 import config

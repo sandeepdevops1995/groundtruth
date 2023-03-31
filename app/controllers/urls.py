@@ -10,22 +10,53 @@ from app.controllers.yard_controller import StackLocation
 
 import app.constants as Constants 
 
-def register_controllers():
-    api.add_resource(ContainerData,Constants.UPLOAD_DATA_ENDPOINT)          ##requires psql and oracle support          
-    api.add_resource(CclsData,Constants.CCLS_DATA_ENDPOINT)                 ##requires psql and oracle support
+def register_controllers(): 
+    
+    # Gate
+    api.add_resource(ContainerData,Constants.UPLOAD_DATA_ENDPOINT)                              ##requires psql and oracle support          
+    api.add_resource(CclsData,Constants.CCLS_DATA_ENDPOINT)                                     ##requires psql and oracle support
+    api.add_resource(UpdateContainerDetails,Constants.UPDATE_CONTAINER_DETAILS_ENDPOINT)        ##requires psql and oracle support
+
+    
+    # Rake
+    api.add_resource(TrainDetails,Constants.TRAIN_DETAILS_ENDPOINT)
+    api.add_resource(RakeData,Constants.RAKE_UPLOAD_DATA_ENDPOINT)                              ##requires psql and oracle support
+    api.add_resource(UpdateInwardRakeDetails,Constants.UPDATE_INWARD_WTR_ENDPOINT)
+    api.add_resource(UpdateOutwardRakeDetails,Constants.UPDATE_OUTWARD_WTR_ENDPOINT)
+    api.add_resource(RakePlanDetails,Constants.RAKE_PLAN_ENDPOINT)
+    api.add_resource(UpdateCGISurvey,Constants.CGI_SURVEY_ENDPOINT)
+    api.add_resource(UpdateCGOSurvey,Constants.CGO_SURVEY_ENDPOINT)
+    
+    
+    # To upload Ground Truth
+    api.add_resource(TrainSummary,'/upload_train_summary')      # input: CCLS XML file
+    api.add_resource(GroundTruthData,'/rake_ground_truth')      # input: OUR JSON Format data
+    api.add_resource(PendancySummary,'/pendancy_summary')       # input: CCLS PENDANCY XML file 
+    
+    
+    # Yard
+    api.add_resource(WagonMaster,Constants.WAGON_ENDPOINT)
+    api.add_resource(GatewayPortsMaster,Constants.GATEWAY_PORT_ENDPOINT)
+    api.add_resource(StackLocation,Constants.STACK_LOCATION_ENDPOINT)
+    api.add_resource(PendancyList,Constants.PENDANCY_CONTAINERS_ENDPOINT)
+    api.add_resource(UpdateInwardContainerTrackDetails,Constants.UPDATE_RAKE_CONTAINER_ENDPOINT)
+    
+    
+    # Warehouse
+    # api.add_resource(WarehouseData,Constants.WAREHOUSE_DATA_ENDPOINT)
+    api.add_resource(JobDetails,'/warehouse_details')
+    api.add_resource(WarehouseTallySheet,'/api/warehouse_tallysheet')
+    api.add_resource(WarehouseCommodities,'/fetch_commodities')
+    
+    
+    
+    # These API's use ORACLE Db. Currently we are anot using it
     api.add_resource(GateInModel,"/gateIn")
     api.add_resource(GateOutModel,"/gateOut")
-    api.add_resource(UpdateContainerDetails,"/updateContainerInfo")         ##requires psql and oracle support
     api.add_resource(UpdateCtrStackDetails,"/UpdateCtrStackDetails")
-    api.add_resource(TrainDetails,Constants.TRAIN_DETAILS_ENDPOINT)
-    api.add_resource(RakeData,Constants.RAKE_UPLOAD_DATA_ENDPOINT)          ##requires psql and oracle support
     api.add_resource(RakeContainer,Constants.CONTAINER_DETAILS_ENDPOINT)    ##requires psql and oracle support
     api.add_resource(RakeWagon,Constants.WAGON_DETAILS_ENDPOINT)            ##requires psql and oracle support
     api.add_resource(UpdateWTR,Constants.UPDATE_WTR_ENDPOINT)
-    api.add_resource(PendancyList,Constants.PENDANCY_CONTAINERS_ENDPOINT)
-    api.add_resource(UpdateInwardContainerTrackDetails,Constants.UPDATE_RAKE_CONTAINER_ENDPOINT)
-    api.add_resource(UpdateCGISurvey,Constants.CGI_SURVEY_ENDPOINT)
-    api.add_resource(UpdateCGOSurvey,Constants.CGO_SURVEY_ENDPOINT)
     api.add_resource(WagonTypes,'/wagon_types')
     api.add_resource(SlineCodes,'/sline_codes')
     api.add_resource(PodCodes,'/pod_codes')
@@ -39,20 +70,5 @@ def register_controllers():
     api.add_resource(OutPortCodes,'/out_ports')
     api.add_resource(CargoTypes,'/cargo_types')
     api.add_resource(UserList,'/user_list')
-    api.add_resource(WagonMaster,'/wagon')
-    api.add_resource(GatewayPortsMaster,'/gateway_port')
     api.add_resource(ISO6346Data, Constants.ISO_6346_CODE_ENDPOINT)
-    # api.add_resource(WarehouseData,Constants.WAREHOUSE_DATA_ENDPOINT)
-    api.add_resource(StackLocation,Constants.STACK_LOCATION)
-    api.add_resource(TrackDetails,Constants.TRACK_DETAILS)
-    api.add_resource(UpdateInwardRakeDetails,Constants.UPDATE_INWARD_WTR_ENDPOINT)
-    api.add_resource(UpdateOutwardRakeDetails,Constants.UPDATE_OUTWARD_WTR_ENDPOINT)
-    api.add_resource(RakePlanDetails,Constants.RAKE_PLAN_ENDPOINT)
-    api.add_resource(JobDetails,'/warehouse_details')
-    api.add_resource(WarehouseTallySheet,'/api/warehouse_tallysheet')
-    api.add_resource(WarehouseCommodities,'/fetch_commodities')
     
-    # To upload Ground Truth
-    api.add_resource(TrainSummary,'/upload_train_summary')
-    api.add_resource(GroundTruthData,'/rake_ground_truth')
-    api.add_resource(PendancySummary,'/pendancy_summary')

@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 import app.constants as Constants
 from flask import json, Response,request
 from app.services.decorator_service import custom_exceptions, jwt_auth_required
-from app.services.database_service import GateDbService, Iso6346CodeService
+from app.services.gate.database_service import GateDbService, Iso6346CodeService
 from app.logger import logger
 parser = reqparse.RequestParser()
 ContainerId = None

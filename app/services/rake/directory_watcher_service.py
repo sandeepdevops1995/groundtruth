@@ -3,7 +3,7 @@ from watchdog.events import FileSystemEventHandler
 import os
 import config
 from app.logger import logger
-from app.services.rake_db_service import RakeDbService as db_service
+from app.services.rake.rake_db_service import RakeDbService as db_service
 
 record ={}
 temp = {}

@@ -5,7 +5,7 @@ import app.constants as Constants
 from app.logger import logger
 import config
 from app.constants import GroundTruthType
-from app.services.gt_upload_service import commit
+from app.services.rake.gt_upload_service import commit
 import time
 
 

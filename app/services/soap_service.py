@@ -6,7 +6,7 @@ from app import constants as Constants
 from app.models import CCLSRake
 from app import postgres_db as db
 from app.logger import logger
-from app.services.gt_upload_service import commit,save_in_diagnostics
+from app.services.rake.gt_upload_service import commit,save_in_diagnostics
 from app.models.utils import db_format
 import json
 from zeep.transports import Transport

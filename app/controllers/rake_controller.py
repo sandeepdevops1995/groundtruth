@@ -3,9 +3,9 @@ import config
 import app.constants as Constants
 from flask import json, Response,request
 from app.services.decorator_service import custom_exceptions
-from app.services.database_service import GateDbService as db_service
+from app.services.gate.database_service import GateDbService as db_service
 from app.logger import logger
-from app.services.rake_db_service import RakeDbService as db_service
+from app.services.rake.rake_db_service import RakeDbService as db_service
 from app.services.decorator_service import custom_exceptions, jwt_auth_required
 from app.constants import GroundTruthType
 from app.serializers.master_data_serializers import *

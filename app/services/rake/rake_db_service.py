@@ -13,7 +13,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.constants import GroundTruthType
 from app.models import CCLSRake
 from app.services import soap_service
-from app.services.gt_upload_service import commit
+from app.services.rake.gt_upload_service import commit
 from app.models import *
 from app.models.utils import db_format,db_functions
 from datetime import datetime,timedelta

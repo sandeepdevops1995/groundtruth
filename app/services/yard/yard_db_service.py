@@ -1,6 +1,6 @@
 from app.services.decorator_service import query_debugger
 from app.services.soap_service import *
-from app.services.database_service import GateDbService
+from app.services.gate.database_service import GateDbService
 from app.models import KyclContainerLocation
 from app.logger import logger
 from app.constants import GroundTruthType

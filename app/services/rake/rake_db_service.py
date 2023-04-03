@@ -393,8 +393,10 @@ class RakeDbService:
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 pass
-            data = WgnMst.query.filter(WgnMst.wgn_no.contains(wagon_number),WgnMst.active_flg=='Y').all()
-            return data
+            data_query = WgnMst.query.filter(WgnMst.active_flg=='Y')
+            if wagon_number:
+                data_query.filter(WgnMst.wgn_no.contains(wagon_number))
+            return data_query.all()
         except Exception as e:
             logger.exception(str(e))
             if isRetry and count >= 0 :

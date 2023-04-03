@@ -201,15 +201,14 @@ class WagonMaster(Model):
     @custom_exceptions
     @api_auth_required
     def get(self):
-        wagon_number = request.args.get(Constants.KEY_NUMBER)
-        if wagon_number:
-            logger.info("GT,fetch wagon master data"+wagon_number)
-            response =  db_service.get_wagon_master_data(wagon_number)
-            response = WagonMasterSchema(many=True).dump(response)
-            if response:
-                return Response(json.dumps(response),status=200,mimetype='application/json')
-            else:
-                return Response(None,status=204,mimetype='application/json')
+        wagon_number = request.args.get(Constants.KEY_NUMBER,None)
+        logger.info("GT,fetch wagon master data",wagon_number)
+        response =  db_service.get_wagon_master_data(wagon_number)
+        response = WagonMasterSchema(many=True).dump(response)
+        if response:
+            return Response(json.dumps(response),status=200,mimetype='application/json')
+        else:
+            return Response(None,status=204,mimetype='application/json')
 class GatewayPortsMaster(Model):
     @custom_exceptions
     @api_auth_required

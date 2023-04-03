@@ -193,37 +193,6 @@ class Cnsldtor(db.Model):
     
     __tablename__ = 'tm_ccnsldtor'
     
-class Commodity(db.Model):
-    id =  db.Column(db.BigInteger(), primary_key=True)
-    comm_cd = db.Column(db.Integer())
-    comm_desc = db.Column(db.String(1))
-    spl_flg = db.Column(db.String(1))
-    comm_wt = db.Column(db.Float(precision=2))
-    concor_haz_flg = db.Column(db.String(1))
-    imp_concor_labour_flg = db.Column(db.String(1))
-    exp_concor_labour_flg = db.Column(db.String(1))
-    imp_hndg_comm_cat = db.Column(db.String(1))
-    exp_hndg_comm_cat = db.Column(db.String(1))
-    imp_whrf_comm_cat = db.Column(db.String(1))
-    exp_whrf_comm_cat = db.Column(db.String(1))
-    dt_wef = db.Column(db.DateTime())
-    user_id = db.Column(db.String(100))
-    trns_dt_tm = db.Column(db.DateTime())
-    srvc_exmp_cat_flg = db.Column(db.String(1))
-    srvc_exmp_flg = db.Column(db.String(1))
-    active_flg = db.Column(db.String(1))
-    rail_gst_code = db.Column(db.String(10))
-    rail_gst_applicable = db.Column(db.String(1))
-    
-    __tablename__ = 'tm_ccommodity'
-    
-
-    
-
-    
-
-
-    
 class ErrorMessages(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
     error_code = db.Column(db.String(6))

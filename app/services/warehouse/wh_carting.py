@@ -1,5 +1,5 @@
 
-from app.services.warehouse.soap_api_call import call_api
+from app.services.warehouse.soap_api_call import get_job_info
 from app.services.warehouse.database_service import WarehouseDB
 from app.logger import logger
 import app.services.warehouse.constants as constants
@@ -18,7 +18,7 @@ class WarehouseCarting(object):
             self.warehouse_info = json.load(f)
 
     def get_carting_details(self,crn_number,job_type):
-        carting_details = call_api(crn_number,"CWHCartingRead","cwhcartingreadbpel_client_ep","CWHCartingReadBPEL_pt")
+        carting_details = get_job_info(crn_number,"CWHCartingRead","cwhcartingreadbpel_client_ep","CWHCartingReadBPEL_pt")
         #carting_details = self.warehouse_info['carting_response']
         if job_type==JobOrderType.CARTING_FCL.value:
             filter_data = {"crn_number":crn_number}

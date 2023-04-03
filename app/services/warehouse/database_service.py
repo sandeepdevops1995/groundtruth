@@ -1,6 +1,5 @@
 from app.models.warehouse.bill_details import CCLSCargoDetails,CTMSCargoDetails
 from app.models.warehouse.job_order import CCLSJobOrder,CTMSJobOrder
-from app.models.warehouse.commodity import WarehouseCommodity
 from app.models.warehouse.truck import TruckDetails
 from app.models.warehouse.container import Container
 from app.logger import logger
@@ -8,7 +7,7 @@ from app import postgres_db as db
 from app.services.warehouse.data_formater import DataFormater
 from app.serializers.job_order import CCLSJobOrderSchema,CCLSCommodityList
 from app.enums import JobOrderType
-from app.models.warehouse.commodity import WarehouseCommodity
+from app.models.master.warehouse import Commodity as WarehouseCommodity
 
 class WarehouseDB(object):
 
@@ -31,87 +30,6 @@ class WarehouseDB(object):
                 logger.error(e)
                 db.session.rollback()
 
-
-
-    # def save_carting_job_order(self,job_order_details,container_id,filter_data):
-    #     job_order_details = DataFormater().ccls_job_order_table_formater(job_order_details)
-    #     print("job_order_details-----",job_order_details)
-    #     job_order_details['container_id'] = container_id
-    #     query_object = db.session.query(CCLSJobOrder).filter_by(**filter_data)
-    #     db_object = query_object.first()
-    #     if db_object:
-    #         query_object.update(dict(job_order_details))
-    #         # db.session.add(db_object)
-    #         db.session.commit()
-    #         # db.session.refresh(db_object)
-    #         logger.info("carting job orders updated successfully")
-    #     else:
-    #         db_object = CCLSJobOrder(**job_order_details)
-    #         db.session.add(db_object)
-    #         db.session.commit()
-    #         db.session.refresh(db_object)
-    #         logger.info("cartingjob orders created successfully")
-    #     return db_object.id
-    
-    # def save_stuffing_job_order(self,job_order_details,container_id,container_number):
-    #     job_order_details = DataFormater().ccls_job_order_table_formater(job_order_details)
-    #     print("job_order_details-----",job_order_details)
-    #     job_order_details['container_id'] = container_id
-    #     query_object = db.session.query(CCLSJobOrder).join(Container).filter(Container.container_number==container_number,CCLSJobOrder.status==JobStatus.COMPLETED.value)
-    #     db_object = query_object.first()
-    #     if db_object:
-    #         db.session.query(CCLSJobOrder).filter(id==db_object.id).update(dict(job_order_details))
-    #         # db.session.add(db_object)
-    #         db.session.commit()
-    #         # db.session.refresh(db_object)
-    #         logger.info("stuffing job orders updated successfully")
-    #     else:
-    #         db_object = CCLSJobOrder(**job_order_details)
-    #         db.session.add(db_object)
-    #         db.session.commit()
-    #         db.session.refresh(db_object)
-    #         logger.info("stuffing job orders created successfully")
-    #     return db_object.id
-    
-    # def save_destuffing_job_order(self,job_order_details,container_id,container_number):
-    #     job_order_details = DataFormater().ccls_job_order_table_formater(job_order_details)
-    #     print("job_order_details-----",job_order_details)
-    #     job_order_details['container_id'] = container_id
-    #     query_object = db.session.query(CCLSJobOrder).join(Container).filter(Container.container_number==container_number,CCLSJobOrder.status==JobStatus.COMPLETED.value)
-    #     db_object = query_object.first()
-    #     if db_object:
-    #         db.session.query(CCLSJobOrder).filter(id==db_object.id).update(dict(job_order_details))
-    #         # db.session.add(db_object)
-    #         db.session.commit()
-    #         # db.session.refresh(db_object)
-    #         logger.info("destuffing job orders updated successfully")
-    #     else:
-    #         db_object = CCLSJobOrder(**job_order_details)
-    #         db.session.add(db_object)
-    #         db.session.commit()
-    #         db.session.refresh(db_object)
-    #         logger.info("destuffing job orders created successfully")
-    #     return db_object.id
-    
-    # def save_delivery_job_order(self,job_order_details,container_id,filter_data):
-    #     job_order_details = DataFormater().ccls_job_order_table_formater(job_order_details)
-    #     print("job_order_details-----",job_order_details)
-    #     job_order_details['container_id'] = container_id
-    #     query_object = db.session.query(CCLSJobOrder).filter_by(**filter_data)
-    #     db_object = query_object.first()
-    #     if db_object:
-    #         query_object.update(dict(job_order_details))
-    #         # db.session.add(db_object)
-    #         db.session.commit()
-    #         # db.session.refresh(db_object)
-    #         logger.info("delivery job orders updated successfully")
-    #     else:
-    #         db_object = CCLSJobOrder(**job_order_details)
-    #         db.session.add(db_object)
-    #         db.session.commit()
-    #         db.session.refresh(db_object)
-    #         logger.info("delivery job orders created successfully")
-    #     return db_object.id
     
     def save_ccls_job_order(self,job_order_details,container_id,query_object):
         job_order_details = DataFormater().ccls_job_order_table_formater(job_order_details)
@@ -232,11 +150,11 @@ class WarehouseDB(object):
             logger.info("update ctms cargo details object in ccls cargo details table")
 
     def get_commodity_instance(self,commodity_code,commodity_description):
-        db_object = db.session.query(WarehouseCommodity).filter(WarehouseCommodity.COMM_CD == commodity_code).first()
+        db_object = db.session.query(WarehouseCommodity).filter(WarehouseCommodity.comm_cd == commodity_code).first()
         if db_object:
             logger.info("commodity already exists in db")
             return db_object.id
-        db_object = WarehouseCommodity(COMM_CD=commodity_code,COMM_DESC=commodity_description)
+        db_object = WarehouseCommodity(comm_cd=commodity_code,comm_desc=commodity_description)
         db.session.add(db_object)
         db.session.commit()
         db.session.refresh(db_object)
@@ -275,10 +193,11 @@ class WarehouseDB(object):
     def save_commodities(self,commodity_data):
         for each_commodity in commodity_data:
             try:
-                commodity_code = int(each_commodity['COMM_CD'])
+                each_commodity = {k.lower(): v for k, v in each_commodity.items()}
+                commodity_code = int(each_commodity['comm_cd'])
                 logger.info("commodity_code--------%d",commodity_code)
-                each_commodity['SRVC_EXMP_CAT_FLG'] = str(int(each_commodity['SRVC_EXMP_CAT_FLG'])) if 'SRVC_EXMP_CAT_FLG' in each_commodity and each_commodity['SRVC_EXMP_CAT_FLG']!=None else None
-                query_object = db.session.query(WarehouseCommodity).filter(WarehouseCommodity.COMM_CD==commodity_code)
+                each_commodity['srvc_exmp_cat_flg'] = str(int(each_commodity['srvc_exmp_cat_flg'])) if 'srvc_exmp_cat_flg' in each_commodity and each_commodity['srvc_exmp_cat_flg']!=None else 0
+                query_object = db.session.query(WarehouseCommodity).filter(WarehouseCommodity.comm_cd==commodity_code)
                 if query_object.first():
                     query_object.update(dict(each_commodity))
                     logger.info("commodity details updated successfully")

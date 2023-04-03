@@ -1,4 +1,4 @@
-from app.services.warehouse.soap_api_call import call_api
+from app.services.warehouse.soap_api_call import get_job_info
 from app.services.warehouse.database_service import WarehouseDB
 from app.logger import logger
 import app.services.warehouse.constants as constants
@@ -16,7 +16,7 @@ class WarehouseStuffing(object):
             self.warehouse_info = json.load(f)
 
     def get_stuffing_details(self,container_number,job_type):
-        stuffing_details = call_api(container_number,"CWHStuffingRead","cwhstuffingreadbpel_client_ep","CWHStuffingReadBPEL_pt")
+        stuffing_details = get_job_info(container_number,"CWHStuffingRead","cwhstuffingreadbpel_client_ep","CWHStuffingReadBPEL_pt")
         #stuffing_details = self.warehouse_info['stuffing_response']
         
         if job_type==JobOrderType.STUFFING_FCL.value:

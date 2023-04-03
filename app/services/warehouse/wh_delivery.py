@@ -1,5 +1,5 @@
 
-from app.services.warehouse.soap_api_call import call_api
+from app.services.warehouse.soap_api_call import get_job_info
 from app.services.warehouse.database_service import WarehouseDB
 from app.logger import logger
 import app.services.warehouse.constants as constants
@@ -17,7 +17,7 @@ class WarehouseDelivery(object):
             self.warehouse_info = json.load(f)
 
     def get_delivery_details(self,gpm_number,job_type):
-        delivery_details = call_api(gpm_number,"CWHDeliveryRead","cwhdeliveryreadbpel_client_ep","CWHDeliveryReadBPEL_pt")
+        delivery_details = get_job_info(gpm_number,"CWHDeliveryRead","cwhdeliveryreadbpel_client_ep","CWHDeliveryReadBPEL_pt")
         #delivery_details = self.warehouse_info['delivery_response']
         if job_type==JobOrderType.DELIVERY_FCL.value:
             container_flag = ContainerFlag.FCL.value

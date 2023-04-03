@@ -207,6 +207,8 @@ class GateDbService:
                 data[Constants.VEHICLE_NUMBER] = container_data[Constants.TRUCK_NUMBER]
             if Constants.ISO_CODE  in container_data:
                 data[Constants.ISO_CODE] = container_data[Constants.ISO_CODE]
+            if Constants.PERMIT_EXPIRY_DATE in container_data:
+                data[Constants.PERMIT_EXPIRY_DATE] = datetime.strptime(container_data[Constants.PERMIT_EXPIRY_DATE], '%Y-%m-%d %H:%M:%S')
             permit_data = Permit(**db_format(data))
             postgres_db.session.add(permit_data)
             postgres_db.session.commit()

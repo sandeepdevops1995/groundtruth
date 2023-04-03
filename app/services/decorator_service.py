@@ -38,11 +38,11 @@ def validate_auth():
             if is_valid_api_key(request.headers):
                 return func(*args, **kwargs)
             else:
-                print("Unauthorized to access this api...")
-            return Response({ 'status': 'authentication failed (JWT token maybe missing/invalid/expired.)'}, 401, mimetype='application/json')
+                logger.info("Unauthorized to access this api...")
+            return Response({ 'status': 'authentication failed (API token maybe missing)'}, 401, mimetype='application/json')
         return new_func
     return decorator
-jwt_auth_required = validate_auth()
+api_auth_required = validate_auth()
 
 def query_debugger():
     def decorator(func):

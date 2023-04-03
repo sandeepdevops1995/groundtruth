@@ -1,5 +1,5 @@
 from app.controllers.gate_controller import Model
-from app.services.decorator_service import custom_exceptions, jwt_auth_required
+from app.services.decorator_service import custom_exceptions, api_auth_required
 from app.services.rake.gt_upload_service import upload_ccls_rake_date, upload_pendancy_data
 
 import xmltodict
@@ -16,6 +16,7 @@ def get_xml_file_data_to_dict():
 
 class TrainSummary(Model):
     @custom_exceptions
+    @api_auth_required
     def post(self):
         summary = get_xml_file_data_to_dict()
         if "RR_CTR_NOT_ARR" in summary:
@@ -65,6 +66,7 @@ class TrainSummary(Model):
     
 class PendancySummary(Model):
     @custom_exceptions
+    @api_auth_required
     def post(self):
         data = get_xml_file_data_to_dict()
         if "RR_EXP_LDD_LST" in data:

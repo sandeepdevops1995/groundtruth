@@ -2,11 +2,9 @@ from flask_restful import Resource, reqparse
 import config
 import app.constants as Constants
 from flask import json, Response,request
-from app.services.decorator_service import custom_exceptions
-from app.services.gate.database_service import GateDbService as db_service
 from app.logger import logger
 from app.services.rake.rake_db_service import RakeDbService as db_service
-from app.services.decorator_service import custom_exceptions, jwt_auth_required
+from app.services.decorator_service import custom_exceptions, api_auth_required
 from app.constants import GroundTruthType
 from app.serializers.master_data_serializers import *
 from app.services.rake.rake_inward_write import RakeInwardWriteService
@@ -34,8 +32,9 @@ class Model(Resource):
             parser.add_argument(arg)
         return parser.parse_args()
 
-class TrainDetails(Model):
+class TrainDetails(Model):   
     @custom_exceptions
+    @api_auth_required
     def get(self):
         train_number = request.args.get(Constants.TRAIN_NUMBER,None)
         track_number = request.args.get(Constants.TRACK_NUMBER,None)
@@ -76,7 +75,7 @@ class TrainDetails(Model):
 
 class RakeData(Model):
     @custom_exceptions
-    # @jwt_auth_required
+    @api_auth_required
     def post(self):
         print("got rake post request===")
         if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
@@ -87,8 +86,9 @@ class RakeData(Model):
         response = db_service().save_rake_details(rake_data) 
         return Response(None, status=200, mimetype='application/json')
 
+
     @custom_exceptions
-    # @jwt_auth_required 
+    @api_auth_required
     def get(self):
         rake_number = request.args.get(Constants.RAKE_NUMBER,None)
         rake_id = request.args.get(Constants.RAKE_ID,None)
@@ -112,6 +112,7 @@ class RakeData(Model):
 
 class PendancyList(Model):
     @custom_exceptions
+    @api_auth_required
     def get(self):
         gateway_port = request.args.get(Constants.KEY_GATEWAY_PORT,None)
         if gateway_port:
@@ -141,6 +142,7 @@ class PendancyList(Model):
 
 class RakePlanDetails(Model):
     @custom_exceptions
+    @api_auth_required
     def post(self):
         data = request.get_json()
         if data:
@@ -148,6 +150,7 @@ class RakePlanDetails(Model):
                 return Response(json.dumps({"message":"success"}),status=200,mimetype='application/json')
     
     @custom_exceptions
+    @api_auth_required
     def get(self):
         rake_id = request.args.get(Constants.KEY_RAKE_ID)
         if rake_id:
@@ -157,6 +160,7 @@ class RakePlanDetails(Model):
         
 class UpdateInwardContainerTrackDetails(Model):
     @custom_exceptions
+    @api_auth_required
     def post(self):
         data = request.get_json()
         if data:
@@ -166,6 +170,7 @@ class UpdateInwardContainerTrackDetails(Model):
         
 class UpdateCGISurvey(Model):
     @custom_exceptions
+    @api_auth_required
     def post(self):
         data = request.get_json()
         if data:
@@ -175,6 +180,7 @@ class UpdateCGISurvey(Model):
    
 class UpdateCGOSurvey(Model):
     @custom_exceptions
+    @api_auth_required
     def post(self):
         data = request.get_json()
         if data:
@@ -184,6 +190,7 @@ class UpdateCGOSurvey(Model):
    
 class WagonMaster(Model):
     @custom_exceptions
+    @api_auth_required
     def post(self):
         data = request.get_json()
         if data:
@@ -192,6 +199,7 @@ class WagonMaster(Model):
         return Response(json.dumps({"message":"failed to save"}),status=400,mimetype='application/json')
     
     @custom_exceptions
+    @api_auth_required
     def get(self):
         wagon_number = request.args.get(Constants.KEY_NUMBER)
         if wagon_number:
@@ -204,6 +212,7 @@ class WagonMaster(Model):
                 return Response(None,status=204,mimetype='application/json')
 class GatewayPortsMaster(Model):
     @custom_exceptions
+    @api_auth_required
     def post(self):
         data = request.get_json()
         if data:
@@ -212,6 +221,7 @@ class GatewayPortsMaster(Model):
         return Response(json.dumps({"message":"failed to save"}),status=400,mimetype='application/json')
     
     @custom_exceptions
+    @api_auth_required
     def get(self):
         logger.info("GT,fetch gateway port master data")
         response = db_service.get_gateway_port_master_data()
@@ -224,6 +234,7 @@ class GatewayPortsMaster(Model):
             
 class UpdateInwardRakeDetails(Model):
     @custom_exceptions
+    @api_auth_required
     def post(self):
         data = request.get_json()
         if set(Constants.rake_write_required_fields).issubset(set(data.keys())):
@@ -236,6 +247,7 @@ class UpdateInwardRakeDetails(Model):
 
 class UpdateOutwardRakeDetails(Model):
     @custom_exceptions
+    @api_auth_required
     def post(self):
         data = request.get_json()
         if set(Constants.rake_write_required_fields).issubset(set(data.keys())):
@@ -247,6 +259,7 @@ class UpdateOutwardRakeDetails(Model):
     
 class GroundTruthData(Model):
     @custom_exceptions
+    @api_auth_required
     def post(self):
         data = request.get_json()
         success,message = db_service.post_ground_truth_details(data)
@@ -256,6 +269,7 @@ class GroundTruthData(Model):
             return Response(json.dumps({"message":message}),status=400,mimetype='application/json')
     
     @custom_exceptions
+    @api_auth_required
     def get(self):
         train_number = request.args.get(Constants.TRAIN_NUMBER,None)
         trans_date = request.args.get(Constants.KEY_TRANS_DATE,None)
@@ -273,7 +287,7 @@ class GroundTruthData(Model):
     
 class RakeContainer(Model):
     @custom_exceptions
-    # @jwt_auth_required 
+    @api_auth_required
     def get(self):
         container_no = request.args.get(Constants.KEY_CN_NUMBER)
         response = {}
@@ -283,7 +297,7 @@ class RakeContainer(Model):
 
 class RakeWagon(Model):
     @custom_exceptions
-    # @jwt_auth_required
+    @api_auth_required
     def get(self):
         wagon_number = request.args.get(Constants.WAGON_NUMBER,None)
         rake_type = request.args.get(Constants.RAKE_TYPE,"AR")
@@ -299,6 +313,8 @@ class RakeWagon(Model):
         return Response(response, status=200, mimetype='application/json')
 
 class UpdateWTR(Model):
+    @custom_exceptions
+    @api_auth_required
     def post(self):
         data = request.get_json()
         rake_type =  data.get(Constants.RAKE_TYPE,"DE")
@@ -312,6 +328,8 @@ class UpdateWTR(Model):
         return Response(json.dumps({"message":"Posted Successfully"}), status=200, mimetype='application/json')
 
 class  WagonTypes(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         try:
             response =  db_service.get_wagon_types()
@@ -321,6 +339,8 @@ class  WagonTypes(Model):
 
 
 class  SlineCodes(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         try:
             response =  db_service.get_sline_codes()
@@ -329,6 +349,8 @@ class  SlineCodes(Model):
             return Response("No Data Found", status=400, mimetype='application/json')
 
 class  IcdLocations(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         try:
             response =  db_service.get_icd_locations()
@@ -337,6 +359,8 @@ class  IcdLocations(Model):
             return Response("No Data Found", status=400, mimetype='application/json')
 
 class  PodCodes(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         try:
             response =  db_service.get_pod_codes()
@@ -344,6 +368,8 @@ class  PodCodes(Model):
         except:
             return Response("No Data Found", status=400, mimetype='application/json')
 class  ContainerTypes(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         try:
             response =  db_service.get_container_types()
@@ -352,6 +378,8 @@ class  ContainerTypes(Model):
             return Response("No Data Found", status=400, mimetype='application/json')
 
 class  CommodityCodes(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         try:
             response =  db_service.get_commodity_codes()
@@ -360,6 +388,8 @@ class  CommodityCodes(Model):
             return Response("No Data Found", status=400, mimetype='application/json')
 
 class  CommodityTypes(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         try:
             response =  db_service.get_commodity_types()
@@ -368,6 +398,8 @@ class  CommodityTypes(Model):
             return Response("No Data Found", status=400, mimetype='application/json')
 
 class  ActivityTypes(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         try:
             response =  db_service.get_activity_types()
@@ -375,6 +407,8 @@ class  ActivityTypes(Model):
         except:
             return Response("No Data Found", status=400, mimetype='application/json')
 class  PortCodes(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         try:
             response =  db_service.get_port_codes()
@@ -383,6 +417,8 @@ class  PortCodes(Model):
             return Response("No Data Found", status=400, mimetype='application/json')
 
 class  OutLocation(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         try:
             response =  db_service.get_out_location_codes()
@@ -390,6 +426,8 @@ class  OutLocation(Model):
         except:
             return Response("No Data Found", status=400, mimetype='application/json')
 class  OutPortCodes(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         try:
             response =  db_service.get_out_port_codes()
@@ -398,6 +436,8 @@ class  OutPortCodes(Model):
             return Response("No Data Found", status=400, mimetype='application/json')
 
 class  CargoTypes(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         try:
             response =  db_service.get_cargo_types()
@@ -406,6 +446,8 @@ class  CargoTypes(Model):
             return Response("No Data Found", status=400, mimetype='application/json')
 
 class  UserList(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         try:
             response =  db_service.get_user_list()

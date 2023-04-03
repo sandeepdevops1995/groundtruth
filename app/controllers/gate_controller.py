@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 import app.constants as Constants
 from flask import json, Response,request
-from app.services.decorator_service import custom_exceptions, jwt_auth_required
+from app.services.decorator_service import custom_exceptions, api_auth_required
 from app.services.gate.database_service import GateDbService, Iso6346CodeService
 from app.logger import logger
 parser = reqparse.RequestParser()
@@ -17,6 +17,7 @@ class Model(Resource):
 
 class ContainerData(Model):
     @custom_exceptions
+    @api_auth_required
     def post(self):
         container_details = request.json
         try:
@@ -31,7 +32,8 @@ class ContainerData(Model):
         return Response(None, status=406, mimetype='application/json')
     
     
-    @jwt_auth_required 
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         permit_number = str(request.args.get(Constants.KEY_PERMIT_NUMBER))
         logger.info('GT,Get request from the GATE service : {}'.format(permit_number))
@@ -47,6 +49,8 @@ class ContainerData(Model):
 
 
 class CclsData(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         permit_number = request.args.get(Constants.KEY_PERMIT_NUMBER,None)
         container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
@@ -68,6 +72,8 @@ class CclsData(Model):
         return Response(result, status=200, mimetype='application/json')
 
 class GateInModel(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
         logger.info('GT, Update GATE In service : {}'.format(container_number))
@@ -77,6 +83,8 @@ class GateInModel(Model):
         return Response(result, status=200, mimetype='application/json')
 
 class GateOutModel(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
         result = GateDbService().update_gateOut_info(container_number)
@@ -85,6 +93,8 @@ class GateOutModel(Model):
         return Response(result, status=200, mimetype='application/json')
 
 class UpdateContainerDetails(Model):
+    @custom_exceptions
+    @api_auth_required
     def post(self):
         data = json.loads(request.data)
         # logger.info('ContainerInfo, Get Container details service : {}'.format(data['container_number']))
@@ -96,6 +106,8 @@ class UpdateContainerDetails(Model):
             return Response(json.dumps({"message":"No permit found"}), status=400, mimetype='application/json')
 
 class UpdateCtrStackDetails(Model):
+    @custom_exceptions
+    @api_auth_required
     def post(self):
         data = request.data
         logger.info('ContainerInfo, Get Container Stack Location details service : {}'.format(data['container_number']))
@@ -104,6 +116,8 @@ class UpdateCtrStackDetails(Model):
         return Response(result, status=200, mimetype='application/json')
 
 class ISO6346Data(Model):
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         iso_code = request.args.get(Constants.KEY_ISO_CODE,None)
         if(iso_code):

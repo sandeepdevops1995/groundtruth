@@ -1,7 +1,7 @@
 from app.enums import ContainerFlag
 
 class BuildCartingObject(object):
-    def __init__(self,data):
+    def __init__(self,data,user_id,trans_date_time):
         self.ctrNo = data.get('container_number',None)
         self.ctrLifeNo = data.get('container_life',None)
         self.crn = data.get('crn_number',None)
@@ -16,11 +16,11 @@ class BuildCartingObject(object):
         self.crgCrdFlg = None
         self.vehNo = data.get('truck_number',None)
         self.cnclFlg = data.get('cncl_flag',None)
-        self.trnsDtTm = data.get('trans_date_time',None)
-        self.userId = data.get('user_id',None)
+        self.trnsDtTm = trans_date_time
+        self.userId = user_id
         self.area = data.get('area_of_cargo',None)
         self.whId = data.get('wh_id',None)
-        self.gridNo = data.get('grid_locations',None)
+        self.gridNo = data.get('ccls_grid_locations',None)
         self.crgType = data.get('cargo_type',None)
         self.ctrSize = data.get('container_size',None)
         self.ctrType = data.get('container_type',None)

@@ -2,7 +2,7 @@ from app.enums import ContainerFlag
 
 class BuildDeStuffingObject(object):
  
-    def __init__(self,data):
+    def __init__(self,data,user_id,trans_date_time):
         self.ctrNo=data.get('container_number',None)
         self.ctrLifeNo=data.get('container_life',None)
         self.boeNo=data.get('bill_of_entry',None)
@@ -16,8 +16,8 @@ class BuildDeStuffingObject(object):
         self.commWtDmg=data.get('damaged_packages_weight',None)
         self.hldRlsFlg=data.get('hld_rls_flag',None)
         self.cnclFlg=data.get('cncl_flag',None)
-        self.trnsDtTm=data.get('trans_date_time',None)
-        self.userId=data.get('user_id',None)
+        self.trnsDtTm=trans_date_time
+        self.userId=user_id
         self.blNo=data.get('bill_of_lading',None)
         self.dtBl=data.get('bill_date',None)
         self.area=data.get('area_of_cargo',None)
@@ -27,7 +27,7 @@ class BuildDeStuffingObject(object):
         self.dstfEndDt=data.get('end_time',None)
         self.slineCd=data.get('sline_code',None)
         self.hndgCd=data.get('handling_code',None)
-        self.gridNo=data.get('grid_locations',None)
+        self.gridNo=data.get('ccls_grid_locations',None)
         self.crgType=data.get('cargo_type',None)
         self.ctrSize=data.get('container_size',None)
         self.ctrType=data.get('container_type',None)

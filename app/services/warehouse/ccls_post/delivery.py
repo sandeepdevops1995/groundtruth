@@ -1,7 +1,7 @@
 from app.enums import ContainerFlag
 
 class BuildDeliveryObject(object):
-    def __init__(self,data):
+    def __init__(self,data,user_id,trans_date_time):
         self.CTR_NO  = data.get('container_number',None)
         self.CTR_LIFE_NO  = data.get('container_life',None)
         self.BOE_NO  = data.get('bill_of_entry',None)
@@ -12,8 +12,8 @@ class BuildDeliveryObject(object):
         self.NO_PKGS_LDD  = data.get('package_count',None)
         self.NO_PKGS_DMG  = data.get('damaged_count',None)
         self.CNCL_FLG   = data.get('cncl_flag',None)
-        self.TRNS_DT_TM  = data.get('trans_date_time',None)
-        self.USER_ID  = data.get('user_id',None)
+        self.TRNS_DT_TM  = trans_date_time
+        self.USER_ID  = user_id
         # self.BL_NO  = None
         # self.DT_BL  = None
         self.AREA  = data.get('area_of_cargo',None)
@@ -21,7 +21,7 @@ class BuildDeliveryObject(object):
         self.FCL_LCL_FLG  = ContainerFlag(int(data.get('container_flag',1))).name
         self.SLINE_CD  = data.get('sline_code',None)
         self.HNDG_CD  = data.get('handling_code',None)
-        self.GRID_NO  = data.get('grid_locations',None)
+        self.GRID_NO  = data.get('ccls_grid_locations',None)
         self.CRG_TYPE  = data.get('cargo_type',None)
         self.CTR_SIZE  = data.get('container_size',None)
         self.CTR_TYPE  = data.get('container_type',None)

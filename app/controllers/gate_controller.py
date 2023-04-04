@@ -17,7 +17,7 @@ class Model(Resource):
 
 class ContainerData(Model):
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def post(self):
         container_details = request.json
         try:
@@ -33,7 +33,7 @@ class ContainerData(Model):
     
     
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def get(self):
         permit_number = str(request.args.get(Constants.KEY_PERMIT_NUMBER))
         logger.info('GT,Get request from the GATE service : {}'.format(permit_number))
@@ -50,7 +50,7 @@ class ContainerData(Model):
 
 class CclsData(Model):
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def get(self):
         permit_number = request.args.get(Constants.KEY_PERMIT_NUMBER,None)
         container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
@@ -94,7 +94,7 @@ class GateOutModel(Model):
 
 class UpdateContainerDetails(Model):
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def post(self):
         data = json.loads(request.data)
         # logger.info('ContainerInfo, Get Container details service : {}'.format(data['container_number']))
@@ -107,7 +107,7 @@ class UpdateContainerDetails(Model):
 
 class UpdateCtrStackDetails(Model):
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def post(self):
         data = request.data
         logger.info('ContainerInfo, Get Container Stack Location details service : {}'.format(data['container_number']))

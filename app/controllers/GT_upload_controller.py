@@ -16,7 +16,7 @@ def get_xml_file_data_to_dict():
 
 class TrainSummary(Model):
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def post(self):
         summary = get_xml_file_data_to_dict()
         if "RR_CTR_NOT_ARR" in summary:
@@ -66,7 +66,7 @@ class TrainSummary(Model):
     
 class PendancySummary(Model):
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def post(self):
         data = get_xml_file_data_to_dict()
         if "RR_EXP_LDD_LST" in data:

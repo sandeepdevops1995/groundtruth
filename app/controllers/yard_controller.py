@@ -44,7 +44,7 @@ class Model(Resource):
     
 class StackLocation(Model):
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def post(self):
         data = request.get_json()
         result = YardDbService.update_container_location(data)

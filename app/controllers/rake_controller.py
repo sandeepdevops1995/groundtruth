@@ -34,7 +34,7 @@ class Model(Resource):
 
 class TrainDetails(Model):   
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def get(self):
         train_number = request.args.get(Constants.TRAIN_NUMBER,None)
         track_number = request.args.get(Constants.TRACK_NUMBER,None)
@@ -75,7 +75,7 @@ class TrainDetails(Model):
 
 class RakeData(Model):
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def post(self):
         print("got rake post request===")
         if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
@@ -88,7 +88,7 @@ class RakeData(Model):
 
 
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def get(self):
         rake_number = request.args.get(Constants.RAKE_NUMBER,None)
         rake_id = request.args.get(Constants.RAKE_ID,None)
@@ -112,7 +112,7 @@ class RakeData(Model):
 
 class PendancyList(Model):
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def get(self):
         gateway_port = request.args.get(Constants.KEY_GATEWAY_PORT,None)
         if gateway_port:
@@ -142,7 +142,7 @@ class PendancyList(Model):
 
 class RakePlanDetails(Model):
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def post(self):
         data = request.get_json()
         if data:
@@ -150,7 +150,7 @@ class RakePlanDetails(Model):
                 return Response(json.dumps({"message":"success"}),status=200,mimetype='application/json')
     
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def get(self):
         rake_id = request.args.get(Constants.KEY_RAKE_ID)
         if rake_id:
@@ -190,7 +190,7 @@ class UpdateCGOSurvey(Model):
    
 class WagonMaster(Model):
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def post(self):
         data = request.get_json()
         if data:
@@ -199,7 +199,7 @@ class WagonMaster(Model):
         return Response(json.dumps({"message":"failed to save"}),status=400,mimetype='application/json')
     
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def get(self):
         wagon_number = request.args.get(Constants.KEY_NUMBER,None)
         logger.info("GT,fetch wagon master data",wagon_number)
@@ -211,7 +211,7 @@ class WagonMaster(Model):
             return Response(None,status=204,mimetype='application/json')
 class GatewayPortsMaster(Model):
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def post(self):
         data = request.get_json()
         if data:
@@ -258,7 +258,7 @@ class UpdateOutwardRakeDetails(Model):
     
 class GroundTruthData(Model):
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def post(self):
         data = request.get_json()
         success,message = db_service.post_ground_truth_details(data)
@@ -268,7 +268,7 @@ class GroundTruthData(Model):
             return Response(json.dumps({"message":message}),status=400,mimetype='application/json')
     
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def get(self):
         train_number = request.args.get(Constants.TRAIN_NUMBER,None)
         trans_date = request.args.get(Constants.KEY_TRANS_DATE,None)
@@ -286,7 +286,7 @@ class GroundTruthData(Model):
     
 class RakeContainer(Model):
     @custom_exceptions
-    @api_auth_required
+    # @api_auth_required
     def get(self):
         container_no = request.args.get(Constants.KEY_CN_NUMBER)
         response = {}

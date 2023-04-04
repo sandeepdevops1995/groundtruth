@@ -96,5 +96,5 @@ HAZARD              = "HAZARD"
 
 
 #IAM service
-IAM_SERVICE_URL="http://10.60.62.137:8061"
+IAM_SERVICE_URL="http://10.60.62.137:8030"
 VALIDATE_AUTH_END_POINT='/apiKey'

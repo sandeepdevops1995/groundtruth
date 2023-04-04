@@ -1,6 +1,5 @@
 from app.models.warehouse.bill_details import *
 from app.models.warehouse.job_order import *
-from app.models.warehouse.commodity import *
 from app.models.warehouse.truck import *
 from app.models.warehouse.container import *
 from app.models.rake.rake_in import *

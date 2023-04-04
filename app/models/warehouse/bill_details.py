@@ -4,13 +4,9 @@ from app.models.utils import IntegerDateTime
 from sqlalchemy import JSON
 
 class CCLSCargoDetails(db.Model):
-    def __init__(self, **kwargs):
-        allowed_args = self.__mapper__.class_manager  # returns a dict
-        kwargs = {k: v for k, v in kwargs.items() if k in allowed_args}
-        super().__init__(**kwargs)
     id =  db.Column(db.BigInteger(), primary_key=True)
-    commodity_id = db.Column(db.Integer, db.ForeignKey('wh_commodity.id'))
-    commodity = db.relationship("WarehouseCommodity")
+    commodity_id = db.Column(db.Integer, db.ForeignKey('tm_ccommodity.id'))
+    commodity = db.relationship("Commodity")
     shipping_bill = db.Column(db.Integer(), nullable=True)
     bill_of_entry = db.Column(db.Integer(), nullable=True)
     bill_of_lading = db.Column(db.Integer(), nullable=True)
@@ -21,6 +17,7 @@ class CCLSCargoDetails(db.Model):
     no_of_packages_declared = db.Column(db.String(11))
     package_weight = db.Column(db.Float(), nullable=True)
     cha_code = db.Column(db.String(10), nullable=True)
+    cargo_type = db.Column(db.String(10), nullable=True)
     job_order_id = db.Column(db.Integer, db.ForeignKey('ccls_job_details.id'))
     ctms_cargo_id = db.Column(db.Integer, db.ForeignKey('ctms_cargo_details.id'))
     ctms_cargo = db.relationship("CTMSCargoDetails")

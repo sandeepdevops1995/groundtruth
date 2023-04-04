@@ -6,7 +6,8 @@ class DataFormater(object):
         container_details = {}
         container_details['container_number'] = job_details[constants.CCLS_CONTAINER_NUMBER] if constants.CCLS_CONTAINER_NUMBER in job_details else None
         container_details['container_type'] = job_details[constants.CCLS_CONTAINER_TYPE] if constants.CCLS_CONTAINER_TYPE in job_details else None
-        container_details['container_size'] =  job_details[constants.CCLS_CONTAINER_SIZE] if constants.CCLS_CONTAINER_SIZE in job_details else None
+        print("job_details[constants.CCLS_CONTAINER_SIZE]-----------------",type(job_details[constants.CCLS_CONTAINER_SIZE]))
+        container_details['container_size'] =  int(float(job_details[constants.CCLS_CONTAINER_SIZE])) if constants.CCLS_CONTAINER_SIZE in job_details else None
         container_details['container_iso_code'] = job_details[constants.CCLS_CONTAINER_ISO_CODE] if constants.CCLS_CONTAINER_ISO_CODE in job_details else None
         return container_details
     
@@ -62,7 +63,7 @@ class DataFormater(object):
         job_details['container_life'] = job_details[constants.CCLS_CONTAINER_LIFE] if constants.CCLS_CONTAINER_LIFE in job_details else None
         job_order_obj['gross_weight'] = job_details[constants.CCLS_GROSS_WEIGHT] if constants.CCLS_GROSS_WEIGHT in job_details else None
         job_order_obj['gpm_number'] = job_details[constants.CCLS_GPM_NUMBER] if constants.CCLS_GPM_NUMBER in job_details else None
-        job_order_obj['gpm_created_date'] = job_details[constants.CCLS_GPM_CREATED_DATE] if constants.CCLS_GPM_CREATED_DATE in job_details else None
+        job_order_obj['gpm_valid_date'] = job_details[constants.CCLS_GPM_CREATED_DATE] if constants.CCLS_GPM_CREATED_DATE in job_details else None
         job_order_obj['carting_order_number'] = job_details[constants.CCLS_CON_NUMBER] if constants.CCLS_CON_NUMBER in job_details else None
         job_order_obj['crn_number'] = job_details[constants.CCLS_CRN_NUMBER] if constants.CCLS_CRN_NUMBER in job_details else None
         job_order_obj['cargo_weight_in_crn'] = job_details[constants.CCLS_CARGO_WEIGHT_IN_CRN] if constants.CCLS_CARGO_WEIGHT_IN_CRN in job_details else None
@@ -72,10 +73,15 @@ class DataFormater(object):
         job_order_obj['private_or_concor_labour_flag'] = job_details[constants.CCLS_PRIVATE_OR_CONCOR_LABOUR_FLAG] if constants.CCLS_PRIVATE_OR_CONCOR_LABOUR_FLAG in job_details else None
         job_order_obj['handling_code'] = job_details[constants.CCLS_HANDLING_CODE] if constants.CCLS_HANDLING_CODE in job_details else None
         job_order_obj['icd_location_code'] = job_details[constants.CCLS_ICD_LOCATION_CODE] if constants.CCLS_ICD_LOCATION_CODE in job_details else None
-        job_order_obj['is_cargo_card_generated'] = bool(job_details[constants.CCLS_IS_CARGO_CARD_GENERATED]) if constants.CCLS_IS_CARGO_CARD_GENERATED in job_details else None
-        job_order_obj['reserve_flag'] = bool(job_details[constants.CCLS_REVERSE_FLAG]) if constants.CCLS_REVERSE_FLAG in job_details else None
+        job_order_obj['is_cargo_card_generated'] = job_details[constants.CCLS_IS_CARGO_CARD_GENERATED] if constants.CCLS_IS_CARGO_CARD_GENERATED in job_details else None
+        job_order_obj['reserve_flag'] = job_details[constants.CCLS_REVERSE_FLAG] if constants.CCLS_REVERSE_FLAG in job_details else None
         job_order_obj['job_type'] = job_details[constants.BACKEND_JOB_TYPE] if constants.BACKEND_JOB_TYPE in job_details else None
         job_order_obj['fcl_or_lcl'] = job_details[constants.BACKEND_CONTAINER_FLAG] if constants.BACKEND_CONTAINER_FLAG in job_details else None
+        job_order_obj['cncl_flag'] = job_details[constants.CCLS_CANCEL_FLAG] if constants.CCLS_CANCEL_FLAG in job_details else None
+        job_order_obj['hsn_code'] = job_details[constants.CCLS_HSN_CODE] if constants.CCLS_HSN_CODE in job_details else None
+        job_order_obj['destuffing_plan_date'] = job_details[constants.CCLS_DESTUFFING_PLAN_DATE] if constants.CCLS_DESTUFFING_PLAN_DATE in job_details else None
+        job_order_obj['hld_rls_flag'] = job_details[constants.CCLS_HOLD_RELEASE_FLAG] if constants.CCLS_HOLD_RELEASE_FLAG in job_details else None
+        job_order_obj['gp_stat'] = job_details[constants.CCLS_GP_STAT] if constants.CCLS_GP_STAT in job_details else None
         return job_order_obj
     
     def ccls_cargo_details_table_formater(self,bill_details):
@@ -92,6 +98,7 @@ class DataFormater(object):
         bill_detail_obj['package_weight'] = bill_details[constants.CCLS_PACKAGE_WEIGHT] if constants.CCLS_PACKAGE_WEIGHT in bill_details else None
         bill_detail_obj['job_order_id'] = bill_details[constants.CCLS_JOB_ORDER_ID] if constants.CCLS_JOB_ORDER_ID in bill_details else None
         bill_detail_obj['cha_code'] = bill_details[constants.CCLS_CHA_CODE] if constants.CCLS_CHA_CODE in bill_details else None
+        bill_detail_obj['cargo_type'] = bill_details[constants.CCLS_CARGO_TYPE] if constants.CCLS_CARGO_TYPE in bill_details else None
         return bill_detail_obj
     
     def build_carting_response_obj(self,job_order_details,container_flag):

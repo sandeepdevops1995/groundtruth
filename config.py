@@ -7,8 +7,8 @@ SQL_DIR =(os.path.join(BASE_DIR,'app','sql'))
 WSDL_FILE = os.path.join(BASE_DIR,'GateWithEmptyTrailer.wsdl')
 
 # Server config
-IP_ADDRESS = '172.16.30.12'
-PORT = '5000'
+IP_ADDRESS = '172.16.30.114'
+PORT = '8006'
 DEBUG = True
 LOG_DIRECTORY_PATH = 'app/logs/'
 
@@ -23,8 +23,8 @@ SQl_ECHO = False # Set false for production configuration
 
 #POSTGRES_DATABASE
 PSQL_DRIVER = "postgresql"
-PSQL_USERNAME = "postgres"
-PSQL_PASSOWRD = "Welcome123"
+PSQL_USERNAME = "atco_admin"
+PSQL_PASSOWRD = "Welcome@123"
 PSQL_IP="localhost"
 PSQL_PORT = "5432"
 PSQL_DATABASE = "ground_truth"
@@ -37,7 +37,11 @@ CCLS_GROUND_TRUTH = True #set it true to get data from test oracle db
 CONTAINERS_DATA_DIRECTORY = "containers_data" #folder  to listen for the new files
 RAKE_DATA_DIRECTORY = 'rake_data'
 GROUND_TRUTH = GroundTruthType.SOAP.value
-WSDL_URL = "http://10.1.100.101:8001"
+# WSDL_URL = "http://172.16.30.114:8007"
+WSDL_URL = "http://172.16.30.23:8007"
+
+#mock service
+IS_MOCK_ENABLED=True
 
 #logstash config
 LOGSTASH_IP = '10.60.62.55'

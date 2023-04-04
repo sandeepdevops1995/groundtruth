@@ -1,5 +1,5 @@
 
-from app.services.warehouse.soap_api_call import call_api
+from app.services.warehouse.soap_api_call import get_job_info
 from app.services.warehouse.database_service import WarehouseDB
 from app.logger import logger
 import app.services.warehouse.constants as constants
@@ -7,7 +7,7 @@ from app.services.warehouse.data_formater import DataFormater
 from app.enums import ContainerFlag
 from app.models.warehouse.job_order import CCLSJobOrder
 from app import postgres_db as db
-from app.enums import JobOrderType
+from app.enums import JobOrderType,JobStatus
 
 class WarehouseCarting(object):
     def __init__(self) -> None:
@@ -18,7 +18,7 @@ class WarehouseCarting(object):
             self.warehouse_info = json.load(f)
 
     def get_carting_details(self,crn_number,job_type):
-        carting_details = call_api(crn_number,"CWHCartingRead","cwhcartingreadbpel_client_ep","CWHCartingReadBPEL_pt")
+        carting_details = get_job_info(crn_number,"CWHCartingRead","cwhcartingreadbpel_client_ep","CWHCartingReadBPEL_pt")
         #carting_details = self.warehouse_info['carting_response']
         if job_type==JobOrderType.CARTING_FCL.value:
             filter_data = {"crn_number":crn_number}
@@ -28,6 +28,7 @@ class WarehouseCarting(object):
             container_flag=ContainerFlag.LCL.value
         carting_details['job_type'] = job_type
         carting_details['fcl_or_lcl'] = container_flag
+        filter_data.update({'job_type':job_type,"status":JobStatus.INPROGRESS.value})
         result = DataFormater().build_carting_response_obj(carting_details,container_flag)
         self.save_data_db(carting_details,filter_data)
         return result

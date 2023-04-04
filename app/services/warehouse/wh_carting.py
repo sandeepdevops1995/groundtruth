@@ -7,7 +7,7 @@ from app.services.warehouse.data_formater import DataFormater
 from app.enums import ContainerFlag
 from app.models.warehouse.job_order import CCLSJobOrder
 from app import postgres_db as db
-from app.enums import JobOrderType
+from app.enums import JobOrderType,JobStatus
 
 class WarehouseCarting(object):
     def __init__(self) -> None:
@@ -28,6 +28,7 @@ class WarehouseCarting(object):
             container_flag=ContainerFlag.LCL.value
         carting_details['job_type'] = job_type
         carting_details['fcl_or_lcl'] = container_flag
+        filter_data.update({'job_type':job_type,"status":JobStatus.INPROGRESS.value})
         result = DataFormater().build_carting_response_obj(carting_details,container_flag)
         self.save_data_db(carting_details,filter_data)
         return result

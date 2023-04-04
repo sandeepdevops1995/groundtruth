@@ -32,29 +32,30 @@ class WarehouseTallySheetView(object):
         job_type = tally_sheet_data['job_type']
         if job_type==JobOrderType.CARTING_FCL.value:
             crn_number = tally_sheet_data.get('crn_number')
-            query_object = db.session.query(CTMSJobOrder).join(CCLSJobOrder).filter(CCLSJobOrder.crn_number==crn_number)
+            query_object = db.session.query(CTMSJobOrder).join(CCLSJobOrder).filter(CCLSJobOrder.crn_number==crn_number,CCLSJobOrder.job_type==job_type)
             filter_data = {"crn_number":crn_number}
             cargo_filter_key = 'shipping_bill'
         elif job_type==JobOrderType.CARTING_LCL.value:
             carting_order_number = tally_sheet_data.get('cargo_carting_number')
-            query_object = db.session.query(CTMSJobOrder).join(CCLSJobOrder).filter(CCLSJobOrder.carting_order_number==carting_order_number)
+            query_object = db.session.query(CTMSJobOrder).join(CCLSJobOrder).filter(CCLSJobOrder.carting_order_number==carting_order_number,CCLSJobOrder.job_type==job_type)
             filter_data = {"carting_order_number":carting_order_number}
             cargo_filter_key = 'shipping_bill'
         elif job_type==JobOrderType.STUFFING_FCL.value or job_type==JobOrderType.STUFFING_LCL.value or job_type==JobOrderType.DIRECT_STUFFING.value:
             container_number = tally_sheet_data.get('container_number')
-            query_object = db.session.query(CTMSJobOrder).join(CCLSJobOrder).filter(CCLSJobOrder.container_id==container_number)
+            query_object = db.session.query(CTMSJobOrder).join(CCLSJobOrder).filter(CCLSJobOrder.container_id==container_number,CCLSJobOrder.job_type==job_type)
             filter_data = {"container_id":container_number}
             cargo_filter_key = 'shipping_bill'
         elif job_type==JobOrderType.DE_STUFFING_FCL.value or job_type==JobOrderType.DE_STUFFING_LCL.value:
             container_number = tally_sheet_data.get('container_number')
-            query_object = db.session.query(CTMSJobOrder).join(CCLSJobOrder).filter(CCLSJobOrder.container_id==container_number)
+            query_object = db.session.query(CTMSJobOrder).join(CCLSJobOrder).filter(CCLSJobOrder.container_id==container_number,CCLSJobOrder.job_type==job_type)
             filter_data = {"container_id":container_number}
             cargo_filter_key= "bill_of_entry" if job_type==JobOrderType.DE_STUFFING_FCL.value else "bill_of_lading"
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
             gpm_number = tally_sheet_data.get('gpm_number')
-            query_object = db.session.query(CTMSJobOrder).join(CCLSJobOrder).filter(CCLSJobOrder.gpm_number==gpm_number)
+            query_object = db.session.query(CTMSJobOrder).join(CCLSJobOrder).filter(CCLSJobOrder.gpm_number==gpm_number,CCLSJobOrder.job_type==job_type)
             filter_data = {"gpm_number":gpm_number}
             cargo_filter_key= "bill_of_entry"
+        filter_data.update({"job_type":job_type})
         bill_details = tally_sheet_data.pop('cargo_details')
         final_job_order_details = DataFormater().ctms_job_order_table_formater(tally_sheet_data)
         job_order_id = WarehouseDB().save_ctms_job_order(final_job_order_details,query_object,filter_data)

@@ -4,7 +4,7 @@ from app.services.warehouse.database_service import WarehouseDB
 from app.logger import logger
 import app.services.warehouse.constants as constants
 from app.services.warehouse.data_formater import DataFormater
-from app.enums import ContainerFlag,JobOrderType
+from app.enums import ContainerFlag,JobOrderType,JobStatus
 from app.models.warehouse.job_order import CCLSJobOrder
 from app import postgres_db as db
 
@@ -25,18 +25,19 @@ class WarehouseDeStuffing(object):
             container_flag = ContainerFlag.LCL.value
         destuffing_details['job_type'] = job_type
         destuffing_details['fcl_or_lcl'] = container_flag
+        filter_data = {'job_type':job_type,"status":JobStatus.INPROGRESS.value,"container_id":container_number}
         result = DataFormater().build_destuffing_response_obj(destuffing_details,container_flag)
-        self.save_data_db(destuffing_details,container_number)
+        self.save_data_db(destuffing_details,filter_data)
         return result
 
-    def save_data_db(self,job_order_details,container_number):
+    def save_data_db(self,job_order_details,filter_data):
         bill_details_list = job_order_details.pop('bill_details_list')
         # truck_details = job_order_details.pop('truck_details')
         if job_order_details['fcl_or_lcl']==ContainerFlag.FCL.value:
                 filter_key = 'bill_of_entry'
         else:
                 filter_key = 'bill_of_lading'
-        query_object = db.session.query(CCLSJobOrder).filter(CCLSJobOrder.container_id==container_number)
+        query_object = db.session.query(CCLSJobOrder).filter_by(**filter_data)
         # query_object = db.session.query(CCLSJobOrder).join(Container).filter(Container.container_number==container_number,CCLSJobOrder.status==JobStatus.COMPLETED.value)
                                                                            
         container_id = WarehouseDB().save_container_details(job_order_details)

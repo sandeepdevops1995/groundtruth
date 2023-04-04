@@ -6,7 +6,7 @@ from app.logger import logger
 from app import postgres_db as db
 from app.services.warehouse.data_formater import DataFormater
 from app.serializers.job_order import CCLSJobOrderSchema,CCLSCommodityList
-from app.enums import JobOrderType
+from app.enums import JobOrderType,JobStatus
 from app.models.master.warehouse import Commodity as WarehouseCommodity
 
 class WarehouseDB(object):
@@ -98,7 +98,7 @@ class WarehouseDB(object):
         print("ctms_job_order_id---------",ctms_job_order_id,filter_data)
         query_object = db.session.query(CCLSJobOrder).filter_by(**filter_data)
         if query_object:
-            query_object.update(dict({'ctms_job_order_id':ctms_job_order_id}))
+            query_object.update(dict({'ctms_job_order_id':ctms_job_order_id,"status":JobStatus.TALLYSHEET_GENERATED.value}))
             db.session.commit()
             logger.info("update ctms job order object in ccls job order table")
     

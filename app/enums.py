@@ -26,4 +26,5 @@ class JobOrderType(enum.Enum):
 
 class JobStatus(enum.Enum):
     INPROGRESS = 1
-    COMPLETED = 2
+    TALLYSHEET_GENERATED = 2
+    COMPLETED = 3

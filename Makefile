@@ -6,7 +6,7 @@ DEPENDENCIES = python3
 tmuxSessionIDStore=".tmux-session-id"
 
 # Define runtime environment.
-ENV_FILEPATH="config.py"
+ENV_FILEPATH=".env"
 ENV_TEMPLATE="config.py.example"
 
 # File walkthrough and detect current env values.
@@ -180,7 +180,7 @@ run: | probe-pipenv probe-env-settings kill-server ## Spawn dev server
 .PHONY: run-gunicorn-server
 run-gunicorn-server: | probe-pipenv probe-env-settings kill-server ## Spawn dev server
 	@printf "\nStarting Ground Truth microservice...\n\n"; \
-	python3 -m pipenv run gunicorn --bind 0.0.0.0:8040 ground_truth:app;
+	python3 -m pipenv run gunicorn --bind ${envHostIP}:${envHostPort} ground_truth:app;
 
 .PHONY: list
 list: ## Parse the Make database and display available targets

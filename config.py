@@ -1,34 +1,38 @@
 import getpass
 import os
 from app.constants import GroundTruthType
+from environs import Env
+
+env = Env()
+env.read_env()
 
 BASE_DIR = os.path.dirname(__file__)
 SQL_DIR =(os.path.join(BASE_DIR,'app','sql'))
 WSDL_FILE = os.path.join(BASE_DIR,'GateWithEmptyTrailer.wsdl')
 
 # Server config
-IP_ADDRESS = '172.16.30.114'
-PORT = '8006'
-DEBUG = True
+IP_ADDRESS = env('IP_ADDRESS')
+PORT = env('PORT')
+DEBUG = env.bool('DEBUG')
 LOG_DIRECTORY_PATH = 'app/logs/'
 
 #ORACLE DATABASE
 SQL_DRIVER = "oracle"
-SQL_USERNAME = "ccls_dev"
-SQL_PASSOWRD = "Welcome123"
-SQL_IP="10.60.62.140"
-SQL_PORT = "1521"
-SQL_DATABASE = "xe"
-SQl_ECHO = False # Set false for production configuration
+SQL_USERNAME = env('SQL_USERNAME')
+SQL_PASSOWRD = env('SQL_PASSOWRD')
+SQL_IP=env('SQL_IP')
+SQL_PORT =env('SQL_PORT')
+SQL_DATABASE =env('SQL_DATABASE')
+SQl_ECHO = env.bool('SQl_ECHO') # Set false for production configuration
 
 #POSTGRES_DATABASE
 PSQL_DRIVER = "postgresql"
-PSQL_USERNAME = "atco_admin"
-PSQL_PASSOWRD = "Welcome@123"
-PSQL_IP="localhost"
-PSQL_PORT = "5432"
-PSQL_DATABASE = "ground_truth"
-PSQl_ECHO = False # Set false for production configuration
+PSQL_USERNAME = env('PSQL_USERNAME')
+PSQL_PASSOWRD = env('PSQL_PASSOWRD')
+PSQL_IP=env('PSQL_IP')
+PSQL_PORT = env('PSQL_PORT')
+PSQL_DATABASE = env('PSQL_DATABASE')
+PSQl_ECHO = env.bool('PSQl_ECHO') # Set false for production configuration
 
 
 #Ground truth config
@@ -38,14 +42,14 @@ CONTAINERS_DATA_DIRECTORY = "containers_data" #folder  to listen for the new fil
 RAKE_DATA_DIRECTORY = 'rake_data'
 GROUND_TRUTH = GroundTruthType.SOAP.value
 # WSDL_URL = "http://172.16.30.114:8007"
-WSDL_URL = "http://172.16.30.23:8007"
+WSDL_URL = env('WSDL_URL')
 
 #mock service
-IS_MOCK_ENABLED=True
+IS_MOCK_ENABLED=env.bool('IS_MOCK_ENABLED')
 
 #logstash config
-LOGSTASH_IP = '10.60.62.55'
-LOGSTASH_PORT = 5044
+LOGSTASH_IP = env('LOGSTASH_IP')
+LOGSTASH_PORT = env('LOGSTASH_PORT')
 
 
 #CCLS / other config details:
@@ -100,5 +104,5 @@ HAZARD              = "HAZARD"
 
 
 #IAM service
-IAM_SERVICE_URL="http://10.60.62.137:8030"
+IAM_SERVICE_URL=env('IAM_SERVICE_URL')
 VALIDATE_AUTH_END_POINT='/apiKey'

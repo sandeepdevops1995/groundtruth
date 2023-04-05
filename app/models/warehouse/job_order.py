@@ -72,7 +72,7 @@ class CTMSJobOrder(db.Model):
     # weight_remaining = db.Column(db.Float(), nullable=True)
     # private_or_concor_labour_flag = db.Column(db.Boolean(),nullable=True)
     # handling_code = db.Column(db.String(10), nullable=True)
-    warehouse_name = db.Column(db.String(50), nullable=True)
+    # warehouse_name = db.Column(db.String(50), nullable=True)
     # bill_details = db.relationship('FinalBillDetails', back_populates='ctms_job_order')
     # truck_id = db.Column(db.Integer, db.ForeignKey('truck_details.id'))
     # container_id = db.Column(db.Integer, db.ForeignKey('container.id'))

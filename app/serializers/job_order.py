@@ -20,12 +20,13 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
     area_damaged = fields.Method("get_area_damaged",data_key='area_of_damaged_cargo')
     grid_number = fields.Method("get_grid_number")
     grid_locations = fields.Method("get_grid_locations")
+    ccls_grid_locations = fields.Method("get_ccls_grid_locations")
     start_time = fields.Method("get_start_time")
     end_time = fields.Method("get_end_time")
     commodity_code = fields.Method("get_commodity_code")
     commodity_description = fields.Method("get_commodity_description")
-    sline_code = fields.Method("get_sline_code")
     warehouse_name = fields.Method("get_warehouse_name")
+    wh_id = fields.Method("get_warehouse_id")
     stacking_type = fields.Method("get_stacking_type")
 
     def get_truck_number(self, obj):
@@ -58,6 +59,9 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
     def get_grid_locations(self, obj):
         return obj.ctms_cargo.grid_locations
     
+    def get_ccls_grid_locations(self, obj):
+        return obj.ctms_cargo.ccls_grid_locations
+    
     def get_start_time(self, obj):
         return obj.ctms_cargo.start_time
     
@@ -70,17 +74,17 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
     def get_commodity_description(self, obj):
         return obj.commodity.comm_desc
     
-    def get_sline_code(self, obj):
-        return "AA1233"
-
     def get_warehouse_name(self,obj):
         return obj.ctms_cargo.warehouse_name
+    
+    def get_warehouse_id(self,obj):
+        return obj.ctms_cargo.warehouse_id
     
     def get_stacking_type(self,obj):
         return obj.ctms_cargo.stacking_type
     class Meta:
         model = CCLSCargoDetails
-        fields = ("shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","area_damaged","sline_code","warehouse_name","stacking_type","bill_date")
+        fields = ("shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","area_damaged","warehouse_name","stacking_type","bill_date","wh_id","ccls_grid_locations")
 
 
 class CCLSJobOrderSchema(ma.SQLAlchemyAutoSchema):

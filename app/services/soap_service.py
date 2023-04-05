@@ -40,7 +40,7 @@ def update_container_details(update_data):
         
         
         result = soap.service.process(**update_data)
-        save_in_diagnostics("/updateContainerInfo",{"data":str(update_data)},{"output":str(result)})
+        save_in_diagnostics(Constants.UPDATE_CONTAINER_DETAILS_ENDPOINT,{"data":str(update_data)},{"output":str(result)})
         logger.debug('Update Container Details, soap service response : '+ str(result))
         
     except Exception as e:
@@ -115,7 +115,7 @@ def update_container_stack_location(data):
                         service_name="yardwriteoperation_client_ep",
                         port_name="YardWriteOperation_pt")
         result = soap.service.process(**stack_data)
-        save_in_diagnostics(Constants.STACK_LOCATION,{"data":str(stack_data)},{"output":str(result)})
+        save_in_diagnostics(Constants.STACK_LOCATION_ENDPOINT,{"data":str(stack_data)},{"output":str(result)})
         logger.debug('Update Container Stack Location,soap service response : '+ str(result))
         return result
     except Exception as e:

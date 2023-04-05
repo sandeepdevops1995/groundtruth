@@ -118,7 +118,7 @@ class RakeOutwardWriteService():
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 request_data = RakeOutwardWriteService.format_data_to_ccls_format(data)
-                result = soap_service.update_outward_rake(request_data)
+                result = soap_service.update_outward_rake(request_data,Constants.UPDATE_OUTWARD_WTR_ENDPOINT)
                 return result
         except Exception as e:
             logger.exception(str(e))

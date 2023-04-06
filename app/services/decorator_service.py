@@ -15,7 +15,7 @@ def get_decorator():
                 return func(*args, **kwargs)
             except Exception as e:
                 logger.error(repr(e), exc_info=True)
-                result = json.dumps({"message":"unexpected error"})
+                result = json.dumps({"message":"unexpected error","error":str(e)})
                 return Response(result,status=status.VALD_FAIL, mimetype='application/json')
         return new_func
     return decorator

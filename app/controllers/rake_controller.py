@@ -158,13 +158,20 @@ class RakePlanDetails(Model):
             response =  db_service.get_rake_plan(rake_id)
             return Response(response,status=200,mimetype='application/json')
         
-class UpdateInwardContainerTrackDetails(Model):
+class UpdateRakeContainerDetails(Model):
     @custom_exceptions
     @api_auth_required
     def post(self):
         data = request.get_json()
         if data:
-            response = RakeInwardWriteService.update_track_for_container(data)    
+            tx_type = data.pop('tx_type')
+            if tx_type == "INWARD":
+                response = RakeInwardWriteService.update_container(data)
+            elif tx_type == "OUTWARD":
+                response = RakeOutwardWriteService.update_container(data)
+            else:
+                logger.info("rake_type is an unexpected format - "+tx_type)
+                response = {}
             return soap_API_response(response)
         return Response(json.dumps({"message":"please provide valid data"}),status=400,mimetype='application/json')
         

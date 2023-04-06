@@ -39,7 +39,7 @@ def register_controllers():
     api.add_resource(GatewayPortsMaster,Constants.GATEWAY_PORT_ENDPOINT)
     api.add_resource(StackLocation,Constants.STACK_LOCATION_ENDPOINT)
     api.add_resource(PendancyList,Constants.PENDANCY_CONTAINERS_ENDPOINT)
-    api.add_resource(UpdateInwardContainerTrackDetails,Constants.UPDATE_RAKE_CONTAINER_ENDPOINT)
+    api.add_resource(UpdateRakeContainerDetails,Constants.UPDATE_RAKE_CONTAINER_ENDPOINT)
     
     
     # Warehouse

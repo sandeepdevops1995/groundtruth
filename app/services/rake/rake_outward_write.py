@@ -90,8 +90,23 @@ class RakeOutwardWriteService():
         if "equipment_name" in data:
             rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = data["equipment_name"]
         return rake_data
-        
-
+    
+    @query_debugger()
+    def update_container(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                ccls_data = RakeOutwardWriteService.format_data_to_ccls_format(data)
+                result = soap_service.update_outward_rake(ccls_data,Constants.UPDATE_RAKE_CONTAINER_ENDPOINT)
+                return result
+            return {}
+        except Exception as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY)
+                RakeOutwardWriteService.update_container(data,count)
     
     @query_debugger()
     def update_CGO_survey(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):

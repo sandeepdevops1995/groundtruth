@@ -14,7 +14,7 @@ class RakeOutwardWriteService():
     def format_data_to_ccls_format(data):
         rake_data = {}
         if  Constants.KEY_TRAIN_NUMBER in data :
-            rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = data[Constants.KEY_TRAIN_NUMBER]
+            rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = "TEST_TRAIN" if data[Constants.KEY_TRAIN_NUMBER] else "TEST_TRAIN"
         else :
             rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = "TEST_TRAIN"
         if Constants.KEY_DT_DESP in data:

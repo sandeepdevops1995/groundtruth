@@ -117,7 +117,7 @@ class RakeInwardWriteService():
         
     
     @query_debugger()
-    def update_track_for_container(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+    def update_container(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
         try:
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass

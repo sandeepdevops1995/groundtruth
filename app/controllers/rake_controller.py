@@ -9,6 +9,8 @@ from app.constants import GroundTruthType
 from app.serializers.master_data_serializers import *
 from app.services.rake.rake_inward_write import RakeInwardWriteService
 from app.services.rake.rake_outward_write import RakeOutwardWriteService
+from app.services.rake.rake_inward_read import RakeInwardReadService
+from app.services.rake.rake_outward_plan import RakeOutwardPlanService
 from datetime import date, datetime
 from app.controllers.utils import View, soap_API_response
 
@@ -45,9 +47,9 @@ class TrainDetails(View):
         logger.info('GT,Get request from the Rake service : {}'.format(train_number))
         result = {}
         if rake_type == "AR":
-            result = db_service.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
+            result = RakeInwardReadService.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
         elif rake_type == "DE":
-            result = db_service.get_rake_plan(rake_id,train_number,track_number)
+            result = RakeOutwardPlanService.get_rake_plan(rake_id,train_number,track_number)
         else:
             return Response({"mesaage":"unknown rake type"}, status=400, mimetype='application/json')
         logger.info('Conainer details response')
@@ -87,7 +89,7 @@ class RakeData(View):
             message = "please provide query parameters"
             return Response(json.dumps({"message":message}), status=204,mimetype='application/json')
         logger.info('GT,Get request from the Rake service : {} {} {}'.format(rake_id,rake_number,track_number))
-        result = db_service.get_train_details(data)
+        result = RakeInwardReadService.get_train_details(data)
         logger.info('Conainer details response')
         return Response(result, status=200, mimetype='application/json')
 
@@ -127,7 +129,7 @@ class RakePlanDetails(View):
     def post(self):
         data = request.get_json()
         if data:
-            if db_service.add_rake_plan(data):
+            if RakeOutwardPlanService.add_rake_plan(data):
                 return Response(json.dumps({"message":"success"}),status=200,mimetype='application/json')
     
     @custom_exceptions
@@ -136,7 +138,7 @@ class RakePlanDetails(View):
         rake_id = request.args.get(Constants.KEY_RAKE_ID)
         if rake_id:
             logger.info("GT,fetch Rake plan details"+rake_id)
-            response =  db_service.get_rake_plan(rake_id)
+            response =  RakeOutwardPlanService.get_rake_plan(rake_id)
             return Response(response,status=200,mimetype='application/json')
         
 class UpdateRakeContainerDetails(View):

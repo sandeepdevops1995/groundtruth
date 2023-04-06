@@ -4,7 +4,7 @@ from app.services.yard.yard_db_service import YardDbService
 from flask import json, Response,request
 from app.services.decorator_service import custom_exceptions, api_auth_required
 from app.logger import logger
-from app.controllers.rake_controller import soap_API_response
+from app.controllers.utils import soap_API_response,View
 
 # this is a common function to retrieve master data from CCLS tables
 def get_master_data_common(name):
@@ -33,16 +33,9 @@ def get_master_data_common(name):
     result = YardDbService().get_master_data(sql_filename)
     return Response(result, status=200, mimetype='application/json')
 
-
-class Model(Resource):
-    
-    def add_arguments_to_parser(self, args_list):
-        for arg in args_list:
-            parser.add_argument(arg)
-        return parser.parse_args()
     
     
-class StackLocation(Model):
+class StackLocation(View):
     @custom_exceptions
     # @api_auth_required
     def post(self):

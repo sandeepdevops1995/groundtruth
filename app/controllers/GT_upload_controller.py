@@ -1,4 +1,4 @@
-from app.controllers.gate_controller import Model
+from app.controllers.utils import View
 from app.services.decorator_service import custom_exceptions, api_auth_required
 from app.services.rake.gt_upload_service import upload_ccls_rake_date, upload_pendancy_data
 
@@ -14,7 +14,7 @@ def get_xml_file_data_to_dict():
     return xmltodict.parse(xml_data)
         
 
-class TrainSummary(Model):
+class TrainSummary(View):
     @custom_exceptions
     # @api_auth_required
     def post(self):
@@ -64,7 +64,7 @@ class TrainSummary(Model):
         return wagons_list
     
     
-class PendancySummary(Model):
+class PendancySummary(View):
     @custom_exceptions
     # @api_auth_required
     def post(self):

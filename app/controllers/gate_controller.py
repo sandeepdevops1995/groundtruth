@@ -4,18 +4,10 @@ from flask import json, Response,request
 from app.services.decorator_service import custom_exceptions, api_auth_required
 from app.services.gate.database_service import GateDbService, Iso6346CodeService
 from app.logger import logger
-parser = reqparse.RequestParser()
+from app.controllers.utils import View,soap_API_response
 ContainerId = None
 
-
-class Model(Resource):
-
-    def add_arguments_to_parser(self, args_list):
-        for arg in args_list:
-            parser.add_argument(arg)
-        return parser.parse_args()
-
-class ContainerData(Model):
+class ContainerData(View):
     @custom_exceptions
     # @api_auth_required
     def post(self):
@@ -48,7 +40,7 @@ class ContainerData(Model):
     
 
 
-class CclsData(Model):
+class CclsData(View):
     @custom_exceptions
     # @api_auth_required
     def get(self):
@@ -71,7 +63,7 @@ class CclsData(Model):
         logger.info('Conainer details response: {}'.format(result))
         return Response(result, status=200, mimetype='application/json')
 
-class GateInModel(Model):
+class GateInModel(View):
     @custom_exceptions
     @api_auth_required
     def get(self):
@@ -82,7 +74,7 @@ class GateInModel(Model):
         logger.info('Conainer details response: {}'.format(result))
         return Response(result, status=200, mimetype='application/json')
 
-class GateOutModel(Model):
+class GateOutModel(View):
     @custom_exceptions
     @api_auth_required
     def get(self):
@@ -92,7 +84,7 @@ class GateOutModel(Model):
         logger.info('Conainer details response: {}'.format(result))
         return Response(result, status=200, mimetype='application/json')
 
-class UpdateContainerDetails(Model):
+class UpdateContainerDetails(View):
     @custom_exceptions
     # @api_auth_required
     def post(self):
@@ -105,7 +97,7 @@ class UpdateContainerDetails(Model):
         else:
             return Response(json.dumps({"message":"No permit found"}), status=400, mimetype='application/json')
 
-class UpdateCtrStackDetails(Model):
+class UpdateCtrStackDetails(View):
     @custom_exceptions
     # @api_auth_required
     def post(self):
@@ -115,7 +107,7 @@ class UpdateCtrStackDetails(Model):
         logger.info('Conainer Stack Location  details response: {}'.format(result))
         return Response(result, status=200, mimetype='application/json')
 
-class ISO6346Data(Model):
+class ISO6346Data(View):
     @custom_exceptions
     @api_auth_required
     def get(self):

@@ -174,6 +174,7 @@ run-migrations: | probe-pipenv probe-env-settings ## Bursts python cache, genera
 # This target starts the in-built wsgi server based on env settings.
 .PHONY: run
 run: | probe-pipenv probe-env-settings kill-server ## Spawn dev server
+	. ./exportenvs.sh _env_init; \
 	@printf "\nStarting Ground Truth microservice...\n\n"; \
 	python3 -m pipenv run python ground_truth.py;
 

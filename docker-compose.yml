@@ -8,28 +8,28 @@ services:
         command: >
                 sh -c "make run"
         volumes:
-            - ./ground-truth:/ground-truth-container/ground-truth/:rw
+            - .:/ground-truth-container/ground-truth/:rw
         environment:
-            -IP_ADDRESS=172.16.30.114
-            -PORT=8006
-            -DEBUG=True
-            -SQL_USERNAME=ccls_dev
-            -SQL_PASSOWRD=Welcome123
-            -SQL_IP=10.60.62.140
-            -SQL_PORT=1521
-            -SQL_DATABASE=xe
-            -SQl_ECHO=False
-            -PSQL_USERNAME=atco_admin
-            -PSQL_PASSOWRD=Welcome@123
-            -PSQL_IP=localhost
-            -PSQL_PORT=5432
-            -PSQL_DATABASE=ground_truth
-            -PSQl_ECHO=False
-            -WSDL_URL=http://172.16.30.114:8007
-            -IS_MOCK_ENABLED=True
-            -LOGSTASH_IP=10.60.62.55
-            -LOGSTASH_PORT=5044
-            -IAM_SERVICE_URL=http://10.60.62.55:9000
+            - IP_ADDRESS=172.16.30.114
+            - PORT=8006
+            - DEBUG=True
+            - SQL_USERNAME=ccls_dev
+            - SQL_PASSOWRD=Welcome123
+            - SQL_IP=10.60.62.140
+            - SQL_PORT=1521
+            - SQL_DATABASE=xe
+            - SQl_ECHO=False
+            - PSQL_USERNAME=postgres
+            - PSQL_PASSOWRD=Welcome123
+            - PSQL_IP=172.16.30.114
+            - PSQL_PORT=5432
+            - PSQL_DATABASE=ground_truth
+            - PSQl_ECHO=False
+            - WSDL_URL=http://172.16.30.114:8007
+            - IS_MOCK_ENABLED=True
+            - LOGSTASH_IP=10.60.62.55
+            - LOGSTASH_PORT=5044
+            - IAM_SERVICE_URL=http://10.60.62.55:9000
         networks:
             - warehouse-network
         ports:
@@ -39,7 +39,7 @@ services:
             #- redis
 
 volumes:
-    ground-truth:
+    ground_truth:
     #postgres-db:
     #redis:
 

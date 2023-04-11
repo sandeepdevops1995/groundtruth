@@ -6,7 +6,7 @@ services:
         image: ${GROUNDTRUTH_IMAGE_NAME:-ground_truth}:${GROUNDTRUTH_VERSION:-latest}
         container_name: ground-truth-container
         command: >
-                sh -c "make run"
+                sh -c "make run-migrations && make run"
         volumes:
             - .:/ground-truth-container/ground-truth/:rw
         environment:
@@ -23,7 +23,7 @@ services:
             - PSQL_PASSOWRD=Welcome123
             - PSQL_IP=10.60.62.55
             - PSQL_PORT=5432
-            - PSQL_DATABASE=ground_truth
+            - PSQL_DATABASE=test_warehouse_ground_truth
             - PSQl_ECHO=False
             - WSDL_URL=http://10.60.62.55:8007
             - IS_MOCK_ENABLED=True

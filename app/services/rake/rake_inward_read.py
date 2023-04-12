@@ -1,5 +1,5 @@
 from app.services.decorator_service import query_debugger
-from app.models import CCLSRake
+from app.models import CCLSRake, WgnMst
 from app import db
 from app.constants import GroundTruthType
 import app.constants as Constants
@@ -100,6 +100,8 @@ class RakeInwardReadService:
             # "container_life_number" : wagon["container_life_number"],
             "trans_date" : wagon["trans_date"],
             "train_number" : wagon["train_number"]}
+            
+            # save in CCLSRake
             wagon_model = CCLSRake(**wagon)
             final_data.append(wagon_model)
             try:
@@ -110,6 +112,19 @@ class RakeInwardReadService:
                 else:
                     db.session.add(wagon_model)
                 commit()
+            except Exception as e:
+                logger.exception(str(e))
+            
+            # Save in Wagon Master
+            wagon_data = {"wagon_number" : wagon["wagon_number"]}
+            try:
+                wagon = WgnMst.query.filter_by(**query_fields).all()
+                if not wagon:
+                    wagon_data["wgn_typ"] = "BLCB"
+                    wagon_data["commisioned_on"] = datetime.now()
+                    wagon = WgnMst(**wagon_data)
+                    db.session.add(wagon)
+                    commit()
             except Exception as e:
                 logger.exception(str(e))
         

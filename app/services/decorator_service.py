@@ -23,14 +23,16 @@ custom_exceptions = get_decorator()
 
 def is_valid_api_key(headers):
     url = config.IAM_SERVICE_URL +config.VALIDATE_AUTH_END_POINT
-    status = False
+    is_authorised = False
     try:
         res = requests.get(url,headers=headers)
         if res.status_code == 200:
-            status = True
+            is_authorised = True
     except Exception as e:
-        return Response({'status': 'Iam service not available'}, 503, mimetype='application/json')
-    return status
+        logger.info("Exception is may occured due to unavailability of iam service ")
+        logger.exception(e)
+        return is_authorised
+    return is_authorised
 
 def validate_auth():
     def decorator(func):
@@ -39,7 +41,7 @@ def validate_auth():
                 return func(*args, **kwargs)
             else:
                 logger.info("Unauthorized to access this api...")
-            return Response({ 'status': 'authentication failed (API token maybe missing)'}, 401, mimetype='application/json')
+            return Response(json.dumps({ 'status': 'authentication failed (API token maybe missing)'}), 401, mimetype='application/json')
         return new_func
     return decorator
 api_auth_required = validate_auth()

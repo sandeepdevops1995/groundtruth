@@ -7,7 +7,7 @@ tmuxSessionIDStore=".tmux-session-id"
 
 # Define runtime environment.
 ENV_FILEPATH=".env"
-ENV_TEMPLATE=".env.example"
+ENV_TEMPLATE=".env.default"
 
 # File walkthrough and detect current env values.
 envHostPort="$$(sed -n -e "s/^.*PORT.*=//p" $(ENV_FILEPATH) | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
@@ -155,6 +155,10 @@ reinstate-db: | probe-pipenv probe-env-settings kill-active-db-connections ## Dr
 	printf "\n\nSuccessfuly reinstated database and applied migrations!\n\n" \
 	|| { printf "\nSomething went wrong with reinstating database. abort\n\n"; exit 1; };
 
+.PHONY: initiate-migrations
+initiate-migrations: | probe-pipenv probe-env-settings ## Invokes Django's makemigrations command for specified inline apps
+	@printf "\n\nCreating database migrations...\n\n"; \
+	python3 -m pipenv run flask db init;
 
 .PHONY: create-migrations
 create-migrations: | probe-pipenv probe-env-settings ## Invokes Django's makemigrations command for specified inline apps
@@ -174,6 +178,7 @@ run-migrations: | probe-pipenv probe-env-settings ## Bursts python cache, genera
 # This target starts the in-built wsgi server based on env settings.
 .PHONY: run
 run: | probe-pipenv probe-env-settings kill-server ## Spawn dev server
+	. ./exportenvs.sh _env_init; \
 	@printf "\nStarting Ground Truth microservice...\n\n"; \
 	python3 -m pipenv run python ground_truth.py;
 

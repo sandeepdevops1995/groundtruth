@@ -7,7 +7,7 @@ tmuxSessionIDStore=".tmux-session-id"
 
 # Define runtime environment.
 ENV_FILEPATH=".env"
-ENV_TEMPLATE=".env.example"
+ENV_TEMPLATE=".env.default"
 
 # File walkthrough and detect current env values.
 envHostPort="$$(sed -n -e "s/^.*PORT.*=//p" $(ENV_FILEPATH) | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"

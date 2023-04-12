@@ -4,7 +4,7 @@ from app.constants import GroundTruthType
 from environs import Env
 
 env = Env()
-env.read_env()
+# env.read_env()
 
 BASE_DIR = os.path.dirname(__file__)
 SQL_DIR =(os.path.join(BASE_DIR,'app','sql'))

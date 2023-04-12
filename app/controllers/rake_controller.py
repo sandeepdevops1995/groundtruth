@@ -11,7 +11,7 @@ from app.services.rake.rake_inward_write import RakeInwardWriteService
 from app.services.rake.rake_outward_write import RakeOutwardWriteService
 from app.services.rake.rake_inward_read import RakeInwardReadService
 from app.services.rake.rake_outward_plan import RakeOutwardPlanService
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from app.controllers.utils import View, soap_API_response
 
 
@@ -48,6 +48,11 @@ class TrainDetails(View):
         result = {}
         if rake_type == "AR":
             result = RakeInwardReadService.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
+            if not result:
+                from_date = (datetime.now()-timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
+                to_date = (datetime.now()+timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
+                RakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
+                result = RakeInwardReadService.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
         elif rake_type == "DE":
             result = RakeOutwardPlanService.get_rake_plan(rake_id,train_number,track_number)
         else:

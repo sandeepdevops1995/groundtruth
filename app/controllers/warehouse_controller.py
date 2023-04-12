@@ -45,13 +45,9 @@ class WarehouseTallySheet(View):
         return Response(json.dumps(result), status=200, mimetype='application/json')
 
     def post(self):
-        # try:
         tally_sheet_data=request.json
         WarehouseTallySheetView().process_tally_sheet_info(tally_sheet_data)
         return Response(json.dumps({"message":"tallysheet created successfully"}), status=200, mimetype='application/json')
-        # except Exception as e:
-        #     logger.error(e)
-        #     return Response({}, status=400, mimetype='application/json')
 
     def put(self):
         tally_sheet_data=request.json

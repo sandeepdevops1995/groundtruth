@@ -5,6 +5,7 @@ from app.services.decorator_service import custom_exceptions, api_auth_required
 from app.services.gate.database_service import GateDbService, Iso6346CodeService
 from app.logger import logger
 from app.controllers.utils import View,soap_API_response
+import json
 ContainerId = None
 
 class ContainerData(View):
@@ -59,7 +60,8 @@ class CclsData(View):
             logger.info('GT,Get request from the GATE service : {}'.format(crn_number))
             result = GateDbService().get_details_by_crn_number(crn_number)
             logger.info('GT,Get request from the GATE service - crn number: {}'.format(crn_number))
-        
+        if not result:
+            result = json.dumps({})
         logger.info('Conainer details response: {}'.format(result))
         return Response(result, status=200, mimetype='application/json')
 

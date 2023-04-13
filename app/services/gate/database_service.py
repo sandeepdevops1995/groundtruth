@@ -189,7 +189,7 @@ class GateDbService:
         if pmt_details:
             logger.info('GT,Fetched from Postgres DB - permit number: {}'.format(permit_number))
             return db_functions(pmt_details).as_json()
-        return None
+        return {}
 
 
     def add_container(containers_list):

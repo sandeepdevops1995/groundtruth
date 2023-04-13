@@ -44,7 +44,7 @@ def update_container_details(update_data):
         logger.debug('Update Container Details, soap service response : '+ str(result))
         
     except Exception as e:
-        logger.exception('Update Container Details, Exception : '+str(e))
+        # logger.exception('Update Container Details, Exception : '+str(e))
         result = {}
     return result
 

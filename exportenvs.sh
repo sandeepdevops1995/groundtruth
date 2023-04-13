@@ -21,8 +21,11 @@ COMPOSE_IS_MOCK_ENABLED=${IS_MOCK_ENABLED}
 COMPOSE_IS_EVENT_BASED=${IS_EVENT_BASED}
 COMPOSE_CCLS_GROUND_TRUTH=${CCLS_GROUND_TRUTH}
 
-#read .env file 
-env_file_path="./.env"
+#remove .env file
+rm -f ./.env
+
+#read .env file in env folder
+env_file_path="./env/.env"
 
 _env_init(){
 

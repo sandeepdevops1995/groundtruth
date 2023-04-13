@@ -22,4 +22,4 @@ COPY ./Pipfile Pipfile
 
 RUN make install
 
-CMD [ "make", "run"]
+CMD [ "make", "run-docker"]

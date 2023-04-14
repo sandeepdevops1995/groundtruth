@@ -39,7 +39,7 @@ class WarehouseUploadTallySheetView(object):
         self.update_status_in_job(filter_data,JobStatus.COMPLETED.value)
 
    def get_data_from_db(self,filter_data):
-      query_object = db.session.query(CCLSJobOrder).filter_by(**filter_data).join(CCLSJobOrder.cargo_details).options(contains_eager(CCLSJobOrder.cargo_details)).filter(CCLSCargoDetails.ctms_cargo_id!=None).first()
+      query_object = db.session.query(CCLSJobOrder).filter_by(**filter_data).join(CCLSJobOrder.cargo_details).options(contains_eager(CCLSJobOrder.cargo_details)).filter(CCLSCargoDetails.ctms_cargo_id!=None).all()
       result = WarehouseDB().get_final_job_details(query_object)
       result = self.process_data(result)
       print("result------------",result)

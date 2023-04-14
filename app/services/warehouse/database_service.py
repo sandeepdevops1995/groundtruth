@@ -178,7 +178,8 @@ class WarehouseDB(object):
     def get_final_job_details(self,query_object):
         result = {}
         if query_object:
-            result = CCLSJobOrderSchema().dump(query_object)
+            result = CCLSJobOrderSchema().dump(query_object,many=True)
+            result = result[0] if result else {}
         logger.info("job details from database------------%s",result)
         return result
     

@@ -5,8 +5,6 @@ services:
         build: .
         image: ${GROUNDTRUTH_IMAGE_NAME:-ground_truth}:${GROUNDTRUTH_VERSION:-latest}
         container_name: ground-truth-container
-        command: >
-                sh -c "make run"
         volumes:
             - .:/ground-truth-container/ground-truth/:rw
         environment:

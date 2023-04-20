@@ -95,7 +95,7 @@ kill-server: ## Send SIGKILL to current dev server instance
 
 # Installs the dependencies listed in Pipfile via Pipenv.
 .PHONY: install
-install: | probe-pipenv; @python3 -m pipenv install; ## Installs project dependencies into a virtualenv --fully managed by Pipenv
+install: | probe-pipenv reset-local-settings; @python3 -m pipenv install; ## Installs project dependencies into a virtualenv --fully managed by Pipenv
 
 # Drops you into a virtualenv shell handled by pipenv
 .PHONY: shell
@@ -140,7 +140,7 @@ reset-local-settings: ## Overwrites current environemnt file (if any) with a con
 .PHONY: probe-env-settings
 probe-env-settings: ## Check environment settings file's existence (and create if missing)
 	@envSettingsPath=$(ENV_FILEPATH); \
-	[ ! -f "$$envSettingsPath" ] && { make reset-local-settings; } || { printf "[Info] successfully loaded environment from \"$$envSettingsPath\"...OK"; }
+	[ ! -f "$$envSettingsPath" ] || { printf "[Info] successfully loaded environment from \"$$envSettingsPath\"...OK"; }
 
 # This target drops the existing database fully, recreatces it,
 # finally generates and applies all migrations.
@@ -181,6 +181,13 @@ run: | probe-pipenv probe-env-settings kill-server ## Spawn dev server
 	. ./exportenvs.sh _env_init; \
 	@printf "\nStarting Ground Truth microservice...\n\n"; \
 	python3 -m pipenv run python ground_truth.py;
+
+# This target starts the in-built wsgi server based on env settings.
+# .PHONY: run-docker
+# run-docker: | probe-pipenv probe-env-settings kill-server ## Spawn dev server
+# 	. ./exportenvs.sh _env_init; \
+# 	@printf "\nStarting Ground Truth microservice...in docker\n\n"; \
+# 	python3 -m pipenv run python ground_truth.py;
 
 .PHONY: run-gunicorn-server
 run-gunicorn-server: | probe-pipenv probe-env-settings kill-server ## Spawn dev server

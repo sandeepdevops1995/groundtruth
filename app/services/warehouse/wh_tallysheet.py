@@ -11,20 +11,17 @@ class WarehouseTallySheetView(object):
 
     def get_tally_sheet_info(self,request):
         job_type = int(request.args.get('job_type',0))
+        job_order = request.args.get('request_parameter')
         filter_data = {"job_type":job_type}
         if job_type==JobOrderType.CARTING_FCL.value:
-            job_order = request.args.get('crn_number',0)
             filter_data.update({"crn_number":job_order})
         elif job_type==JobOrderType.CARTING_LCL.value:
-            job_order = request.args.get('cargo_carting_number',0)
             filter_data.update({"carting_order_number":job_order})
         elif job_type==JobOrderType.STUFFING_FCL.value or job_type==JobOrderType.STUFFING_LCL.value or job_type==JobOrderType.DE_STUFFING_FCL.value or job_type==JobOrderType.DE_STUFFING_LCL.value or job_type==JobOrderType.DIRECT_STUFFING.value:
-            job_order = request.args.get('container_number',0)
             filter_data.update({"container_id":job_order})
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
-            job_order = request.args.get('gpm_number',0)
             filter_data.update({"gpm_number":job_order})
-        query_object = db.session.query(CCLSJobOrder).filter_by(**filter_data).join(CCLSJobOrder.cargo_details).options(contains_eager(CCLSJobOrder.cargo_details)).filter(CCLSCargoDetails.ctms_cargo_id!=None).first()
+        query_object = db.session.query(CCLSJobOrder).filter_by(**filter_data).join(CCLSJobOrder.cargo_details).options(contains_eager(CCLSJobOrder.cargo_details)).filter(CCLSCargoDetails.ctms_cargo_id!=None).all()
         result = WarehouseDB().get_final_job_details(query_object)
         return result
     

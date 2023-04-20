@@ -21,7 +21,7 @@ class View(Resource):
 
 class JobDetails(View):
     def get(self):
-        print("request args ::", request.args, request.args.get('job_order') )
+        print("request args ::", request.args, request.args.get('request_parameter') )
         job_order = request.args.get('request_parameter')
         job_type = int(request.args.get('res_job_type',0))
         container_flag = int(request.args.get('container_flag',0))

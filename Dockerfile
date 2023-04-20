@@ -20,6 +20,6 @@ RUN pip install coverage
 
 COPY ./Pipfile Pipfile
 
-RUN make install
+RUN make install  -o reset-local-settings
 
 CMD [ "make", "run"]

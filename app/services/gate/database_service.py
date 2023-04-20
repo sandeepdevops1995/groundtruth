@@ -130,7 +130,7 @@ class GateDbService:
             return json.dumps({})
         elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
             result = soap_service.get_permit_details(permit_number)
-            if result:
+            if result and 'PermitNumber' in result and result['PermitNumber']:
                 if result['PermitDateTime'] and isinstance(result['PermitDateTime'], datetime):
                     result['PermitDateTime']=result['PermitDateTime'].strftime("%Y-%m-%d %H:%M:%S")
                 if result['CtrLifeNumber'] and isinstance(result['CtrLifeNumber'], date):
@@ -153,7 +153,6 @@ class GateDbService:
                                 "health" : result['DamageStatus'],
                                 "gate_in_time" : result['VehicleGateInDateTime'],
                                 "iso_code": iso_code,
-                                "is_empty_or_laden": "Empty" if "E" in result['ContainerStatus'] else "Laden",
                                 "pod":None,
                                 "cargo_type":None,
                                 "liner_seal":None,

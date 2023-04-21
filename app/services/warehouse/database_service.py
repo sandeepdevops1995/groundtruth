@@ -17,18 +17,19 @@ class WarehouseDB(object):
         if container_number:
             db_object = db.session.query(Container).filter(Container.container_number == container_details.get('container_number',None)).first()
             if db_object:
-                logger.info("container already exists in db")
+                logger.info("GTService: container already exists in db")
                 return db_object.container_number
             try:
                 db_object = Container(**container_details)
                 db.session.add(db_object)
                 db.session.commit()
                 db.session.refresh(db_object)
-                logger.info("container created successfully")
+                logger.info("GTService: container created successfully")
                 return db_object.container_number
             except Exception as e:
-                logger.error(e)
+                logger.exception(e)
                 db.session.rollback()
+                raise
 
     
     def save_ccls_job_order(self,job_order_details,container_id,query_object):
@@ -41,13 +42,13 @@ class WarehouseDB(object):
             # db.session.add(db_object)
             db.session.commit()
             # db.session.refresh(db_object)
-            logger.info("delivery job orders updated successfully")
+            logger.info("GTService: delivery job orders updated successfully")
         else:
             db_object = CCLSJobOrder(**job_order_details)
             db.session.add(db_object)
             db.session.commit()
             db.session.refresh(db_object)
-            logger.info("delivery job orders created successfully")
+            logger.info("GTService: delivery job orders created successfully")
         return db_object.id
             
 
@@ -64,15 +65,15 @@ class WarehouseDB(object):
             if query_object.first():
                 query_object.update(dict(each_bill_info))
                 db.session.commit()
-                logger.info("cargo details updated successfully")
+                logger.info("GTService: cargo details updated successfully")
             else:
                 db_object = CCLSCargoDetails(**each_bill_info)
                 db.session.add(db_object, _warn=False)
                 db.session.commit()
                 db.session.refresh(db_object)
-                logger.info("cargo details created successfully")
+                logger.info("GTService: cargo details created successfully")
 
-    def save_ctms_job_order(self,job_order_details,query_object,filter_data):
+    def save_ctms_job_order(self,job_order_details,query_object,ccls_query_object):
         # job_order_details = DataFormater().ccls_job_order_table_formater(job_order_details)
         #print("job_order_details-----",job_order_details)
         #query_object = db.session.query(CTMSJobOrder).join(CCLSJobOrder).filter(CCLSJobOrder.crn_number==filter_data['crn_number'])
@@ -83,24 +84,24 @@ class WarehouseDB(object):
             # db.session.add(db_object)
             db.session.commit()
             # db.session.refresh(db_object)
-            logger.info("job orders updated successfully")
+            logger.info("GTService: job orders updated successfully")
         else:
             db_object = CTMSJobOrder(**job_order_details)
             db.session.add(db_object)
             db.session.commit()
             db.session.refresh(db_object)
-            logger.info("job orders created successfully")
-            self.update_ctms_job_order_in_ccls_job_order(db_object.id,filter_data)
+            logger.info("GTService: job orders created successfully")
+            self.update_ctms_job_order_in_ccls_job_order(db_object.id,ccls_query_object)
         return db_object.id
     
-    def update_ctms_job_order_in_ccls_job_order(self,ctms_job_order_id,filter_data):
+    def update_ctms_job_order_in_ccls_job_order(self,ctms_job_order_id,ccls_query_object):
         # filter_data = {}
-        print("ctms_job_order_id---------",ctms_job_order_id,filter_data)
-        query_object = db.session.query(CCLSJobOrder).filter_by(**filter_data)
-        if query_object:
-            query_object.update(dict({'ctms_job_order_id':ctms_job_order_id,"status":JobStatus.TALLYSHEET_GENERATED.value}))
-            db.session.commit()
-            logger.info("update ctms job order object in ccls job order table")
+        # print("ctms_job_order_id---------",ctms_job_order_id,filter_data)
+        # query_object = db.session.query(CCLSJobOrder).filter_by(**filter_data)
+        # if query_object:
+        ccls_query_object.update(dict({'ctms_job_order_id':ctms_job_order_id}))#,"status":JobStatus.TALLYSHEET_GENERATED.value}))
+        db.session.commit()
+        logger.info("GTService: update ctms job order object in ccls job order table")
     
     def save_ctms_bill_details(self,bill_details,job_order_id,filter_key,job_type):
         for each_bill_info in bill_details:
@@ -130,14 +131,14 @@ class WarehouseDB(object):
             if db_object:
                 update_obj = db.session.query(CTMSCargoDetails).filter(CTMSCargoDetails.id == db_object.id).update(dict(each_bill_info))
                 db.session.commit()
-                logger.info("CTMS cargo details updated successfully %s",update_obj)
+                logger.info("GTService: CTMS cargo details updated successfully %s",update_obj)
             else:
                 db_object = CTMSCargoDetails(**each_bill_info)
                 db.session.add(db_object, _warn=False)
                 db.session.commit()
                 db.session.refresh(db_object)
                 
-                logger.info("CTMS cargo details created successfully")
+                logger.info("GTService: CTMS cargo details created successfully")
                 self.update_ctms_cargo_details_in_ccls_cargo_details(db_object.id,bill_number,job_order_id,filter_key)
 
     def update_ctms_cargo_details_in_ccls_cargo_details(self,cargo_id,bill_number,job_order_id,filter_key):
@@ -147,18 +148,18 @@ class WarehouseDB(object):
         if query_object:
             query_object.update(dict({'ctms_cargo_id':cargo_id}))
             db.session.commit()
-            logger.info("update ctms cargo details object in ccls cargo details table")
+            logger.info("GTService: update ctms cargo details object in ccls cargo details table")
 
     def get_commodity_instance(self,commodity_code,commodity_description):
         db_object = db.session.query(WarehouseCommodity).filter(WarehouseCommodity.comm_cd == commodity_code).first()
         if db_object:
-            logger.info("commodity already exists in db")
+            logger.info("GTService: commodity already exists in db")
             return db_object.id
         db_object = WarehouseCommodity(comm_cd=commodity_code,comm_desc=commodity_description)
         db.session.add(db_object)
         db.session.commit()
         db.session.refresh(db_object)
-        logger.info("commodity created successfully")
+        logger.info("GTService: commodity created successfully")
         return db_object.id
     
     def save_truck_details(self,truck_details,job_order_id):
@@ -173,14 +174,14 @@ class WarehouseDB(object):
                 db.session.add(db_object)
                 db.session.commit()
                 db.session.refresh(db_object)
-                logger.info("truck created successfully")
+                logger.info("GTService: truck created successfully")
 
-    def get_final_job_details(self,query_object):
+    def get_final_job_details(self,query_object,request_parameter):
         result = {}
         if query_object:
             result = CCLSJobOrderSchema().dump(query_object,many=True)
             result = result[0] if result else {}
-        logger.info("job details from database------------%s",result)
+        logger.info("{},{},{}:{}".format("GTService: tallysheet details from database" ,result,"job_order",request_parameter))
         return result
     
     def get_commodities(self):
@@ -188,25 +189,22 @@ class WarehouseDB(object):
         query_object = db.session.query(WarehouseCommodity).all()
         if query_object:
             result = CCLSCommodityList().dump(query_object,many=True)
-        logger.info("commodities from db------------",result)
+        logger.info("GTService: commodities from db------------",result)
         return result
     
     def save_commodities(self,commodity_data):
         for each_commodity in commodity_data:
-            try:
-                each_commodity = {k.lower(): v for k, v in each_commodity.items()}
-                commodity_code = int(each_commodity['comm_cd'])
-                logger.info("commodity_code--------%d",commodity_code)
-                each_commodity['srvc_exmp_cat_flg'] = str(int(each_commodity['srvc_exmp_cat_flg'])) if 'srvc_exmp_cat_flg' in each_commodity and each_commodity['srvc_exmp_cat_flg']!=None else 0
-                query_object = db.session.query(WarehouseCommodity).filter(WarehouseCommodity.comm_cd==commodity_code)
-                if query_object.first():
-                    query_object.update(dict(each_commodity))
-                    logger.info("commodity details updated successfully")
-                else:
-                    db_object = WarehouseCommodity(**each_commodity)
-                    db.session.add(db_object, _warn=False)
-                    db.session.commit()
-                    db.session.refresh(db_object)
-                    logger.info("commodity details created successfully")
-            except Exception as e:
-                logger.error("getting error while saving commodities %s",e)
+            each_commodity = {k.lower(): v for k, v in each_commodity.items()}
+            commodity_code = int(each_commodity['comm_cd'])
+            logger.info("GTService: commodity_code--------%d",commodity_code)
+            each_commodity['srvc_exmp_cat_flg'] = str(int(each_commodity['srvc_exmp_cat_flg'])) if 'srvc_exmp_cat_flg' in each_commodity and each_commodity['srvc_exmp_cat_flg']!=None else 0
+            query_object = db.session.query(WarehouseCommodity).filter(WarehouseCommodity.comm_cd==commodity_code)
+            if query_object.first():
+                query_object.update(dict(each_commodity))
+                logger.info("GTService: commodity details updated successfully")
+            else:
+                db_object = WarehouseCommodity(**each_commodity)
+                db.session.add(db_object, _warn=False)
+                db.session.commit()
+                db.session.refresh(db_object)
+                logger.info("GTService: commodity details created successfully")

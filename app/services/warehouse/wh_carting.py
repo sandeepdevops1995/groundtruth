@@ -20,18 +20,22 @@ class WarehouseCarting(object):
     def get_carting_details(self,crn_number,job_type):
         carting_details = get_job_info(crn_number,"CWHCartingRead","cwhcartingreadbpel_client_ep","CWHCartingReadBPEL_pt")
         #carting_details = self.warehouse_info['carting_response']
-        if job_type==JobOrderType.CARTING_FCL.value:
-            filter_data = {"crn_number":crn_number}
-            container_flag=ContainerFlag.FCL.value
+        if carting_details:
+            # try:
+            if job_type==JobOrderType.CARTING_FCL.value:
+                filter_data = {"crn_number":crn_number}
+                container_flag=ContainerFlag.FCL.value
+            else:
+                filter_data = {"carting_order_number":crn_number}
+                container_flag=ContainerFlag.LCL.value
+            carting_details['job_type'] = job_type
+            carting_details['fcl_or_lcl'] = container_flag
+            filter_data.update({'job_type':job_type,"status":JobStatus.INPROGRESS.value})
+            result = DataFormater().build_carting_response_obj(carting_details,container_flag)
+            self.save_data_db(carting_details,filter_data)
+            return result
         else:
-            filter_data = {"carting_order_number":crn_number}
-            container_flag=ContainerFlag.LCL.value
-        carting_details['job_type'] = job_type
-        carting_details['fcl_or_lcl'] = container_flag
-        filter_data.update({'job_type':job_type,"status":JobStatus.INPROGRESS.value})
-        result = DataFormater().build_carting_response_obj(carting_details,container_flag)
-        self.save_data_db(carting_details,filter_data)
-        return result
+            raise Exception('GTService: job data not found in ccls system')
 
 
     def save_data_db(self,job_order_details,filter_data):

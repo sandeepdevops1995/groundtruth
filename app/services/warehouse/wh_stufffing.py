@@ -18,20 +18,22 @@ class WarehouseStuffing(object):
     def get_stuffing_details(self,container_number,job_type):
         stuffing_details = get_job_info(container_number,"CWHStuffingRead","cwhstuffingreadbpel_client_ep","CWHStuffingReadBPEL_pt")
         #stuffing_details = self.warehouse_info['stuffing_response']
-        
-        if job_type==JobOrderType.STUFFING_FCL.value:
-            container_flag = ContainerFlag.FCL.value
-        elif job_type==JobOrderType.STUFFING_LCL.value :
-            container_flag = ContainerFlag.LCL.value
+        if stuffing_details:
+            if job_type==JobOrderType.STUFFING_FCL.value:
+                container_flag = ContainerFlag.FCL.value
+            elif job_type==JobOrderType.STUFFING_LCL.value :
+                container_flag = ContainerFlag.LCL.value
+            else:
+                container_flag = ContainerFlag.FCL.value
+            stuffing_details['job_type'] = job_type
+            stuffing_details['fcl_or_lcl'] = container_flag
+            filter_data = {'job_type':job_type,"status":JobStatus.INPROGRESS.value,"container_id":container_number}
+            result = DataFormater().build_stuffing_response_obj(stuffing_details)
+            
+            self.save_data_db(stuffing_details,filter_data)
+            return result
         else:
-            container_flag = ContainerFlag.FCL.value
-        stuffing_details['job_type'] = job_type
-        stuffing_details['fcl_or_lcl'] = container_flag
-        filter_data = {'job_type':job_type,"status":JobStatus.INPROGRESS.value,"container_id":container_number}
-        result = DataFormater().build_stuffing_response_obj(stuffing_details)
-        
-        self.save_data_db(stuffing_details,filter_data)
-        return result
+            raise Exception('GTService: job data not found in ccls system')
     
     def save_data_db(self,job_order_details,filter_data):
         bill_details_list = job_order_details.pop('shipping_bill_details_list')

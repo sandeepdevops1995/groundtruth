@@ -19,16 +19,19 @@ class WarehouseDeStuffing(object):
     def get_destuffing_details(self,container_number,job_type):
         destuffing_details = get_job_info(container_number,"CWHDeStuffingRead","cwhdestuffingreadbpel_client_ep","CWHDeStuffingReadBPEL_pt")
         #destuffing_details = self.warehouse_info['destuffing_response']
-        if job_type==JobOrderType.DE_STUFFING_FCL.value:
-            container_flag = ContainerFlag.FCL.value
+        if destuffing_details:
+            if job_type==JobOrderType.DE_STUFFING_FCL.value:
+                container_flag = ContainerFlag.FCL.value
+            else:
+                container_flag = ContainerFlag.LCL.value
+            destuffing_details['job_type'] = job_type
+            destuffing_details['fcl_or_lcl'] = container_flag
+            filter_data = {'job_type':job_type,"status":JobStatus.INPROGRESS.value,"container_id":container_number}
+            result = DataFormater().build_destuffing_response_obj(destuffing_details,container_flag)
+            self.save_data_db(destuffing_details,filter_data)
+            return result
         else:
-            container_flag = ContainerFlag.LCL.value
-        destuffing_details['job_type'] = job_type
-        destuffing_details['fcl_or_lcl'] = container_flag
-        filter_data = {'job_type':job_type,"status":JobStatus.INPROGRESS.value,"container_id":container_number}
-        result = DataFormater().build_destuffing_response_obj(destuffing_details,container_flag)
-        self.save_data_db(destuffing_details,filter_data)
-        return result
+            raise Exception('GTService: job data not found in ccls system')
 
     def save_data_db(self,job_order_details,filter_data):
         bill_details_list = job_order_details.pop('bill_details_list')

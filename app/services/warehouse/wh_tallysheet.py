@@ -22,7 +22,7 @@ class WarehouseTallySheetView(object):
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
             filter_data.update({"gpm_number":job_order})
         query_object = db.session.query(CCLSJobOrder).filter_by(**filter_data).join(CCLSJobOrder.cargo_details).options(contains_eager(CCLSJobOrder.cargo_details)).filter(CCLSCargoDetails.ctms_cargo_id!=None).all()
-        result = WarehouseDB().get_final_job_details(query_object)
+        result = WarehouseDB().get_final_job_details(query_object,job_order)
         return result
     
     def process_tally_sheet_info(self,tally_sheet_data):
@@ -53,7 +53,11 @@ class WarehouseTallySheetView(object):
             filter_data = {"gpm_number":gpm_number}
             cargo_filter_key= "bill_of_entry"
         filter_data.update({"job_type":job_type})
-        bill_details = tally_sheet_data.pop('cargo_details')
-        final_job_order_details = DataFormater().ctms_job_order_table_formater(tally_sheet_data)
-        job_order_id = WarehouseDB().save_ctms_job_order(final_job_order_details,query_object,filter_data)
-        WarehouseDB().save_ctms_bill_details(bill_details,job_order_id,cargo_filter_key,job_type)
+        ccls_query_object = db.session.query(CCLSJobOrder).filter_by(**filter_data)
+        if ccls_query_object:
+            bill_details = tally_sheet_data.pop('cargo_details')
+            final_job_order_details = DataFormater().ctms_job_order_table_formater(tally_sheet_data)
+            job_order_id = WarehouseDB().save_ctms_job_order(final_job_order_details,query_object,ccls_query_object)
+            WarehouseDB().save_ctms_bill_details(bill_details,job_order_id,cargo_filter_key,job_type)
+        else:
+            raise Exception("GTService: job doesn't exists in groundtruth database")

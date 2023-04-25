@@ -400,7 +400,8 @@ class GateDbService:
                 conn.close()
                 return query.keys()     
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-                if data["is_container_trailer"]:
+                is_container_trailer = data.pop("is_container_trailer")
+                if is_container_trailer:
                     update_data = GateDbService.get_soap_format_for_container(data)
                 else:
                     update_data = GateDbService.get_soap_format_for_truck(data)

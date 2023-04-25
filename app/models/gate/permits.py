@@ -24,7 +24,7 @@ class Permit(db.Model):
     user_id = db.Column(db.String(50))
     gate_no = db.Column(db.String(3))
     stk_loc = db.Column(db.String(20))
-    dmg_code = db.Column(db.String(20))
+    damage_code = db.Column(db.String(20))
     dt_seal = db.Column(db.DateTime())
     
     #Fields may require in future

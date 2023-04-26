@@ -189,7 +189,7 @@ class WarehouseDB(object):
         query_object = db.session.query(WarehouseCommodity).all()
         if query_object:
             result = CCLSCommodityList().dump(query_object,many=True)
-        logger.info("GTService: commodities from db------------",result)
+        logger.info("GTService: commodities from db------------")
         return result
     
     def save_commodities(self,commodity_data):

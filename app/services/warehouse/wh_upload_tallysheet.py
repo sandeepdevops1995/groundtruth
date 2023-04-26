@@ -51,19 +51,19 @@ class WarehouseUploadTallySheetView(object):
          post_job_info(job_details,"CWHImportUnLoading","unloadbpel_client_ep","UnLoadBpel_pt",request_parameter)
 
    def send_stuffing_data_to_ccls(self,filter_data,user_id,trans_date_time,request_parameter):
-      result = self.get_data_from_db(filter_data)
+      result = self.get_data_from_db(filter_data,request_parameter)
       for each_job in result:
          job_details = BuildStuffingObject(each_job,user_id,trans_date_time).__dict__
          post_job_info(job_details,"CWHExportStuffing","cwhexportstuffbpel_client_ep","CWHExportStuffBpel_pt",request_parameter)
 
    def send_destuffing_data_to_ccls(self,filter_data,user_id,trans_date_time,request_parameter):
-      result = self.get_data_from_db(filter_data)
+      result = self.get_data_from_db(filter_data,request_parameter)
       for each_job in result:
          job_details = BuildDeStuffingObject(each_job,user_id,trans_date_time).__dict__
          post_job_info(job_details,"CWHImportCargoDestuffing","cwhimptcrgdestuffingbpel_client_ep","CWHImptCrgDestuffingBPEL_pt",request_parameter)
 
    def send_delivery_data_to_ccls(self,filter_data,user_id,trans_date_time,request_parameter):
-      result = self.get_data_from_db(filter_data)
+      result = self.get_data_from_db(filter_data,request_parameter)
       for each_job in result:
          job_details = BuildDeliveryObject(each_job,user_id,trans_date_time).__dict__
          # post_job_info(job_details,"CWHImportCargoDestuffing","cwhimptcrgdestuffingbpel_client_ep","CWHImptCrgDestuffingBPEL_pt",request_parameter)

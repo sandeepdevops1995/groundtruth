@@ -4,7 +4,7 @@ from app import api
 from app.controllers.gate_controller import *
 from app.controllers.rake_controller import *
 # from app.controllers.warehouse_controller import WarehouseData
-from app.controllers.warehouse_controller import JobDetails,WarehouseTallySheet,WarehouseCommodities
+from app.controllers.warehouse_controller import JobDetails,WarehouseTallySheet,WarehouseCommodities,WarehousePrintTallySheet
 from app.controllers.GT_upload_controller import TrainSummary,PendancySummary
 from app.controllers.yard_controller import StackLocation
 
@@ -46,6 +46,7 @@ def register_controllers():
     # api.add_resource(WarehouseData,Constants.WAREHOUSE_DATA_ENDPOINT)
     api.add_resource(JobDetails,'/warehouse_details')
     api.add_resource(WarehouseTallySheet,'/api/warehouse_tallysheet')
+    api.add_resource(WarehousePrintTallySheet,'/api/warehouse_print_tallysheet')
     api.add_resource(WarehouseCommodities,'/fetch_commodities')
     
     

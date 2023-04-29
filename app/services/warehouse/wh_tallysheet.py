@@ -30,7 +30,7 @@ class WarehouseTallySheetView(object):
         elif job_type==JobOrderType.DE_STUFFING_FCL.value or job_type==JobOrderType.DE_STUFFING_LCL.value:
             query_object = query_object.filter(CTMSCargoJob.ctms_job_order.property.mapper.class_.destuffing_details.property.mapper.class_.container_number==job_order,CTMSCargoJob.ctms_job_order.property.mapper.class_.job_type==job_type)
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
-            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.property.mapper.class_.delivery_details.property.mapper.class_.gpm_number==job_order,CTMSCargoJob.ctms_job_order.property.mapper.class_.job_type==job_type)
+            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.property.mapper.class_.delivery_details.property.mapper.class_.gpm_number==job_order,CTMSCargoJob.ctms_job_order.property.mapper.class_.job_type==job_type,CTMSCargoJob.truck_number==truck_number)
         query_object = query_object.order_by(CTMSCargoJob.updated_at.desc()).first()
         result = WarehouseDB().get_tallysheet_details(query_object,job_order)
         return result
@@ -42,7 +42,6 @@ class WarehouseTallySheetView(object):
         if job_type==JobOrderType.CARTING_FCL.value:
             query_object = query_object.filter(MasterCargoDetails.carting_details.property.mapper.class_.crn_number==tally_sheet_data.get('crn_number'))
         elif job_type==JobOrderType.CARTING_LCL.value:
-            print("tally_sheet_data.get('cargo_carting_number')-------",tally_sheet_data.get('cargo_carting_number'))
             query_object = query_object.filter(MasterCargoDetails.carting_details.property.mapper.class_.carting_order_number==tally_sheet_data.get('cargo_carting_number'))
         elif job_type==JobOrderType.STUFFING_FCL.value or job_type==JobOrderType.STUFFING_LCL.value or job_type==JobOrderType.DIRECT_STUFFING.value:
             query_object= query_object.filter(MasterCargoDetails.stuffing_details.property.mapper.class_.container_number==tally_sheet_data.get('container_number'))

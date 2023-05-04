@@ -116,7 +116,7 @@ class RakeInwardReadService:
                 logger.exception(str(e))
             
             # Save in Wagon Master
-            wagon_data = {"wagon_number" : wagon["wagon_number"]}
+            wagon_data = {"wgn_no" : wagon["wagon_number"]}
             try:
                 wagon = WgnMst.query.filter_by(**query_fields).all()
                 if not wagon:

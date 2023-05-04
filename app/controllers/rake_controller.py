@@ -11,6 +11,7 @@ from app.services.rake.rake_inward_write import RakeInwardWriteService
 from app.services.rake.rake_outward_write import RakeOutwardWriteService
 from app.services.rake.rake_inward_read import RakeInwardReadService
 from app.services.rake.rake_outward_plan import RakeOutwardPlanService
+from app.services.rake.pendancy_containers import  PendancyService
 from datetime import date, datetime, timedelta
 from app.controllers.utils import View, soap_API_response
 
@@ -106,7 +107,7 @@ class PendancyList(View):
         if gateway_port:
             gateway_ports= gateway_port.split(",")
             logger.info("GT, pendacy list for port"+str(gateway_ports))
-            response = db_service.get_pendancy_list(gateway_ports)
+            response = PendancyService.get_pendancy_list(gateway_ports)
             # response = self.format_data(response,gateway_ports)
             return Response(response, status=200, mimetype='application/json')
         else:

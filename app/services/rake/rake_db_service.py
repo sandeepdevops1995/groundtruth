@@ -142,22 +142,7 @@ class RakeDbService:
                 RakeDbService.post_ground_truth_details(data,count=count,isRetry=Constants.KEY_RETRY_VALUE)
 
 
-    @query_debugger()
-    def get_pendancy_list(gateway_ports,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
-        try:
-            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
-                pass
-            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-                pass
-            data = PendancyContainer.query.filter(PendancyContainer.gateway_port_code.in_(gateway_ports)).order_by(PendancyContainer.gateway_port_code).all()
-            return db_functions(data).as_json()
-        except Exception as e:
-            logger.exception(str(e))
-            if isRetry and count >= 0 :
-                count=count-1 
-                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
-                RakeDbService.get_pendancy_list(data,count=count,isRetry=Constants.KEY_RETRY_VALUE)
-    
+        
     @query_debugger()
     def add_wagon_to_master_data(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
         try:

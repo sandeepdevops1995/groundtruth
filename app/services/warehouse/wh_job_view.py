@@ -19,7 +19,5 @@ class WarehouseJobView(object):
             result = WarehouseDelivery().get_delivery_details(job_order,job_type)
         else:
             pass
-        # result['wh_id'] = 'wh2'
-        # result['job_type'] = job_type
         result['container_flag'] = container_flag
         return result

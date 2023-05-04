@@ -22,8 +22,10 @@ class PendancyContainer(db.Model):
     sbill_date = db.Column(db.DateTime())
     pid_number = db.Column(db.String(10))
     odc_flag = db.Column(db.String(10))
+    hold_flg = db.Column(db.String(10))
     hold_rels_flg = db.Column(db.String(10))
     hold_rels_flg_next = db.Column(db.String(10))
+    q_no = db.Column(db.String(10))
     
 class RakePlan(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)

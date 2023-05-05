@@ -5,7 +5,8 @@ from app.models.warehouse.ccls_cargo_details import MasterCargoDetails,CartingCa
 from app import postgres_db as db
 from app.serializers.container_serializer import ContainerInsertSchema
 from app.models.master.warehouse import Commodity as WarehouseCommodity
-
+from datetime import datetime
+from app.controllers.utils import convert_ccls_date_to_timestamp
 
 class Nested(fields.Nested):
     """Nested field that inherits the session from its parent."""
@@ -17,6 +18,14 @@ class Nested(fields.Nested):
         return super()._deserialize(*args, **kwargs)
 
 class CartingJobInsertSchema(ma.SQLAlchemyAutoSchema):
+
+    @pre_load()
+    def change_data(self, data, **kwargs):
+        if data['con_date'] and isinstance(data['con_date'], datetime):
+                data['con_date']=convert_ccls_date_to_timestamp(data['con_date'])
+        if data['crn_date'] and isinstance(data['crn_date'], datetime):
+                data['crn_date']=convert_ccls_date_to_timestamp(data['crn_date'])
+        return data
     class Meta:
         model = CartingCargoDetails
         fields = ("crn_number", "crn_date", "carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag")
@@ -33,6 +42,12 @@ class StuffingJobInsertSchema(ma.SQLAlchemyAutoSchema):
 
 class DeStuffingJobInsertSchema(ma.SQLAlchemyAutoSchema):
 
+    @pre_load()
+    def change_data(self, data, **kwargs):
+        if data['destuffing_plan_date'] and isinstance(data['destuffing_plan_date'], datetime):
+                data['destuffing_plan_date']=convert_ccls_date_to_timestamp(data['destuffing_plan_date'])
+        return data
+    
     class Meta:
         model = DeStuffingCargoDetails
         fields = ("container_number", "destuffing_job_order", "destuffing_plan_date","handling_code","hld_rls_flag")
@@ -40,6 +55,12 @@ class DeStuffingJobInsertSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
  
 class DeliveryJobInsertSchema(ma.SQLAlchemyAutoSchema):
+
+    @pre_load()
+    def change_data(self, data, **kwargs):
+        if data['gpm_valid_date'] and isinstance(data['gpm_valid_date'], datetime):
+                data['gpm_valid_date']=convert_ccls_date_to_timestamp(data['gpm_valid_date'])
+        return data
 
     class Meta:
         model = DeliveryCargoDetails
@@ -50,9 +71,14 @@ class DeliveryJobInsertSchema(ma.SQLAlchemyAutoSchema):
 class CCLSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
 
     @pre_load()
-    def change_key_name_and_get_commodity_id(self, data, **kwargs):
+    def change_data(self, data, **kwargs):
         print("CCLSBillDetailsInsertSchema---------",data)
         data['bill_date'] = data.get('shipping_bill_date') if 'shipping_bill_date' in data else data.get('bill_date')
+        # date_time_str = '2002-01-19 00:00:00.000+05:30'
+        # data['bill_date'] = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S.%f%z')
+        if data['bill_date'] and isinstance(data['bill_date'], datetime):
+                data['bill_date']=convert_ccls_date_to_timestamp(data['bill_date'])
+        # print("data['bill_date']-------",data['bill_date'])
         query_object = db.session.query(WarehouseCommodity).filter(WarehouseCommodity.comm_cd==data.get('commodity_code')).first()
         if query_object:
             data['commodity_id'] = query_object.id

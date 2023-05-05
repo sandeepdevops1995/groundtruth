@@ -1,23 +1,24 @@
-# from app.models.warehouse.bill_details import CCLSCargoDetails,CTMSCargoDetails
-# from app.models.warehouse.job_order import CCLSJobOrder,CTMSJobOrder
-from app.models.warehouse.truck import TruckDetails
-from app.models.warehouse.container import Container
 from app.logger import logger
 from app import postgres_db as db
-from app.services.warehouse.data_formater import DataFormater
 from app.serializers.commodity_serializer import CCLSCommodityList
-from app.enums import JobOrderType,JobStatus
 from app.models.master.warehouse import Commodity as WarehouseCommodity
 from app.serializers.view_tallysheet import ViewTallySheetOrderSchema
+import app.logging_message as LM
 
 class WarehouseDB(object):
 
-    def get_tallysheet_details(self,query_object,request_parameter):
+    def get_tallysheet_details(self,query_object,request_parameter,job_type):
         result = {}
         if query_object:
             result = ViewTallySheetOrderSchema().dump(query_object)
-            # result = result[0] if result else {}
-        logger.info("{},{},{}:{}".format("GTService: tallysheet details from database" ,result,"job_order",request_parameter))
+        logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_VIEW_TALLYSHEET,LM.KEY_FETCH_TALLYSHEET_DATA_FROM_DATABASE,'JT_'+str(job_type),request_parameter,result))
+        return result
+    
+    def print_tallysheet_details(self,query_object,request_parameter,job_type):
+        result = []
+        if query_object:
+            result = ViewTallySheetOrderSchema().dump(query_object,many=True)
+        logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_PRINT_TALLYSHEET,LM.KEY_FETCH_TALLYSHEET_DATA_FROM_DATABASE,'JT_'+str(job_type),request_parameter))
         return result
     
     def get_commodities(self):

@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse
 from flask import json, Response,request
 parser = reqparse.RequestParser()
+from datetime import datetime
 
 
 def soap_API_response(result):
@@ -22,3 +23,8 @@ class View(Resource):
         for arg in args_list:
             parser.add_argument(arg)
         return parser.parse_args()
+    
+
+def convert_ccls_date_to_timestamp(ccls_date):
+    ccls_date = int(round(ccls_date.timestamp()*1000))
+    return ccls_date

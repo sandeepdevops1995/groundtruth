@@ -9,7 +9,7 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     def get_data_from_context(self, data, **kwargs):
         if not data.get('cha_code'):
             data['cha_code'] = self.context.get('cha_code')
-        data['truck_number'] = self.context.get('truck_number')
+        data['truck_number'] = self.context.get('truck_number_'+str(data['ctms_cargo_job_id']))
         return data
 
     shipping_bill = fields.Method("get_shipping_bill")
@@ -53,7 +53,7 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CTMSBillDetails
-        fields = ("id","shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","warehouse_name","stacking_type","bill_date","warehouse_id","ccls_grid_locations")
+        fields = ("id",'ctms_cargo_job_id',"shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","warehouse_name","stacking_type","bill_date","warehouse_id","ccls_grid_locations")
 
 
 class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
@@ -61,7 +61,7 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     @pre_dump()
     def add_data_to_context(self, data, **kwargs):
         self.context['cha_code'] = data.ctms_job_order.carting_details.cha_code if data.ctms_job_order.carting_details else data.ctms_job_order.delivery_details.cha_code if data.ctms_job_order.delivery_details else None
-        self.context['truck_number'] = data.truck_number 
+        self.context['truck_number_'+str(data.id)] = data.truck_number
         return data
     
     cargo_carting_number = fields.Method("get_cargo_carting_number")

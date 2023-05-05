@@ -159,21 +159,21 @@ class WarehouseCommodities(View):
 class WarehousePrintTallySheet(View):
     def get(self):
         try:
-            logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_VIEW_TALLYSHEET,LM.KEY_GET_REQUEST_FROM_CTMS_FOR_VIEW_TALLYSHEET,'JT_'+str(request.args.get('job_type')),request.args.get('request_parameter')))
-            result = WarehouseTallySheetView().get_tally_sheet_info(request)
+            logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_PRINT_TALLYSHEET,LM.KEY_GET_REQUEST_FROM_CTMS_FOR_PRINT_TALLYSHEET,'JT_'+str(request.args.get('job_type')),request.args.get('request_parameter')))
+            result = WarehouseTallySheetView().print_tally_sheet(request)
             if not result:
-                logger.exception("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_VIEW_TALLYSHEET,LM.KEY_TALLYSHEET_DOES_NOT_EXISTS,'JT_'+str(request.args.get('job_type')),request.args.get('request_parameter')))
+                logger.exception("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_PRINT_TALLYSHEET,LM.KEY_TALLYSHEET_DOES_NOT_EXISTS,'JT_'+str(request.args.get('job_type')),request.args.get('request_parameter')))
                 return Response(None, status=204, mimetype='application/json')
-            logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_VIEW_TALLYSHEET,LM.KEY_FETCH_TALLYSHEET_DATA,'JT_'+str(request.args.get('job_type')),request.args.get('request_parameter')))
+            logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_PRINT_TALLYSHEET,LM.KEY_FETCH_PRINT_TALLYSHEET_DATA,'JT_'+str(request.args.get('job_type')),request.args.get('request_parameter')))
             return Response(json.dumps(result), status=200, mimetype='application/json')
         except SQLAlchemyError as e:
-            logger.exception("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_VIEW_TALLYSHEET,str(e),'JT_'+str(request.args.get('job_type')),request.args.get('request_parameter')))
+            logger.exception("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_PRINT_TALLYSHEET,str(e),'JT_'+str(request.args.get('job_type')),request.args.get('request_parameter')))
             return Response(json.dumps({"message":"GTService: getting error while perform operation on database"}), status=500, mimetype='application/json')
         except DataNotFoundException as e:
-            logger.exception("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_VIEW_TALLYSHEET,str(e),'JT_'+str(request.args.get('job_type')),request.args.get('request_parameter')))
+            logger.exception("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_PRINT_TALLYSHEET,str(e),'JT_'+str(request.args.get('job_type')),request.args.get('request_parameter')))
             return Response(json.dumps({"message":str(e)}), status=500, mimetype='application/json')
         except Exception as e:
-            logger.exception("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_VIEW_TALLYSHEET,str(e),'JT_'+str(request.args.get('job_type')),request.args.get('request_parameter')))
+            logger.exception("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_PRINT_TALLYSHEET,str(e),'JT_'+str(request.args.get('job_type')),request.args.get('request_parameter')))
             return Response(json.dumps({"message":"getting internal serve error"}), status=500, mimetype='application/json')
 
 

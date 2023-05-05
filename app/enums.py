@@ -25,6 +25,5 @@ class JobOrderType(enum.Enum):
    DIRECT_DELIVERY=10
 
 class JobStatus(enum.Enum):
-    INPROGRESS = 1
-    TALLYSHEET_GENERATED = 2
-    COMPLETED = 3
+    TALLYSHEET_GENERATED = 1
+    TALLYSHEET_UPLOADED = 2

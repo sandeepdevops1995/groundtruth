@@ -1,6 +1,7 @@
 from app import postgres_db as db
 from datetime import datetime
 from sqlalchemy import JSON
+from app.enums import JobStatus
 
 
 
@@ -24,6 +25,7 @@ class CTMSCargoJob(db.Model):
     job_order_id = db.Column(db.BigInteger, db.ForeignKey('ccls_master_cargo_details.id'))
     ctms_job_order = db.relationship("MasterCargoDetails", back_populates='ccls_cargo_master', lazy='joined')
     cargo_details = db.relationship('CTMSBillDetails', back_populates='ctms_job_order_bill_details', lazy='joined')
+    status = db.Column(db.Integer(), default=JobStatus.TALLYSHEET_GENERATED.value)
     created_at = db.Column(db.DateTime(), default=datetime.utcnow())
     updated_at = db.Column(db.DateTime(), default=datetime.utcnow())
     created_by = db.Column(db.String(100), nullable=True)

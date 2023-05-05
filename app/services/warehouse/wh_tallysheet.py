@@ -3,10 +3,11 @@ import app.services.warehouse.constants as constants
 from app.enums import JobOrderType
 from app import postgres_db as db
 from app.models.warehouse.ctms_cargo_job import CTMSCargoJob,CTMSBillDetails
-from app.models.warehouse.ccls_cargo_details import MasterCargoDetails
+from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingCargoDetails, StuffingCargoDetails, DeStuffingCargoDetails, DeliveryCargoDetails
 from app.serializers.generate_tallysheet import CTMSCargoJobInsertSchema
 from app.serializers.update_tallysheet import CTMSCargoJobUpdateSchema
 from app.user_defined_exception import DataNotFoundException
+from app.enums import JobStatus
 
 class WarehouseTallySheetView(object):
 
@@ -14,41 +15,45 @@ class WarehouseTallySheetView(object):
         job_type = int(request.args.get('job_type',0))
         job_order = request.args.get('request_parameter')
         truck_number = request.args.get('truck_number')
-        result = self.get_ctms_job_details(job_type,job_order,truck_number)
+        query_object = self.get_ctms_job_obj(job_type,job_order,truck_number)
+        result = WarehouseDB().get_tallysheet_details(query_object.first(),job_order,job_type)
         return result
     
-    def get_ctms_job_details(self,job_type,job_order,truck_number):
-        query_object = db.session.query(CTMSCargoJob).join(CTMSBillDetails).join(MasterCargoDetails)
+    def get_ctms_job_obj(self,job_type,job_order,truck_number):
+        query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==job_type))
         if job_type==JobOrderType.CARTING_FCL.value:
-            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.property.mapper.class_.carting_details.property.mapper.class_.crn_number==job_order,CTMSCargoJob.ctms_job_order.property.mapper.class_.job_type==job_type,CTMSCargoJob.truck_number==truck_number)
+            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.carting_details.has(CartingCargoDetails.crn_number==job_order)))
+            if truck_number:
+                query_object = query_object.filter(CTMSCargoJob.truck_number==truck_number)
         elif job_type==JobOrderType.CARTING_LCL.value:
-            print("carting lcl------------")
-            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.property.mapper.class_.carting_details.property.mapper.class_.carting_order_number==job_order,CTMSCargoJob.ctms_job_order.property.mapper.class_.job_type==job_type,CTMSCargoJob.truck_number==truck_number)
+            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.carting_details.has(CartingCargoDetails.carting_order_number==job_order)))
+            if truck_number:
+                query_object = query_object.filter(CTMSCargoJob.truck_number==truck_number)
         elif job_type==JobOrderType.STUFFING_FCL.value or job_type==JobOrderType.STUFFING_LCL.value or job_type==JobOrderType.DIRECT_STUFFING.value:
-            print("stuffing------------")
-            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.property.mapper.class_.stuffing_details.property.mapper.class_.container_number==job_order,CTMSCargoJob.ctms_job_order.property.mapper.class_.job_type==job_type)
+            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.container_number==job_order)))
         elif job_type==JobOrderType.DE_STUFFING_FCL.value or job_type==JobOrderType.DE_STUFFING_LCL.value:
-            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.property.mapper.class_.destuffing_details.property.mapper.class_.container_number==job_order,CTMSCargoJob.ctms_job_order.property.mapper.class_.job_type==job_type)
+            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.destuffing_details.has(DeStuffingCargoDetails.container_number==job_order)))
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
-            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.property.mapper.class_.delivery_details.property.mapper.class_.gpm_number==job_order,CTMSCargoJob.ctms_job_order.property.mapper.class_.job_type==job_type,CTMSCargoJob.truck_number==truck_number)
-        query_object = query_object.order_by(CTMSCargoJob.updated_at.desc()).first()
-        result = WarehouseDB().get_tallysheet_details(query_object,job_order)
-        return result
+            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.delivery_details.has(DeliveryCargoDetails.gpm_number==job_order)))
+            if truck_number:
+                query_object = query_object.filter(CTMSCargoJob.truck_number==truck_number)
+        query_object = query_object.order_by(CTMSCargoJob.updated_at.desc())
+        return query_object
     
     def generate_tally_sheet_info(self,tally_sheet_data):
         job_type = tally_sheet_data['job_type']
         
         query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.job_type==job_type)
         if job_type==JobOrderType.CARTING_FCL.value:
-            query_object = query_object.filter(MasterCargoDetails.carting_details.property.mapper.class_.crn_number==tally_sheet_data.get('crn_number'))
+            query_object = query_object.filter(MasterCargoDetails.carting_details.has(CartingCargoDetails.crn_number==tally_sheet_data.get('crn_number')))
         elif job_type==JobOrderType.CARTING_LCL.value:
-            query_object = query_object.filter(MasterCargoDetails.carting_details.property.mapper.class_.carting_order_number==tally_sheet_data.get('cargo_carting_number'))
+            query_object = query_object.filter(MasterCargoDetails.carting_details.has(CartingCargoDetails.carting_order_number==tally_sheet_data.get('cargo_carting_number')))
         elif job_type==JobOrderType.STUFFING_FCL.value or job_type==JobOrderType.STUFFING_LCL.value or job_type==JobOrderType.DIRECT_STUFFING.value:
-            query_object= query_object.filter(MasterCargoDetails.stuffing_details.property.mapper.class_.container_number==tally_sheet_data.get('container_number'))
+            query_object = query_object.filter(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.container_number==tally_sheet_data.get('container_number')))
         elif job_type==JobOrderType.DE_STUFFING_FCL.value or job_type==JobOrderType.DE_STUFFING_LCL.value:
-            query_object = query_object.filter(MasterCargoDetails.destuffing_details.property.mapper.class_.container_number==tally_sheet_data.get('container_number'))
+            query_object = query_object.filter(MasterCargoDetails.stuffing_details.has(DeStuffingCargoDetails.container_number==tally_sheet_data.get('container_number')))
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
-            query_object = query_object.filter(MasterCargoDetails.delivery_details.property.mapper.class_.gpm_number==tally_sheet_data.get('gpm_number'))
+            query_object = query_object.filter(MasterCargoDetails.delivery_details.has(DeStuffingCargoDetails.gpm_number==tally_sheet_data.get('gpm_number')))
         query_object = query_object.order_by(MasterCargoDetails.updated_at.desc()).first()
         if query_object:
             job_order_id = query_object.id
@@ -67,3 +72,18 @@ class WarehouseTallySheetView(object):
             db.session.commit()
         else:
             raise DataNotFoundException("GTService: ccls data doesn't exists in database")
+        
+    def print_tally_sheet(self,request):
+        job_type = int(request.args.get('job_type',0))
+        job_order = request.args.get('request_parameter')
+        truck_number = request.args.get('truck_number')
+        query_object = self.get_ctms_job_obj(job_type,job_order,None)
+        result = WarehouseDB().print_tallysheet_details(query_object.all(),job_order,job_type)
+        tallysheet_data = {}
+        cargo_details = []
+        for each_item in result:
+            if each_item['cargo_details'][0]['truck_number'] == truck_number:
+                tallysheet_data = each_item
+            cargo_details+=each_item.pop('cargo_details')
+        tallysheet_data['cargo_details'] = cargo_details
+        return tallysheet_data

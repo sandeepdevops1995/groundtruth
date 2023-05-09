@@ -91,10 +91,10 @@ class UpdateContainerDetails(View):
     # @api_auth_required
     def post(self):
         data = json.loads(request.data)
-        # logger.info('ContainerInfo, Get Container details service : {}'.format(data['container_number']))
+        logger.info('Update Container details service, request_data : {}'.format(data))
         result = GateDbService().update_container_info(data)
+        logger.info('update container details response: {}'.format(result))
         if result:
-            logger.info('Conainer details response: {}'.format(result))
             return Response(json.dumps({"message":"success"}), status=200, mimetype='application/json')
         else:
             return Response(json.dumps({"message":"No permit found"}), status=400, mimetype='application/json')

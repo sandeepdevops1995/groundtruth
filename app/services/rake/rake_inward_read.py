@@ -118,7 +118,7 @@ class RakeInwardReadService:
             # Save in Wagon Master
             wagon_data = {"wgn_no" : wagon["wagon_number"]}
             try:
-                wagon = WgnMst.query.filter_by(**query_fields).all()
+                wagon = WgnMst.query.filter_by(**wagon_data).all()
                 if not wagon:
                     wagon_data["wgn_typ"] = "BLCB"
                     wagon_data["commisioned_on"] = datetime.now()

@@ -442,7 +442,7 @@ class GateDbService:
             post_data[Constants.KEY_SOAP_G_STK_LOC] = data["stk_loc"] 
             if "gate_in_time" in data:
                 post_data[Constants.KEY_SOAP_G_DT_VEH_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S')
-                post_data[Constants.KEY_SOAP_G_DT_ARR] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S')
+                post_data[Constants.KEY_SOAP_G_DT_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S')
             if "gate_out_time" in data:
                 post_data[Constants.KEY_SOAP_G_DT_VEH_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S')
                 post_data[Constants.KEY_SOAP_G_DT_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S')

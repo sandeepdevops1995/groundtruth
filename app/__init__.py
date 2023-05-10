@@ -59,7 +59,7 @@ api = Api(app)
 
 from app.models import *
  
-from app.controllers.urls import register_controllers
+from app.urls import register_controllers
 from app.services.rake.directory_watcher_service import RakeDataEvents
 
 @scheduler.task('cron', id='CCLS Rake Data', hour='*', misfire_grace_time=900)

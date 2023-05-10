@@ -77,13 +77,13 @@ class RakeDbService:
                 RakeDbService.get_rake_details_by_track_number(track_number,rake_type,count=count,isRetry=Constants.KEY_RETRY_VALUE)
 
 
-    def get_container_data(container_number):
+    def get_container_data(rake_id,container_number):
         if config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-            pass
-        data = CCLSRake.query.filter_by(container_number=container_number).all()
-        if data:
-            return RakeInwardReadService.format_rake_data(data)
-        else:
+            data = CCLSRake.query.filter_by(rake_id=rake_id,container_number=container_number).all()
+            if not data:
+                data = MissedInwardContainers.query.filter_by(rake_id=rake_id,container_number=container_number).all()
+            if data:
+                return RakeInwardReadService.format_rake_data(data)
             return {}
         
 

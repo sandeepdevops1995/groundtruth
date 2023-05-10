@@ -1,10 +1,12 @@
 
 from app.constants import GroundTruthType
+from app.models import MissedInwardContainers
 from app.services.decorator_service import query_debugger
 from app.services import soap_service
 from app.services.rake.gt_upload_service import commit
 from app.logger import logger
 import app.constants as Constants
+from app import db
 import config
 import time
 from datetime import datetime
@@ -166,3 +168,21 @@ class RakeInwardWriteService():
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
                 RakeInwardWriteService.update_inward_rake_details(data,count=count,isRetry=Constants.KEY_RETRY_VALUE)
                 
+
+class WriteInContainer():
+    @query_debugger()
+    def update_missed_container_details(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            existing_container = MissedInwardContainers.query.filter_by(rake_id=data["rake_id"],container_number=data["container_number"])
+            if existing_container.all():
+                    existing_container.update(dict(data))
+            else:
+                ctr = MissedInwardContainers(**data)
+                db.session.add(ctr)
+            return commit()
+        except Exception as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                WriteInContainer.update_missed_container_details(data,count=count,isRetry=Constants.KEY_RETRY_VALUE)

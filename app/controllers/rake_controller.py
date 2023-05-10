@@ -7,7 +7,7 @@ from app.services.rake.rake_db_service import RakeDbService as db_service
 from app.services.decorator_service import custom_exceptions, api_auth_required
 from app.constants import GroundTruthType
 from app.serializers.master_data_serializers import *
-from app.services.rake.rake_inward_write import RakeInwardWriteService
+from app.services.rake.rake_inward_write import RakeInwardWriteService,WriteInContainer
 from app.services.rake.rake_outward_write import RakeOutwardWriteService
 from app.services.rake.rake_inward_read import RakeInwardReadService
 from app.services.rake.rake_outward_plan import RakeOutwardPlanService
@@ -128,6 +128,15 @@ class PendancyList(View):
             final_output.append(port_data)
         return json.dumps(final_output)
             
+class RakeInContainer(View):
+    @custom_exceptions
+    @api_auth_required
+    def post(self):
+        data = request.get_json()
+        if data:
+            if WriteInContainer.update_missed_container_details(data):
+                return Response(json.dumps({"message":"success"}),status=200,mimetype='application/json')
+        return Response(json.dumps({"message":"failed to save"}),status=400,mimetype='application/json')
 
 class RakePlanDetails(View):
     @custom_exceptions
@@ -285,8 +294,9 @@ class RakeContainer(View):
     # @api_auth_required
     def get(self):
         container_no = request.args.get(Constants.KEY_CN_NUMBER)
+        rake_id = request.args.get(Constants.KEY_RAKE_ID,None)
         response = {}
-        response =  db_service.get_container_data(container_no)
+        response =  db_service.get_container_data(rake_id,container_no)
         # print("response for the container_no",container_no,response)
         return Response(response, status=200, mimetype='application/json')
 

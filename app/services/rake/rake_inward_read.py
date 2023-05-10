@@ -1,5 +1,5 @@
 from app.services.decorator_service import query_debugger
-from app.models import CCLSRake, WgnMst
+from app.models import CCLSRake, WgnMst, MissedInwardContainers
 from app import db
 from app.constants import GroundTruthType
 import app.constants as Constants
@@ -46,6 +46,9 @@ class RakeInwardReadService:
             rake_query.update(dict(update_data))
             commit()
             data = rake_query.order_by('trans_date').all()
+            if 'rake_id' in query_values:
+                missed_containers = MissedInwardContainers.query.filter_by(rake_id=query_values['rake_id']).all()
+                data = data + missed_containers
             if not data and "train_number" in query_values:
                 logger.info("fetch train details from soap service for train number "+query_values['train_number'])
                 result = soap_service.get_train_data(train_number=query_values['train_number'])

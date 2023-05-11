@@ -4,16 +4,9 @@ from app.models.warehouse.ccls_cargo_details import CCLSCargoBillDetails
 from app import postgres_db as db
 from app.models.warehouse.ctms_cargo_job import CTMSCargoJob,CTMSBillDetails
 from sqlalchemy import or_,and_
-
-
-class Nested(fields.Nested):
-    """Nested field that inherits the session from its parent."""
-
-    def _deserialize(self, *args, **kwargs):
-        if hasattr(self.schema, "session"):
-            self.schema.session = db.session  # overwrite session here
-            self.schema.transient = self.root.transient
-        return super()._deserialize(*args, **kwargs)
+from app.serializers import Nested
+from app.logger import logger
+import app.logging_message as LM
 
 class CTMSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
 
@@ -22,6 +15,7 @@ class CTMSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
         query_object = db.session.query(CCLSCargoBillDetails).filter(CCLSCargoBillDetails.job_order_id==self.context.get('job_order_id')).filter(or_(and_(CCLSCargoBillDetails.shipping_bill_number==original_data.get('shipping_bill'),CCLSCargoBillDetails.shipping_bill_number!=None),and_(CCLSCargoBillDetails.bill_of_entry==original_data.get('bill_of_entry'),CCLSCargoBillDetails.bill_of_entry!=None),and_(CCLSCargoBillDetails.bill_of_lading==original_data.get('bill_of_lading'),CCLSCargoBillDetails.bill_of_lading!=None))).order_by(CCLSCargoBillDetails.created_at.desc()).first()
         if query_object:
             data['ccls_bill_id'] = query_object.id
+        logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GENERATE_TALLYSHEET,LM.KEY_GET_REQUEST_FROM_CTMS_FOR_GENERATE_TALLYSHEET,data))
         return data
 
     damaged_count = fields.Integer(attribute='no_of_packages_damaged')

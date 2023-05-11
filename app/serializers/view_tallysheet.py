@@ -16,7 +16,7 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     bill_of_entry = fields.Method("get_bill_of_entry")
     bill_of_lading = fields.Method("get_bill_of_lading")
     package_code = fields.Method("get_package_code")
-    package_weight = fields.Number(data_key='packages_weight')
+    package_weight = fields.Float(data_key='packages_weight')
     area = fields.Number(data_key='area_of_cargo')
     cha_code = fields.Method("get_cha_code")
     commodity_code = fields.Method("get_commodity_code")

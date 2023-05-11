@@ -2,9 +2,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.user_defined_exception import DataNotFoundException
 import app.logging_message as LM
 from app.logger import logger
-import flask
 from flask import json, Response,request
-from functools import partial
+import app.services.warehouse.constants as Constants
 
 def get_job_order_and_job_type(request):
     if request.method=='GET':
@@ -27,15 +26,15 @@ def custom_exceptions(event):
                 return func(*args, **kwargs)
             except ConnectionError as e:
                 logger.exception("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,event,str(e),job_type,job_order))
-                return Response(json.dumps({"message":"Error while communication with ccls service"}), status=500, mimetype='application/json')
+                return Response(json.dumps({"message":Constants.WH_COMMON_EXCEPTION_MESSAGE}), status=500, mimetype='application/json')
             except SQLAlchemyError as e:
                 logger.exception("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,event,str(e),job_type,job_order))
-                return Response(json.dumps({"message":"Error while communication with ccls service"}), status=500, mimetype='application/json')
+                return Response(json.dumps({"message":Constants.WH_COMMON_EXCEPTION_MESSAGE}), status=500, mimetype='application/json')
             except DataNotFoundException as e:
                 logger.exception("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,event,str(e),job_type,job_order))
-                return Response(json.dumps({"message":"Data doesn't exists with this job order"}), status=404, mimetype='application/json')
+                return Response(json.dumps({"message":Constants.WH_CCLS_JOB_ORDER_NOT_FOUND}), status=404, mimetype='application/json')
             except Exception as e:
                 logger.exception("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,event,str(e),job_type,job_order))
-                return Response(json.dumps({"message":"Error while communication with ccls service"}), status=500, mimetype='application/json')
+                return Response(json.dumps({"message":Constants.WH_COMMON_EXCEPTION_MESSAGE}), status=500, mimetype='application/json')
         return new_func
     return decorator

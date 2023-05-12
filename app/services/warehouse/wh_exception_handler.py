@@ -5,11 +5,15 @@ from app.logger import logger
 from flask import json, Response,request
 import app.services.warehouse.constants as Constants
 
-def get_job_order_and_job_type(request):
+def get_job_order_and_job_type(request,event):
     if request.method=='GET':
+        if event==LM.KEY_FETCH_COMMODITIES:
+            return None,None
         job_order = request.args.get('request_parameter')
         job_type = request.args.get('res_job_type') if 'res_job_type' in request.args else request.args.get('job_type') if 'job_type' in request.args else None
     else:
+        if event==LM.KEY_UPLOAD_COMMODITIES:
+            return None,None
         request_data=request.json
         job_order = request_data.get('request_parameter') if 'request_parameter' in request_data else request_data.get('crn_number') if request_data.get('crn_number') else request_data.get('cargo_carting_number') if  request_data.get('cargo_carting_number') else request_data.get('container_number') if request_data.get('container_number') else request_data.get('gpm_number') if request_data.get('gpm_number') else None
         job_type = request_data.get('job_type')
@@ -21,7 +25,7 @@ def get_job_order_and_job_type(request):
 def custom_exceptions(event):
     def decorator(func):
         def new_func(*args, **kwargs):
-            job_order,job_type = get_job_order_and_job_type(request)
+            job_order,job_type = get_job_order_and_job_type(request,event)
             try:
                 return func(*args, **kwargs)
             except ConnectionError as e:

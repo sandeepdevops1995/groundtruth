@@ -7,15 +7,7 @@ from app.serializers.container_serializer import ContainerInsertSchema
 from app.models.master.warehouse import Commodity as WarehouseCommodity
 from datetime import datetime
 from app.controllers.utils import convert_ccls_date_to_timestamp
-
-class Nested(fields.Nested):
-    """Nested field that inherits the session from its parent."""
-
-    def _deserialize(self, *args, **kwargs):
-        if hasattr(self.schema, "session"):
-            self.schema.session = db.session  # overwrite session here
-            self.schema.transient = self.root.transient
-        return super()._deserialize(*args, **kwargs)
+from app.serializers import Nested
 
 class CartingJobInsertSchema(ma.SQLAlchemyAutoSchema):
 

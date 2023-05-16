@@ -4,23 +4,15 @@ from app.models.warehouse.ccls_cargo_details import CCLSCargoBillDetails
 from app import postgres_db as db
 from app.models.warehouse.ctms_cargo_job import CTMSCargoJob,CTMSBillDetails
 from sqlalchemy import or_
+from app.serializers import Nested
 
-
-class Nested(fields.Nested):
-    """Nested field that inherits the session from its parent."""
-
-    def _deserialize(self, *args, **kwargs):
-        if hasattr(self.schema, "session"):
-            self.schema.session = db.session  # overwrite session here
-            self.schema.transient = self.root.transient
-        return super()._deserialize(*args, **kwargs)
 
 class CTMSBillDetailsUpdateSchema(ma.SQLAlchemyAutoSchema):
 
     damaged_count = fields.Integer(attribute='no_of_packages_damaged')
     area_of_cargo = fields.Integer(attribute='area')
     area_of_damaged_cargo = fields.Integer(attribute='area_damaged')
-    packages_weight = fields.Integer(attribute='package_weight')
+    packages_weight = fields.Float(attribute='package_weight')
     
     class Meta:
         model = CTMSBillDetails

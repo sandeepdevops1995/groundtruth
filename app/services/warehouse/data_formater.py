@@ -4,7 +4,6 @@ from app.enums import ContainerFlag
 class DataFormater(object):
     
     def build_carting_response_obj(self,job_order_details,container_flag):
-        print("job_order_details----------------",job_order_details)
         carting_job_obj = {'truck_details':job_order_details['truck_details'],"is_cargo_card_generated":job_order_details[constants.CCLS_IS_CARGO_CARD_GENERATED]}
         if container_flag==ContainerFlag.FCL.value:
             carting_job_obj.update({'crn_number' : job_order_details[constants.CCLS_CRN_NUMBER]})
@@ -51,8 +50,7 @@ class DataFormater(object):
              each_cargo_details[key_list['bill_number_key']] = each_bill[key_list['ccls_bill_number_key']]
              if 'bill_number_key_one' in key_list:
                  each_cargo_details[key_list['bill_number_key_one']] = each_bill[key_list['ccls_bill_number_key_one']]
-            #  each_cargo_details['sline_code'] = job_order_details.get('sline_code',None)
-             each_cargo_details['cha_code'] = each_bill.get(constants.CCLS_CHA_CODE,None)
+             each_cargo_details['cha_code'] = each_bill.get(constants.CCLS_CHA_CODE,None) if constants.CCLS_CHA_CODE in each_bill else job_order_details.get(constants.CCLS_CHA_CODE,None)
              each_cargo_details['commodity_details'] = []
              total_package_count+=int(each_bill[constants.CCLS_NO_OF_PACKAGES_DECLARED])
              each_cargo_details['commodity_details'].append({'commodity_code':int(each_bill[constants.CCLS_COMMODITY_CODE]),'commodity_description':each_bill[constants.CCLS_COMMODITY_DESCRIPTION],'package_code':each_bill[constants.CCLS_PACKAGE_CODE],'package_count':int(each_bill[constants.CCLS_NO_OF_PACKAGES_DECLARED]),'package_weight':int(each_bill[constants.CCLS_PACKAGE_WEIGHT])})

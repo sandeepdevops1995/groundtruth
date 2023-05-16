@@ -108,3 +108,8 @@ BACKEND_TRUCK_NUMBER = 'truck_number'
 BACKEND_CONTAINER_NUMBER = 'container_number'
 BACKEND_JOB_TYPE = 'job_type'
 BACKEND_CONTAINER_FLAG = 'fcl_or_lcl'
+
+
+#exception message
+WH_COMMON_EXCEPTION_MESSAGE="Error while communication with ccls service"
+WH_CCLS_JOB_ORDER_NOT_FOUND="Data doesn't exists with this job order"

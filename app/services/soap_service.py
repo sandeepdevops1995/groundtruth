@@ -22,8 +22,10 @@ def get_permit_details(permit_number):
         #                 port_name="EmptyTrailerBPEL_pt")
         soap = zeep.Client(config.WSDL_FILE,transport=transport)
         logger.debug('Get Permit, soap service request with permit_number : '+permit_number)
+        start_time = datetime.now()
         result = soap.service.process(permit_number)
-        save_in_diagnostics(Constants.CCLS_DATA_ENDPOINT,{"permit_number":permit_number},{"output":str(result)})
+        end_time = datetime.now()
+        save_in_diagnostics(Constants.CCLS_DATA_ENDPOINT,{"permit_number":permit_number},{"output":str(result)},start_time,end_time)
         logger.debug('Get Permit, soap service response : '+str(result))
     except Exception as e:
         logger.exception('Get Permit, Exception : '+str(e))
@@ -38,9 +40,10 @@ def update_container_details(update_data):
                         service_name="gatewriteoperation_client_ep",
                         port_name="GateWriteOperation_pt")
         
-        
+        start_time = datetime.now()
         result = soap.service.process(**update_data)
-        save_in_diagnostics(Constants.UPDATE_CONTAINER_DETAILS_ENDPOINT,{"data":str(update_data)},{"output":str(result)})
+        end_time = datetime.now()
+        save_in_diagnostics(Constants.UPDATE_CONTAINER_DETAILS_ENDPOINT,{"data":str(update_data)},{"output":str(result)},start_time,end_time)
         logger.debug('Update Container Details, soap service response : '+ str(result))
         
     except Exception as e:
@@ -56,8 +59,10 @@ def get_train_data(train_number='',from_date='', to_date = ''):
                         port_name="RakeReadProocess_pt")
         rake_data = {'TrainNumber': train_number, 'From': from_date,'To':to_date }
         logger.debug('Get Train Details, soap service request with data : '+ str(rake_data))
+        start_time = datetime.now()
         result = soap.service.process(**rake_data)
-        save_in_diagnostics(Constants.TRAIN_DETAILS_ENDPOINT,{"data":str(rake_data)},{"output":str(result)})
+        end_time = datetime.now()
+        save_in_diagnostics(Constants.TRAIN_DETAILS_ENDPOINT,{"data":str(rake_data)},{"output":str(result)},start_time,end_time)
         logger.debug('Get Train Details, soap service response : '+ str(result))
         return result
     except Exception as e:
@@ -73,8 +78,10 @@ def update_inward_rake(rake_data,api_url="Inward Write"):
                         service_name="rakewriteinward_client_ep",
                         port_name="RakeWriteInward_pt")
         logger.debug('Update Inward Rake Details, soap service request with data : '+ str(rake_data))
+        start_time = datetime.now()
         result = soap.service.process(**rake_data)
-        save_in_diagnostics(api_url,{"data":str(rake_data)},{"output":str(result)})
+        end_time = datetime.now()
+        save_in_diagnostics(api_url,{"data":str(rake_data)},{"output":str(result)},start_time,end_time)
         logger.debug('Update Inward Rake Details, soap service response : '+ str(result))
         return result
     except Exception as e:
@@ -89,8 +96,10 @@ def get_pendancy_details(gateway_port_data,api_url="/pendency_containers"):
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="rakependencydtlsbpel_client_ep",
                         port_name="RakePendencyDtlsBPEL_pt")
-        logger.debug('Get pendancy container details, soap service request with data : '+ str(gateway_port_data))
+        logger.debug('Get pendancy container details, soap service request with data : '+ str(gateway_port_data),start_time,end_time)
+        start_time = datetime.now()
         result = soap.service.process(**gateway_port_data)
+        end_time = datetime.now()
         save_in_diagnostics(api_url,{"data":str(gateway_port_data)},{"output":str(result)})
         logger.debug('Get pendancy container details, soap service response : '+ str(result))
         return result
@@ -106,8 +115,10 @@ def update_outward_rake(rake_data,api_url="Outward Write"):
                         service_name="rakeoutwardwrite_client_ep",
                         port_name="RakeOutwardWrite_pt")
         logger.debug('Update Outward Rake Details, soap service request with data : '+ str(rake_data))
+        start_time = datetime.now()
         result = soap.service.process(**rake_data)
-        save_in_diagnostics(api_url,{"data":str(rake_data)},{"output":str(result)})
+        end_time = datetime.now()
+        save_in_diagnostics(api_url,{"data":str(rake_data)},{"output":str(result)},start_time,end_time)
         logger.debug('Update Outward Rake Details, soap service response : '+ str(result))
         return result
     except Exception as e:
@@ -131,8 +142,10 @@ def update_container_stack_location(data):
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="yardwriteoperation_client_ep",
                         port_name="YardWriteOperation_pt")
+        start_time = datetime.now()
         result = soap.service.process(**stack_data)
-        save_in_diagnostics(Constants.STACK_LOCATION_ENDPOINT,{"data":str(stack_data)},{"output":str(result)})
+        end_time = datetime.now()
+        save_in_diagnostics(Constants.STACK_LOCATION_ENDPOINT,{"data":str(stack_data)},{"output":str(result)},start_time,end_time)
         logger.debug('Update Container Stack Location,soap service response : '+ str(result))
         return result
     except Exception as e:

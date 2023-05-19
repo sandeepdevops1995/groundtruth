@@ -9,13 +9,13 @@ class DataFormater(object):
             carting_job_obj.update({'crn_number' : job_order_details[constants.CCLS_CRN_NUMBER]})
         else:
             carting_job_obj.update({'cargo_carting_number' : job_order_details[constants.CCLS_CON_NUMBER]})
-        key_list = {'bill_number_key':'shipping_bill','ccls_bill_number_key':constants.CCLS_SHIPPING_BILL_NUMBER,'job_list_key_name':'shipping_bill_details_list'}
+        key_list = {'bill_number_key':'shipping_bill','ccls_bill_number_key':constants.CCLS_SHIPPING_BILL_NUMBER,'ccls_bill_date_key':constants.CCLS_SHIPPING_BILL_DATE,'job_list_key_name':'shipping_bill_details_list'}
         result = self.build_response_obj(job_order_details,key_list,carting_job_obj)
         return result
 
     def build_stuffing_response_obj(self,job_order_details):
         stuffing_job_obj = {'crn_number' : job_order_details[constants.CCLS_CRN_NUMBER],'container_number' : job_order_details[constants.CCLS_CONTAINER_NUMBER],"stuffing_job_order":job_order_details['stuffing_job_order']}
-        key_list = {'bill_number_key':'shipping_bill','ccls_bill_number_key':constants.CCLS_SHIPPING_BILL_NUMBER,'job_list_key_name':'shipping_bill_details_list'}
+        key_list = {'bill_number_key':'shipping_bill','ccls_bill_number_key':constants.CCLS_SHIPPING_BILL_NUMBER,'ccls_bill_date_key':constants.CCLS_SHIPPING_BILL_DATE,'job_list_key_name':'shipping_bill_details_list'}
         result = self.build_response_obj(job_order_details,key_list,stuffing_job_obj)
         return result
 
@@ -27,7 +27,7 @@ class DataFormater(object):
             bill_number_key = 'bill_of_lading'
             ccls_bill_number_key =  constants.CCLS_BILL_OF_LADEN_NUMBER
         destuffing_job_obj = {'container_number' : job_order_details[constants.CCLS_CONTAINER_NUMBER],'destuffing_job_order':job_order_details['destuffing_job_order']}
-        key_list = {'bill_number_key':bill_number_key,'ccls_bill_number_key':ccls_bill_number_key,'job_list_key_name':'bill_details_list'}
+        key_list = {'bill_number_key':bill_number_key,'ccls_bill_number_key':ccls_bill_number_key,'ccls_bill_date_key':constants.CCLS_BILL_DATE,'job_list_key_name':'bill_details_list'}
         result = self.build_response_obj(job_order_details,key_list,destuffing_job_obj)
         return result
 
@@ -35,7 +35,7 @@ class DataFormater(object):
         delivery_job_obj = {'gpm_number' : job_order_details[constants.CCLS_GPM_NUMBER],'truck_details':job_order_details['truck_details']}
         key_list = {'bill_number_key':'bill_of_entry','ccls_bill_number_key':constants.CCLS_BILL_OF_ENTRY_NUMBER,'job_list_key_name':'bill_details_list'}
         if container_flag==ContainerFlag.LCL.value:
-            key_list.update({'bill_number_key_one':'bill_of_lading','ccls_bill_number_key_one':constants.CCLS_BILL_OF_LADEN_NUMBER})
+            key_list.update({'bill_number_key_one':'bill_of_lading','ccls_bill_number_key_one':constants.CCLS_BILL_OF_LADEN_NUMBER,'ccls_bill_date_key':constants.CCLS_BILL_DATE})
         result = self.build_response_obj(job_order_details,key_list,delivery_job_obj)
         return result
     
@@ -46,7 +46,7 @@ class DataFormater(object):
         cargo_details = []
         total_package_count = 0
         for each_bill in bill_details:
-             each_cargo_details = {"shipping_bill":None,"bill_of_entry":None,"bill_of_lading":None}
+             each_cargo_details = {"shipping_bill":None,"bill_of_entry":None,"bill_of_lading":None,'bill_date': each_bill[key_list['ccls_bill_date_key']]}
              each_cargo_details[key_list['bill_number_key']] = each_bill[key_list['ccls_bill_number_key']]
              if 'bill_number_key_one' in key_list:
                  each_cargo_details[key_list['bill_number_key_one']] = each_bill[key_list['ccls_bill_number_key_one']]

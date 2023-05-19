@@ -113,3 +113,34 @@ BACKEND_CONTAINER_FLAG = 'fcl_or_lcl'
 #exception message
 WH_COMMON_EXCEPTION_MESSAGE="Error while communication with ccls service"
 WH_CCLS_JOB_ORDER_NOT_FOUND="Data doesn't exists with this job order"
+
+
+# warehouse ccls wsdl
+#carting
+KEY_CARTING_FCL_SERVICE_TYPE='CWHCartingRead'
+KEY_CARTING_FCL_SERVICE_NAME='cwhcartingreadbpel_client_ep'
+KEY_CARTING_FCL_PORT_NAME='CWHCartingReadBPEL_pt'
+KEY_CARTING_LCL_SERVICE_TYPE='CWHCartingReadLCL'
+KEY_CARTING_LCL_SERVICE_NAME='cwhcartinglclbpel_client_ep'
+KEY_CARTING_LCL_PORT_NAME='CWHCartingLCLBpel_pt'
+#stuffing
+KEY_STUFFING_FCL_SERVICE_TYPE='CWHStuffingRead'
+KEY_STUFFING_FCL_SERVICE_NAME='cwhstuffingreadbpel_client_ep'
+KEY_STUFFING_FCL_PORT_NAME='CWHStuffingReadBPEL_pt'
+KEY_STUFFING_LCL_SERVICE_TYPE='CWHStuffingRead'
+KEY_STUFFING_LCL_SERVICE_NAME='cwhstuffingreadbpel_client_ep'
+KEY_STUFFING_LCL_PORT_NAME='CWHStuffingReadBPEL_pt'
+#destuffing
+KEY_DESTUFFING_FCL_SERVICE_TYPE='CWHDestuffingRead'
+KEY_DESTUFFING_FCL_SERVICE_NAME='cwhdestuffingreadbpel_client_ep'
+KEY_DESTUFFING_FCL_PORT_NAME='CWHDeStuffingReadBPEL_pt'
+KEY_DESTUFFING_LCL_SERVICE_TYPE='CWHDestuffingReadLCL'
+KEY_DESTUFFING_LCL_SERVICE_NAME='lclcargodestuffing_client_ep'
+KEY_DESTUFFING_LCL_PORT_NAME='LCLCargoDestuffing_pt'
+#delivery
+KEY_DELIVERY_FCL_SERVICE_TYPE='CWHDeliveryRead'
+KEY_DELIVERY_FCL_SERVICE_NAME='cwhdeliveryreadbpel_client_ep'
+KEY_DELIVERY_FCL_PORT_NAME=''
+KEY_DELIVERY_LCL_SERVICE_TYPE='CWHDeliveryRead'
+KEY_DELIVERY_LCL_SERVICE_NAME='cwhdeliveryreadbpel_client_ep'
+KEY_DELIVERY_LCL_PORT_NAME='CWHDeliveryReadBPEL_pt'

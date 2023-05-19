@@ -13,8 +13,8 @@ from app.serializers.update_ccls_cargo_serializer import CCLSCargoUpdateSchema
 
 class WarehouseStuffing(object):
 
-    def get_stuffing_details(self,container_number,job_type):
-        cargo_details = get_job_order_info(container_number,"CWHStuffingRead","cwhstuffingreadbpel_client_ep","CWHStuffingReadBPEL_pt")
+    def get_stuffing_details(self,container_number,job_type,service_type,service_name,port_name):
+        cargo_details = get_job_order_info(container_number,service_type,service_name,port_name)
         if cargo_details:
             container_info, stuffing_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["container_number","stuffing_job_order","hsn_code","cargo_weight_in_crn"]])
             cargo_details['container_info'] = container_info

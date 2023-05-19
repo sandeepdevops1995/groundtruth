@@ -16,8 +16,8 @@ from app.models.warehouse.truck import TruckDetails
 
 class WarehouseDelivery(object):
 
-    def get_delivery_details(self,gpm_number,job_type):
-        cargo_details = get_job_order_info(gpm_number,"CWHDeliveryRead","cwhdeliveryreadbpel_client_ep","CWHDeliveryReadBPEL_pt")
+    def get_delivery_details(self,gpm_number,job_type,service_type,service_name,port_name):
+        cargo_details = get_job_order_info(gpm_number,service_type,service_name,port_name)
         if cargo_details:
             container_info, delivery_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["gpm_number","gpm_valid_date","gp_stat","cha_code"]])
             cargo_details['container_info'] = container_info

@@ -16,8 +16,8 @@ from app.models.warehouse.truck import TruckDetails
 
 class WarehouseDeStuffing(object):
 
-    def get_destuffing_details(self,container_number,job_type):
-        cargo_details = get_job_order_info(container_number,"CWHDeStuffingRead","cwhdestuffingreadbpel_client_ep","CWHDeStuffingReadBPEL_pt")
+    def get_destuffing_details(self,container_number,job_type,service_type,service_name,port_name):
+        cargo_details = get_job_order_info(container_number,service_type,service_name,port_name)
         if cargo_details:
             container_info, destuffing_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["container_number","destuffing_job_order","destuffing_plan_date","handling_code","hld_rls_flag"]])
             cargo_details['container_info'] = container_info

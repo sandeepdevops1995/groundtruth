@@ -53,7 +53,7 @@ class WarehouseTallySheetView(object):
         elif job_type==JobOrderType.DE_STUFFING_FCL.value or job_type==JobOrderType.DE_STUFFING_LCL.value:
             query_object = query_object.filter(MasterCargoDetails.stuffing_details.has(DeStuffingCargoDetails.container_number==tally_sheet_data.get('container_number')))
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
-            query_object = query_object.filter(MasterCargoDetails.delivery_details.has(DeStuffingCargoDetails.gpm_number==tally_sheet_data.get('gpm_number')))
+            query_object = query_object.filter(MasterCargoDetails.delivery_details.has(DeliveryCargoDetails.gpm_number==tally_sheet_data.get('gpm_number')))
         query_object = query_object.order_by(MasterCargoDetails.updated_at.desc()).first()
         if query_object:
             job_order_id = query_object.id

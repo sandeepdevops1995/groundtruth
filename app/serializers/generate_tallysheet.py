@@ -21,7 +21,7 @@ class CTMSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
     damaged_count = fields.Integer(attribute='no_of_packages_damaged')
     area_of_cargo = fields.Integer(attribute='area')
     area_of_damaged_cargo = fields.Integer(attribute='area_damaged')
-    packages_weight = fields.Integer(attribute='package_weight')
+    packages_weight = fields.Float(attribute='package_weight')
     concor_warehouse_id = fields.String(attribute='warehouse_id')
     
     class Meta:

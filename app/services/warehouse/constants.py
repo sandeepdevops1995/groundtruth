@@ -25,6 +25,7 @@ CCLS_HSN_CODE='hsn_code'
 CCLS_DESTUFFING_PLAN_DATE='destuffing_plan_date'
 CCLS_HOLD_RELEASE_FLAG='hld_rls_flag'
 CCLS_GP_STAT='gp_stat'
+CCLS_ORDER_NO='Order_Number'
 
 ## ccls bill detail keys
 CCLS_COMMODITY_ID='commodity_id'
@@ -111,8 +112,8 @@ BACKEND_CONTAINER_FLAG = 'fcl_or_lcl'
 
 
 #exception message
-WH_COMMON_EXCEPTION_MESSAGE="Error while communication with ccls service"
-WH_CCLS_JOB_ORDER_NOT_FOUND="Data doesn't exists with this job order"
+WH_COMMON_EXCEPTION_MESSAGE="CCLS Service,Error while communication with ccls service"
+WH_CCLS_JOB_ORDER_NOT_FOUND="CCLS Service,Data doesn't exists with this job order"
 
 
 # warehouse ccls wsdl

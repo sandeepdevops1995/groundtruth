@@ -7,25 +7,29 @@ import json
 import requests
 import app.logging_message as LM
 
-def get_job_order_info(input_value,service_type,service_name,port_name):
+def get_job_order_info(input_value,service_type,service_name,port_name,request_data):
     wsdl_url = config.WSDL_URL+"/soa-infra/services/default/"+service_type+"/"+service_name+"?WSDL"
     try:
         logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_GET_REQUEST_TO_CCLS_TO_FETCH_JOB_ORDER_DATA,input_value,wsdl_url))
         soap = zeep.Client(wsdl=wsdl_url, service_name=service_name)
         with soap.settings(raw_response=False):
-            result = soap.service.process(input_value)
+            
             if config.IS_MOCK_ENABLED:
+                result = soap.service.process(input_value)
                 import xml.etree.ElementTree as ET
                 # data = xmltodict.parse(result)
                 data = xmltodict.parse(result,force_list={'truck_details': True, 'shipping_bill_details_list': True, 'bill_details_list': True})
                 # using json.dumps to convert dictionary to JSON
                 result = json.loads(json.dumps(data, indent = 3))
                 result = result['root']
+            else:
+                result = soap.service.process(**request_data)
         logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_RESPONSE_FROM_CCLS_OF_JOB_ORDER_DATA,input_value,result))
     except requests.exceptions.ConnectionError as e:
         raise ConnectionError('GTService: getting connection error while calling to ccls service').with_traceback(e.__traceback__)
     except Exception as e:
-        raise Exception('GTService: getting internal error while fetching job details from ccls service').with_traceback(e.__traceback__)
+        result={}
+        #raise Exception('GTService: getting internal error while fetching job details from ccls service').with_traceback(e.__traceback__)
     return result
 
 def upload_tallysheet_data(job_info,service_type,service_name,port_name,request_parameter):

@@ -189,6 +189,12 @@ run: | probe-pipenv probe-env-settings kill-server ## Spawn dev server
 # 	@printf "\nStarting Ground Truth microservice...in docker\n\n"; \
 # 	python3 -m pipenv run python ground_truth.py;
 
+# Invokes the native REPL interface to the installed-active python interpreter.
+.PHONY: repl
+repl: | probe-pipenv probe-env-settings ## Invokes the native REPL interface to the installed-active python interpreter.
+	@. ./exportenvs.sh _env_init; \
+	python3 -m pipenv run flask shell
+
 .PHONY: run-gunicorn-server
 run-gunicorn-server: | probe-pipenv probe-env-settings kill-server ## Spawn dev server
 	@printf "\nStarting Ground Truth microservice...\n\n"; \

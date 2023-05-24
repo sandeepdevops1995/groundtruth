@@ -9,7 +9,7 @@ class MasterCargoDetails(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
     job_type = db.Column(db.Integer())
     fcl_or_lcl = db.Column(db.Integer())
-    container_id = db.Column(db.String(11), db.ForeignKey('container.container_number'))
+    container_id = db.Column(db.String(11), db.ForeignKey('container.id'))
     container_info = db.relationship("Container", back_populates="master_job_container", lazy='joined')
     truck_details = db.relationship('TruckDetails', back_populates='master_job_order_truck')
     gross_weight = db.Column(db.Float(), nullable=True)

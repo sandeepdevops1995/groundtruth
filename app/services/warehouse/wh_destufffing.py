@@ -16,8 +16,8 @@ from app.models.warehouse.truck import TruckDetails
 
 class WarehouseDeStuffing(object):
 
-    def get_destuffing_details(self,container_number,job_type,service_type,service_name,port_name):
-        cargo_details = get_job_order_info(container_number,service_type,service_name,port_name)
+    def get_destuffing_details(self,container_number,job_type,service_type,service_name,port_name,request_data):
+        cargo_details = get_job_order_info(container_number,service_type,service_name,port_name,request_data)
         if cargo_details:
             container_info, destuffing_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["container_number","destuffing_job_order","destuffing_plan_date","handling_code","hld_rls_flag"]])
             cargo_details['container_info'] = container_info
@@ -41,6 +41,7 @@ class WarehouseDeStuffing(object):
         if destuffing_cargo_query:
             job_order_id = destuffing_cargo_query.destuffing_job[0].id
             cargo_details['id'] = job_order_id
+            cargo_details['container_info']['id'] = destuffing_cargo_query.destuffing_job[0].container_id
             cargo_details['destuffing_details']['id'] = destuffing_cargo_query.id
             logger.debug("{}, {}, {}, {}, {}, {}, {}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_ALREADY_EXISTS_CARGO_DETAILS_IN_DB,'JT_'+str(cargo_details.get('job_type')),cargo_details['destuffing_details'].get('container_number'),job_order_id))
             self.update_bill_details(cargo_details,job_order_id,cargo_details['destuffing_details'].get('container_number'))

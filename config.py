@@ -33,6 +33,7 @@ PSQL_IP=env('PSQL_IP')
 PSQL_PORT = env('PSQL_PORT')
 PSQL_DATABASE = env('PSQL_DATABASE')
 PSQl_ECHO = env.bool('PSQl_ECHO') # Set false for production configuration
+PSQl_CONNECTION_POOL_PING = env.bool('PSQl_CONNECTION_POOL_PING') # Set false for production configuration
 
 
 #Ground truth config

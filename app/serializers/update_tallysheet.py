@@ -1,6 +1,5 @@
-from marshmallow import fields, EXCLUDE, post_load
+from marshmallow import fields, EXCLUDE
 from app import ma
-from app.models.warehouse.ccls_cargo_details import CCLSCargoBillDetails
 from app import postgres_db as db
 from app.models.warehouse.ctms_cargo_job import CTMSCargoJob,CTMSBillDetails
 from sqlalchemy import or_

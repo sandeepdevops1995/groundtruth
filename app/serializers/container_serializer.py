@@ -10,11 +10,11 @@ from sqlalchemy.sql.expression import cast
 class ContainerInsertSchema(ma.SQLAlchemyAutoSchema):
     @pre_load()
     def change_data(self, data, **kwargs):
-        try:
-            max_val = db.session.query(func.max(cast(Container.id, Integer))).scalar()
+        max_val = db.session.query(func.max(cast(Container.id, Integer))).scalar()
+        if max_val:
             data['id'] = str(max_val+1)
-        except:
-             data['id'] = 1
+        else:
+            data['id'] = "1"
         if data['container_life'] and isinstance(data['container_life'], datetime):
                 data['container_life']=convert_ccls_date_to_timestamp(data['container_life'])
         return data

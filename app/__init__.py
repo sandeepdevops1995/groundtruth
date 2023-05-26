@@ -31,8 +31,22 @@ postgres_url = sa.engine.URL.create(
 # Define the application object
 app = Flask(__name__)
 engine = create_engine(oracle_url,echo=config.SQl_ECHO)
+# "connect_args":{
+#     "keepalives": 50,
+#     "keepalives_idle": 30,
+#     "keepalives_interval": 10,
+#     "keepalives_count": 5
+# }
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    "pool_pre_ping": config.PSQl_CONNECTION_POOL_PING
+}
 app.config["SQLALCHEMY_DATABASE_URI"] = postgres_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# app.config['SQLALCHEMY_POOL_SIZE'] = 10
+# app.config['SQLALCHEMY_MAX_OVERFLOW'] = 20
+# app.config['SQLALCHEMY_POOL_RECYCLE'] = 1800
+
 postgres_db = SQLAlchemy(app)
 migrate = Migrate(app, postgres_db)
 ma = Marshmallow(app)

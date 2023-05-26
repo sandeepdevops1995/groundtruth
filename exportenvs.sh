@@ -20,6 +20,7 @@ COMPOSE_PSQl_ECHO=${PSQl_ECHO}
 COMPOSE_IS_MOCK_ENABLED=${IS_MOCK_ENABLED}
 COMPOSE_IS_EVENT_BASED=${IS_EVENT_BASED}
 COMPOSE_CCLS_GROUND_TRUTH=${CCLS_GROUND_TRUTH}
+COMPOSE_PSQl_CONNECTION_POOL_PING=${PSQl_CONNECTION_POOL_PING}
 
 #read .env file in env folder
 env_file_path="./env/.env"
@@ -156,6 +157,13 @@ if ( [ $COMPOSE_PSQl_ECHO ] ) then
 else 
     env_psql_echo="$(sed -n -e 's/^.*PSQl_ECHO.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
     export PSQl_ECHO=$env_psql_echo
+fi
+
+if ( [ $COMPOSE_PSQl_CONNECTION_POOL_PING ] ) then 
+    echo "psql pool_ping",${PSQl_CONNECTION_POOL_PING}
+else 
+    env_psql_pool_ping="$(sed -n -e 's/^.*PSQl_CONNECTION_POOL_PING.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+    export PSQl_CONNECTION_POOL_PING=$env_psql_pool_ping
 fi
 
 if ( [ $COMPOSE_IS_MOCK_ENABLED ] ) then 

@@ -2,45 +2,35 @@
 from app.services.warehouse.soap_api_call import get_job_order_info
 from app.logger import logger
 import app.services.warehouse.constants as constants
-from app.services.warehouse.data_formater import DataFormater
-from app.enums import ContainerFlag
 from app import postgres_db as db
 from app.enums import JobOrderType
 from app.serializers.ccls_cargo_serializer import CCLSCargoInsertSchema
 from app.models.warehouse.ccls_cargo_details import CartingCargoDetails,CCLSCargoBillDetails
-from app.user_defined_exception import DataNotFoundException
 import app.logging_message as LM
 from app.serializers.update_ccls_cargo_serializer import CCLSBillDetailsGetSchema, CCLSBillDetailsUpdateSchema
 from app.serializers.update_ccls_cargo_serializer import CCLSCargoUpdateSchema
 from app.serializers.truck_serializer import TruckUpdateSchema
 from app.models.warehouse.truck import TruckDetails
+from app.services.warehouse.ccls_get.update_ccls_cargo_details import UpdateCargoDetails
+from app.models.warehouse.ccls_cargo_details import CartingCargoDetails
+from app.services.warehouse.database_service import WarehouseDB
 
 class WarehouseCarting(object):
 
-    def get_carting_details(self,crn_number,job_type,service_type,service_name,port_name,request_data):
-        cargo_details = get_job_order_info(crn_number,service_type,service_name,port_name,request_data)
+    def get_carting_details(self,job_order,job_type,service_type,service_name,port_name,request_data):
+        cargo_details = get_job_order_info(job_order,service_type,service_name,port_name,request_data)
         if cargo_details:
-            container_info, carting_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["crn_number","crn_date","carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag"]])
-            cargo_details['container_info'] = container_info
-            container_info['container_life'] = int(float(container_info['container_life']))
-            container_info['container_size'] = int(float(container_info['container_size']))
-            cargo_details['carting_details'] = carting_details
+            cargo_details = UpdateCargoDetails().update_carting_details(cargo_details,job_type,job_order)
             if job_type==JobOrderType.CARTING_FCL.value:
-                container_flag=ContainerFlag.FCL.value
                 request_parameter = cargo_details['carting_details'].get('crn_number')
                 carting_cargo_query = db.session.query(CartingCargoDetails).filter(CartingCargoDetails.crn_number==request_parameter,CartingCargoDetails.crn_date==cargo_details['carting_details'].get('crn_date')).first()
             else:
-                container_flag=ContainerFlag.LCL.value
                 request_parameter = cargo_details['carting_details'].get('carting_order_number')
                 carting_cargo_query = db.session.query(CartingCargoDetails).filter(CartingCargoDetails.carting_order_number==request_parameter,CartingCargoDetails.con_date==cargo_details['carting_details'].get('con_date')).first()
-            cargo_details['job_type'] = job_type
-            cargo_details['fcl_or_lcl'] = container_flag
-            result = DataFormater().build_carting_response_obj(cargo_details,container_flag)
+            logger.debug("{}, {}, {}, {}, {}, {}, {}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_AFTER_MODIFICATION_CARGO_DETAILS,'JT_'+str(cargo_details.get('job_type')),request_parameter,cargo_details))
             self.save_data_db(cargo_details,carting_cargo_query,request_parameter)
-            return result
-        else:
-            raise DataNotFoundException('GTService: job data not found in ccls system')
-
+        return WarehouseDB().get_cargo_details_from_db(job_order,job_type)            
+    
 
     def save_data_db(self,cargo_details,carting_cargo_query,request_parameter):
         if carting_cargo_query:

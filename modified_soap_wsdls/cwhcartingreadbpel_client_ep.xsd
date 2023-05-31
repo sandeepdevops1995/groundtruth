@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.concor.com/cil/CartRead/1.0/" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.concor.com/cil/CartRead/1.0/" xmlns="http://www.concor.com/cil/CartRead/1.0/">
+  <xsd:element name="CartRead" type="CartReadType"/>
+  <xsd:complexType name="CartReadType">
+    <xsd:sequence>
+      <xsd:element name="crn_number" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

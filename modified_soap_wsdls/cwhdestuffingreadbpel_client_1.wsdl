@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="CWHDeStuffingReadBPEL" targetNamespace="http://xmlns.oracle.com/CTMSAPI/CWHDestuffingRead/CWHDeStuffingReadBPEL" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/CTMSAPI/CWHDestuffingRead/CWHDeStuffingReadBPEL" xmlns:ns1="http://www.concor.com/cil/dstuffRead/1.0/" xmlns:ns2="http://www.concor.com/cil/dstuffWrite/1.0/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:documentation>
+    <abstractWSDL>http://10.1.100.101:8001/soa-infra/services/default/CWHDestuffingRead!1.0/WSDLs/CWHDeStuffingReadBPEL.wsdl</abstractWSDL>
+  </wsdl:documentation>
+  <plnk:partnerLinkType name="CWHDeStuffingReadBPEL">
+    <plnk:role name="CWHDeStuffingReadBPELProvider" portType="client:CWHDeStuffingReadBPEL"/>
+  </plnk:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://www.concor.com/cil/dstuffRead/1.0/" schemaLocation="cwhdestuffingreadbpel_client_ep.xsd"/>
+    </schema>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://www.concor.com/cil/dstuffWrite/1.0/" schemaLocation="cwhdestuffingreadbpel_client_1.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="CWHDeStuffingReadBPELRequestMessage">
+    <wsdl:part name="payload" element="ns1:dstuffRead"/>
+  </wsdl:message>
+  <wsdl:message name="CWHDeStuffingReadBPELResponseMessage">
+    <wsdl:part name="payload" element="ns2:dstuffWriteOutput"/>
+  </wsdl:message>
+  <wsdl:portType name="CWHDeStuffingReadBPEL">
+    <wsdl:operation name="process">
+      <wsdl:input message="client:CWHDeStuffingReadBPELRequestMessage"/>
+      <wsdl:output message="client:CWHDeStuffingReadBPELResponseMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CWHDeStuffingReadBPELBinding" type="client:CWHDeStuffingReadBPEL">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="process">
+      <soap:operation style="document" soapAction="process"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="cwhdestuffingreadbpel_client_ep">
+    <wsdl:port name="CWHDeStuffingReadBPEL_pt" binding="client:CWHDeStuffingReadBPELBinding">
+      <soap:address location="http://10.1.100.101:8001/soa-infra/services/default/CWHDestuffingRead/cwhdestuffingreadbpel_client_ep"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

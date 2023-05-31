@@ -1,23 +1,13 @@
-from marshmallow import fields, EXCLUDE, pre_load, post_load
+from marshmallow import fields, EXCLUDE, pre_load
 from app import ma
-from app.serializers.truck_serializer import TruckUpdateSchema
 from app.models.warehouse.ccls_cargo_details import MasterCargoDetails,CartingCargoDetails,CCLSCargoBillDetails,StuffingCargoDetails,DeStuffingCargoDetails,DeliveryCargoDetails
 from app import postgres_db as db
 from app.serializers.container_serializer import ContainerUpdateSchema
 from app.models.master.warehouse import Commodity as WarehouseCommodity
-from datetime import datetime
-from app.controllers.utils import convert_ccls_date_to_timestamp
 from app.serializers import Nested
 
 class CartingJobUpdateSchema(ma.SQLAlchemyAutoSchema):
 
-    @pre_load()
-    def change_data(self, data, **kwargs):
-        if data['con_date'] and isinstance(data['con_date'], datetime):
-                data['con_date']=convert_ccls_date_to_timestamp(data['con_date'])
-        if data['crn_date'] and isinstance(data['crn_date'], datetime):
-                data['crn_date']=convert_ccls_date_to_timestamp(data['crn_date'])
-        return data
     class Meta:
         model = CartingCargoDetails
         fields = ("id","crn_number", "crn_date", "carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag")
@@ -33,12 +23,6 @@ class StuffingJobUpdateSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
 
 class DeStuffingJobUpdateSchema(ma.SQLAlchemyAutoSchema):
-
-    @pre_load()
-    def change_data(self, data, **kwargs):
-        if data['destuffing_plan_date'] and isinstance(data['destuffing_plan_date'], datetime):
-                data['destuffing_plan_date']=convert_ccls_date_to_timestamp(data['destuffing_plan_date'])
-        return data
     
     class Meta:
         model = DeStuffingCargoDetails
@@ -48,15 +32,9 @@ class DeStuffingJobUpdateSchema(ma.SQLAlchemyAutoSchema):
  
 class DeliveryJobUpdateSchema(ma.SQLAlchemyAutoSchema):
 
-    @pre_load()
-    def change_data(self, data, **kwargs):
-        if data['gpm_valid_date'] and isinstance(data['gpm_valid_date'], datetime):
-                data['gpm_valid_date']=convert_ccls_date_to_timestamp(data['gpm_valid_date'])
-        return data
-
     class Meta:
         model = DeliveryCargoDetails
-        fields = ("id","gpm_number", "gpm_valid_date", "gp_stat","con_date","cha_code")
+        fields = ("id","gpm_number", "gpm_valid_date", "gp_stat","con_date","cha_code","gpm_created_date")
         include_relationships = True
         load_instance = True
 
@@ -67,8 +45,8 @@ class CCLSBillDetailsUpdateSchema(ma.SQLAlchemyAutoSchema):
         data['bill_date'] = data.get('shipping_bill_date') if 'shipping_bill_date' in data else data.get('bill_date')
         # date_time_str = '2002-01-19 00:00:00.000+05:30'
         # data['bill_date'] = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S.%f%z')
-        if data['bill_date'] and isinstance(data['bill_date'], datetime):
-                data['bill_date']=convert_ccls_date_to_timestamp(data['bill_date'])
+        # if data['bill_date'] and isinstance(data['bill_date'], datetime):
+        #         data['bill_date']=convert_ccls_date_to_timestamp(data['bill_date'])
         query_object = db.session.query(WarehouseCommodity).filter(WarehouseCommodity.comm_cd==data.get('commodity_code')).first()
         if query_object:
             data['commodity_id'] = query_object.id

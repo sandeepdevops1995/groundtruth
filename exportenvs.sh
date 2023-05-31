@@ -21,6 +21,7 @@ COMPOSE_IS_MOCK_ENABLED=${IS_MOCK_ENABLED}
 COMPOSE_IS_EVENT_BASED=${IS_EVENT_BASED}
 COMPOSE_CCLS_GROUND_TRUTH=${CCLS_GROUND_TRUTH}
 COMPOSE_PSQl_CONNECTION_POOL_PING=${PSQl_CONNECTION_POOL_PING}
+COMPOSE_IS_STUFFING_MOCK_ENABLED=${IS_STUFFING_MOCK_ENABLED}
 
 #read .env file in env folder
 env_file_path="./env/.env"
@@ -171,6 +172,13 @@ if ( [ $COMPOSE_IS_MOCK_ENABLED ] ) then
 else 
     env_is_mock_enabled="$(sed -n -e 's/^.*IS_MOCK_ENABLED.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
     export IS_MOCK_ENABLED=$env_is_mock_enabled
+fi
+
+if ( [ $COMPOSE_IS_STUFFING_MOCK_ENABLED ] ) then 
+    echo "is stuffing job mock enabled",${IS_STUFFING_MOCK_ENABLED}
+else 
+    env_is_stuffing_mock_enabled="$(sed -n -e 's/^.*IS_STUFFING_MOCK_ENABLED.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+    export IS_STUFFING_MOCK_ENABLED=$env_is_stuffing_mock_enabled
 fi
 
 if ( [ $COMPOSE_IS_EVENT_BASED ] ) then 

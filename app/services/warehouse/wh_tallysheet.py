@@ -2,7 +2,7 @@ from app.services.warehouse.database_service import WarehouseDB
 import app.services.warehouse.constants as constants
 from app.enums import JobOrderType
 from app import postgres_db as db
-from app.models.warehouse.ctms_cargo_job import CTMSCargoJob,CTMSBillDetails
+from app.models.warehouse.ctms_cargo_job import CTMSCargoJob
 from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingCargoDetails, StuffingCargoDetails, DeStuffingCargoDetails, DeliveryCargoDetails
 from app.serializers.generate_tallysheet import CTMSCargoJobInsertSchema
 from app.serializers.update_tallysheet import CTMSCargoJobUpdateSchema

@@ -4,6 +4,10 @@ from app.serializers.commodity_serializer import CCLSCommodityList
 from app.models.master.warehouse import Commodity as WarehouseCommodity
 from app.serializers.view_tallysheet import ViewTallySheetOrderSchema
 import app.logging_message as LM
+from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingCargoDetails, StuffingCargoDetails, DeStuffingCargoDetails, DeliveryCargoDetails
+from app.serializers.get_ccls_cargo_serializer import GetCartingSchema
+from app.enums import JobOrderType
+from app.user_defined_exception import DataNotFoundException
 
 class WarehouseDB(object):
 
@@ -44,3 +48,29 @@ class WarehouseDB(object):
                 db.session.add(db_object, _warn=False)
         db.session.commit()
         logger.info("GTService: commodity details created successfully")
+
+    def get_cargo_details_from_db(self,request_parameter,job_type):
+        if job_type==JobOrderType.CARTING_FCL.value:
+            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.carting_details.has(CartingCargoDetails.crn_number==request_parameter)).first()
+        elif job_type==JobOrderType.CARTING_LCL.value:
+            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.carting_details.has(CartingCargoDetails.carting_order_number==request_parameter)).first()
+        elif job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value]:
+            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.container_number==request_parameter)).first()
+        elif job_type in [JobOrderType.DE_STUFFING_FCL.value,JobOrderType.DE_STUFFING_LCL.value]:
+            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.destuffing_details.has(DeStuffingCargoDetails.container_number==request_parameter)).first()
+        elif job_type in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
+            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.delivery_details.has(DeliveryCargoDetails.gpm_number==request_parameter)).first()
+        else:
+            query_object = None
+        if query_object:
+            result = GetCartingSchema().dump(query_object)
+            total_package_count = 0
+            result['cargo_details'] = result.pop('bill_details')
+            for each_cargo in result['cargo_details']:
+                for each_commodity in each_cargo['commodity_details']:
+                    total_package_count+=each_commodity['package_count']
+            result['total_package_count'] = total_package_count
+            logger.debug("{}, {}, {}, {}, {}, {}, {}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_GET_CARGO_DETAILS_FROM_DB,'JT_'+str(job_type),request_parameter,result))
+            return result
+        else:
+            raise DataNotFoundException('GTService: job data not found in ccls system')

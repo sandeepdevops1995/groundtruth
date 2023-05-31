@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="CWHDeliveryReadBPEL" targetNamespace="http://xmlns.oracle.com/CTMSAPI/CWHDeliveryRead/CWHDeliveryReadBPEL" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/CTMSAPI/CWHDeliveryRead/CWHDeliveryReadBPEL" xmlns:ns1="http://www.concor.com/cil/DeliveryRead/1.0/" xmlns:ns2="http://www.concor.com/cil/DeliveryWrite/1.0/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:documentation>
+    <abstractWSDL>http://10.1.100.101:8001/soa-infra/services/default/CWHDeliveryRead!1.0/WSDLs/CWHDeliveryReadBPEL.wsdl</abstractWSDL>
+  </wsdl:documentation>
+  <plnk:partnerLinkType name="CWHDeliveryReadBPEL">
+    <plnk:role name="CWHDeliveryReadBPELProvider" portType="client:CWHDeliveryReadBPEL"/>
+  </plnk:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://www.concor.com/cil/DeliveryRead/1.0/" schemaLocation="cwhdeliveryreadbpel_client_ep.xsd"/>
+    </schema>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://www.concor.com/cil/DeliveryWrite/1.0/" schemaLocation="cwhdeliveryreadbpel_client_1.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="CWHDeliveryReadBPELRequestMessage">
+    <wsdl:part name="payload" element="ns1:DeliveryRead"/>
+  </wsdl:message>
+  <wsdl:message name="CWHDeliveryReadBPELResponseMessage">
+    <wsdl:part name="payload" element="ns2:DeliveryWriteOutput"/>
+  </wsdl:message>
+  <wsdl:portType name="CWHDeliveryReadBPEL">
+    <wsdl:operation name="process">
+      <wsdl:input message="client:CWHDeliveryReadBPELRequestMessage"/>
+      <wsdl:output message="client:CWHDeliveryReadBPELResponseMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CWHDeliveryReadBPELBinding" type="client:CWHDeliveryReadBPEL">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="process">
+      <soap:operation style="document" soapAction="process"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="cwhdeliveryreadbpel_client_ep">
+    <wsdl:port name="CWHDeliveryReadBPEL_pt" binding="client:CWHDeliveryReadBPELBinding">
+      <soap:address location="http://10.1.100.101:8001/soa-infra/services/default/CWHDeliveryRead/cwhdeliveryreadbpel_client_ep"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

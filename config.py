@@ -34,6 +34,7 @@ PSQL_PORT = env('PSQL_PORT')
 PSQL_DATABASE = env('PSQL_DATABASE')
 PSQl_ECHO = env.bool('PSQl_ECHO') # Set false for production configuration
 PSQl_CONNECTION_POOL_PING = env.bool('PSQl_CONNECTION_POOL_PING') # Set false for production configuration
+IS_STUFFING_MOCK_ENABLED= env.bool('IS_STUFFING_MOCK_ENABLED',False)
 
 
 #Ground truth config

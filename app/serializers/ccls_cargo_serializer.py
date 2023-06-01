@@ -19,7 +19,7 @@ class StuffingJobInsertSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = StuffingCargoDetails
-        fields = ("container_number", "stuffing_job_order", "cargo_weight_in_crn","hsn_code")
+        fields = ("container_number", "stuffing_job_order", "crn_number", "cargo_weight_in_crn","hsn_code")
         include_relationships = True
         load_instance = True
 

@@ -14,7 +14,7 @@ class UpdateCargoDetails(object):
         return cargo_details
     
     def update_stuffing_details_schema_for_serializer(self,cargo_details):
-        container_info, stuffing_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["container_number","stuffing_job_order","hsn_code","cargo_weight_in_crn"]])
+        container_info, stuffing_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["container_number","stuffing_job_order","hsn_code","cargo_weight_in_crn","crn_number"]])
         cargo_details['container_info'] = container_info
         cargo_details['stuffing_details'] = stuffing_details
         return cargo_details

@@ -51,6 +51,7 @@ class CartingCargoDetails(db.Model):
 class StuffingCargoDetails(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
     container_number = db.Column(db.String(11))
+    crn_number = db.Column(db.String(13), nullable=True)
     stuffing_job_order = db.Column(db.String(10), nullable=True)
     cargo_weight_in_crn = db.Column(db.Float(), nullable=True)
     hsn_code = db.Column(db.String(2), nullable=True)

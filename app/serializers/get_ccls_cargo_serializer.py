@@ -58,7 +58,7 @@ class GetCartingSchema(ma.SQLAlchemyAutoSchema):
         return obj.container_info.container_number  if obj.container_info else None
     
     def get_crn_number(self, obj):
-        return obj.carting_details.crn_number if obj.carting_details else None
+        return obj.carting_details.crn_number if obj.carting_details else obj.stuffing_details.crn_number if obj.stuffing_details else None
     
     def get_gpm_number(self, obj):
         return obj.delivery_details.gpm_number if obj.delivery_details else None

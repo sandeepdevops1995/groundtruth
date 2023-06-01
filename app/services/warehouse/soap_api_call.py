@@ -13,7 +13,7 @@ from app.enums import JobOrderType
 def get_job_order_info(input_value,service_type,service_name,port_name,request_data,job_type=None):
     
     try:
-            if config.IS_MOCK_ENABLED or (job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value] and config.IS_STUFFING_MOCK):
+            if config.IS_MOCK_ENABLED or (job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value] and config.IS_STUFFING_MOCK_ENABLED):
                 wsdl_url = config.WSDL_URL+"/soa-infra/services/default/"+service_type+"/"+service_name+"?WSDL"
                 logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_GET_REQUEST_TO_CCLS_TO_FETCH_JOB_ORDER_DATA,input_value,wsdl_url))
                 soap = zeep.Client(wsdl=wsdl_url, service_name=service_name)

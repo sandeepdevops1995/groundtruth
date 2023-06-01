@@ -51,15 +51,15 @@ class WarehouseDB(object):
 
     def get_cargo_details_from_db(self,request_parameter,job_type):
         if job_type==JobOrderType.CARTING_FCL.value:
-            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.carting_details.has(CartingCargoDetails.crn_number==request_parameter)).first()
+            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.carting_details.has(CartingCargoDetails.crn_number==request_parameter)).order_by(MasterCargoDetails.created_at.desc()).first()
         elif job_type==JobOrderType.CARTING_LCL.value:
-            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.carting_details.has(CartingCargoDetails.carting_order_number==request_parameter)).first()
+            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.carting_details.has(CartingCargoDetails.carting_order_number==request_parameter)).order_by(MasterCargoDetails.created_at.desc()).first()
         elif job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value]:
-            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.container_number==request_parameter)).first()
+            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.container_number==request_parameter)).order_by(MasterCargoDetails.created_at.desc()).first()
         elif job_type in [JobOrderType.DE_STUFFING_FCL.value,JobOrderType.DE_STUFFING_LCL.value]:
-            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.destuffing_details.has(DeStuffingCargoDetails.container_number==request_parameter)).first()
+            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.destuffing_details.has(DeStuffingCargoDetails.container_number==request_parameter)).order_by(MasterCargoDetails.created_at.desc()).first()
         elif job_type in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
-            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.delivery_details.has(DeliveryCargoDetails.gpm_number==request_parameter)).first()
+            query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.delivery_details.has(DeliveryCargoDetails.gpm_number==request_parameter)).order_by(MasterCargoDetails.created_at.desc()).first()
         else:
             query_object = None
         if query_object:

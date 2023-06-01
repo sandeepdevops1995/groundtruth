@@ -90,6 +90,7 @@ class CCLSCargoBillDetails(db.Model):
     bill_of_entry = db.Column(db.Integer(), nullable=True)
     bill_of_lading = db.Column(db.Integer(), nullable=True)
     bill_date = db.Column(db.BigInteger(), nullable=True)
+    bol_date = db.Column(db.BigInteger(), nullable=True)
     importer_code = db.Column(db.String(30), nullable=True)
     importer_name = db.Column(db.String(100), nullable=True)
     package_code = db.Column(db.String(10), nullable=True)

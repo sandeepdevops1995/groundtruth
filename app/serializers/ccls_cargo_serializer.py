@@ -59,7 +59,7 @@ class CCLSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CCLSCargoBillDetails
-        fields = ("shipping_bill_number", "boe_number","bol_number","bill_date","importer_code","importer_name","package_code","no_of_packages_declared","package_weight","cha_code","cargo_type","commodity_id")
+        fields = ("shipping_bill_number", "boe_number","bol_number","bill_date","bol_date","importer_code","importer_name","package_code","no_of_packages_declared","package_weight","cha_code","cargo_type","commodity_id")
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE

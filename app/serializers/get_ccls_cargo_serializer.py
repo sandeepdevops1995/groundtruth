@@ -28,7 +28,7 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CCLSCargoBillDetails
-        fields = ("shipping_bill_number", "bill_of_entry","bill_of_lading","bill_date","commodity_details","cha_code")
+        fields = ("shipping_bill_number", "bill_of_entry","bill_of_lading","bill_date","bol_date","commodity_details","cha_code")
 
 
 

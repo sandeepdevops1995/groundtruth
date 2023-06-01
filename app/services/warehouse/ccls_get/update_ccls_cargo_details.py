@@ -84,6 +84,9 @@ class UpdateCargoDetails(object):
                     each_bill['bol_number'] = bill_number
             if each_bill[constants.CCLS_BILL_DATE] and isinstance(each_bill[constants.CCLS_BILL_DATE],datetime):
                 each_bill[constants.CCLS_BILL_DATE] = convert_ccls_date_to_timestamp(each_bill[constants.CCLS_BILL_DATE])
+            if constants.CCLS_BOL_DATE in each_bill:
+                if each_bill[constants.CCLS_BOL_DATE] and isinstance(each_bill[constants.CCLS_BOL_DATE],datetime):
+                    each_bill[constants.CCLS_BOL_DATE] = convert_ccls_date_to_timestamp(each_bill[constants.CCLS_BOL_DATE])
             self.update_each_bill(each_bill)
 
     def update_carting_details(self,cargo_details,job_type,crn_number):

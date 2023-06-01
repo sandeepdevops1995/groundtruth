@@ -41,6 +41,7 @@ CCLS_NO_OF_PACKAGES_DECLARED='no_of_packages_declared'
 CCLS_PACKAGE_WEIGHT='package_weight'
 CCLS_JOB_ORDER_ID='job_order_id'
 CCLS_SHIPPING_BILL_NUMBER='shipping_bill_number'
+CCLS_BOL_DATE='bol_date'
 
 ## ccls commodity keys
 CCLS_COMMODITY_CODE='commodity_code'

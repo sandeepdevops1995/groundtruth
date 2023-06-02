@@ -43,7 +43,7 @@ def get_job_order_info(input_value,service_type,service_name,port_name,request_d
     return result
 
 def upload_tallysheet_data(job_info,service_type,service_name,port_name,request_parameter):
-    # return "success"
+    return "success"
     wsdl_url = config.WSDL_URL+"/soa-infra/services/default/"+service_type+"/"+service_name+"?WSDL"
     try:
         logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_GET_REQUEST_TO_CCLS_TO_UPLOAD_TALLYSHEET,request_parameter,wsdl_url,job_info))

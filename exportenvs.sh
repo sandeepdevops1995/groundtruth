@@ -22,6 +22,7 @@ COMPOSE_IS_EVENT_BASED=${IS_EVENT_BASED}
 COMPOSE_CCLS_GROUND_TRUTH=${CCLS_GROUND_TRUTH}
 COMPOSE_PSQl_CONNECTION_POOL_PING=${PSQl_CONNECTION_POOL_PING}
 COMPOSE_IS_STUFFING_MOCK_ENABLED=${IS_STUFFING_MOCK_ENABLED}
+COMPOSE_NO_OF_PROCESSES=${NO_OF_PROCESSES}
 
 #read .env file in env folder
 env_file_path="./env/.env"
@@ -193,6 +194,13 @@ if ( [ $COMPOSE_CCLS_GROUND_TRUTH ] ) then
 else 
     env_ccls_ground_truth="$(sed -n -e 's/^.*CCLS_GROUND_TRUTH.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
     export CCLS_GROUND_TRUTH=$env_ccls_ground_truth
+fi
+
+if ( [ $COMPOSE_NO_OF_PROCESSES ] ) then 
+    echo "no of processes on uwsgi",${NO_OF_PROCESSES}
+else 
+    env_no_of_processes="$(sed -n -e 's/^.*NO_OF_PROCESSES.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+    export NO_OF_PROCESSES=$env_no_of_processes
 fi
 
 }

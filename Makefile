@@ -14,6 +14,7 @@ envHostPort="$$(sed -n -e "s/^.*PORT.*=//p" $(ENV_FILEPATH) | tr -d \'\" | head 
 envHostIP="$$(sed -n -e "s/^.*IP_ADDRESS.*=//p" $(ENV_FILEPATH) | tr -d \'\" | head -n 1 | xargs)"
 envDebugModeEnabled="$$(sed -n -e "s/^.*DEBUG.*=//p" $(ENV_FILEPATH) | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
 envDBNameDetected="$$(sed -n -e "s/^.*PSQL_DATABASE.*=//p" $(ENV_FILEPATH) | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+ENV_SETUP_HELPER_PATH_REL="utils/env_setup.sh"
 
 # Before anything else, check if the above commands are installed and available, if not throw error and abort.
 K := $(foreach exec,$(DEPENDENCIES), $(if $(shell which "$(exec)"),dependencies_ok,$(error ENVIRONMENT DEPENDENCIES CHECK FAILING: Could not find this command: "$(exec)", Cannot proceed)))
@@ -22,6 +23,14 @@ K := $(foreach exec,$(DEPENDENCIES), $(if $(shell which "$(exec)"),dependencies_
 error:
 	@printf "\nUnknown or unhandled target (Makefile error).\n\nAbort.\n\n"
 	@exit 2
+
+
+.PHONY: setup-env
+setup-env: ## Invokes a shell that sets up the local dev environment (meant to be used only on fresh OS installs).
+	@envSetupHelperPath=$(ENV_SETUP_HELPER_PATH_REL); \
+	[ ! -f "$$envSetupHelperPath" ] \
+	&& { printf "\nError: Could not find environment setup helper at: $$envSetupHelperPath. Cannot proceed without. Abort.\n\n"; exit 1; } \
+	|| { $$envSetupHelperPath; };
 
 # Probes if Pip3 is installed in Crapbuntu systems and pulls the barrage of dependencies if missing.
 # Compat: Debian jessie+/Ubuntu 12+.
@@ -95,7 +104,7 @@ kill-server: ## Send SIGKILL to current dev server instance
 
 # Installs the dependencies listed in Pipfile via Pipenv.
 .PHONY: install
-install: | probe-pipenv reset-local-settings; @python3 -m pipenv install; ## Installs project dependencies into a virtualenv --fully managed by Pipenv
+install: | setup-env probe-pipenv reset-local-settings; @python3 -m pipenv install; ## Installs project dependencies into a virtualenv --fully managed by Pipenv
 
 # Drops you into a virtualenv shell handled by pipenv
 .PHONY: shell
@@ -156,22 +165,22 @@ reinstate-db: | probe-pipenv probe-env-settings kill-active-db-connections ## Dr
 	|| { printf "\nSomething went wrong with reinstating database. abort\n\n"; exit 1; };
 
 .PHONY: initiate-migrations
-initiate-migrations: | probe-pipenv probe-env-settings ## Invokes Django's makemigrations command for specified inline apps
+initiate-migrations: | probe-pipenv probe-env-settings ## Invokes flask makemigrations command for specified inline apps
 	@printf "\n\nCreating database migrations...\n\n"; \
 	python3 -m pipenv run flask db init;
 
 .PHONY: create-migrations
-create-migrations: | probe-pipenv probe-env-settings ## Invokes Django's makemigrations command for specified inline apps
+create-migrations: | probe-pipenv probe-env-settings ## Invokes flask makemigrations command for specified inline apps
 	@printf "\n\nCreating database migrations...\n\n"; \
 	python3 -m pipenv run  flask db migrate;
 
 .PHONY: apply-migrations
-apply-migrations: | probe-pipenv probe-env-settings ## Attempts to apply any unapplied django database migrations
+apply-migrations: | probe-pipenv probe-env-settings ## Attempts to apply any unapplied flask database migrations
 	@printf "\n\nApplying database migrations...\n\n"; \
 	python3 -m pipenv run flask db upgrade;
 
 .PHONY: run-migrations
-run-migrations: | probe-pipenv probe-env-settings ## Bursts python cache, generates django db migrations freshly, and applies them
+run-migrations: | probe-pipenv probe-env-settings ## Bursts python cache, generates flask db migrations freshly, and applies them
 	@make create-migrations && make apply-migrations;
 
 
@@ -181,6 +190,12 @@ run: | probe-pipenv probe-env-settings kill-server ## Spawn dev server
 	. ./exportenvs.sh _env_init; \
 	@printf "\nStarting Ground Truth microservice...\n\n"; \
 	python3 -m pipenv run python ground_truth.py;
+
+.PHONY: launch-uwsgi-server
+launch-uwsgi-server: | probe-pipenv probe-env-settings kill-server ## Spawn dev server
+	. ./exportenvs.sh _env_init; \
+	printf "\nStarting ground truth service...\n\n"; \
+	python3 -m pipenv run uwsgi --ini uwsgi.ini;
 
 # This target starts the in-built wsgi server based on env settings.
 # .PHONY: run-docker

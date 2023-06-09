@@ -96,7 +96,7 @@ class GateDbService:
                 self.get_crn_info(crn_number,count,isRetry)
     
     @query_debugger()                  
-    def get_details_permit_number(self,permit_number,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+    def get_details_permit_number(self,permit_number,operation_type,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
         if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
             conn = e.connect()
             sqlFile = open(os.path.join(config.SQL_DIR,"get_ctr_info_frm_pmt.sql"))
@@ -129,19 +129,25 @@ class GateDbService:
                 return json.dumps(info)
             return json.dumps({})
         elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-            result = soap_service.get_permit_details(permit_number)
+            if operation_type == "DOM":
+                result = soap_service.get_domestic_permit_details(permit_number)
+            else:
+                result = soap_service.get_permit_details(permit_number)
+                
             if result and 'PermitNumber' in result and result['PermitNumber']:
                 if result['PermitDateTime'] and isinstance(result['PermitDateTime'], datetime):
                     result['PermitDateTime']=result['PermitDateTime'].strftime("%Y-%m-%d %H:%M:%S")
                 if result['CtrLifeNumber'] and isinstance(result['CtrLifeNumber'], date):
                     result['CtrLifeNumber']=result['CtrLifeNumber'].strftime("%Y-%m-%d")
+                if result['VehicleGateInDateTime'] and isinstance(result['VehicleGateInDateTime'], datetime):
+                    result['VehicleGateInDateTime']=result['VehicleGateInDateTime'].strftime("%Y-%m-%d %H:%M:%S")
                 if result['ContainerSize'] and  result['ContainerType']:
                     iso_code = str(result['ContainerSize'])+str(result['ContainerType'])
                 else:
                     iso_code = None
                 final_data = {
                                 "permit_no":result['PermitNumber'],
-                                "permit_date":result['PermitDateTime'],
+                                "permit_date": result['PermitDateTime'][:-10] if result['PermitDateTime'] else result['PermitDateTime'] ,
                                 "permit_expiry_date":result['IsPermitValid'],
                                 "container_no":result['ContainerNumber'],
                                 "vehicle_no" : result['VechileNumber'],

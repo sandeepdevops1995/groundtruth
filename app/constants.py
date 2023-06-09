@@ -32,6 +32,7 @@ KEY_CN_NUMBER= "container_number"
 KEY_CN_LIFE_NUMBER = "container_life_number"
 KEY_TRANS_DATE = "trans_date"
 KEY_PERMIT_NUMBER ="permit_number"
+KEY_LANE_TYPE = "lane_type"
 KEY_CRN_NUMBER= "crn_number"
 KEY_RETRY="isRetry"
 KEY_RETRY_VALUE = False

@@ -21,14 +21,31 @@ def get_permit_details(permit_number):
         #                 service_name="emptytrailerbpel_client_ep",
         #                 port_name="EmptyTrailerBPEL_pt")
         soap = zeep.Client(config.WSDL_FILE,transport=transport)
-        logger.debug('Get Permit, soap service request with permit_number : '+permit_number)
+        logger.debug('Get Permit, soap service request with permit_number ( EXIM ) : '+permit_number)
         start_time = datetime.now()
         result = soap.service.process(permit_number)
         end_time = datetime.now()
-        save_in_diagnostics(Constants.CCLS_DATA_ENDPOINT,{"permit_number":permit_number},{"output":str(result)},start_time,end_time)
-        logger.debug('Get Permit, soap service response : '+str(result))
+        save_in_diagnostics(Constants.CCLS_DATA_ENDPOINT+ " (EXIM) ",{"permit_number":permit_number},{"output":str(result)},start_time,end_time)
+        logger.debug('Get Permit, soap service response ( EXIM ) : '+str(result))
     except Exception as e:
-        logger.exception('Get Permit, Exception : '+str(e))
+        logger.exception('Get Permit, Exception ( EXIM ) : '+str(e))
+        result = {}
+    return result
+
+def get_domestic_permit_details(permit_number):
+    wsdl_url = config.WSDL_URL+"/soa-infra/services/default/DTMSGateAPIRead/dtmsgatereadbpel_client_ep?WSDL"
+    try:
+        soap = zeep.Client(wsdl=wsdl_url, 
+                        service_name="dtmsgatereadbpel_client_ep",
+                        port_name="DTMSGateReadBPEL_pt")
+        logger.debug('Get Permit, soap service request with permit_number ( DOM ) : '+permit_number)
+        start_time = datetime.now()
+        result = soap.service.process(permit_number)
+        end_time = datetime.now()
+        save_in_diagnostics(Constants.CCLS_DATA_ENDPOINT+ " (DOM) ",{"permit_number":permit_number},{"output":str(result)},start_time,end_time)
+        logger.debug('Get Permit, soap service response ( DOM ) : '+str(result))
+    except Exception as e:
+        logger.exception('Get Permit, Exception ( DOM ) : '+str(e))
         result = {}
     return result
 
@@ -96,11 +113,10 @@ def get_pendancy_details(gateway_port_data,api_url="/pendency_containers"):
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="rakependencydtlsbpel_client_ep",
                         port_name="RakePendencyDtlsBPEL_pt")
-        logger.debug('Get pendancy container details, soap service request with data : '+ str(gateway_port_data),start_time,end_time)
         start_time = datetime.now()
         result = soap.service.process(**gateway_port_data)
         end_time = datetime.now()
-        save_in_diagnostics(api_url,{"data":str(gateway_port_data)},{"output":str(result)})
+        save_in_diagnostics(api_url,{"data":str(gateway_port_data)},{"output":str(result)},start_time,end_time)
         logger.debug('Get pendancy container details, soap service response : '+ str(result))
         return result
     except Exception as e:

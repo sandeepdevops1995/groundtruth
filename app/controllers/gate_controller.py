@@ -29,8 +29,17 @@ class ContainerData(View):
     # @api_auth_required
     def get(self):
         permit_number = str(request.args.get(Constants.KEY_PERMIT_NUMBER))
+        lane_type = request.args.get(Constants.KEY_LANE_TYPE,"EXIM-ROAd-IN")
+        if "EXIM" in lane_type.split("-"):
+            operation_type = "EXIM"
+        elif "DOM" in lane_type.split("-"):
+            operation_type = "DOM"
+        else:
+            operation_type = None
+        if not operation_type or operation_type not in ["EXIM","DOM"]:
+            return Response(json.dumps({"message": "lane_type is missed/invalid"}), status=404, mimetype='application/json')
         logger.info('GT,Get request from the GATE service : {}'.format(permit_number))
-        result = GateDbService().get_details_permit_number(permit_number)
+        result = GateDbService().get_details_permit_number(permit_number,operation_type)
         logger.info('Conainer details response: {}'.format(result))
         if result:
             return Response(result, status=200, mimetype='application/json')
@@ -48,9 +57,18 @@ class CclsData(View):
         permit_number = request.args.get(Constants.KEY_PERMIT_NUMBER,None)
         container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
         crn_number = request.args.get(Constants.KEY_CRN_NUMBER,None)
+        lane_type = request.args.get(Constants.KEY_LANE_TYPE,"EXIM-ROAd-IN")
+        if "EXIM" in lane_type.split("-"):
+            operation_type = "EXIM"
+        elif "DOM" in lane_type.split("-"):
+            operation_type = "DOM"
+        else:
+            operation_type = None
+        if not operation_type or operation_type not in ["EXIM","DOM"]:
+            return Response(json.dumps({"message": "lane_type is missed/invalid"}), status=404, mimetype='application/json')
         if permit_number is not None:
             logger.info('GT,Get request from the GATE service : {}'.format(permit_number))
-            result = GateDbService().get_details_permit_number(permit_number)
+            result = GateDbService().get_details_permit_number(permit_number,operation_type)
             logger.info('GT,Get request from the GATE service - permit number: {}'.format(permit_number))
         elif container_number is not None:
             logger.info('GT,Get request from the GATE service : {}'.format(container_number))

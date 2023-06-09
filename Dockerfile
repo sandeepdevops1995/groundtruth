@@ -18,6 +18,11 @@ RUN python -m pip install pipenv
 
 RUN pip install coverage
 
+#uwsgi setup
+RUN apt-get install libpcre3 libpcre3-dev libssl-dev
+RUN CFLAGS="-I/usr/local/opt/openssl/include" LDFLAGS="-L/usr/local/opt/openssl/lib" UWSGI_PROFILE_OVERRIDE=ssl=true
+RUN pip install uwsgi -I
+
 COPY ./Pipfile Pipfile
 
 RUN make install  -o reset-local-settings

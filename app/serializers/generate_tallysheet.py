@@ -21,12 +21,12 @@ class CTMSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
     damaged_count = fields.Integer(attribute='no_of_packages_damaged')
     area_of_cargo = fields.Integer(attribute='area')
     area_of_damaged_cargo = fields.Integer(attribute='area_damaged')
-    packages_weight = fields.Integer(attribute='package_weight')
+    packages_weight = fields.Float(attribute='package_weight')
     concor_warehouse_id = fields.String(attribute='warehouse_id')
     
     class Meta:
         model = CTMSBillDetails
-        fields = ("full_or_part_destuff", "package_count","damaged_count","area_of_cargo","grid_number","grid_locations","ccls_grid_locations","packages_weight","damaged_packages_weight","start_time","end_time","warehouse_name","concor_warehouse_id","stacking_type","area_of_damaged_cargo")
+        fields = ("full_or_part_destuff", "package_count","damaged_count","area_of_cargo","grid_number","grid_locations","ccls_grid_locations","packages_weight","damaged_packages_weight","start_time","end_time","warehouse_name","concor_warehouse_id","stacking_type","area_of_damaged_cargo","gate_number")
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE

@@ -7,7 +7,8 @@ CCLS_CHA_CODE='cha_code'
 CCLS_GW_PORT_CODE='gw_port_code'
 CCLS_GROSS_WEIGHT='gross_weight'
 CCLS_GPM_NUMBER='gpm_number'
-CCLS_GPM_CREATED_DATE='gpm_valid_date'
+CCLS_GPM_CREATED_DATE='gpm_created_date'
+CCLS_GPM_VALIDATE_DATE='gpm_valid_date'
 CCLS_CON_NUMBER='carting_order_number'
 CCLS_CRN_NUMBER='crn_number'
 CCLS_CARGO_WEIGHT_IN_CRN='cargo_weight_in_crn'
@@ -25,6 +26,7 @@ CCLS_HSN_CODE='hsn_code'
 CCLS_DESTUFFING_PLAN_DATE='destuffing_plan_date'
 CCLS_HOLD_RELEASE_FLAG='hld_rls_flag'
 CCLS_GP_STAT='gp_stat'
+CCLS_ORDER_NO='Order_Number'
 
 ## ccls bill detail keys
 CCLS_COMMODITY_ID='commodity_id'
@@ -39,6 +41,7 @@ CCLS_NO_OF_PACKAGES_DECLARED='no_of_packages_declared'
 CCLS_PACKAGE_WEIGHT='package_weight'
 CCLS_JOB_ORDER_ID='job_order_id'
 CCLS_SHIPPING_BILL_NUMBER='shipping_bill_number'
+CCLS_BOL_DATE='bol_date'
 
 ## ccls commodity keys
 CCLS_COMMODITY_CODE='commodity_code'
@@ -111,5 +114,36 @@ BACKEND_CONTAINER_FLAG = 'fcl_or_lcl'
 
 
 #exception message
-WH_COMMON_EXCEPTION_MESSAGE="Error while communication with ccls service"
-WH_CCLS_JOB_ORDER_NOT_FOUND="Data doesn't exists with this job order"
+WH_COMMON_EXCEPTION_MESSAGE="CCLS Service,Error while communication with ccls service"
+WH_CCLS_JOB_ORDER_NOT_FOUND="CCLS Service,Data doesn't exists with this job order"
+
+
+# warehouse ccls wsdl
+#carting
+KEY_CARTING_FCL_SERVICE_TYPE='CWHCartingRead'
+KEY_CARTING_FCL_SERVICE_NAME='cwhcartingreadbpel_client_ep'
+KEY_CARTING_FCL_PORT_NAME='CWHCartingReadBPEL_pt'
+KEY_CARTING_LCL_SERVICE_TYPE='CWHCartingReadLCL'
+KEY_CARTING_LCL_SERVICE_NAME='cwhcartinglclbpel_client_ep'
+KEY_CARTING_LCL_PORT_NAME='CWHCartingLCLBpel_pt'
+#stuffing
+KEY_STUFFING_FCL_SERVICE_TYPE='CWHStuffingRead'
+KEY_STUFFING_FCL_SERVICE_NAME='cwhstuffingreadbpel_client_ep'
+KEY_STUFFING_FCL_PORT_NAME='CWHStuffingReadBPEL_pt'
+KEY_STUFFING_LCL_SERVICE_TYPE='CWHStuffingRead'
+KEY_STUFFING_LCL_SERVICE_NAME='cwhstuffingreadbpel_client_ep'
+KEY_STUFFING_LCL_PORT_NAME='CWHStuffingReadBPEL_pt'
+#destuffing
+KEY_DESTUFFING_FCL_SERVICE_TYPE='CWHDestuffingRead'
+KEY_DESTUFFING_FCL_SERVICE_NAME='cwhdestuffingreadbpel_client_ep'
+KEY_DESTUFFING_FCL_PORT_NAME='CWHDeStuffingReadBPEL_pt'
+KEY_DESTUFFING_LCL_SERVICE_TYPE='CWHDestuffingReadLCL'
+KEY_DESTUFFING_LCL_SERVICE_NAME='lclcargodestuffing_client_ep'
+KEY_DESTUFFING_LCL_PORT_NAME='LCLCargoDestuffing_pt'
+#delivery
+KEY_DELIVERY_FCL_SERVICE_TYPE='CWHDeliveryRead'
+KEY_DELIVERY_FCL_SERVICE_NAME='cwhdeliveryreadbpel_client_ep'
+KEY_DELIVERY_FCL_PORT_NAME=''
+KEY_DELIVERY_LCL_SERVICE_TYPE='CWHDeliveryRead'
+KEY_DELIVERY_LCL_SERVICE_NAME='cwhdeliveryreadbpel_client_ep'
+KEY_DELIVERY_LCL_PORT_NAME='CWHDeliveryReadBPEL_pt'

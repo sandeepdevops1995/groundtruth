@@ -2,7 +2,7 @@ from app.services.warehouse.database_service import WarehouseDB
 import app.services.warehouse.constants as constants
 from app.enums import JobOrderType
 from app import postgres_db as db
-from app.models.warehouse.ctms_cargo_job import CTMSCargoJob,CTMSBillDetails
+from app.models.warehouse.ctms_cargo_job import CTMSCargoJob
 from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingCargoDetails, StuffingCargoDetails, DeStuffingCargoDetails, DeliveryCargoDetails
 from app.serializers.generate_tallysheet import CTMSCargoJobInsertSchema
 from app.serializers.update_tallysheet import CTMSCargoJobUpdateSchema
@@ -51,9 +51,9 @@ class WarehouseTallySheetView(object):
         elif job_type==JobOrderType.STUFFING_FCL.value or job_type==JobOrderType.STUFFING_LCL.value or job_type==JobOrderType.DIRECT_STUFFING.value:
             query_object = query_object.filter(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.container_number==tally_sheet_data.get('container_number')))
         elif job_type==JobOrderType.DE_STUFFING_FCL.value or job_type==JobOrderType.DE_STUFFING_LCL.value:
-            query_object = query_object.filter(MasterCargoDetails.stuffing_details.has(DeStuffingCargoDetails.container_number==tally_sheet_data.get('container_number')))
+            query_object = query_object.filter(MasterCargoDetails.destuffing_details.has(DeStuffingCargoDetails.container_number==tally_sheet_data.get('container_number')))
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
-            query_object = query_object.filter(MasterCargoDetails.delivery_details.has(DeStuffingCargoDetails.gpm_number==tally_sheet_data.get('gpm_number')))
+            query_object = query_object.filter(MasterCargoDetails.delivery_details.has(DeliveryCargoDetails.gpm_number==tally_sheet_data.get('gpm_number')))
         query_object = query_object.order_by(MasterCargoDetails.updated_at.desc()).first()
         if query_object:
             job_order_id = query_object.id
@@ -82,7 +82,10 @@ class WarehouseTallySheetView(object):
         tallysheet_data = {}
         cargo_details = []
         for each_item in result:
-            if each_item['cargo_details'][0]['truck_number'] == truck_number:
+            if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value,JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL,JobOrderType.DIRECT_DELIVERY.value]:
+                if each_item['cargo_details'][0]['truck_number'] == truck_number:
+                    tallysheet_data = each_item
+            else:
                 tallysheet_data = each_item
             cargo_details+=each_item.pop('cargo_details')
         tallysheet_data['cargo_details'] = cargo_details

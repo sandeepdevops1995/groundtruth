@@ -1,15 +1,11 @@
 from app import postgres_db as db
-from app.enums import JobStatus
 from datetime import datetime
-from app.models.warehouse.container import Container
-
-
 
 class MasterCargoDetails(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
     job_type = db.Column(db.Integer())
     fcl_or_lcl = db.Column(db.Integer())
-    container_id = db.Column(db.String(11), db.ForeignKey('container.container_number'))
+    container_id = db.Column(db.String(11), db.ForeignKey('container.id'))
     container_info = db.relationship("Container", back_populates="master_job_container", lazy='joined')
     truck_details = db.relationship('TruckDetails', back_populates='master_job_order_truck')
     gross_weight = db.Column(db.Float(), nullable=True)
@@ -55,6 +51,7 @@ class CartingCargoDetails(db.Model):
 class StuffingCargoDetails(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
     container_number = db.Column(db.String(11))
+    crn_number = db.Column(db.String(13), nullable=True)
     stuffing_job_order = db.Column(db.String(10), nullable=True)
     cargo_weight_in_crn = db.Column(db.Float(), nullable=True)
     hsn_code = db.Column(db.String(2), nullable=True)
@@ -78,6 +75,7 @@ class DeliveryCargoDetails(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
     gpm_number = db.Column(db.String(10), nullable=True)
     gpm_valid_date = db.Column(db.BigInteger(), nullable=True)
+    gpm_created_date = db.Column(db.BigInteger(), nullable=True)
     gp_stat = db.Column(db.String(1), nullable=True)
     cha_code = db.Column(db.String(10), nullable=True)
     delivery_job = db.relationship("MasterCargoDetails", back_populates="delivery_details", lazy='joined')
@@ -89,16 +87,15 @@ class CCLSCargoBillDetails(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
     commodity_id = db.Column(db.Integer, db.ForeignKey('tm_ccommodity.id'))
     commodity = db.relationship("Commodity")
-    # commodity_code = db.Column(db.Integer())
-    # commodity_description = db.Column(db.String(100))
     shipping_bill_number = db.Column(db.Integer(), nullable=True)
     bill_of_entry = db.Column(db.Integer(), nullable=True)
     bill_of_lading = db.Column(db.Integer(), nullable=True)
     bill_date = db.Column(db.BigInteger(), nullable=True)
+    bol_date = db.Column(db.BigInteger(), nullable=True)
     importer_code = db.Column(db.String(30), nullable=True)
     importer_name = db.Column(db.String(100), nullable=True)
     package_code = db.Column(db.String(10), nullable=True)
-    no_of_packages_declared = db.Column(db.String(11))
+    no_of_packages_declared = db.Column(db.Integer(),default=0)
     package_weight = db.Column(db.Float(), nullable=True)
     cha_code = db.Column(db.String(10), nullable=True)
     cargo_type = db.Column(db.String(10), nullable=True)

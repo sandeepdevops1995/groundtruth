@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="CWHCartingReadBPEL" targetNamespace="http://xmlns.oracle.com/CTMSAPI/CWHCartingRead/CWHCartingReadBPEL" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/CTMSAPI/CWHCartingRead/CWHCartingReadBPEL" xmlns:ns1="http://www.concor.com/cil/CartRead/1.0/" xmlns:ns2="http://www.concor.com/cil/CartWrite/1.0/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:documentation>
+    <abstractWSDL>http://10.1.100.101:8001/soa-infra/services/default/CWHCartingRead!1.0/WSDLs/CWHCartingReadBPEL.wsdl</abstractWSDL>
+  </wsdl:documentation>
+  <plnk:partnerLinkType name="CWHCartingReadBPEL">
+    <plnk:role name="CWHCartingReadBPELProvider" portType="client:CWHCartingReadBPEL"/>
+  </plnk:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://www.concor.com/cil/CartRead/1.0/" schemaLocation="cwhcartingreadbpel_client_ep.xsd"/>
+    </schema>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://www.concor.com/cil/CartWrite/1.0/" schemaLocation="cwhcartingreadbpel_client_1.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="CWHCartingReadBPELRequestMessage">
+    <wsdl:part name="payload" element="ns1:CartRead"/>
+  </wsdl:message>
+  <wsdl:message name="CWHCartingReadBPELResponseMessage">
+    <wsdl:part name="payload" element="ns2:CartWriteOutput"/>
+  </wsdl:message>
+  <wsdl:portType name="CWHCartingReadBPEL">
+    <wsdl:operation name="process">
+      <wsdl:input message="client:CWHCartingReadBPELRequestMessage"/>
+      <wsdl:output message="client:CWHCartingReadBPELResponseMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CWHCartingReadBPELBinding" type="client:CWHCartingReadBPEL">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="process">
+      <soap:operation style="document" soapAction="process"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="cwhcartingreadbpel_client_ep">
+    <wsdl:port name="CWHCartingReadBPEL_pt" binding="client:CWHCartingReadBPELBinding">
+      <soap:address location="http://10.1.100.101:8001/soa-infra/services/default/CWHCartingRead/cwhcartingreadbpel_client_ep"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

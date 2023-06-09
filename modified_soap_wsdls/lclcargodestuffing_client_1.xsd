@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.concor.com/cil/dstuffWrite/1.0/" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.concor.com/cil/dstuffWrite/1.0/" xmlns="http://www.concor.com/cil/dstuffWrite/1.0/">
+  <xsd:element name="dstuffWriteOutput" type="dstuffWriteOutputType"/>
+  <xsd:complexType name="dstuffWriteOutputType">
+    <xsd:sequence>
+      <xsd:element name="dstuffWriteOutputColl" type="dstuffWriteOutputCollType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="dstuffWriteOutputCollType">
+    <xsd:sequence>
+      <xsd:element maxOccurs="unbounded" name="bill_details_list">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="bill_date" type="xsd:dateTime"/>
+            <xsd:element name="bill_number" type="xsd:string"/>
+            <xsd:element name="commodity_code" type="xsd:string"/>
+            <xsd:element name="commodity_description" type="xsd:string"/>
+            <xsd:element name="importer_code" type="xsd:string"/>
+            <xsd:element name="importer_name" type="xsd:string"/>
+            <xsd:element name="no_of_packages_declared" type="xsd:string"/>
+            <xsd:element name="package_code" type="xsd:string"/>
+            <xsd:element name="package_weight" type="xsd:float"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="cargo_gross_weight" type="xsd:string"/>
+      <xsd:element name="container_life" type="xsd:dateTime"/>
+      <xsd:element name="container_number" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

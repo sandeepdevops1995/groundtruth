@@ -20,6 +20,9 @@ COMPOSE_PSQl_ECHO=${PSQl_ECHO}
 COMPOSE_IS_MOCK_ENABLED=${IS_MOCK_ENABLED}
 COMPOSE_IS_EVENT_BASED=${IS_EVENT_BASED}
 COMPOSE_CCLS_GROUND_TRUTH=${CCLS_GROUND_TRUTH}
+COMPOSE_PSQl_CONNECTION_POOL_PING=${PSQl_CONNECTION_POOL_PING}
+COMPOSE_IS_STUFFING_MOCK_ENABLED=${IS_STUFFING_MOCK_ENABLED}
+COMPOSE_NO_OF_PROCESSES=${NO_OF_PROCESSES}
 
 #read .env file in env folder
 env_file_path="./env/.env"
@@ -158,11 +161,25 @@ else
     export PSQl_ECHO=$env_psql_echo
 fi
 
+if ( [ $COMPOSE_PSQl_CONNECTION_POOL_PING ] ) then 
+    echo "psql pool_ping",${PSQl_CONNECTION_POOL_PING}
+else 
+    env_psql_pool_ping="$(sed -n -e 's/^.*PSQl_CONNECTION_POOL_PING.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+    export PSQl_CONNECTION_POOL_PING=$env_psql_pool_ping
+fi
+
 if ( [ $COMPOSE_IS_MOCK_ENABLED ] ) then 
     echo "is mock enabled",${IS_MOCK_ENABLED}
 else 
     env_is_mock_enabled="$(sed -n -e 's/^.*IS_MOCK_ENABLED.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
     export IS_MOCK_ENABLED=$env_is_mock_enabled
+fi
+
+if ( [ $COMPOSE_IS_STUFFING_MOCK_ENABLED ] ) then 
+    echo "is stuffing job mock enabled",${IS_STUFFING_MOCK_ENABLED}
+else 
+    env_is_stuffing_mock_enabled="$(sed -n -e 's/^.*IS_STUFFING_MOCK_ENABLED.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+    export IS_STUFFING_MOCK_ENABLED=$env_is_stuffing_mock_enabled
 fi
 
 if ( [ $COMPOSE_IS_EVENT_BASED ] ) then 
@@ -177,6 +194,13 @@ if ( [ $COMPOSE_CCLS_GROUND_TRUTH ] ) then
 else 
     env_ccls_ground_truth="$(sed -n -e 's/^.*CCLS_GROUND_TRUTH.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
     export CCLS_GROUND_TRUTH=$env_ccls_ground_truth
+fi
+
+if ( [ $COMPOSE_NO_OF_PROCESSES ] ) then 
+    echo "no of processes on uwsgi",${NO_OF_PROCESSES}
+else 
+    env_no_of_processes="$(sed -n -e 's/^.*NO_OF_PROCESSES.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+    export NO_OF_PROCESSES=$env_no_of_processes
 fi
 
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.concor.com/cil/CartWrite/1.0/" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.concor.com/cil/CartWrite/1.0/" xmlns="http://www.concor.com/cil/CartWrite/1.0/">
+  <xsd:element name="CartWriteOutput" type="CartWriteOutputType"/>
+  <xsd:complexType name="CartWriteOutputType">
+    <xsd:sequence>
+      <xsd:element name="CartWriteOutputColl" type="CartWriteOutputCollType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CartWriteOutputCollType">
+    <xsd:sequence>
+      <xsd:element name="carting_order_number" type="xsd:string"/>
+      <xsd:element name="cha_code" type="xsd:string"/>
+      <xsd:element name="con_date" type="xsd:dateTime"/>
+      <xsd:element name="gw_port_code" type="xsd:string"/>
+      <xsd:element name="max_date_unloading" type="xsd:string"/>
+      <xsd:element name="party_code" type="xsd:string"/>
+      <xsd:element maxOccurs="unbounded" name="shipping_bill_details_list">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="commodity_code" type="xsd:string"/>
+            <xsd:element name="no_of_packages_declared" type="xsd:string"/>
+            <xsd:element name="package_type" type="xsd:string"/>
+            <xsd:element name="shipping_bill_number" type="xsd:string"/>
+            <xsd:element name="shipping_bill_date" type="xsd:dateTime"/>
+            <xsd:element name="package_weight" type="xsd:string"/>
+            <xsd:element name="commodity_description" type="xsd:string"/>
+	    <xsd:element name="package_code" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="shipping_liner_code" type="xsd:string"/>
+      <xsd:element maxOccurs="unbounded" name="truck_details">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="truck_number" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

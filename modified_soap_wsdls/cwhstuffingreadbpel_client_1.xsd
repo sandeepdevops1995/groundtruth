@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.concor.com/cil/StuffWrite/1.0/" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.concor.com/cil/StuffWrite/1.0/" xmlns="http://www.concor.com/cil/StuffWrite/1.0/">
+  <xsd:element name="StuffWriteOutput" type="StuffWriteOutputType"/>
+  <xsd:complexType name="StuffWriteOutputType">
+    <xsd:sequence>
+      <xsd:element name="StuffWriteOutputColl" type="StuffWriteOutputCollType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="StuffWriteOutputCollType">
+    <xsd:sequence>
+      <xsd:element name="cargo_weight_in_crn" type="xsd:string"/>
+      <xsd:element name="container_iso_code" type="xsd:string"/>
+      <xsd:element name="container_location_code" type="xsd:string"/>
+      <xsd:element name="container_number" type="xsd:string"/>
+      <xsd:element name="stuffing_job_order" type="xsd:string"/>
+      <xsd:element name="container_type" type="xsd:string"/>
+      <xsd:element name="container_size" type="xsd:string"/>
+      <xsd:element name="crn_date" type="xsd:dateTime"/>
+      <xsd:element name="crn_number" type="xsd:string"/>
+      <xsd:element name="gross_weight" type="xsd:string"/>
+      <xsd:element maxOccurs="unbounded" name="shipping_bill_details_list">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="commodity_code" type="xsd:string"/>
+            <xsd:element name="commodity_description" type="xsd:string"/>
+            <xsd:element name="no_of_packages_declared" type="xsd:string"/>
+            <xsd:element name="package_type" type="xsd:string"/>
+            <xsd:element name="package_code" type="xsd:string"/>
+            <xsd:element name="package_weight" type="xsd:string"/>
+            <xsd:element name="shipping_bill_number" type="xsd:string"/>
+            <xsd:element name="shipping_bill_date" type="xsd:dateTime"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="weight_remaining" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

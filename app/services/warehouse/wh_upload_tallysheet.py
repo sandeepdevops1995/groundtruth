@@ -13,6 +13,7 @@ from app.services.warehouse.wh_tallysheet import WarehouseTallySheetView
 from app.services.warehouse.database_service import WarehouseDB
 from app.models.warehouse.ctms_cargo_job import CTMSCargoJob
 import app.logging_message as LM
+from app.controllers.utils import convert_timestamp_to_ccls_date
 
 class WarehouseUploadTallySheetView(object):
 
@@ -24,7 +25,7 @@ class WarehouseUploadTallySheetView(object):
         data = WarehouseDB().get_tallysheet_details(query_object.first(),request_parameter,job_type)
         result = self.process_data(data)
         user_id = request_data.get('user_id')
-        trans_date_time = datetime.fromtimestamp(int(request_data.get('trans_date_time'))/1000, tz=pytz.utc)
+        trans_date_time = convert_timestamp_to_ccls_date(request_data.get('trans_date_time'))
         if job_type==JobOrderType.CARTING_FCL.value:
            self.send_carting_data_to_ccls(result,user_id,trans_date_time,request_parameter)
         elif job_type==JobOrderType.CARTING_LCL.value:

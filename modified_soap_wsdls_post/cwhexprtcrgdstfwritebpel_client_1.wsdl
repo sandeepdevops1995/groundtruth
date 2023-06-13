@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="CWHExprtCrgDSTFWriteBPEL" targetNamespace="http://xmlns.oracle.com/CTMSAPI/CWHExprtCrgDSTFWrite/CWHExprtCrgDSTFWriteBPEL" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/CTMSAPI/CWHExprtCrgDSTFWrite/CWHExprtCrgDSTFWriteBPEL" xmlns:ns1="http://www.concor.com/cil/EXPCRGDSTFWrite/1.0/" xmlns:ns2="http://www.concor.com/cil/ExprtCRGDstfWrite/1.0/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:documentation>
+    <abstractWSDL>http://10.1.100.102:8002/soa-infra/services/default/CWHExprtCrgDSTFWrite!1.0/WSDLs/CWHExprtCrgDSTFWriteBPEL.wsdl</abstractWSDL>
+  </wsdl:documentation>
+  <plnk:partnerLinkType name="CWHExprtCrgDSTFWriteBPEL">
+    <plnk:role name="CWHExprtCrgDSTFWriteBPELProvider" portType="client:CWHExprtCrgDSTFWriteBPEL"/>
+  </plnk:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://www.concor.com/cil/EXPCRGDSTFWrite/1.0/" schemaLocation="cwhexprtcrgdstfwritebpel_client_ep.xsd"/>
+    </schema>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://www.concor.com/cil/ExprtCRGDstfWrite/1.0/" schemaLocation="cwhexprtcrgdstfwritebpel_client_1.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="CWHExprtCrgDSTFWriteBPELRequestMessage">
+    <wsdl:part name="payload" element="ns1:EXPCRGDSTFWriteInput"/>
+  </wsdl:message>
+  <wsdl:message name="CWHExprtCrgDSTFWriteBPELResponseMessage">
+    <wsdl:part name="payload" element="ns2:ExprtCRGDstfWriteOutput"/>
+  </wsdl:message>
+  <wsdl:portType name="CWHExprtCrgDSTFWriteBPEL">
+    <wsdl:operation name="process">
+      <wsdl:input message="client:CWHExprtCrgDSTFWriteBPELRequestMessage"/>
+      <wsdl:output message="client:CWHExprtCrgDSTFWriteBPELResponseMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CWHExprtCrgDSTFWriteBPELBinding" type="client:CWHExprtCrgDSTFWriteBPEL">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="process">
+      <soap:operation style="document" soapAction="process"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="cwhexprtcrgdstfwritebpel_client_ep">
+    <wsdl:port name="CWHExprtCrgDSTFWriteBPEL_pt" binding="client:CWHExprtCrgDSTFWriteBPELBinding">
+      <soap:address location="http://10.1.100.102:8002/soa-infra/services/default/CWHExprtCrgDSTFWrite/cwhexprtcrgdstfwritebpel_client_ep"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

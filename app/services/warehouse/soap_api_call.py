@@ -43,17 +43,22 @@ def get_job_order_info(input_value,service_type,service_name,port_name,request_d
     return result
 
 def upload_tallysheet_data(job_info,service_type,service_name,port_name,request_parameter):
-    return "success"
-    wsdl_url = config.WSDL_URL+"/soa-infra/services/default/"+service_type+"/"+service_name+"?WSDL"
     try:
-        logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_GET_REQUEST_TO_CCLS_TO_UPLOAD_TALLYSHEET,request_parameter,wsdl_url,job_info))
-        soap = zeep.Client(wsdl=wsdl_url, 
+        if config.IS_MOCK_ENABLED:
+            return "success"
+            wsdl_url = config.WSDL_URL+"/soa-infra/services/default/"+service_type+"/"+service_name+"?WSDL"
+            logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_GET_REQUEST_TO_CCLS_TO_UPLOAD_TALLYSHEET,request_parameter,wsdl_url,job_info))
+            soap = zeep.Client(wsdl=wsdl_url, 
                         service_name=service_name,
                         port_name=port_name)
-        if config.IS_MOCK_ENABLED:
             result = soap.service.process(str(job_info))
         else:
-            result = soap.service.process(**job_info)
+            service_url = service_name.strip('_ep')
+            wsdl_path = os.path.join(config.BASE_DIR,"modified_soap_wsdls_post",service_url+"_1.wsdl")
+            logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_GET_REQUEST_TO_CCLS_TO_UPLOAD_TALLYSHEET,request_parameter,wsdl_path,job_info))
+            soap = zeep.Client(wsdl_path)
+            with soap.settings(raw_response=False):
+                result = soap.service.process(**job_info)
         logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_RESPONSE_FROM_CCLS_OF_UPLOAD_TALLYSHEET,request_parameter,result))
     except requests.exceptions.ConnectionError as e:
         raise ConnectionError('GTService: getting connection error while posting job details to ccls service').with_traceback(e.__traceback__)

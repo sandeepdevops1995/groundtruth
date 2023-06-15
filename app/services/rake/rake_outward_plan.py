@@ -80,6 +80,7 @@ class RakeOutwardPlanService():
                 response[Constants.WAGON_LIST].append(wagon_record)
                 container_record ={}
                 container_record[Constants.CONTAINER_NUMBER] = {Constants.VALUE : data[i].container_number}
+                container_record[Constants.KEY_CONTAINER_LIFE_NUMBER] = data[i].container_life_number
                 container_record[Constants.COMMIDITY]= data[i].attribute_2
                 container_record[Constants.LINER_SEAL] = {Constants.VALUE : data[i].attribute_3}
                 container_record[Constants.CUSTOM_SEAL] = {Constants.VALUE : data[i].attribute_3}

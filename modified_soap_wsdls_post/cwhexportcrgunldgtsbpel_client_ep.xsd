@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.concor.com/cil/EXPCRGUNLWrite/1.0/" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.concor.com/cil/EXPCRGUNLWrite/1.0/" xmlns="http://www.concor.com/cil/EXPCRGUNLWrite/1.0/">
+  <xsd:element name="EXPCRGUNLWriteInput" type="EXPCRGUNLWriteInputType"/>
+  <xsd:complexType name="EXPCRGUNLWriteInputType">
+    <xsd:sequence>
+      <xsd:element name="ctrNo" type="xsd:string"/>
+      <xsd:element name="ctrLifeNo" type="xsd:dateTime"/>
+      <xsd:element name="crn" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="dtStUnldg" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="dtEndUnldg" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="sbillNo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="dtSbill" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="commCd" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="pkgCd" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="noPkgsUnldd" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="noPkgsDmg" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="crgCrdFlg" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="vehNo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="cnclFlg" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="trnsDtTm" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="userId" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="area" type="xsd:long" minOccurs="0"/>
+      <xsd:element name="whId" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="gridNo" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="crgType" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="ctrSize" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="ctrType" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="fclLclFlg" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="pvtCncrFlg" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="icdLocCd" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="attribute1" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="attribute2" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="attribute3" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="attribute4" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="attribute5" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="attribute6" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="attribute7" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="createdDate" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="createdBy" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="updatedDate" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="updatedBy" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="errorMsg" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="statusFlag" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="CWHExportCrgUNLDGTSBPEL" targetNamespace="http://xmlns.oracle.com/CTMSAPI/CWHExportCrgUNLDGTSWrite/CWHExportCrgUNLDGTSBPEL" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/CTMSAPI/CWHExportCrgUNLDGTSWrite/CWHExportCrgUNLDGTSBPEL" xmlns:ns1="http://www.concor.com/cil/EXPCRGUNLWrite/1.0/" xmlns:ns2="http://www.concor.com/cil/EXPCRGUNLWrite/1.0/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:documentation>
+    <abstractWSDL>http://10.1.100.101:8001/soa-infra/services/default/CWHExportCrgUNLDGTSWrite!1.0/WSDLs/CWHExportCrgUNLDGTSBPEL.wsdl</abstractWSDL>
+  </wsdl:documentation>
+  <plnk:partnerLinkType name="CWHExportCrgUNLDGTSBPEL">
+    <plnk:role name="CWHExportCrgUNLDGTSBPELProvider" portType="client:CWHExportCrgUNLDGTSBPEL"/>
+  </plnk:partnerLinkType>
+  <wsdl:types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://www.concor.com/cil/EXPCRGUNLWrite/1.0/" schemaLocation="cwhexportcrgunldgtsbpel_client_ep.xsd"/>
+    </schema>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://www.concor.com/cil/EXPCRGUNLWrite/1.0/" schemaLocation="cwhexportcrgunldgtsbpel_client_1.xsd"/>
+    </schema>
+  </wsdl:types>
+  <wsdl:message name="CWHExportCrgUNLDGTSBPELRequestMessage">
+    <wsdl:part name="payload" element="ns1:EXPCRGUNLWriteInput"/>
+  </wsdl:message>
+  <wsdl:message name="CWHExportCrgUNLDGTSBPELResponseMessage">
+    <wsdl:part name="payload" element="ns1:EXPCRGUNLWriteOutput"/>
+  </wsdl:message>
+  <wsdl:portType name="CWHExportCrgUNLDGTSBPEL">
+    <wsdl:operation name="process">
+      <wsdl:input message="client:CWHExportCrgUNLDGTSBPELRequestMessage"/>
+      <wsdl:output message="client:CWHExportCrgUNLDGTSBPELResponseMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CWHExportCrgUNLDGTSBPELBinding" type="client:CWHExportCrgUNLDGTSBPEL">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="process">
+      <soap:operation style="document" soapAction="process"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="cwhexportcrgunldgtsbpel_client_ep">
+    <wsdl:port name="CWHExportCrgUNLDGTSBPEL_pt" binding="client:CWHExportCrgUNLDGTSBPELBinding">
+      <soap:address location="http://10.1.100.101:8001/soa-infra/services/default/CWHExportCrgUNLDGTSWrite/cwhexportcrgunldgtsbpel_client_ep"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

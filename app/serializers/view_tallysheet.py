@@ -24,6 +24,7 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     no_of_packages_damaged = fields.Number(data_key='damaged_count')
     area_damaged = fields.Number(data_key='area_of_damaged_cargo')
     bill_date = fields.Method("get_bill_date")
+    bol_date = fields.Method("get_bol_date")
     warehouse_id = fields.String(data_key='wh_id')
 
     def get_shipping_bill(self, obj):
@@ -49,11 +50,14 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     
     def get_bill_date(self, obj):
         return obj.ccls_bill.bill_date
+    
+    def get_bol_date(self, obj):
+        return obj.ccls_bill.bol_date
 
 
     class Meta:
         model = CTMSBillDetails
-        fields = ("id",'ctms_cargo_job_id',"shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","warehouse_name","stacking_type","bill_date","warehouse_id","ccls_grid_locations","gate_number")
+        fields = ("id",'ctms_cargo_job_id',"shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","warehouse_name","stacking_type","bill_date","warehouse_id","ccls_grid_locations","gate_number","bol_date")
 
 
 class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
@@ -88,7 +92,7 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
         return obj.ctms_job_order.carting_details.carting_order_number if obj.ctms_job_order.carting_details else None
     
     def get_crn_number(self, obj):
-        return obj.ctms_job_order.carting_details.crn_number if obj.ctms_job_order.carting_details else None
+        return obj.ctms_job_order.carting_details.crn_number if obj.ctms_job_order.carting_details else obj.ctms_job_order.stuffing_details.crn_number if obj.ctms_job_order.stuffing_details else None
     
     def get_gpm_number(self, obj):
         return obj.ctms_job_order.delivery_details.gpm_number if obj.ctms_job_order.delivery_details else None

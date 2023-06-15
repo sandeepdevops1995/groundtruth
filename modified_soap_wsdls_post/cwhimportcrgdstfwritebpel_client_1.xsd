@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.concor.com/cil/ImprtCrgDstuffWrite/1.0/" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.concor.com/cil/ImprtCrgDstuffWrite/1.0/" xmlns="http://www.concor.com/cil/ImprtCrgDstuffWrite/1.0/">
+  <xsd:element name="ImprtCrgDstuffWriteOutput" type="ImprtCrgDstuffWriteOutputType"/>
+  <xsd:complexType name="ImprtCrgDstuffWriteOutputType">
+    <xsd:sequence>
+      <xsd:element name="Result" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="Error" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="ErrorMessage" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

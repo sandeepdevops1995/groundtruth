@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 from flask import json, Response,request
 parser = reqparse.RequestParser()
 from datetime import datetime
-
+import pytz
 
 def soap_API_response(result):
     if result:
@@ -28,3 +28,9 @@ class View(Resource):
 def convert_ccls_date_to_timestamp(ccls_date):
     ccls_date = int(round(ccls_date.timestamp()*1000))
     return ccls_date
+
+def convert_timestamp_to_ccls_date(timestamp):
+    if timestamp:
+        ccls_date = datetime.fromtimestamp(int(timestamp)/1000, tz=pytz.utc)
+        return ccls_date
+    return None

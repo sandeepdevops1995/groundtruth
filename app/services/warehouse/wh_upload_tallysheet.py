@@ -7,8 +7,6 @@ from app.services.warehouse.ccls_post.stuffing import BuildStuffingObject
 from app.services.warehouse.ccls_post.destuffing import BuildDeStuffingObject
 from app.services.warehouse.ccls_post.delivery import BuildDeliveryObject
 from app.services.warehouse.soap_api_call import upload_tallysheet_data
-from datetime import datetime
-import pytz
 from app.services.warehouse.wh_tallysheet import WarehouseTallySheetView
 from app.services.warehouse.database_service import WarehouseDB
 from app.models.warehouse.ctms_cargo_job import CTMSCargoJob
@@ -41,22 +39,22 @@ class WarehouseUploadTallySheetView(object):
    def send_carting_data_to_ccls(self,result,user_id,trans_date_time,request_parameter):
       for each_job in result:
          job_details = BuildCartingObject(each_job,user_id,trans_date_time).__dict__
-         upload_tallysheet_data(job_details,"CWHImportUnLoading","unloadbpel_client_ep","UnLoadBpel_pt",request_parameter)
+         upload_tallysheet_data(job_details,"CWHExportCrgUNLDGTSWrite","cwhexportcrgunldgtsbpel_client_ep","CWHExportCrgUNLDGTSBPEL_pt",request_parameter)
 
    def send_stuffing_data_to_ccls(self,result,user_id,trans_date_time,request_parameter):
       for each_job in result:
          job_details = BuildStuffingObject(each_job,user_id,trans_date_time).__dict__
-         upload_tallysheet_data(job_details,"CWHExportStuffing","cwhexportstuffbpel_client_ep","CWHExportStuffBpel_pt",request_parameter)
+         upload_tallysheet_data(job_details,"CWHExprtCrgDSTFWrite","cwhexprtcrgdstfwritebpel_client_ep","CWHExprtCrgDSTFWriteBPEL_pt",request_parameter)
 
    def send_destuffing_data_to_ccls(self,result,user_id,trans_date_time,request_parameter):
       for each_job in result:
          job_details = BuildDeStuffingObject(each_job,user_id,trans_date_time).__dict__
-         upload_tallysheet_data(job_details,"CWHImportCargoDestuffing","cwhimptcrgdestuffingbpel_client_ep","CWHImptCrgDestuffingBPEL_pt",request_parameter)
+         upload_tallysheet_data(job_details,"CWHImportCrgDSTFWrite","cwhimportcrgdstfwritebpel_client_ep","CWHImportCrgDSTFWriteBPEL_pt",request_parameter)
 
    def send_delivery_data_to_ccls(self,result,user_id,trans_date_time,request_parameter):
       for each_job in result:
          job_details = BuildDeliveryObject(each_job,user_id,trans_date_time).__dict__
-         # upload_tallysheet_data(job_details,"CWHImportCargoDestuffing","cwhimptcrgdestuffingbpel_client_ep","CWHImptCrgDestuffingBPEL_pt",request_parameter)
+         upload_tallysheet_data(job_details,"CWHImportCrgLDGTS","cwhimportcrgldgts_client_ep","CWHImportCrgLDGTS_pt",request_parameter)
 
 
    def process_data(self,data):

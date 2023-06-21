@@ -9,8 +9,10 @@ import app.logging_message as LM
 import os
 from zeep.helpers import serialize_object
 from app.enums import JobOrderType
+from app.services.rake.gt_upload_service import save_in_diagnostics
+from datetime import datetime
 
-def get_job_order_info(input_value,service_type,service_name,port_name,request_data,job_type=None):
+def get_job_order_info(input_value,service_type,service_name,port_name,request_data,job_type):
     
     try:
             if config.IS_MOCK_ENABLED or (job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value] and config.IS_STUFFING_MOCK_ENABLED):
@@ -29,10 +31,13 @@ def get_job_order_info(input_value,service_type,service_name,port_name,request_d
                 service_url = service_name.strip('_ep')
                 wsdl_path = WSDL_FILE = os.path.join(config.BASE_DIR,"modified_soap_wsdls",service_url+"_1.wsdl")
                 logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_GET_REQUEST_TO_CCLS_TO_FETCH_JOB_ORDER_DATA,input_value,wsdl_path))
+                start_time = datetime.now()
                 soap = zeep.Client(wsdl_path)
                 with soap.settings(raw_response=False):
                     zeep_object = soap.service.process(**request_data)
                     result = serialize_object(zeep_object)
+                end_time = datetime.now()
+                save_in_diagnostics(JobOrderType(job_type).name+":"+wsdl_path,request_data,{"output":str(zeep_object)},start_time,end_time)
             logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_RESPONSE_FROM_CCLS_OF_JOB_ORDER_DATA,input_value,result))
     except requests.exceptions.ConnectionError as e:
         raise ConnectionError('GTService: getting connection error while calling to ccls service').with_traceback(e.__traceback__)

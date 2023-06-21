@@ -18,7 +18,7 @@ from app.services.warehouse.database_service import WarehouseDB
 class WarehouseCarting(object):
 
     def get_carting_details(self,job_order,job_type,service_type,service_name,port_name,request_data):
-        cargo_details = get_job_order_info(job_order,service_type,service_name,port_name,request_data)
+        cargo_details = get_job_order_info(job_order,service_type,service_name,port_name,request_data,job_type)
         if cargo_details:
             cargo_details = UpdateCargoDetails().update_carting_details(cargo_details,job_type,job_order)
             if job_type==JobOrderType.CARTING_FCL.value:

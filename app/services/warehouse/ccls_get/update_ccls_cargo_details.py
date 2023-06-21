@@ -39,7 +39,6 @@ class UpdateCargoDetails(object):
         if 'truck_details' in cargo_details:
             truck_details = cargo_details['truck_details']
             for i in range(0,len(truck_details)):
-                print("cargo_details['truck_details'][i]-----",truck_details[i])
                 if 'truck_arrival_date' not in truck_details[i]:
                     truck_details[i]['truck_arrival_date'] = int(time.time())*1000
                 if truck_details[i]['truck_number'] is None:
@@ -78,12 +77,13 @@ class UpdateCargoDetails(object):
         for each_bill in cargo_details['bill_details_list']:
             if 'bill_number' in each_bill:
                 bill_number = each_bill.pop('bill_number')
-                if container_flag==ContainerFlag.FCL.value:
-                    each_bill['boe_number'] = bill_number
-                else:
-                    each_bill['bol_number'] = bill_number
+                #if container_flag==ContainerFlag.FCL.value:
+                each_bill['boe_number'] = bill_number
+                #else:
+                each_bill['bol_number'] = bill_number
             if each_bill[constants.CCLS_BILL_DATE] and isinstance(each_bill[constants.CCLS_BILL_DATE],datetime):
                 each_bill[constants.CCLS_BILL_DATE] = convert_ccls_date_to_timestamp(each_bill[constants.CCLS_BILL_DATE])
+                each_bill[constants.CCLS_BOL_DATE] = convert_ccls_date_to_timestamp(each_bill[constants.CCLS_BILL_DATE])
             if constants.CCLS_BOL_DATE in each_bill:
                 if each_bill[constants.CCLS_BOL_DATE] and isinstance(each_bill[constants.CCLS_BOL_DATE],datetime):
                     each_bill[constants.CCLS_BOL_DATE] = convert_ccls_date_to_timestamp(each_bill[constants.CCLS_BOL_DATE])

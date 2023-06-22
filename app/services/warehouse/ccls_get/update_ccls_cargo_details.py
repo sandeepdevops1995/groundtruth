@@ -8,7 +8,7 @@ import json
 class UpdateCargoDetails(object):
 
     def update_carting_details_schema_for_serializer(self,cargo_details):
-        container_info, carting_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["crn_number","crn_date","carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag"]])
+        container_info, carting_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["crn_number","crn_date","carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag","max_date_unloading"]])
         cargo_details['container_info'] = container_info
         cargo_details['carting_details'] = carting_details
         return cargo_details
@@ -108,6 +108,12 @@ class UpdateCargoDetails(object):
             cargo_details["is_cargo_card_generated"]='Y'
         if "reserve_flag" in cargo_details and cargo_details['reserve_flag'] is False:
             cargo_details["reserve_flag"]='Y'
+        if "max_date_unloading" in cargo_details and cargo_details['max_date_unloading'] :
+            if isinstance(cargo_details['max_date_unloading'],str):
+                max_date_unloading = cargo_details['max_date_unloading'].replace('T',' ')
+                cargo_details['max_date_unloading'] = datetime.strptime(max_date_unloading, '%Y-%m-%d %H:%M:%S.%f%z')
+            if isinstance(cargo_details['max_date_unloading'],datetime):
+                cargo_details['max_date_unloading']=convert_ccls_date_to_timestamp(cargo_details['max_date_unloading'])
         self.update_shipping_bill_details(cargo_details)
         self.update_container(cargo_details)
         self.update_truck_details(cargo_details)

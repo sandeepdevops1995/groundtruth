@@ -11,7 +11,7 @@ class CartingJobInsertSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CartingCargoDetails
-        fields = ("crn_number", "crn_date", "carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag")
+        fields = ("crn_number", "crn_date", "carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag","max_date_unloading")
         include_relationships = True
         load_instance = True
  

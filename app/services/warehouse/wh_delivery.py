@@ -16,7 +16,7 @@ from app.services.warehouse.database_service import WarehouseDB
 class WarehouseDelivery(object):
 
     def get_delivery_details(self,gpm_number,job_type,service_type,service_name,port_name,request_data):
-        cargo_details = get_job_order_info(gpm_number,service_type,service_name,port_name,request_data)
+        cargo_details = get_job_order_info(gpm_number,service_type,service_name,port_name,request_data,job_type)
         if cargo_details:
             cargo_details = UpdateCargoDetails().update_delivery_details(cargo_details,job_type)
             logger.debug("{}, {}, {}, {}, {}, {}, {}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_AFTER_MODIFICATION_CARGO_DETAILS,'JT_'+str(cargo_details.get('job_type')),gpm_number,cargo_details))

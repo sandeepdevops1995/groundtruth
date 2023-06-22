@@ -14,7 +14,7 @@ from app.services.warehouse.database_service import WarehouseDB
 class WarehouseDeStuffing(object):
 
     def get_destuffing_details(self,container_number,job_type,service_type,service_name,port_name,request_data):
-        cargo_details = get_job_order_info(container_number,service_type,service_name,port_name,request_data)
+        cargo_details = get_job_order_info(container_number,service_type,service_name,port_name,request_data,job_type)
         if cargo_details:
             cargo_details = UpdateCargoDetails().update_destuffing_details(cargo_details,job_type)
             logger.debug("{}, {}, {}, {}, {}, {}, {}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_AFTER_MODIFICATION_CARGO_DETAILS,'JT_'+str(cargo_details.get('job_type')),container_number,cargo_details))

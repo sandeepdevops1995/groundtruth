@@ -68,12 +68,14 @@ class UpdateCargoDetails(object):
             each_bill['package_weight'] = 0
 
     def update_shipping_bill_details(self,cargo_details):
+        cargo_details['shipping_bill_details_list'] = [dict(tupleized) for tupleized in set(tuple(item.items()) for item in cargo_details['shipping_bill_details_list'])]
         for each_bill in cargo_details['shipping_bill_details_list']:
             if each_bill[constants.CCLS_SHIPPING_BILL_DATE] and isinstance(each_bill[constants.CCLS_SHIPPING_BILL_DATE],datetime):
                 each_bill[constants.CCLS_SHIPPING_BILL_DATE] = convert_ccls_date_to_timestamp(each_bill[constants.CCLS_SHIPPING_BILL_DATE])
             self.update_each_bill(each_bill)
 
     def update_bill_details(self,cargo_details,container_flag):
+        cargo_details['bill_details_list'] = [dict(tupleized) for tupleized in set(tuple(item.items()) for item in cargo_details['bill_details_list'])]
         for each_bill in cargo_details['bill_details_list']:
             if 'bill_number' in each_bill:
                 bill_number = each_bill.pop('bill_number')
@@ -110,8 +112,11 @@ class UpdateCargoDetails(object):
             cargo_details["reserve_flag"]='Y'
         if "max_date_unloading" in cargo_details and cargo_details['max_date_unloading'] :
             if isinstance(cargo_details['max_date_unloading'],str):
-                max_date_unloading = cargo_details['max_date_unloading'].replace('T',' ')
-                cargo_details['max_date_unloading'] = datetime.strptime(max_date_unloading, '%Y-%m-%d %H:%M:%S.%f%z')
+                try:
+                    cargo_details['max_date_unloading'] = int(cargo_details['max_date_unloading'])
+                except Exception as e:
+                    max_date_unloading = cargo_details['max_date_unloading'].replace('T',' ')
+                    cargo_details['max_date_unloading'] = datetime.strptime(max_date_unloading, '%Y-%m-%d %H:%M:%S.%f%z')
             if isinstance(cargo_details['max_date_unloading'],datetime):
                 cargo_details['max_date_unloading']=convert_ccls_date_to_timestamp(cargo_details['max_date_unloading'])
         self.update_shipping_bill_details(cargo_details)

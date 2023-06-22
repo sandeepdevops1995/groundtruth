@@ -20,29 +20,29 @@ class PendancyService():
         pendancy_list = []
         for each in ccls_data:
             data = {}
-            data["container_number"] = each["O_CTR_NO"]
-            data["container_life_number"] = each["O_CTR_LIFE_NO"]
-            data["container_stat"] = each["O_CTR_STAT"]
-            data["container_size"] = each["O_CTR_SIZE"]
-            data["container_type"] = each["O_CTR_TYPE"]
-            data["container_weight"] = each["O_CTR_WT"]
-            data["container_acty_code"] = each["O_CTR_ACTY_CD"]
-            data["icd_loc_code"] = each["O_LOC_CD"]
-            data["stuffed_at"] = each["O_STF_AT"]
-            data["stack_loc"] = each["O_STK_LOC"]
-            data["sline_code"] = each["O_SLINE_CD"]
-            data["gateway_port_code"] = each["O_GW_PORT_CD"]
-            data["arrival_date"] = each["O_ARR_DATE"]
-            data["seal_number"] = each["O_SEAL_NO"]
-            data["seal_date"] = each["O_SEAL_DATE"]
+            data["container_number"] = each["ctrNo"]
+            data["container_life_number"] = each["ctrLifeNo"]
+            data["container_stat"] = each["ctrStat"]
+            data["container_size"] = each["ctrSize"]
+            data["container_type"] = each["ctrType"]
+            data["container_weight"] = each["wt"]
+            data["container_acty_code"] = each["ctrActyCd"]
+            data["icd_loc_code"] = each["locCd"]
+            data["stuffed_at"] = each["stfAt"]
+            data["stack_loc"] = each["stkLoc"]
+            data["sline_code"] = each["slineCd"]
+            data["gateway_port_code"] = each["gwPortCd"]
+            data["arrival_date"] = each["arrDate"]
+            data["seal_number"] = each["sealNo"]
+            data["seal_date"] = each["sealDate"]
             data["sbill_number"] = None
             data["sbill_date"] = None
             data["pid_number"] = None
-            data["odc_flag"] = each["O_ODC_FLG"]
-            data["hold_flg"] = each["O_HOLD_FLG"]
-            data["hold_rels_flg"] = each["O_HOLD_RELS_FLG"]
+            data["odc_flag"] = each["odcFlg"]
+            data["hold_flg"] = None
+            data["hold_rels_flg"] = each["holdRelsFlg"]
             data["hold_rels_flg_next"] = None
-            data["q_no"] = each["O_Q_NO"]
+            data["q_no"] = None
 
             if save_data:
                 PendancyService.save_in_db(data)
@@ -53,6 +53,8 @@ class PendancyService():
                 data["seal_date"] = data["seal_date"].strftime("%Y-%m-%dT%H:%M:%S")
             if data["arrival_date"]:
                 data["arrival_date"] = data["arrival_date"].strftime("%Y-%m-%dT%H:%M:%S")
+            if data["container_life_number"]:
+                data["container_life_number"] = data["container_life_number"].strftime("%Y-%m-%dT%H:%M:%S")
 
             pendancy_list.append(data)
     
@@ -87,7 +89,7 @@ class PendancyService():
                 for port in gateway_ports:
                     request_params = { 'GW_PORT_CODE': port,
                                     'P_STUFF_AT': 'FAC' ,
-                                    'P_CUTOFF_DATE': datetime.now()}
+                                    'P_CUTOFF_DATE': ''}
                     data = soap_service.get_pendancy_details(request_params)
                     if data:
                         final_data += data

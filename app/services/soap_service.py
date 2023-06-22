@@ -109,10 +109,10 @@ def update_inward_rake(rake_data,api_url="Inward Write"):
 def get_pendancy_details(gateway_port_data,api_url="/pendency_containers"):
     try: 
         
-        wsdl_url = config.WSDL_URL+'/soa-infra/services/default/PendencyList/rakependencydtlsbpel_client_ep?WSDL'
+        wsdl_url = config.WSDL_URL+'/soa-infra/services/default/CCLSRakePendencyList/cclsrakependencybpel_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 
-                        service_name="rakependencydtlsbpel_client_ep",
-                        port_name="RakePendencyDtlsBPEL_pt")
+                        service_name="cclsrakependencybpel_client_ep",
+                        port_name="CCLSRakePendencyBPEL_pt")
         start_time = datetime.now()
         result = soap.service.process(**gateway_port_data)
         end_time = datetime.now()

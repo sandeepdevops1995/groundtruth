@@ -11,6 +11,7 @@ from zeep.helpers import serialize_object
 from app.enums import JobOrderType
 from app.services.rake.gt_upload_service import save_in_diagnostics
 from datetime import datetime
+import app.services.warehouse.constants as constants
 
 def get_job_order_info(input_value,service_type,service_name,port_name,request_data,job_type):
     
@@ -37,7 +38,7 @@ def get_job_order_info(input_value,service_type,service_name,port_name,request_d
                     zeep_object = soap.service.process(**request_data)
                     result = serialize_object(zeep_object)
                 end_time = datetime.now()
-                save_in_diagnostics(JobOrderType(job_type).name+":"+wsdl_path,request_data,{"output":str(zeep_object)},start_time,end_time)
+                save_in_diagnostics(JobOrderType(job_type).name+":"+wsdl_path,request_data,{"output":str(zeep_object)},start_time,end_time,type=constants.KEY_CCLS_RESPONSE_TYPE)
             logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_RESPONSE_FROM_CCLS_OF_JOB_ORDER_DATA,input_value,result))
     except requests.exceptions.ConnectionError as e:
         raise ConnectionError('GTService: getting connection error while calling to ccls service').with_traceback(e.__traceback__)

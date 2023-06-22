@@ -8,6 +8,7 @@ class Diagnostics(db.Model):
     response =  db.Column(db.JSON)
     start_time = db.Column(db.DateTime(), nullable=True)
     end_time = db.Column(db.DateTime(), nullable=True)
+    type = db.Column(db.String(20), nullable=True)
     created_at = db.Column(db.DateTime(), default = datetime.now)
     request
     

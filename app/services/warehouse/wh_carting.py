@@ -14,6 +14,7 @@ from app.models.warehouse.truck import TruckDetails
 from app.services.warehouse.ccls_get.update_ccls_cargo_details import UpdateCargoDetails
 from app.models.warehouse.ccls_cargo_details import CartingCargoDetails
 from app.services.warehouse.database_service import WarehouseDB
+from app.user_defined_exception import DataNotFoundException
 
 class WarehouseCarting(object):
 
@@ -29,7 +30,9 @@ class WarehouseCarting(object):
                 carting_cargo_query = db.session.query(CartingCargoDetails).filter(CartingCargoDetails.carting_order_number==request_parameter,CartingCargoDetails.con_date==cargo_details['carting_details'].get('con_date')).first()
             logger.debug("{}, {}, {}, {}, {}, {}, {}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_AFTER_MODIFICATION_CARGO_DETAILS,'JT_'+str(cargo_details.get('job_type')),request_parameter,cargo_details))
             self.save_data_db(cargo_details,carting_cargo_query,request_parameter)
-        return WarehouseDB().get_cargo_details_from_db(job_order,job_type)            
+            return WarehouseDB().get_cargo_details_from_db(job_order,job_type)
+        else:
+            raise DataNotFoundException('GTService: job data not found in ccls system')            
     
 
     def save_data_db(self,cargo_details,carting_cargo_query,request_parameter):

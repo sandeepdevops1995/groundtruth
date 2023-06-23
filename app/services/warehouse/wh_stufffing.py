@@ -9,6 +9,7 @@ from app.serializers.update_ccls_cargo_serializer import CCLSBillDetailsGetSchem
 from app.serializers.update_ccls_cargo_serializer import CCLSCargoUpdateSchema
 from app.services.warehouse.ccls_get.update_ccls_cargo_details import UpdateCargoDetails
 from app.services.warehouse.database_service import WarehouseDB
+from app.user_defined_exception import DataNotFoundException
 
 class WarehouseStuffing(object):
 
@@ -18,7 +19,9 @@ class WarehouseStuffing(object):
             cargo_details = UpdateCargoDetails().update_stuffing_details(cargo_details,job_type)
             logger.debug("{}, {}, {}, {}, {}, {}, {}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_AFTER_MODIFICATION_CARGO_DETAILS,'JT_'+str(cargo_details.get('job_type')),container_number,cargo_details))
             self.save_data_db(cargo_details)
-        return WarehouseDB().get_cargo_details_from_db(container_number,job_type)
+            return WarehouseDB().get_cargo_details_from_db(container_number,job_type)
+        else:
+            raise DataNotFoundException('GTService: job data not found in ccls system') 
     
     def save_data_db(self,cargo_details):
         stuffing_cargo_query = db.session.query(StuffingCargoDetails).join(MasterCargoDetails).filter(StuffingCargoDetails.stuffing_job.property.mapper.class_.container_info.property.mapper.class_.container_life==cargo_details['container_info'].get('container_life'),StuffingCargoDetails.container_number==cargo_details['stuffing_details'].get('container_number')).first()

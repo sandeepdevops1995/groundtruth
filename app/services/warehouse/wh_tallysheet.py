@@ -89,4 +89,11 @@ class WarehouseTallySheetView(object):
                 tallysheet_data = each_item
             cargo_details+=each_item.pop('cargo_details')
         tallysheet_data['cargo_details'] = cargo_details
+        self.update_start_and_end_time(tallysheet_data)
         return tallysheet_data
+    
+    def update_start_and_end_time(self,tallysheet_data):
+        min_start_time = min(tallysheet_data['cargo_details'], key=lambda x:x['start_time'])['start_time'] if tallysheet_data['cargo_details'] else None
+        max_end_time = max(tallysheet_data['cargo_details'], key=lambda x:x['end_time'])['end_time'] if tallysheet_data['cargo_details'] else None
+        tallysheet_data['start_time'] = min_start_time
+        tallysheet_data['end_time'] = max_end_time

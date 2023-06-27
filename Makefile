@@ -104,7 +104,7 @@ kill-server: ## Send SIGKILL to current dev server instance
 
 # Installs the dependencies listed in Pipfile via Pipenv.
 .PHONY: install
-install: | setup-env probe-pipenv reset-local-settings; @python3 -m pipenv install; ## Installs project dependencies into a virtualenv --fully managed by Pipenv
+install: | probe-pipenv reset-local-settings; @python3 -m pipenv install; ## Installs project dependencies into a virtualenv --fully managed by Pipenv
 
 # Drops you into a virtualenv shell handled by pipenv
 .PHONY: shell

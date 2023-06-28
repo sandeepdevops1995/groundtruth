@@ -71,6 +71,7 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     cargo_carting_number = fields.Method("get_cargo_carting_number")
     crn_number = fields.Method("get_crn_number")
     gpm_number = fields.Method("get_gpm_number")
+    gpm_date = fields.Method("get_gpm_date")
     job_type = fields.Method("get_job_type")
     container_flag = fields.Method("get_fcl_or_lcl")
     container_number = fields.Method("get_container_number")
@@ -96,6 +97,9 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     
     def get_gpm_number(self, obj):
         return obj.ctms_job_order.delivery_details.gpm_number if obj.ctms_job_order.delivery_details else None
+    
+    def get_gpm_date(self, obj):
+        return obj.ctms_job_order.delivery_details.gpm_created_date if obj.ctms_job_order.delivery_details else None
     
     def get_job_type(self, obj):
         return obj.ctms_job_order.job_type
@@ -140,5 +144,5 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CTMSCargoJob
-        fields = ("id","cargo_carting_number","crn_number","gpm_number","total_package_count","job_type","container_flag","equipment_id","created_on_epoch",'container_number','job_start_time','job_end_time','sline_code','container_location_code','container_life','container_type','container_size','container_iso_code','private_or_concor_labour_flag','icd_location_code','handling_code','cargo_details')
+        fields = ("id","cargo_carting_number","crn_number","gpm_number","gpm_date","total_package_count","job_type","container_flag","equipment_id","created_on_epoch",'container_number','job_start_time','job_end_time','sline_code','container_location_code','container_life','container_type','container_size','container_iso_code','private_or_concor_labour_flag','icd_location_code','handling_code','cargo_details')
         include_relationships = True

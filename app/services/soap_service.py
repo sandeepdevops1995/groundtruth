@@ -123,6 +123,23 @@ def get_pendancy_details(gateway_port_data,api_url="/pendency_containers"):
         logger.exception('Get pendancy container details, Exception : '+str(e))
         result = []
         return result
+
+def get_icd_pendancy_details(gateway_port_data,api_url="/pendency_containers"):
+    try: 
+        result = []        
+        wsdl_url = config.WSDL_URL+'/soa-infra/services/default/CCLSRakeEmptyPendency/cclsrakeemptypendencybpel_client_ep?WSDL'
+        soap = zeep.Client(wsdl=wsdl_url, service_name="cclsrakeemptypendencybpel_client_ep", port_name="CCLSRakeEmptyPendencyBPEL_pt")
+        start_time = datetime.now()
+        result = soap.service.process(**gateway_port_data)
+        end_time = datetime.now()
+        save_in_diagnostics(api_url,{"data":str(gateway_port_data)},{"output":str(result)},start_time,end_time)
+        logger.debug('Get ICD pendancy empty container details, soap service response : '+ str(result))
+        
+        return result
+    except Exception as e:
+        logger.exception('Get ICD pendancy container details, Exception : '+str(e))
+        result = []
+        return result
     
 def update_outward_rake(rake_data,api_url="Outward Write"):
     try: 

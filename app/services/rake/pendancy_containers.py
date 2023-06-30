@@ -87,12 +87,26 @@ class PendancyService():
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 final_data = []
                 for port in gateway_ports:
-                    request_params = { 'GW_PORT_CODE': port,
-                                    'P_STUFF_AT': 'FAC' ,
+                    request_params = {'GW_PORT_CODE': port,
+                                    # 'P_STUFF_AT': 'FAC',
                                     'P_CUTOFF_DATE': ''}
                     data = soap_service.get_pendancy_details(request_params)
                     if data:
                         final_data += data
+                    # for ICD
+                    # request_params = {'GW_PORT_CODE': port}
+                    # data = soap_service.get_icd_pendancy_details(request_params)
+                    # if data:
+                    #     for obj in data:
+                    #         obj['ctrType'] = 'N/A'
+                    #         obj['ctrActyCd'] = 'N/A'
+                    #         obj['stfAt'] = 'N/A'
+                    #         obj['arrDate'] = None
+                    #         obj['sealDate'] = None
+                    #         obj['sealNo'] = 'N/A'
+                    #         obj['odcFlg'] = 'N/A'
+                    #         obj['wt'] = 0
+                    #     final_data += data
 
                 if final_data:
                     data = PendancyService.format_data_from_ccls(final_data,True)

@@ -8,13 +8,13 @@ import json
 class UpdateCargoDetails(object):
 
     def update_carting_details_schema_for_serializer(self,cargo_details):
-        container_info, carting_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["crn_number","crn_date","carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag","max_date_unloading"]])
+        container_info, carting_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["crn_number","crn_date","carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag","max_date_unloading","contractor_job_order_no","contractor_job_order_date"]])
         cargo_details['container_info'] = container_info
         cargo_details['carting_details'] = carting_details
         return cargo_details
     
     def update_stuffing_details_schema_for_serializer(self,cargo_details):
-        container_info, stuffing_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["container_number","stuffing_job_order","hsn_code","cargo_weight_in_crn","crn_number"]])
+        container_info, stuffing_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["container_number","stuffing_job_order","hsn_code","cargo_weight_in_crn","crn_number","gw_port_code"]])
         cargo_details['container_info'] = container_info
         cargo_details['stuffing_details'] = stuffing_details
         return cargo_details

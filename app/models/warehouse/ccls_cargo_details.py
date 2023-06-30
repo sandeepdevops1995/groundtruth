@@ -45,6 +45,8 @@ class CartingCargoDetails(db.Model):
     party_code = db.Column(db.String(20), nullable=True)
     reserve_flag = db.Column(db.String(1), nullable=True)
     max_date_unloading = db.Column(db.BigInteger(), nullable=True)
+    contractor_job_order_no = db.Column(db.String(20), nullable=True)
+    contractor_job_order_date = db.Column(db.BigInteger(), nullable=True)
     carting_job = db.relationship("MasterCargoDetails", back_populates="carting_details", lazy='joined')
 
     __tablename__ = 'ccls_carting_cargo_details'
@@ -56,6 +58,7 @@ class StuffingCargoDetails(db.Model):
     stuffing_job_order = db.Column(db.String(20), nullable=True)
     cargo_weight_in_crn = db.Column(db.Float(), nullable=True)
     hsn_code = db.Column(db.String(20), nullable=True)
+    gw_port_code = db.Column(db.String(20), nullable=True)
     stuffing_job = db.relationship("MasterCargoDetails", back_populates="stuffing_details", lazy='joined')
 
     __tablename__ = 'ccls_stuffing_cargo_details'

@@ -87,6 +87,10 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     icd_location_code = fields.Method("get_icd_location_code")
     handling_code = fields.Method("get_handling_code")
     cha_code = fields.Method("get_cha_code")
+    gw_port_code = fields.Method("get_gw_port_code")
+    reserved_flag = fields.Method("get_reserve_flag")
+    contractor_job_order_no = fields.Method("get_contractor_job_order_no")
+    contractor_job_order_date = fields.Method("get_contractor_job_order_date")
     cargo_details = fields.Nested(CTMSbillDetailsSchema, many=True)
 
     def get_cargo_carting_number(self, obj):
@@ -142,7 +146,19 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     def get_cha_code(self,obj):
         self.context['cha_code'] = obj.ctms_job_order.carting_details.cha_code if obj.ctms_job_order.carting_details else obj.ctms_job_order.delivery_details.cha_code if obj.ctms_job_order.delivery_details else None
 
+    def get_gw_port_code(self,obj):
+        return obj.ctms_job_order.carting_details.gw_port_code if obj.ctms_job_order.carting_details else obj.ctms_job_order.stuffing_details.gw_port_code if obj.ctms_job_order.stuffing_details else None
+    
+    def get_reserve_flag(self,obj):
+        return obj.ctms_job_order.carting_details.reserve_flag if obj.ctms_job_order.carting_details else None
+    
+    def get_contractor_job_order_no(self,obj):
+        return obj.ctms_job_order.carting_details.contractor_job_order_no if obj.ctms_job_order.carting_details else None
+    
+    def get_contractor_job_order_date(self,obj):
+        return obj.ctms_job_order.carting_details.contractor_job_order_date if obj.ctms_job_order.carting_details else None
+
     class Meta:
         model = CTMSCargoJob
-        fields = ("id","cargo_carting_number","crn_number","gpm_number","gpm_date","total_package_count","job_type","container_flag","equipment_id","created_on_epoch",'container_number','job_start_time','job_end_time','sline_code','container_location_code','container_life','container_type','container_size','container_iso_code','private_or_concor_labour_flag','icd_location_code','handling_code','cargo_details')
+        fields = ("id","cargo_carting_number","crn_number","gpm_number","gpm_date","total_package_count","job_type","container_flag","equipment_id","created_on_epoch",'container_number','job_start_time','job_end_time','sline_code','container_location_code','container_life','container_type','container_size','container_iso_code','private_or_concor_labour_flag','icd_location_code','handling_code','cargo_details',"gw_port_code","reserved_flag","contractor_job_order_no","contractor_job_order_date")
         include_relationships = True

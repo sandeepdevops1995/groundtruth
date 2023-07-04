@@ -26,6 +26,8 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     bill_date = fields.Method("get_bill_date")
     bol_date = fields.Method("get_bol_date")
     warehouse_id = fields.String(data_key='wh_id')
+    exporter_name = fields.Method("get_exporter_name")
+    importer_name = fields.Method("get_importer_name")
 
     def get_shipping_bill(self, obj):
         return obj.ccls_bill.shipping_bill_number
@@ -53,11 +55,17 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     
     def get_bol_date(self, obj):
         return obj.ccls_bill.bol_date
+    
+    def get_exporter_name(self,obj):
+        return obj.ccls_bill.exporter_name
+    
+    def get_importer_name(self,obj):
+        return obj.ccls_bill.importer_name
 
 
     class Meta:
         model = CTMSBillDetails
-        fields = ("id",'ctms_cargo_job_id',"shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","warehouse_name","stacking_type","bill_date","warehouse_id","ccls_grid_locations","gate_number","bol_date")
+        fields = ("id",'ctms_cargo_job_id',"shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","warehouse_name","stacking_type","bill_date","warehouse_id","ccls_grid_locations","gate_number","bol_date","exporter_name","importer_name")
 
 
 class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
@@ -91,6 +99,8 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     reserved_flag = fields.Method("get_reserve_flag")
     contractor_job_order_no = fields.Method("get_contractor_job_order_no")
     contractor_job_order_date = fields.Method("get_contractor_job_order_date")
+    gross_weight = fields.Method("get_gross_weight")
+    cha_name = fields.Method("get_cha_name")
     cargo_details = fields.Nested(CTMSbillDetailsSchema, many=True)
 
     def get_cargo_carting_number(self, obj):
@@ -157,8 +167,14 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     
     def get_contractor_job_order_date(self,obj):
         return obj.ctms_job_order.carting_details.contractor_job_order_date if obj.ctms_job_order.carting_details else None
+    
+    def get_gross_weight(self,obj):
+        return obj.ctms_job_order.gross_weight
+    
+    def get_cha_name(self,obj):
+        return obj.ctms_job_order.cha_name
 
     class Meta:
         model = CTMSCargoJob
-        fields = ("id","cargo_carting_number","crn_number","gpm_number","gpm_date","total_package_count","job_type","container_flag","equipment_id","created_on_epoch",'container_number','job_start_time','job_end_time','sline_code','container_location_code','container_life','container_type','container_size','container_iso_code','private_or_concor_labour_flag','icd_location_code','handling_code','cargo_details',"gw_port_code","reserved_flag","contractor_job_order_no","contractor_job_order_date")
+        fields = ("id","cargo_carting_number","crn_number","gpm_number","gpm_date","total_package_count","job_type","container_flag","equipment_id","created_on_epoch",'container_number','job_start_time','job_end_time','sline_code','container_location_code','container_life','container_type','container_size','container_iso_code','private_or_concor_labour_flag','icd_location_code','handling_code','cargo_details',"gw_port_code","reserved_flag","contractor_job_order_no","contractor_job_order_date","gross_weight","cha_name")
         include_relationships = True

@@ -47,7 +47,7 @@ class WarehouseStuffing(object):
         latest_bill_details = cargo_details.pop('shipping_bill_details_list')
         for item in latest_bill_details:
             for each_bill in existed_bill_details:
-                if int(item[constants.CCLS_SHIPPING_BILL_NUMBER]) == each_bill[constants.CCLS_SHIPPING_BILL_NUMBER]:
+                if item[constants.CCLS_SHIPPING_BILL_NUMBER] == each_bill[constants.CCLS_SHIPPING_BILL_NUMBER]:
                     item['id'] = each_bill['id']
             item['job_order_id'] = job_order_id
         bill_schema = CCLSBillDetailsUpdateSchema().load(latest_bill_details, session=db.session, many=True)

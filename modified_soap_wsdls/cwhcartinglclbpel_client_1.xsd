@@ -14,6 +14,7 @@
       <xsd:element name="no_of_packages_unloaded" type="xsd:integer"/>
       <xsd:element name="party_code" type="xsd:string"/>
       <xsd:element name="reserve_flag" type="xsd:boolean"/>
+      <xsd:element name="shipping_liner_code" type="xsd:string"/>
       <xsd:element maxOccurs="unbounded" name="shipping_bill_details_list">
         <xsd:complexType>
           <xsd:sequence>

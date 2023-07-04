@@ -52,12 +52,12 @@ class CCLSBillDetailsUpdateSchema(ma.SQLAlchemyAutoSchema):
             data['commodity_id'] = query_object.id
         return data
 
-    boe_number = fields.Integer(attribute='bill_of_entry')
-    bol_number = fields.Integer(attribute='bill_of_lading')
+    boe_number = fields.String(attribute='bill_of_entry')
+    bol_number = fields.String(attribute='bill_of_lading')
 
     class Meta:
         model = CCLSCargoBillDetails
-        fields = ("id","shipping_bill_number", "boe_number","bol_number","bill_date","bol_date","importer_code","importer_name","package_code","no_of_packages_declared","package_weight","cha_code","cargo_type","commodity_id","job_order_id")
+        fields = ("id","shipping_bill_number", "boe_number","bol_number","bill_date","bol_date","importer_code","importer_name","package_code","no_of_packages_declared","package_weight","cha_code","cargo_type","commodity_id","job_order_id","exporter_name")
         # include_relationships = True
         load_instance = True
         unknown = EXCLUDE

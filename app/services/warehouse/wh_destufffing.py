@@ -48,7 +48,7 @@ class WarehouseDeStuffing(object):
         for item in latest_bill_details:
             for each_bill in existed_bill_details:
                 existed_bill_number = each_bill[constants.BACKEND_BILL_OF_ENTRY_NUMBER] if constants.BACKEND_BILL_OF_ENTRY_NUMBER in each_bill else each_bill[constants.BACKEND_BILL_OF_LADEN_NUMBER]
-                latest_bill_number = int(item[constants.CCLS_BILL_OF_ENTRY_NUMBER]) if constants.CCLS_BILL_OF_ENTRY_NUMBER in item else int(item[constants.CCLS_BILL_OF_LADEN_NUMBER])
+                latest_bill_number = item[constants.CCLS_BILL_OF_ENTRY_NUMBER] if constants.CCLS_BILL_OF_ENTRY_NUMBER in item else item[constants.CCLS_BILL_OF_LADEN_NUMBER]
                 if existed_bill_number==latest_bill_number:
                 # if int(item[constants.CCLS_BILL_OF_ENTRY_NUMBER]) == each_bill[constants.BACKEND_BILL_OF_ENTRY_NUMBER] or int(item[constants.CCLS_BILL_OF_LADEN_NUMBER] == each_bill[constants.BACKEND_BILL_OF_LADEN_NUMBER]):
                     item['id'] = each_bill['id']

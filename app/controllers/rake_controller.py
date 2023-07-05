@@ -462,8 +462,8 @@ class  UserList(View):
             return Response("No Data Found", status=400, mimetype='application/json')
 
 class TrackMasterDetails(View):
-    # @custom_exceptions
-    # @api_auth_required
+    @custom_exceptions
+    @api_auth_required
     def post(self):
         data = request.get_json()
         if data:
@@ -471,8 +471,8 @@ class TrackMasterDetails(View):
                 return Response(json.dumps({"message":"success"}),status=200,mimetype='application/json')
         return Response(json.dumps({"message":"failed to save"}),status=400,mimetype='application/json')
     
-    # @custom_exceptions
-    # @api_auth_required
+    @custom_exceptions
+    @api_auth_required
     def get(self):
         logger.info("GT, fetching   TrackMasterDetails")
         track_no = request.args.get(Constants.KEY_TRACK_NO,None)

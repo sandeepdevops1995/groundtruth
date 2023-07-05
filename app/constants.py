@@ -104,7 +104,8 @@ KEY_DT_WTR = "dt_wtr"
 KEY_FIRST_POD = "first_pod"
 KEY_ORIGIN_STATION = "origin_station"
 KEY_DEST_STATION = "dest_station"
-
+KEY_TRACK_ID = "track_id"
+KEY_TRACK_NO = "track_no"
 
 # RAKE SOAP KEYS
 KEY_SOAP_TRAIN_NUMBER = 'trnNo'

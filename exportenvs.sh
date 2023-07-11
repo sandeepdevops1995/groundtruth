@@ -23,6 +23,8 @@ COMPOSE_CCLS_GROUND_TRUTH=${CCLS_GROUND_TRUTH}
 COMPOSE_PSQl_CONNECTION_POOL_PING=${PSQl_CONNECTION_POOL_PING}
 COMPOSE_IS_STUFFING_MOCK_ENABLED=${IS_STUFFING_MOCK_ENABLED}
 COMPOSE_NO_OF_PROCESSES=${NO_OF_PROCESSES}
+COMPOSE_IS_PREFIX_REQUIRED=${IS_PREFIX_REQUIRED}
+COMPOSE_IS_TRIM_GRID_NO_REQUIRED=${IS_TRIM_GRID_NO_REQUIRED}
 
 #read .env file in env folder
 env_file_path="./env/.env"
@@ -201,6 +203,20 @@ if ( [ $COMPOSE_NO_OF_PROCESSES ] ) then
 else 
     env_no_of_processes="$(sed -n -e 's/^.*NO_OF_PROCESSES.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
     export NO_OF_PROCESSES=$env_no_of_processes
+fi
+
+if ( [ $COMPOSE_IS_PREFIX_REQUIRED ] ) then 
+    echo "prefix required for serial number for tallysheet",${IS_PREFIX_REQUIRED}
+else 
+    env_is_prefix_required="$(sed -n -e 's/^.*IS_PREFIX_REQUIRED.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+    export IS_PREFIX_REQUIRED=$env_is_prefix_required
+fi
+
+if ( [ $COMPOSE_IS_TRIM_GRID_NO_REQUIRED ] ) then 
+    echo "trim required for grid no",${IS_TRIM_GRID_NO_REQUIRED}
+else 
+    env_is_trim_grid_no_required="$(sed -n -e 's/^.*IS_TRIM_GRID_NO_REQUIRED.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+    export IS_TRIM_GRID_NO_REQUIRED=$env_is_trim_grid_no_required
 fi
 
 }

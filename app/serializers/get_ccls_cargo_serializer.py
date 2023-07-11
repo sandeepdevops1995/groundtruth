@@ -19,8 +19,8 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
 
     def get_commodity_details(self, obj):
         commodity_details={}
-        commodity_details['commodity_code'] = obj.commodity.comm_cd
-        commodity_details['commodity_description'] = obj.commodity.comm_desc
+        commodity_details['commodity_code'] = obj.commodity.comm_cd if obj.commodity else None
+        commodity_details['commodity_description'] = obj.commodity.comm_desc if obj.commodity else None
         commodity_details['package_code'] = obj.package_code
         commodity_details['package_count'] = obj.no_of_packages_declared
         commodity_details['package_weight'] = obj.package_weight
@@ -32,11 +32,16 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
 
 
 
-class GetCartingSchema(ma.SQLAlchemyAutoSchema):
+class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
 
     @pre_dump()
     def add_data_to_context(self, data, **kwargs):
         self.context['cha_code'] = data.carting_details.cha_code if data.carting_details else data.delivery_details.cha_code if data.delivery_details else None
+        return data
+    
+    @post_dump()
+    def sort_bill_details_by_date(self, data, **kwargs):
+        data['bill_details'] = sorted(data['bill_details'], key=lambda d: d['bill_date'], reverse=True) 
         return data
     
     cargo_carting_number = fields.Method("get_con_number")

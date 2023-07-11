@@ -13,6 +13,13 @@ from app.services.rake.gt_upload_service import save_in_diagnostics
 from datetime import datetime
 import app.services.warehouse.constants as constants
 
+def trim_grid_no(job_info):
+    grid_no = job_info['gridNo']
+    if len(grid_no)>3:
+        job_info['gridNo'] = grid_no[-3:]
+    return job_info
+
+
 def get_job_order_info(input_value,service_type,service_name,port_name,request_data,job_type):
     
     try:
@@ -62,6 +69,9 @@ def upload_tallysheet_data(job_info,service_type,service_name,port_name,request_
             service_url = service_name.strip('_ep')
             wsdl_path = os.path.join(config.BASE_DIR,"modified_soap_wsdls_post",service_url+"_1.wsdl")
             logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_GET_REQUEST_TO_CCLS_TO_UPLOAD_TALLYSHEET,request_parameter,wsdl_path,job_info))
+            if config.IS_TRIM_GRID_NO_REQUIRED:
+                job_info = trim_grid_no(job_info)
+                logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_UPLOAD_TALLYSHEET_TRIM_GRID_NO,request_parameter,wsdl_path,job_info['gridNo']))
             soap = zeep.Client(wsdl_path)
             with soap.settings(raw_response=False):
                 result = soap.service.process(**job_info)

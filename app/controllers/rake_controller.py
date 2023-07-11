@@ -7,6 +7,7 @@ from app.services.rake.rake_db_service import RakeDbService as db_service
 from app.services.decorator_service import custom_exceptions, api_auth_required
 from app.constants import GroundTruthType
 from app.serializers.master_data_serializers import *
+from app.services.master_db_service import MasterData as master_db
 from app.services.rake.rake_inward_write import RakeInwardWriteService,WriteInContainer
 from app.services.rake.rake_outward_write import RakeOutwardWriteService
 from app.services.rake.rake_inward_read import RakeInwardReadService
@@ -459,3 +460,31 @@ class  UserList(View):
             return Response(response, status=200, mimetype='application/json')
         except:
             return Response("No Data Found", status=400, mimetype='application/json')
+
+class TrackMasterDetails(View):
+    @custom_exceptions
+    @api_auth_required
+    def post(self):
+        data = request.get_json()
+        if data:
+            if master_db.create_track_master_details(data):
+                return Response(json.dumps({"message":"success"}),status=200,mimetype='application/json')
+        return Response(json.dumps({"message":"failed to save"}),status=400,mimetype='application/json')
+    
+    @custom_exceptions
+    @api_auth_required
+    def get(self):
+        logger.info("GT, fetching   TrackMasterDetails")
+        track_no = request.args.get(Constants.KEY_TRACK_NO,None)
+        track_id = request.args.get(Constants.KEY_TRACK_ID,None)
+        update_data ={}
+        if track_no:
+            update_data["track_no"] = track_no
+        if track_id:
+            update_data["track_id"] = track_id
+        response = master_db.get_track_master_details(update_data)
+        response = TrackMasterSchema(many=True).dump(response)
+        if response:
+            return Response(json.dumps(response),status=200,mimetype='application/json')
+        else:   
+            return Response(None,status=204,mimetype='application/json')

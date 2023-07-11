@@ -27,3 +27,12 @@ class JobOrderType(enum.Enum):
 class JobStatus(enum.Enum):
     TALLYSHEET_GENERATED = 1
     TALLYSHEET_UPLOADED = 2
+
+class SerialNumberType(enum.Enum):
+    CARTING = 'C'
+    STUFFING = 'S'
+    DESTUFFING = 'D'
+    DELIVERY = 'DE'
+    DIRECT_STUFFING = 'DS'
+    DIRECT_DELIVERY = 'DD'
+    

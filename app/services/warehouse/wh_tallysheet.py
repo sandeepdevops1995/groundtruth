@@ -1,5 +1,4 @@
 from app.services.warehouse.database_service import WarehouseDB
-import app.services.warehouse.constants as constants
 from app.enums import JobOrderType
 from app import postgres_db as db
 from app.models.warehouse.ctms_cargo_job import CTMSCargoJob
@@ -7,7 +6,6 @@ from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingC
 from app.serializers.generate_tallysheet import CTMSCargoJobInsertSchema
 from app.serializers.update_tallysheet import CTMSCargoJobUpdateSchema
 from app.user_defined_exception import DataNotFoundException
-from app.enums import JobStatus
 
 class WarehouseTallySheetView(object):
 
@@ -58,7 +56,7 @@ class WarehouseTallySheetView(object):
         if query_object:
             job_order_id = query_object.id
             tally_sheet_data['truck_number'] = tally_sheet_data['cargo_details'][0].pop('truck_number')
-            master_job_request = CTMSCargoJobInsertSchema(context={'job_order_id': job_order_id}).load(tally_sheet_data, session=db.session)
+            master_job_request = CTMSCargoJobInsertSchema(context={'job_order_id': job_order_id,"job_type":job_type}).load(tally_sheet_data, session=db.session)
             db.session.add(master_job_request)
             db.session.commit()
         else:
@@ -89,4 +87,11 @@ class WarehouseTallySheetView(object):
                 tallysheet_data = each_item
             cargo_details+=each_item.pop('cargo_details')
         tallysheet_data['cargo_details'] = cargo_details
+        self.update_start_and_end_time(tallysheet_data)
         return tallysheet_data
+    
+    def update_start_and_end_time(self,tallysheet_data):
+        min_start_time = min(tallysheet_data['cargo_details'], key=lambda x:x['start_time'])['start_time'] if tallysheet_data['cargo_details'] else None
+        max_end_time = max(tallysheet_data['cargo_details'], key=lambda x:x['end_time'])['end_time'] if tallysheet_data['cargo_details'] else None
+        tallysheet_data['start_time'] = min_start_time
+        tallysheet_data['end_time'] = max_end_time

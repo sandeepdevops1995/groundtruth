@@ -12,6 +12,7 @@ from app.serializers.truck_serializer import TruckUpdateSchema
 from app.models.warehouse.truck import TruckDetails
 from app.services.warehouse.ccls_get.update_ccls_cargo_details import UpdateCargoDetails
 from app.services.warehouse.database_service import WarehouseDB
+from app.user_defined_exception import DataNotFoundException
 
 class WarehouseDelivery(object):
 
@@ -21,7 +22,9 @@ class WarehouseDelivery(object):
             cargo_details = UpdateCargoDetails().update_delivery_details(cargo_details,job_type)
             logger.debug("{}, {}, {}, {}, {}, {}, {}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_AFTER_MODIFICATION_CARGO_DETAILS,'JT_'+str(cargo_details.get('job_type')),gpm_number,cargo_details))
             self.save_data_db(cargo_details)
-        return WarehouseDB().get_cargo_details_from_db(gpm_number,job_type)
+            return WarehouseDB().get_cargo_details_from_db(gpm_number,job_type)
+        else:
+            raise DataNotFoundException('GTService: job data not found in ccls system') 
 
     def save_data_db(self,cargo_details):
         delivery_cargo_query = db.session.query(DeliveryCargoDetails).filter(DeliveryCargoDetails.gpm_number==cargo_details['delivery_details'].get('gpm_number'),DeliveryCargoDetails.gpm_valid_date==cargo_details['delivery_details'].get('gpm_valid_date')).first()

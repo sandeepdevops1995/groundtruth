@@ -5,7 +5,7 @@ from app.models.master.warehouse import Commodity as WarehouseCommodity
 from app.serializers.view_tallysheet import ViewTallySheetOrderSchema
 import app.logging_message as LM
 from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingCargoDetails, StuffingCargoDetails, DeStuffingCargoDetails, DeliveryCargoDetails
-from app.serializers.get_ccls_cargo_serializer import GetCartingSchema
+from app.serializers.get_ccls_cargo_serializer import GetCCLSJobSchema
 from app.enums import JobOrderType
 from app.user_defined_exception import DataNotFoundException
 
@@ -63,7 +63,7 @@ class WarehouseDB(object):
         else:
             query_object = None
         if query_object:
-            result = GetCartingSchema().dump(query_object)
+            result = GetCCLSJobSchema().dump(query_object)
             total_package_count = 0
             result['cargo_details'] = result.pop('bill_details')
             for each_cargo in result['cargo_details']:

@@ -17,3 +17,9 @@ class GateWayPortMasterSchema(ma.SQLAlchemyAutoSchema):
         # fields = '__all__'
         fields = ("gw_port_cd", "gw_port_nam")
         load_instance = True
+
+class TrackMasterSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TrackDetails
+        fileds = ("track_id", "track_no")
+        load_instance = True    

@@ -32,7 +32,7 @@ def upload_pendancy_data(data):
     return True
 
 
-def save_in_diagnostics(url,request,response,start_time,end_time):
-    diag = Diagnostics(url=url,request=request,response=response,start_time=start_time,end_time=end_time)
+def save_in_diagnostics(url,request,response,start_time,end_time,type=None):
+    diag = Diagnostics(url=url,request=request,response=response,start_time=start_time,end_time=end_time,type=type)
     db.session.add(diag)
     commit()

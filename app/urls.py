@@ -74,3 +74,5 @@ def register_controllers():
     api.add_resource(UserList,'/user_list')
     api.add_resource(ISO6346Data, Constants.ISO_6346_CODE_ENDPOINT)
     
+    api.add_resource(TrackMasterDetails,'/track_mstr_data')
+    

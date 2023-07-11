@@ -1346,4 +1346,40 @@ class MasterData():
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
                 MasterData.get_cfs_conv(count,isRetry)
                 
+    @query_debugger()
+    def create_track_master_details(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            record =TrackDetails(**data)
+            db.session.add(record)
+            return commit()
+        except Exception as e:
+            logger.error('Error while querying database\n : {}'.format(str(e)))
+            if isRetry and count >= 0 :
+                count=count-1
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                MasterData.create_track_master_details(count,isRetry)
+
     
+    @query_debugger()
+    def get_track_master_details(filter_data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            if filter_data:
+                track_data = TrackDetails.query.filter_by(**filter_data).all()
+                return track_data
+            data = TrackDetails.query.all()
+            return data
+            
+        except Exception as e:
+            logger.error('Error while querying database\n : {}'.format(str(e)))
+            if isRetry and count >= 0 :
+                count=count-1
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                MasterData.get_track_master_details(count,isRetry)

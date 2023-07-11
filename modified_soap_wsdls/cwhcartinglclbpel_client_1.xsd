@@ -28,6 +28,7 @@
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
+      <xsd:element name="shipping_liner_code" type="xsd:string"/>
       <xsd:element maxOccurs="unbounded" name="truck_details">
         <xsd:complexType>
           <xsd:sequence>

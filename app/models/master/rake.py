@@ -1,4 +1,5 @@
 from app import postgres_db as db
+from sqlalchemy import JSON
 
 class WgnMst(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
@@ -25,3 +26,11 @@ class HldTrack(db.Model):
     hld_track_desc = db.Column(db.String(75))
     
     __tablename__ = 'tm_chldtrack'
+
+class TrackDetails(db.Model):
+    id =  db.Column(db.BigInteger(), primary_key=True)
+    track_id = db.Column(db.BigInteger())
+    track_no =  db.Column(db.String(75))
+    track_cordinates = db.Column(JSON)
+
+    __tablename__ = 'tm_track_details'

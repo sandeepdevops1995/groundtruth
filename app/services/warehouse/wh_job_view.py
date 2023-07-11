@@ -23,7 +23,7 @@ class WarehouseJobView(object):
         elif job_type == JobOrderType.DE_STUFFING_FCL.value:
             result = WarehouseDeStuffing().get_destuffing_details(job_order,job_type,constants.KEY_DESTUFFING_FCL_SERVICE_TYPE,constants.KEY_DESTUFFING_FCL_SERVICE_NAME,constants.KEY_DESTUFFING_FCL_PORT_NAME,{constants.CCLS_CONTAINER_NUMBER:job_order})
         elif job_type == JobOrderType.DE_STUFFING_LCL.value:
-            result = WarehouseDeStuffing().get_destuffing_details(job_order,job_type,constants.KEY_DESTUFFING_FCL_SERVICE_TYPE,constants.KEY_DESTUFFING_FCL_SERVICE_NAME,constants.KEY_DESTUFFING_FCL_PORT_NAME,{constants.CCLS_CONTAINER_NUMBER:job_order}) # for destuffing lcl also we considered it as fcl
+            result = WarehouseDeStuffing().get_destuffing_details(job_order,job_type,constants.KEY_DESTUFFING_LCL_SERVICE_TYPE,constants.KEY_DESTUFFING_LCL_SERVICE_NAME,constants.KEY_DESTUFFING_LCL_PORT_NAME,{constants.CCLS_CONTAINER_NUMBER:job_order}) # for destuffing lcl also we considered it as fcl
             # result = WarehouseDeStuffing().get_destuffing_details(job_order,job_type,constants.KEY_DESTUFFING_LCL_SERVICE_TYPE,constants.KEY_DESTUFFING_LCL_SERVICE_NAME,constants.KEY_DESTUFFING_LCL_PORT_NAME,{constants.CCLS_CONTAINER_NUMBER:job_order})
         elif job_type == JobOrderType.DELIVERY_FCL.value:
             result = WarehouseDelivery().get_delivery_details(job_order,job_type,constants.KEY_DELIVERY_FCL_SERVICE_TYPE,constants.KEY_DELIVERY_FCL_SERVICE_NAME,constants.KEY_DELIVERY_FCL_PORT_NAME,{constants.CCLS_GPM_NUMBER:job_order})

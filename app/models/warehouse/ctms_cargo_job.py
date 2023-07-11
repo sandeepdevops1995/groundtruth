@@ -8,6 +8,7 @@ from app.enums import JobStatus
 
 class CTMSCargoJob(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
+    serial_number = db.Column(db.String(20), nullable=True)
     equipment_id = db.Column(db.String(13), nullable=True)
     ph_location = db.Column(db.String(13), nullable=True)
     job_start_time = db.Column(db.BigInteger(), nullable=True)

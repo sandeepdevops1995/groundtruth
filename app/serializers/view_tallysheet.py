@@ -1,6 +1,8 @@
 from marshmallow import fields, post_dump, pre_dump
 from app import ma
 from app.models.warehouse.ctms_cargo_job import CTMSCargoJob,CTMSBillDetails
+import config
+from app.enums import JobOrderType, SerialNumberType
 
 
 class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
@@ -26,6 +28,8 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     bill_date = fields.Method("get_bill_date")
     bol_date = fields.Method("get_bol_date")
     warehouse_id = fields.String(data_key='wh_id')
+    exporter_name = fields.Method("get_exporter_name")
+    importer_name = fields.Method("get_importer_name")
 
     def get_shipping_bill(self, obj):
         return obj.ccls_bill.shipping_bill_number
@@ -53,11 +57,17 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     
     def get_bol_date(self, obj):
         return obj.ccls_bill.bol_date
+    
+    def get_exporter_name(self,obj):
+        return obj.ccls_bill.exporter_name
+    
+    def get_importer_name(self,obj):
+        return obj.ccls_bill.importer_name
 
 
     class Meta:
         model = CTMSBillDetails
-        fields = ("id",'ctms_cargo_job_id',"shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","warehouse_name","stacking_type","bill_date","warehouse_id","ccls_grid_locations","gate_number","bol_date")
+        fields = ("id",'ctms_cargo_job_id',"shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","warehouse_name","stacking_type","bill_date","warehouse_id","ccls_grid_locations","gate_number","bol_date","exporter_name","importer_name")
 
 
 class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
@@ -71,6 +81,7 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     cargo_carting_number = fields.Method("get_cargo_carting_number")
     crn_number = fields.Method("get_crn_number")
     gpm_number = fields.Method("get_gpm_number")
+    gpm_date = fields.Method("get_gpm_date")
     job_type = fields.Method("get_job_type")
     container_flag = fields.Method("get_fcl_or_lcl")
     container_number = fields.Method("get_container_number")
@@ -86,6 +97,13 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     icd_location_code = fields.Method("get_icd_location_code")
     handling_code = fields.Method("get_handling_code")
     cha_code = fields.Method("get_cha_code")
+    gw_port_code = fields.Method("get_gw_port_code")
+    reserved_flag = fields.Method("get_reserve_flag")
+    contractor_job_order_no = fields.Method("get_contractor_job_order_no")
+    contractor_job_order_date = fields.Method("get_contractor_job_order_date")
+    gross_weight = fields.Method("get_gross_weight")
+    cha_name = fields.Method("get_cha_name")
+    serial_number = fields.Method("get_serial_number")
     cargo_details = fields.Nested(CTMSbillDetailsSchema, many=True)
 
     def get_cargo_carting_number(self, obj):
@@ -96,6 +114,9 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     
     def get_gpm_number(self, obj):
         return obj.ctms_job_order.delivery_details.gpm_number if obj.ctms_job_order.delivery_details else None
+    
+    def get_gpm_date(self, obj):
+        return obj.ctms_job_order.delivery_details.gpm_created_date if obj.ctms_job_order.delivery_details else None
     
     def get_job_type(self, obj):
         return obj.ctms_job_order.job_type
@@ -138,7 +159,43 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     def get_cha_code(self,obj):
         self.context['cha_code'] = obj.ctms_job_order.carting_details.cha_code if obj.ctms_job_order.carting_details else obj.ctms_job_order.delivery_details.cha_code if obj.ctms_job_order.delivery_details else None
 
+    def get_gw_port_code(self,obj):
+        return obj.ctms_job_order.carting_details.gw_port_code if obj.ctms_job_order.carting_details else obj.ctms_job_order.stuffing_details.gw_port_code if obj.ctms_job_order.stuffing_details else None
+    
+    def get_reserve_flag(self,obj):
+        return obj.ctms_job_order.carting_details.reserve_flag if obj.ctms_job_order.carting_details else None
+    
+    def get_contractor_job_order_no(self,obj):
+        return obj.ctms_job_order.carting_details.contractor_job_order_no if obj.ctms_job_order.carting_details else None
+    
+    def get_contractor_job_order_date(self,obj):
+        return obj.ctms_job_order.carting_details.contractor_job_order_date if obj.ctms_job_order.carting_details else None
+    
+    def get_gross_weight(self,obj):
+        return obj.ctms_job_order.gross_weight
+    
+    def get_cha_name(self,obj):
+        return obj.ctms_job_order.cha_name
+    
+    def get_serial_number(self,obj):
+        if config.IS_PREFIX_REQUIRED:
+            job_type=obj.ctms_job_order.job_type
+            if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value]:
+                serial_number_prefix=SerialNumberType.CARTING.value
+            elif job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value]:
+                serial_number_prefix=SerialNumberType.STUFFING.value
+            elif job_type == JobOrderType.DIRECT_STUFFING.value:
+                serial_number_prefix=SerialNumberType.DIRECT_STUFFING.value
+            elif job_type in [JobOrderType.DE_STUFFING_FCL.value,JobOrderType.DE_STUFFING_LCL.value]:
+                serial_number_prefix=SerialNumberType.DESTUFFING.value
+            elif job_type in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value]:
+                serial_number_prefix=SerialNumberType.DELIVERY.value
+            elif job_type == JobOrderType.DIRECT_DELIVERY.value:
+                serial_number_prefix=SerialNumberType.DIRECT_DELIVERY.value
+            return serial_number_prefix+str(obj.serial_number)
+        return obj.serial_number
+
     class Meta:
         model = CTMSCargoJob
-        fields = ("id","cargo_carting_number","crn_number","gpm_number","total_package_count","job_type","container_flag","equipment_id","created_on_epoch",'container_number','job_start_time','job_end_time','sline_code','container_location_code','container_life','container_type','container_size','container_iso_code','private_or_concor_labour_flag','icd_location_code','handling_code','cargo_details')
+        fields = ("id","cargo_carting_number","crn_number","gpm_number","gpm_date","total_package_count","job_type","container_flag","equipment_id","created_on_epoch",'container_number','job_start_time','job_end_time','sline_code','container_location_code','container_life','container_type','container_size','container_iso_code','private_or_concor_labour_flag','icd_location_code','handling_code','cargo_details',"gw_port_code","reserved_flag","contractor_job_order_no","contractor_job_order_date","gross_weight","cha_name","serial_number")
         include_relationships = True

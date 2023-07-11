@@ -10,6 +10,7 @@ from app.serializers.update_ccls_cargo_serializer import CCLSBillDetailsGetSchem
 from app.serializers.update_ccls_cargo_serializer import CCLSCargoUpdateSchema
 from app.services.warehouse.ccls_get.update_ccls_cargo_details import UpdateCargoDetails
 from app.services.warehouse.database_service import WarehouseDB
+from app.user_defined_exception import DataNotFoundException
 
 class WarehouseDeStuffing(object):
 
@@ -19,7 +20,9 @@ class WarehouseDeStuffing(object):
             cargo_details = UpdateCargoDetails().update_destuffing_details(cargo_details,job_type)
             logger.debug("{}, {}, {}, {}, {}, {}, {}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_AFTER_MODIFICATION_CARGO_DETAILS,'JT_'+str(cargo_details.get('job_type')),container_number,cargo_details))
             self.save_data_db(cargo_details)
-        return WarehouseDB().get_cargo_details_from_db(container_number,job_type)
+            return WarehouseDB().get_cargo_details_from_db(container_number,job_type)
+        else:
+            raise DataNotFoundException('GTService: job data not found in ccls system') 
 
     def save_data_db(self,cargo_details):
         destuffing_cargo_query = db.session.query(DeStuffingCargoDetails).join(MasterCargoDetails).filter(DeStuffingCargoDetails.destuffing_job.property.mapper.class_.container_info.property.mapper.class_.container_life==cargo_details['container_info'].get('container_life'),DeStuffingCargoDetails.container_number==cargo_details['destuffing_details'].get('container_number')).first()
@@ -45,7 +48,7 @@ class WarehouseDeStuffing(object):
         for item in latest_bill_details:
             for each_bill in existed_bill_details:
                 existed_bill_number = each_bill[constants.BACKEND_BILL_OF_ENTRY_NUMBER] if constants.BACKEND_BILL_OF_ENTRY_NUMBER in each_bill else each_bill[constants.BACKEND_BILL_OF_LADEN_NUMBER]
-                latest_bill_number = int(item[constants.CCLS_BILL_OF_ENTRY_NUMBER]) if constants.CCLS_BILL_OF_ENTRY_NUMBER in item else int(item[constants.CCLS_BILL_OF_LADEN_NUMBER])
+                latest_bill_number = item[constants.CCLS_BILL_OF_ENTRY_NUMBER] if constants.CCLS_BILL_OF_ENTRY_NUMBER in item else item[constants.CCLS_BILL_OF_LADEN_NUMBER]
                 if existed_bill_number==latest_bill_number:
                 # if int(item[constants.CCLS_BILL_OF_ENTRY_NUMBER]) == each_bill[constants.BACKEND_BILL_OF_ENTRY_NUMBER] or int(item[constants.CCLS_BILL_OF_LADEN_NUMBER] == each_bill[constants.BACKEND_BILL_OF_LADEN_NUMBER]):
                     item['id'] = each_bill['id']

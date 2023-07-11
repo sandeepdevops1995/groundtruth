@@ -19,8 +19,8 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
 
     def get_commodity_details(self, obj):
         commodity_details={}
-        commodity_details['commodity_code'] = obj.commodity.comm_cd
-        commodity_details['commodity_description'] = obj.commodity.comm_desc
+        commodity_details['commodity_code'] = obj.commodity.comm_cd if obj.commodity else None
+        commodity_details['commodity_description'] = obj.commodity.comm_desc if obj.commodity else None
         commodity_details['package_code'] = obj.package_code
         commodity_details['package_count'] = obj.no_of_packages_declared
         commodity_details['package_weight'] = obj.package_weight
@@ -32,11 +32,16 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
 
 
 
-class GetCartingSchema(ma.SQLAlchemyAutoSchema):
+class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
 
     @pre_dump()
     def add_data_to_context(self, data, **kwargs):
         self.context['cha_code'] = data.carting_details.cha_code if data.carting_details else data.delivery_details.cha_code if data.delivery_details else None
+        return data
+    
+    @post_dump()
+    def sort_bill_details_by_date(self, data, **kwargs):
+        data['bill_details'] = sorted(data['bill_details'], key=lambda d: d['bill_date'], reverse=True) 
         return data
     
     cargo_carting_number = fields.Method("get_con_number")
@@ -48,6 +53,8 @@ class GetCartingSchema(ma.SQLAlchemyAutoSchema):
     stuffing_job_order = fields.Method("get_stuffing_job_order")
     destuffing_job_order = fields.Method("get_destuffing_job_order")
     sline_code = fields.Method("get_shipping_liner_code")
+    crn_date = fields.Method("get_crn_date")
+    con_date = fields.Method("get_con_date")
     truck_details = Nested(GETTruckDetailsSchema, many=True)
     bill_details = Nested(CCLSCargoDetailsSchema, many=True)
 
@@ -74,8 +81,14 @@ class GetCartingSchema(ma.SQLAlchemyAutoSchema):
 
     def get_destuffing_job_order(self,obj):
         return obj.destuffing_details.destuffing_job_order if obj.destuffing_details else None
+    
+    def get_crn_date(self,obj):
+        return obj.carting_details.crn_date if obj.carting_details else None
+    
+    def get_con_date(self,obj):
+        return obj.carting_details.con_date if obj.carting_details else None
 
     class Meta:
         model = MasterCargoDetails
-        fields = ("cargo_carting_number", "container_flag", "container_number","crn_number","gpm_number","truck_details","bill_details","is_cargo_card_generated","sline_code","stuffing_job_order","destuffing_job_order")
+        fields = ("cargo_carting_number", "container_flag", "container_number","crn_number","gpm_number","truck_details","bill_details","is_cargo_card_generated","sline_code","stuffing_job_order","destuffing_job_order","crn_date","con_date")
         include_relationships = True

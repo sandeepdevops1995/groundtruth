@@ -11,7 +11,7 @@ class CartingJobInsertSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CartingCargoDetails
-        fields = ("crn_number", "crn_date", "carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag","max_date_unloading")
+        fields = ("crn_number", "crn_date", "carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag","max_date_unloading","contractor_job_order_no","contractor_job_order_date")
         include_relationships = True
         load_instance = True
  
@@ -19,7 +19,7 @@ class StuffingJobInsertSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = StuffingCargoDetails
-        fields = ("container_number", "stuffing_job_order", "crn_number", "cargo_weight_in_crn","hsn_code")
+        fields = ("container_number", "stuffing_job_order", "crn_number", "cargo_weight_in_crn","hsn_code","gw_port_code")
         include_relationships = True
         load_instance = True
 
@@ -54,12 +54,12 @@ class CCLSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
         return data
 
     # shipping_bill_date = fields.Integer(attribute='bill_date')
-    boe_number = fields.Integer(attribute='bill_of_entry')
-    bol_number = fields.Integer(attribute='bill_of_lading')
+    boe_number = fields.String(attribute='bill_of_entry')
+    bol_number = fields.String(attribute='bill_of_lading')
 
     class Meta:
         model = CCLSCargoBillDetails
-        fields = ("shipping_bill_number", "boe_number","bol_number","bill_date","bol_date","importer_code","importer_name","package_code","no_of_packages_declared","package_weight","cha_code","cargo_type","commodity_id")
+        fields = ("shipping_bill_number", "boe_number","bol_number","bill_date","bol_date","importer_code","importer_name","package_code","no_of_packages_declared","package_weight","cha_code","cargo_type","commodity_id","exporter_name")
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE
@@ -70,6 +70,7 @@ class CCLSCargoInsertSchema(ma.SQLAlchemyAutoSchema):
     @pre_load()
     def change_key_name(self, data, **kwargs):
         data['bill_details'] = data.get('shipping_bill_details_list') if 'shipping_bill_details_list' in data else data.get('bill_details_list')
+        data['gross_weight'] = data.get('gross_weight') if 'gross_weight' in data else data.get('cargo_gross_weight') if 'cargo_gross_weight' in data else None
         return data
 
     class Meta:

@@ -56,7 +56,7 @@ class WarehouseTallySheetView(object):
         if query_object:
             job_order_id = query_object.id
             tally_sheet_data['truck_number'] = tally_sheet_data['cargo_details'][0].pop('truck_number')
-            master_job_request = CTMSCargoJobInsertSchema(context={'job_order_id': job_order_id}).load(tally_sheet_data, session=db.session)
+            master_job_request = CTMSCargoJobInsertSchema(context={'job_order_id': job_order_id,"job_type":job_type}).load(tally_sheet_data, session=db.session)
             db.session.add(master_job_request)
             db.session.commit()
         else:

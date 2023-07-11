@@ -1,4 +1,4 @@
-from marshmallow import fields, EXCLUDE, post_load
+from marshmallow import fields, EXCLUDE, post_load, pre_load
 from app import ma
 from app.models.warehouse.ccls_cargo_details import CCLSCargoBillDetails
 from app import postgres_db as db
@@ -7,6 +7,8 @@ from sqlalchemy import or_,and_
 from app.serializers import Nested
 from app.logger import logger
 import app.logging_message as LM
+import config
+from app.models.warehouse.ccls_cargo_details import MasterCargoDetails
 
 class CTMSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
 
@@ -36,6 +38,21 @@ class CTMSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
 
 class CTMSCargoJobInsertSchema(ma.SQLAlchemyAutoSchema):
 
+    @pre_load()
+    def change_data(self, data, **kwargs):
+        job_type = self.context.get('job_type')
+        db_obj = db.session.query(CTMSCargoJob).join(MasterCargoDetails).filter(MasterCargoDetails.job_type==job_type).order_by(CTMSCargoJob.id.desc()).first()
+        if db_obj:
+                serial_number = int(db_obj.serial_number)
+                if config.IS_PREFIX_REQUIRED:
+                    serial_number = str(serial_number+1)
+                else:
+                    serial_number = str(serial_number+1)
+        else:
+            serial_number = str(config.TS_SERIAL_NUMBER)
+        data['serial_number'] = serial_number
+        return data
+
     @post_load
     def get_job_id_from_context(self, data, **kwargs):
         data['job_order_id'] = self.context.get('job_order_id')
@@ -45,7 +62,7 @@ class CTMSCargoJobInsertSchema(ma.SQLAlchemyAutoSchema):
     end_time = fields.Integer(attribute='job_end_time')
     class Meta:
         model = CTMSCargoJob
-        fields = ("equipment_id", "ph_location", "start_time","end_time","total_package_count","total_no_of_packages_damaged","total_no_area","max_date_unloading","total_no_of_packages_excess","total_no_of_packages_short","gate_number","container_number","created_on_epoch","job_order_id","cargo_details","truck_number")
+        fields = ("equipment_id", "ph_location", "start_time","end_time","total_package_count","total_no_of_packages_damaged","total_no_area","max_date_unloading","total_no_of_packages_excess","total_no_of_packages_short","gate_number","container_number","created_on_epoch","job_order_id","cargo_details","truck_number","serial_number")
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE

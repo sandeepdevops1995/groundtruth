@@ -12,30 +12,35 @@
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element name="bill_date" type="xsd:dateTime"/>
-            <xsd:element name="bill_number" type="xsd:string"/>
+            <xsd:element name="boe_number" type="xsd:string"/>
+            <xsd:element name="bol_number" type="xsd:string"/>
+            <xsd:element name="bol_date" type="xsd:dateTime"/>
             <xsd:element name="commodity_code" type="xsd:string"/>
             <xsd:element name="commodity_description" type="xsd:string"/>
             <xsd:element name="no_of_packages_declared" type="xsd:string"/>
             <xsd:element name="package_code" type="xsd:string"/>
-	    <xsd:element name="package_weight" type="xsd:float"/>
-	    <xsd:element name="cncl_flg" type="xsd:string"/>
-	    <xsd:element name="gp_stat" type="xsd:string"/>
-            <xsd:element name="icd_loc" type="xsd:string"/>
+            <xsd:element name="package_weight" type="xsd:float"/>
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
       <xsd:element name="cha_code" type="xsd:string"/>
+      <xsd:element name="cha_name" type="xsd:string"/>
       <xsd:element name="container_number" type="xsd:string"/>
       <xsd:element name="container_size" type="xsd:string"/>
       <xsd:element name="container_type" type="xsd:string"/>
+      <xsd:element name="gpm_valid_date" type="xsd:dateTime"/>
       <xsd:element name="gpm_created_date" type="xsd:dateTime"/>
       <xsd:element name="gpm_number" type="xsd:string"/>
       <xsd:element name="shipping_line_code" type="xsd:string"/>
+      <xsd:element name="gross_weight" type="xsd:float"/>
+      <xsd:element name="cncl_flg" type="xsd:string"/>
+      <xsd:element name="gp_stat" type="xsd:string"/>
+      <xsd:element name="icd_location_code" type="xsd:string"/>
       <xsd:element maxOccurs="unbounded" name="truck_details">
         <xsd:complexType>
           <xsd:sequence>
-		  <xsd:element name="truck_arrival_date" type="xsd:string"/>
-		  <xsd:element name="truck_number" type="xsd:string"/>
+            <xsd:element name="truck_arrival_date" type="xsd:dateTime"/>
+            <xsd:element name="truck_number" type="xsd:string"/>
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>

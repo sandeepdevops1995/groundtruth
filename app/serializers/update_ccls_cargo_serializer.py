@@ -64,10 +64,16 @@ class CCLSBillDetailsUpdateSchema(ma.SQLAlchemyAutoSchema):
        
 
 class CCLSCargoUpdateSchema(ma.SQLAlchemyAutoSchema):
+
+    @pre_load()
+    def change_key_name(self, data, **kwargs):
+        data['gross_weight'] = data.get('gross_weight') if 'gross_weight' in data else data.get('cargo_gross_weight') if 'cargo_gross_weight' in data else None
+        data['shipping_liner_code'] = data.get('shipping_liner_code') if 'shipping_liner_code' in data else data.get('shipping_line_code') if 'shipping_line_code' in data else None
+        return data
     
     class Meta:
         model = MasterCargoDetails
-        fields = ("id","gross_weight", "private_or_concor_labour_flag", "shipping_liner_code","cncl_flag","icd_location_code","container_info","carting_details","job_type","fcl_or_lcl","stuffing_details","destuffing_details","delivery_details")
+        fields = ("id","gross_weight", "private_or_concor_labour_flag", "shipping_liner_code","cncl_flag","icd_location_code","container_info","carting_details","job_type","fcl_or_lcl","stuffing_details","destuffing_details","delivery_details","cha_name")
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE

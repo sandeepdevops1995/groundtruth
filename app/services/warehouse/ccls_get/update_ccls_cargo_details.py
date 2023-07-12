@@ -182,7 +182,5 @@ class UpdateCargoDetails(object):
         if date_key in cargo_details:
             if cargo_details[date_key] and isinstance(cargo_details[date_key], datetime):
                 cargo_details[date_key]=convert_ccls_date_to_timestamp(cargo_details[date_key])
-            else:
-                cargo_details[date_key]=int(time.time())*1000
         else:
             cargo_details[date_key]=int(time.time())*1000

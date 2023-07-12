@@ -15,9 +15,14 @@
       <xsd:element name="stuffing_job_order" type="xsd:string"/>
       <xsd:element name="container_type" type="xsd:string"/>
       <xsd:element name="container_size" type="xsd:string"/>
+      <xsd:element name="container_life" type="xsd:dateTime"/>
+      <xsd:element name="seal_number" type="xsd:string"/>
       <xsd:element name="crn_date" type="xsd:dateTime"/>
       <xsd:element name="crn_number" type="xsd:string"/>
       <xsd:element name="gross_weight" type="xsd:string"/>
+      <xsd:element name="shipping_liner_code" type="xsd:string"/>
+      <xsd:element name="icd_location_code" type="xsd:string"/>
+      <xsd:element name="cncl_flag" type="xsd:string"/>
       <xsd:element maxOccurs="unbounded" name="shipping_bill_details_list">
         <xsd:complexType>
           <xsd:sequence>
@@ -29,6 +34,9 @@
             <xsd:element name="package_weight" type="xsd:string"/>
             <xsd:element name="shipping_bill_number" type="xsd:string"/>
             <xsd:element name="shipping_bill_date" type="xsd:dateTime"/>
+            <xsd:element name="cha_code" type="xsd:string"/>
+            <xsd:element name="cha_name" type="xsd:string"/>
+            <xsd:element name="hsn_code" type="xsd:string"/>
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>

@@ -13,7 +13,7 @@ class MasterCargoDetails(db.Model):
     shipping_liner_code = db.Column(db.String(20), nullable=True)
     cncl_flag = db.Column(db.String(1), nullable=True)
     icd_location_code = db.Column(db.String(20), nullable=True)
-    cha_name = db.Column(db.String(20), nullable=True)
+    cha_name = db.Column(db.String(100), nullable=True)
     carting_cargo_id = db.Column(db.BigInteger(), db.ForeignKey('ccls_carting_cargo_details.id'))
     carting_details = db.relationship("CartingCargoDetails", back_populates="carting_job", lazy='joined')
     stuffing_cargo_id = db.Column(db.BigInteger(), db.ForeignKey('ccls_stuffing_cargo_details.id'))

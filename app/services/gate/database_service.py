@@ -147,8 +147,8 @@ class GateDbService:
                     iso_code = None
                 final_data = {
                                 "permit_no":result['PermitNumber'],
-                                "permit_date": result['PermitDateTime'][:-10] if result['PermitDateTime'] else result['PermitDateTime'] ,
-                                "permit_expiry_date":result['IsPermitValid'],
+                                "permit_date": result['PermitDateTime'],
+                                "permit_expiry_date":result['IsPermitValid'][:-10] if result['IsPermitValid']  else result['IsPermitValid'],
                                 "container_no":result['ContainerNumber'],
                                 "vehicle_no" : result['VechileNumber'],
                                 "sline_code" : result['SlineCode'],
@@ -444,7 +444,7 @@ class GateDbService:
             post_data[Constants.KEY_SOAP_G_USER_ID] = data["user_id"]
             post_data[Constants.KEY_SOAP_G_SLINE_CD] = data["sline_code"]
             post_data[Constants.KEY_SOAP_G_XPMT_NO] = data["permit_no"]
-            post_data[Constants.KEY_SOAP_G_DT_XPMT_NO] = data["permit_no"]
+            post_data[Constants.KEY_SOAP_G_DT_XPMT_NO] = datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S').isoformat()
             post_data[Constants.KEY_SOAP_G_GATE_NO] = data["gate_no"] 
             post_data[Constants.KEY_SOAP_G_STK_LOC] = data["stk_loc"] 
             if "gate_in_time" in data:

@@ -437,7 +437,7 @@ class GateDbService:
         post_data = {}
         try:
             post_data[Constants.KEY_SOAP_G_VEH_NO] = data["vehicle_no"]
-            post_data[Constants.KEY_SOAP_G_VEH_TYPE] = data["vehicle_type"] if "vehicle_type" in data else None
+            post_data[Constants.KEY_SOAP_G_VEH_TYPE] = data["vehicle_type"].upper() if "vehicle_type" in data and data["vehicle_type"] else None
             post_data[Constants.KEY_SOAP_G_GT_DOC_NO] = data["permit_no"]
             post_data[Constants.KEY_SOAP_G_DT_GT_DOC] = datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S')
             post_data[Constants.KEY_SOAP_G_DT_GT_DOC_VLD] =  datetime.strptime(data["permit_expiry_date"], '%Y-%m-%d %H:%M:%S')
@@ -462,7 +462,7 @@ class GateDbService:
         post_data = {}
         try:
             post_data[Constants.KEY_SOAP_G_VEH_NO] = data["vehicle_no"]
-            post_data[Constants.KEY_SOAP_G_VEH_TYPE] = data["vehicle_type"] if "vehicle_type" in data else None
+            post_data[Constants.KEY_SOAP_G_VEH_TYPE] = data["vehicle_type"].upper() if "vehicle_type" in data and data["vehicle_type"] else None
             post_data[Constants.KEY_SOAP_G_GT_DOC_NO] =  data["permit_no"]
             post_data[Constants.KEY_SOAP_G_DT_GT_DOC] =  datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S')
             post_data[Constants.KEY_SOAP_G_DT_GT_DOC_VLD] = datetime.strptime(data["permit_expiry_date"], '%Y-%m-%d %H:%M:%S')

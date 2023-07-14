@@ -36,3 +36,9 @@ class SerialNumberType(enum.Enum):
     DIRECT_STUFFING = 'DS'
     DIRECT_DELIVERY = 'DD'
     
+class PendencyType(enum.Enum):
+    LOADED = 1
+    EMPTY = 2
+    LCL = 3
+    BLOCK = 4
+    EXPRESS = 5

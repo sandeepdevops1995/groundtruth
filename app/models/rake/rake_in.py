@@ -18,7 +18,7 @@ class CCLSRake(db.Model):
     container_life_number = db.Column(db.DateTime()) 
     container_size = db.Column(db.Integer())
     container_type = db.Column(db.String(2))
-    container_status = db.Column(db.String(2))
+    container_stat = db.Column(db.String(2))
     container_gross_weight = db.Column(db.Float())
     container_origin_station = db.Column(db.String(25))
     container_destination_station = db.Column(db.String(25))

@@ -105,14 +105,16 @@ class PendancyList(View):
     # @api_auth_required
     def get(self):
         gateway_port = request.args.get(Constants.KEY_GATEWAY_PORT,None)
-        if gateway_port:
+        pendancy_type = request.args.get(Constants.KEY_PENDANCY_TYPE,None)
+        if gateway_port and pendancy_type:
             gateway_ports= gateway_port.split(",")
+            pendancy_type = int(pendancy_type)
             logger.info("GT, pendacy list for port"+str(gateway_ports))
-            response = PendancyService.get_pendancy_list(gateway_ports)
+            response = PendancyService.get_pendancy_list(pendancy_type,gateway_ports)
             # response = self.format_data(response,gateway_ports)
             return Response(response, status=200, mimetype='application/json')
         else:
-            return Response(json.dumps({"message":"please provide gateway_port"}), status=400, mimetype='application/json')
+            return Response(json.dumps({"message":"please provide gateway port and pendancy type"}), status=400, mimetype='application/json')
     
     
     def format_data(self,response,gateway_ports):

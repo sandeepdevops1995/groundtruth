@@ -43,7 +43,7 @@ class CTMSCargoJobInsertSchema(ma.SQLAlchemyAutoSchema):
         job_type = self.context.get('job_type')
         db_obj = db.session.query(CTMSCargoJob).join(MasterCargoDetails).filter(MasterCargoDetails.job_type==job_type).order_by(CTMSCargoJob.id.desc()).first()
         if db_obj:
-                serial_number = int(db_obj.serial_number)
+                serial_number = int(db_obj.serial_number) if db_obj.serial_number else config.TS_SERIAL_NUMBER
                 if config.IS_PREFIX_REQUIRED:
                     serial_number = str(serial_number+1)
                 else:

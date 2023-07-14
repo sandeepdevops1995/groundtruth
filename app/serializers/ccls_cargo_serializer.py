@@ -54,8 +54,8 @@ class CCLSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
         return data
 
     # shipping_bill_date = fields.Integer(attribute='bill_date')
-    boe_number = fields.String(attribute='bill_of_entry')
-    bol_number = fields.String(attribute='bill_of_lading')
+    boe_number = fields.String(attribute='bill_of_entry',allow_none=True)
+    bol_number = fields.String(attribute='bill_of_lading',allow_none=True)
 
     class Meta:
         model = CCLSCargoBillDetails

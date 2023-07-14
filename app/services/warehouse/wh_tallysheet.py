@@ -1,8 +1,8 @@
 from app.services.warehouse.database_service import WarehouseDB
 from app.enums import JobOrderType
 from app import postgres_db as db
-from app.models.warehouse.ctms_cargo_job import CTMSCargoJob
-from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingCargoDetails, StuffingCargoDetails, DeStuffingCargoDetails, DeliveryCargoDetails
+from app.models.warehouse.ctms_cargo_job import CTMSCargoJob, CTMSBillDetails
+from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingCargoDetails, StuffingCargoDetails, DeStuffingCargoDetails, DeliveryCargoDetails, CCLSCargoBillDetails
 from app.serializers.generate_tallysheet import CTMSCargoJobInsertSchema
 from app.serializers.update_tallysheet import CTMSCargoJobUpdateSchema
 from app.user_defined_exception import DataNotFoundException
@@ -52,15 +52,35 @@ class WarehouseTallySheetView(object):
             query_object = query_object.filter(MasterCargoDetails.destuffing_details.has(DeStuffingCargoDetails.container_number==tally_sheet_data.get('container_number')))
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
             query_object = query_object.filter(MasterCargoDetails.delivery_details.has(DeliveryCargoDetails.gpm_number==tally_sheet_data.get('gpm_number')))
+            tally_sheet_data['destuffing_date'] = self.get_destuffing_date_for_delivery(tally_sheet_data,job_type)
         query_object = query_object.order_by(MasterCargoDetails.updated_at.desc()).first()
         if query_object:
             job_order_id = query_object.id
-            tally_sheet_data['truck_number'] = tally_sheet_data['cargo_details'][0].pop('truck_number')
+            # tally_sheet_data['truck_number'] = tally_sheet_data['cargo_details'][0].pop('truck_number')
             master_job_request = CTMSCargoJobInsertSchema(context={'job_order_id': job_order_id,"job_type":job_type}).load(tally_sheet_data, session=db.session)
             db.session.add(master_job_request)
             db.session.commit()
         else:
             raise DataNotFoundException("GTService: ccls data doesn't exists in database")
+        
+    def get_destuffing_date_for_delivery(self,tally_sheet_data,job_type):
+        start_time=None
+        query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.container_number==tally_sheet_data.get('container_number'))
+        for each_bill in tally_sheet_data['cargo_details']:
+            bill_date=each_bill['bill_date']
+            if job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
+                bill_number=each_bill['bill_of_entry']
+                query_object = query_object.filter(CTMSCargoJob.cargo_details.any(CTMSBillDetails.ccls_bill.has(CCLSCargoBillDetails.bill_of_entry==bill_number))).filter(CTMSCargoJob.cargo_details.any(CTMSBillDetails.ccls_bill.has(CCLSCargoBillDetails.bill_date==bill_date)))
+            else:
+                bill_number=each_bill['bill_of_lading']
+                query_object = query_object.filter(CTMSCargoJob.cargo_details.any(CTMSBillDetails.ccls_bill.has(CCLSCargoBillDetails.bill_of_lading==bill_number))).filter(CTMSCargoJob.cargo_details.any(CTMSBillDetails.ccls_bill.has(CCLSCargoBillDetails.bol_date==bill_date)))
+            query_object = query_object.order_by(CTMSCargoJob.created_at.desc()).first()
+            if query_object:
+                start_time = query_object.job_start_time
+                break
+            else:
+                continue
+        return start_time
 
     def update_tally_sheet_info(self,tally_sheet_data):
         query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.id==tally_sheet_data.get('id')).first()

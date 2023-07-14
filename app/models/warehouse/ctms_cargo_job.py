@@ -22,6 +22,7 @@ class CTMSCargoJob(db.Model):
     container_number = db.Column(db.String(15), nullable=True)
     truck_number = db.Column(db.String(15), nullable=True)
     created_on_epoch = db.Column(db.BigInteger(), nullable=True)
+    destuffing_date = db.Column(db.BigInteger(), nullable=True)
     job_order_id = db.Column(db.BigInteger, db.ForeignKey('ccls_master_cargo_details.id'))
     ctms_job_order = db.relationship("MasterCargoDetails", back_populates='ccls_cargo_master', lazy='joined')
     cargo_details = db.relationship('CTMSBillDetails', back_populates='ctms_job_order_bill_details', lazy='joined')

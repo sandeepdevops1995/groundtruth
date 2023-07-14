@@ -52,8 +52,8 @@ class CCLSBillDetailsUpdateSchema(ma.SQLAlchemyAutoSchema):
             data['commodity_id'] = query_object.id
         return data
 
-    boe_number = fields.String(attribute='bill_of_entry')
-    bol_number = fields.String(attribute='bill_of_lading')
+    boe_number = fields.String(attribute='bill_of_entry',allow_none=True)
+    bol_number = fields.String(attribute='bill_of_lading',allow_none=True)
 
     class Meta:
         model = CCLSCargoBillDetails

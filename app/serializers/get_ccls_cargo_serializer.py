@@ -55,6 +55,7 @@ class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
     sline_code = fields.Method("get_shipping_liner_code")
     crn_date = fields.Method("get_crn_date")
     con_date = fields.Method("get_con_date")
+    gpm_valid_date = fields.Method("get_gpm_valid_date")
     truck_details = Nested(GETTruckDetailsSchema, many=True)
     bill_details = Nested(CCLSCargoDetailsSchema, many=True)
 
@@ -87,8 +88,11 @@ class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
     
     def get_con_date(self,obj):
         return obj.carting_details.con_date if obj.carting_details else None
+    
+    def get_gpm_valid_date(self,obj):
+        return obj.delivery_details.gpm_valid_date if obj.delivery_details else None
 
     class Meta:
         model = MasterCargoDetails
-        fields = ("cargo_carting_number", "container_flag", "container_number","crn_number","gpm_number","truck_details","bill_details","is_cargo_card_generated","sline_code","stuffing_job_order","destuffing_job_order","crn_date","con_date")
+        fields = ("cargo_carting_number", "container_flag", "container_number","crn_number","gpm_number","truck_details","bill_details","is_cargo_card_generated","sline_code","stuffing_job_order","destuffing_job_order","crn_date","con_date","gpm_valid_date")
         include_relationships = True

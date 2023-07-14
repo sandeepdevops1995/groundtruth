@@ -1,6 +1,6 @@
 import requests
 import json
-from master_data import gateway_ports_data,wagon_master_data
+from master_data import gateway_ports_data,wagon_master_data, container_stat_data
 
 IP = "0.0.0.0"
 PORT = "8040"
@@ -10,7 +10,7 @@ CLIENT_ID = "ground_truth"
 base_url = "http://"+IP+":"+PORT
 gateway_port_path = "/gateway_port"
 wagon_master_path = "/wagon"
-
+container_stat_path = "/container_stat"
 
 
 def post_data_to_ground_truth(url,data):
@@ -35,7 +35,13 @@ def post_wagon_master_data():
     print("---------posting wagons master data to ground truth----------")
     post_data_to_ground_truth(url,wagon_master_data)
     
+def post_container_stat_data():
+    url = base_url+container_stat_path
+    print("---------posting container master data to ground truth----------")
+    post_data_to_ground_truth(url,container_stat_data)
+
     
 if __name__ == "__main__":
     post_gateway_port()
     post_wagon_master_data()
+    post_container_stat_data()

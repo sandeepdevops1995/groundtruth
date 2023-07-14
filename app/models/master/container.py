@@ -77,3 +77,12 @@ class ISOcode(db.Model):
     ctr_iso_cd = db.Column(db.String(4))
     
     __tablename__ = 'tm_cctrisocd'
+
+class CtrStat(db.Model):
+    id =  db.Column(db.BigInteger(), primary_key=True)
+    ctr_stat = db.Column(db.String(5))
+    imp_exp_flg= db.Column(db.String(2))
+    ldd_mt_flg= db.Column(db.String(2))
+    gw_port_cd= db.Column(db.String(8))
+    
+    __tablename__ = 'tm_cctrstat'

@@ -6,6 +6,7 @@ from app.controllers.rake_controller import *
 # from app.controllers.warehouse_controller import WarehouseData
 from app.controllers.warehouse_controller import JobDetails,WarehouseTallySheet,WarehouseCommodities,WarehousePrintTallySheet
 from app.controllers.GT_upload_controller import TrainSummary,PendancySummary
+from app.controllers.master_controller import *
 from app.controllers.yard_controller import StackLocation
 
 import app.constants as Constants 
@@ -50,7 +51,9 @@ def register_controllers():
     api.add_resource(WarehousePrintTallySheet,'/api/warehouse_print_tallysheet')
     api.add_resource(WarehouseCommodities,'/fetch_commodities')
     
-    
+    #Master
+    api.add_resource(TrackMasterDetails,Constants.TRACK_MASTER_DATA_ENDPOINT)
+    api.add_resource(ContainerStatDetails,Constants.CONTAINER_STAT_ENDPOINT)
     
     # These API's use ORACLE Db. Currently we are anot using it
     api.add_resource(GateInModel,"/gateIn")
@@ -73,6 +76,5 @@ def register_controllers():
     api.add_resource(CargoTypes,'/cargo_types')
     api.add_resource(UserList,'/user_list')
     api.add_resource(ISO6346Data, Constants.ISO_6346_CODE_ENDPOINT)
-    
-    api.add_resource(TrackMasterDetails,'/track_mstr_data')
+      
     

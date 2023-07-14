@@ -990,3 +990,596 @@ wagon_master_data = [
                         "trns_trml_id": None
                     }
                 ]
+
+container_stat_data =   [
+                            {
+                            "ctr_stat": "Ei",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "HACG"
+                            },
+                            {
+                            "ctr_stat": "X9",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "DHPR"
+                            },
+                            {
+                            "ctr_stat": "XV",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "CFCV"
+                            },
+                            {
+                            "ctr_stat": "E",
+                            "imp_exp_flg": "E",
+                            "ldd_mt_flg": "E"
+                            },
+                            {
+                            "ctr_stat": "XH",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "HOM"
+                            },
+                            {
+                            "ctr_stat": "Eh",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "CGPT"
+                            },
+                            {
+                            "ctr_stat": "IL",
+                            "imp_exp_flg": "I",
+                            "ldd_mt_flg": "L"
+                            },
+                            {
+                            "ctr_stat": "IE",
+                            "imp_exp_flg": "I",
+                            "ldd_mt_flg": "E"
+                            },
+                            {
+                            "ctr_stat": "XS",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "SNF"
+                            },
+                            {
+                            "ctr_stat": "ES",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "KHDB"
+                            },
+                            {
+                            "ctr_stat": "XK",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "KDLP"
+                            },
+                            {
+                            "ctr_stat": "EY",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "JAB"
+                            },
+                            {
+                            "ctr_stat": "XD",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "DDL"
+                            },
+                            {
+                            "ctr_stat": "EN",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "NSCT"
+                            },
+                            {
+                            "ctr_stat": "EK",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "KDLP"
+                            },
+                            {
+                            "ctr_stat": "XY",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "JAB"
+                            },
+                            {
+                            "ctr_stat": "EH",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "HOM"
+                            },
+                            {
+                            "ctr_stat": "ED",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "DDL"
+                            },
+                            {
+                            "ctr_stat": "Ej",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "BMCT"
+                            },
+                            {
+                            "ctr_stat": "EO",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "OTH"
+                            },
+                            {
+                            "ctr_stat": "XO",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "OTH"
+                            },
+                            {
+                            "ctr_stat": "EW",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "WB"
+                            },
+                            {
+                            "ctr_stat": "XW",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "WB"
+                            },
+                            {
+                            "ctr_stat": "XP",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "CTKR"
+                            },
+                            {
+                            "ctr_stat": "EP",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "CTKR"
+                            },
+                            {
+                            "ctr_stat": "XB",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "BPT"
+                            },
+                            {
+                            "ctr_stat": "EB",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "BPT"
+                            },
+                            {
+                            "ctr_stat": "ET",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "TNPM"
+                            },
+                            {
+                            "ctr_stat": "XT",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "TNPM"
+                            },
+                            {
+                            "ctr_stat": "EF",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "R"
+                            },
+                            {
+                            "ctr_stat": "XZ",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "HLZ"
+                            },
+                            {
+                            "ctr_stat": "EZ",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "HLZ"
+                            },
+                            {
+                            "ctr_stat": "XM",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "NGSM"
+                            },
+                            {
+                            "ctr_stat": "EM",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "MBS"
+                            },
+                            {
+                            "ctr_stat": "EG",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "GTIL"
+                            },
+                            {
+                            "ctr_stat": "XG",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "GTIL"
+                            },
+                            {
+                            "ctr_stat": "XA",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "GDGH"
+                            },
+                            {
+                            "ctr_stat": "EA",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "GDGH"
+                            },
+                            {
+                            "ctr_stat": "Em",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "CHTS"
+                            },
+                            {
+                            "ctr_stat": "XR",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "BGKT"
+                            },
+                            {
+                            "ctr_stat": "EU",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "MB"
+                            },
+                            {
+                            "ctr_stat": "XU",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "MB"
+                            },
+                            {
+                            "ctr_stat": "XC",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "CPC"
+                            },
+                            {
+                            "ctr_stat": "EC",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "CPC"
+                            },
+                            {
+                            "ctr_stat": "E8",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "RTM"
+                            },
+                            {
+                            "ctr_stat": "ER",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "BGKT"
+                            },
+                            {
+                            "ctr_stat": "E0",
+                            "imp_exp_flg": "E",
+                            "ldd_mt_flg": "E"
+                            },
+                            {
+                            "ctr_stat": "EL",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "KKU"
+                            },
+                            {
+                            "ctr_stat": "E2",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "MDPT"
+                            },
+                            {
+                            "ctr_stat": "XL",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "KKU"
+                            },
+                            {
+                            "ctr_stat": "EV",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "CFCV"
+                            },
+                            {
+                            "ctr_stat": "EI",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "GWL"
+                            },
+                            {
+                            "ctr_stat": "XI",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "GWL"
+                            },
+                            {
+                            "ctr_stat": "EX",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "HLZB"
+                            },
+                            {
+                            "ctr_stat": "XQ",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "RE"
+                            },
+                            {
+                            "ctr_stat": "XX",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "HLZB"
+                            },
+                            {
+                            "ctr_stat": "EQ",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "RE"
+                            },
+                            {
+                            "ctr_stat": "E4",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "PPSP"
+                            },
+                            {
+                            "ctr_stat": "E3",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "DNOD"
+                            },
+                            {
+                            "ctr_stat": "X2",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "MDPT"
+                            },
+                            {
+                            "ctr_stat": "X3",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "DNOD"
+                            },
+                            {
+                            "ctr_stat": "X4",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "PPSP"
+                            },
+                            {
+                            "ctr_stat": "E5",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "DER"
+                            },
+                            {
+                            "ctr_stat": "X5",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "DER"
+                            },
+                            {
+                            "ctr_stat": "X6",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "BVH"
+                            },
+                            {
+                            "ctr_stat": "E7",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "BRC"
+                            },
+                            {
+                            "ctr_stat": "X8",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "RTM"
+                            },
+                            {
+                            "ctr_stat": "XF",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "R"
+                            },
+                            {
+                            "ctr_stat": "E6",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "DHPR"
+                            },
+                            {
+                            "ctr_stat": "E9",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "RDT"
+                            },
+                            {
+                            "ctr_stat": "E1",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "MCT"
+                            },
+                            {
+                            "ctr_stat": "EE",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "NGP"
+                            },
+                            {
+                            "ctr_stat": "XE",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "NGP"
+                            },
+                            {
+                            "ctr_stat": "Eb",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "AKV"
+                            },
+                            {
+                            "ctr_stat": "Es",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "PRTK"
+                            },
+                            {
+                            "ctr_stat": "Xe",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "CMLK"
+                            },
+                            {
+                            "ctr_stat": "Ea",
+                            "imp_exp_flg": "E",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "CNA"
+                            },
+                            {
+                            "ctr_stat": "Eq",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "CWCJ"
+                            },
+                            {
+                            "ctr_stat": "Er",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "RPCK"
+                            },
+                            {
+                            "ctr_stat": "Ek",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "MKIG"
+                            },
+                            {
+                            "ctr_stat": "xf",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "MKIG"
+                            },
+                            {
+                            "ctr_stat": "El",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "NSGT"
+                            },
+                            {
+                            "ctr_stat": "Xp",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "PCWD"
+                            },
+                            {
+                            "ctr_stat": "Ed",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "HIMB"
+                            },
+                            {
+                            "ctr_stat": "Eo",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "OPSG"
+                            },
+                            {
+                            "ctr_stat": "Xo",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "OPSG"
+                            },
+                            {
+                            "ctr_stat": "Ef",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "PCWD"
+                            },
+                            {
+                            "ctr_stat": "xb",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "BMCT"
+                            },
+                            {
+                            "ctr_stat": "xg",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "NSGT"
+                            },
+                            {
+                            "ctr_stat": "EJ",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "JNPT"
+                            },
+                            {
+                            "ctr_stat": "XJ",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "JNPT"
+                            },
+                            {
+                            "ctr_stat": "XN",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "NSCT"
+                            },
+                            {
+                            "ctr_stat": "Eg",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "SCIC"
+                            },
+                            {
+                            "ctr_stat": "Ee",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "CMLK"
+                            },
+                            {
+                            "ctr_stat": "Xc",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "C"
+                            },
+                            {
+                            "ctr_stat": "Ec",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "C"
+                            },
+                            {
+                            "ctr_stat": "Ez",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "BRH"
+                            },
+                            {
+                            "ctr_stat": "Ep",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "E",
+                            "gw_port_cd": "KIIP"
+                            },
+                            {
+                            "ctr_stat": "Xh",
+                            "imp_exp_flg": "X",
+                            "ldd_mt_flg": "L",
+                            "gw_port_cd": "BEN"
+                            }
+                        ]

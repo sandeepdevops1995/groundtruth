@@ -22,4 +22,10 @@ class TrackMasterSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = TrackDetails
         fileds = ("track_id", "track_no")
-        load_instance = True    
+        load_instance = True
+
+class CtrStatMasterSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = CtrStat
+        fileds = ("ctr_stat", "imp_exp_flg","ldd_mt_flg","gw_port_cd")
+        load_instance = True 

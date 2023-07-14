@@ -23,6 +23,8 @@ RAKE_INWARD_CONTAINER_ENDPOINT = "/rake_inward_container"
 WAGON_ENDPOINT = '/wagon'
 GATEWAY_PORT_ENDPOINT = '/gateway_port'
 UPDATE_RAKE_CONTAINER_ENDPOINT = '/update_rake_container'
+CONTAINER_STAT_ENDPOINT = "/container_stat"
+TRACK_MASTER_DATA_ENDPOINT = '/track_mstr_data'
 
 #time format in db:
 TIME_FORMAT ="%Y-%m-%d %H:%M:%S"
@@ -43,6 +45,7 @@ KEY_ID = "id"
 KEY_FROM_DATE = "from_date"
 KEY_TO_DATE = "to_date"
 KEY_GATEWAY_PORT = "gateway_port"
+KEY_PENDANCY_TYPE = "pendancy_type"
 
 
 # RAKE 
@@ -280,7 +283,7 @@ RAKE_ID             = "rake_id"
 CONTAINER_SIZE      = "container_size"
 CONTAINER_TYPE      = "container_type"
 CONTAINER_HEIGHT    = "container_height"
-CONTAINER_STATUS    = "container_status"
+CONTAINER_STAT      = "container_stat"
 CONTAINER_LIFE_NO   = "container_life_no"
 HAZARD_STATUS       = "hazard_status"
 DAMAGE_STATUS       = "damage_status"

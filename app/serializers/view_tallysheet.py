@@ -3,6 +3,8 @@ from app import ma
 from app.models.warehouse.ctms_cargo_job import CTMSCargoJob,CTMSBillDetails
 import config
 from app.enums import JobOrderType, SerialNumberType
+from app.models.warehouse.truck import TruckDetails
+from app import postgres_db as db
 
 
 class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
@@ -12,6 +14,11 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
         if not data.get('cha_code'):
             data['cha_code'] = self.context.get('cha_code')
         data['truck_number'] = self.context.get('truck_number_'+str(data['ctms_cargo_job_id']))
+        truck_query = db.session.query(TruckDetails).filter(TruckDetails.truck_number==data['truck_number']).order_by(TruckDetails.created_at.desc()).first()
+        if truck_query:
+            data['truck_arrival_date'] = truck_query.truck_arrival_date
+        else:
+            data['truck_arrival_date'] = None
         return data
 
     shipping_bill = fields.Method("get_shipping_bill")
@@ -30,6 +37,7 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     warehouse_id = fields.String(data_key='wh_id')
     exporter_name = fields.Method("get_exporter_name")
     importer_name = fields.Method("get_importer_name")
+    no_of_packages_declared = fields.Method("get_no_of_packages_declared")
 
     def get_shipping_bill(self, obj):
         return obj.ccls_bill.shipping_bill_number
@@ -63,11 +71,14 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     
     def get_importer_name(self,obj):
         return obj.ccls_bill.importer_name
+    
+    def get_no_of_packages_declared(self,obj):
+        return obj.ccls_bill.no_of_packages_declared
 
 
     class Meta:
         model = CTMSBillDetails
-        fields = ("id",'ctms_cargo_job_id',"shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","warehouse_name","stacking_type","bill_date","warehouse_id","ccls_grid_locations","gate_number","bol_date","exporter_name","importer_name")
+        fields = ("id",'ctms_cargo_job_id',"shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","warehouse_name","stacking_type","bill_date","warehouse_id","ccls_grid_locations","gate_number","bol_date","exporter_name","importer_name","no_of_packages_declared")
 
 
 class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):

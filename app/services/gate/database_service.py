@@ -135,10 +135,20 @@ class GateDbService:
                 result = soap_service.get_permit_details(permit_number)
                 
             if result and 'PermitNumber' in result and result['PermitNumber']:
-                if result['PermitDateTime'] and isinstance(result['PermitDateTime'], datetime):
-                    result['PermitDateTime']=result['PermitDateTime'].strftime("%Y-%m-%d %H:%M:%S")
-                if result['CtrLifeNumber'] and isinstance(result['CtrLifeNumber'], date):
-                    result['CtrLifeNumber']=result['CtrLifeNumber'].strftime("%Y-%m-%d")
+                if result['PermitDateTime']:
+                    if isinstance(result['PermitDateTime'], datetime):
+                        result['PermitDateTime']=result['PermitDateTime'].strftime("%Y-%m-%d %H:%M:%S")
+                    if isinstance(result['PermitDateTime'], date):
+                        result['PermitDateTime']=result['PermitDateTime'].strftime("%Y-%m-%d")
+                    if isinstance(result['PermitDateTime'], str) and result['PermitNumber'].startswith('GP'):
+                            result['PermitDateTime']=datetime.strptime(result['PermitDateTime'], "%d-%b-%y").strftime("%Y-%m-%d %H:%M:%S")
+                if result['CtrLifeNumber']:
+                    if isinstance(result['CtrLifeNumber'], datetime):
+                        result['CtrLifeNumber']=result['CtrLifeNumber'].strftime("%Y-%m-%d %H:%M:%S")
+                    if isinstance(result['CtrLifeNumber'], date):
+                        result['CtrLifeNumber']=result['CtrLifeNumber'].strftime("%Y-%m-%d")
+                    if isinstance(result['CtrLifeNumber'], str) and result['PermitNumber'].startswith('GP'):
+                        result['CtrLifeNumber']=datetime.strptime(result['CtrLifeNumber'], "%d-%b-%y").strftime("%Y-%m-%d %H:%M:%S")
                 if result['VehicleGateInDateTime'] and isinstance(result['VehicleGateInDateTime'], datetime):
                     result['VehicleGateInDateTime']=result['VehicleGateInDateTime'].strftime("%Y-%m-%d %H:%M:%S")
                 if result['ContainerSize'] and  result['ContainerType']:

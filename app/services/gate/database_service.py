@@ -138,17 +138,29 @@ class GateDbService:
                 if result['PermitDateTime']:
                     if isinstance(result['PermitDateTime'], datetime):
                         result['PermitDateTime']=result['PermitDateTime'].strftime("%Y-%m-%d %H:%M:%S")
-                    if isinstance(result['PermitDateTime'], date):
+                    elif isinstance(result['PermitDateTime'], date):
                         result['PermitDateTime']=result['PermitDateTime'].strftime("%Y-%m-%d")
-                    if isinstance(result['PermitDateTime'], str) and result['PermitNumber'].startswith('GP'):
+                    elif isinstance(result['PermitDateTime'], str):
+                        try:
                             result['PermitDateTime']=datetime.strptime(result['PermitDateTime'], "%d-%b-%y").strftime("%Y-%m-%d %H:%M:%S")
+                        except:
+                            try:
+                                result['PermitDateTime']=datetime.strptime(result['PermitDateTime'], "%Y-%m-%d %H:%M:%S")
+                            except:
+                                result['PermitDateTime']=None
                 if result['CtrLifeNumber']:
                     if isinstance(result['CtrLifeNumber'], datetime):
                         result['CtrLifeNumber']=result['CtrLifeNumber'].strftime("%Y-%m-%d %H:%M:%S")
-                    if isinstance(result['CtrLifeNumber'], date):
+                    elif isinstance(result['CtrLifeNumber'], date):
                         result['CtrLifeNumber']=result['CtrLifeNumber'].strftime("%Y-%m-%d")
-                    if isinstance(result['CtrLifeNumber'], str) and result['PermitNumber'].startswith('GP'):
-                        result['CtrLifeNumber']=datetime.strptime(result['CtrLifeNumber'], "%d-%b-%y").strftime("%Y-%m-%d %H:%M:%S")
+                    elif isinstance(result['CtrLifeNumber'], str):
+                        try:
+                            result['CtrLifeNumber']=datetime.strptime(result['CtrLifeNumber'], "%d-%b-%y").strftime("%Y-%m-%d %H:%M:%S")
+                        except:
+                            try:
+                                result['CtrLifeNumber']=datetime.strptime(result['CtrLifeNumber'], "%Y-%m-%d %H:%M:%S")
+                            except:
+                                result['CtrLifeNumber']=None
                 if result['VehicleGateInDateTime'] and isinstance(result['VehicleGateInDateTime'], datetime):
                     result['VehicleGateInDateTime']=result['VehicleGateInDateTime'].strftime("%Y-%m-%d %H:%M:%S")
                 if result['ContainerSize'] and  result['ContainerType']:
@@ -449,20 +461,20 @@ class GateDbService:
             post_data[Constants.KEY_SOAP_G_VEH_NO] = data["vehicle_no"]
             post_data[Constants.KEY_SOAP_G_VEH_TYPE] = data["vehicle_type"].upper() if "vehicle_type" in data and data["vehicle_type"] else None
             post_data[Constants.KEY_SOAP_G_GT_DOC_NO] = data["permit_no"]
-            post_data[Constants.KEY_SOAP_G_DT_GT_DOC] = datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S')
+            post_data[Constants.KEY_SOAP_G_DT_GT_DOC] = datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S') if data["permit_date"] else None
             post_data[Constants.KEY_SOAP_G_DT_GT_DOC_VLD] =  datetime.strptime(data["permit_expiry_date"], '%Y-%m-%d %H:%M:%S')
             post_data[Constants.KEY_SOAP_G_USER_ID] = data["user_id"]
             post_data[Constants.KEY_SOAP_G_SLINE_CD] = data["sline_code"]
             post_data[Constants.KEY_SOAP_G_XPMT_NO] = data["permit_no"]
-            post_data[Constants.KEY_SOAP_G_DT_XPMT_NO] = datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S').isoformat()
+            post_data[Constants.KEY_SOAP_G_DT_XPMT_NO] = datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S').isoformat() if data["permit_date"] else None
             post_data[Constants.KEY_SOAP_G_GATE_NO] = data["gate_no"] 
             post_data[Constants.KEY_SOAP_G_STK_LOC] = data["stk_loc"] 
             if "gate_in_time" in data:
-                post_data[Constants.KEY_SOAP_G_DT_VEH_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S')
-                post_data[Constants.KEY_SOAP_G_DT_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S')
+                # post_data[Constants.KEY_SOAP_G_DT_VEH_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S') if data["gate_in_time"] else None
+                post_data[Constants.KEY_SOAP_G_DT_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S') if data["gate_in_time"] else None
             if "gate_out_time" in data:
-                post_data[Constants.KEY_SOAP_G_DT_VEH_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S')
-                post_data[Constants.KEY_SOAP_G_DT_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S')
+                post_data[Constants.KEY_SOAP_G_DT_VEH_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S') if data["gate_out_time"] else None
+                post_data[Constants.KEY_SOAP_G_DT_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S') if data["gate_out_time"] else None
             return post_data
         except Exception as e:
             logger.exception(str(e))
@@ -472,9 +484,10 @@ class GateDbService:
         post_data = {}
         try:
             post_data[Constants.KEY_SOAP_G_VEH_NO] = data["vehicle_no"]
+            post_data[Constants.KEY_SOAP_G_DT_VEH_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S') if "gate_in_time" in data and data["gate_in_time"] else None
             post_data[Constants.KEY_SOAP_G_VEH_TYPE] = data["vehicle_type"].upper() if "vehicle_type" in data and data["vehicle_type"] else None
             post_data[Constants.KEY_SOAP_G_GT_DOC_NO] =  data["permit_no"]
-            post_data[Constants.KEY_SOAP_G_DT_GT_DOC] =  datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S')
+            post_data[Constants.KEY_SOAP_G_DT_GT_DOC] =  datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S') if data["permit_date"] else None
             post_data[Constants.KEY_SOAP_G_DT_GT_DOC_VLD] = datetime.strptime(data["permit_expiry_date"], '%Y-%m-%d %H:%M:%S')
             post_data[Constants.KEY_SOAP_G_SEAL_STAT] = "Y" if ("seal_no" in data) and data["seal_no"] else "N"
             post_data[Constants.KEY_SOAP_G_SEAL_NO] = data["seal_no"] 
@@ -493,13 +506,13 @@ class GateDbService:
             post_data[Constants.KEY_SOAP_G_HAZ_FLG] = "Y" if "hazard_status" in data and data["hazard_status"] else "N" 
             post_data[Constants.KEY_SOAP_G_STK_LOC] = data["stk_loc"] 
             if "gate_in_time" in data:
-                post_data[Constants.KEY_SOAP_G_DT_VEH_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S')
+                # post_data[Constants.KEY_SOAP_G_DT_VEH_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S') if data["gate_in_time"] else None
                 post_data[Constants.KEY_SOAP_G_ARR_PMT_NO] = data["permit_no"] if "permit_no" in data else "TEST"
-                post_data[Constants.KEY_SOAP_G_DT_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S')
+                post_data[Constants.KEY_SOAP_G_DT_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S') if data["gate_in_time"] else None
             if "gate_out_time" in data:
-                post_data[Constants.KEY_SOAP_G_DT_VEH_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S')
+                post_data[Constants.KEY_SOAP_G_DT_VEH_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S') if data["gate_out_time"] else None
                 post_data[Constants.KEY_SOAP_G_DEP_PMT_NO] = data["permit_no"] if "permit_no" in data else "TEST"
-                post_data[Constants.KEY_SOAP_G_DT_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S')
+                post_data[Constants.KEY_SOAP_G_DT_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S') if data["gate_out_time"] else None
             return post_data
         except Exception as e:
             logger.exception(str(e))

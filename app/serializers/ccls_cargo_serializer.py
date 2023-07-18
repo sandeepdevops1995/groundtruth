@@ -59,7 +59,7 @@ class CCLSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CCLSCargoBillDetails
-        fields = ("shipping_bill_number", "boe_number","bol_number","bill_date","bol_date","importer_code","importer_name","package_code","no_of_packages_declared","package_weight","cha_code","cargo_type","commodity_id","exporter_name")
+        fields = ("shipping_bill_number", "boe_number","bol_number","bill_date","bol_date","importer_code","importer_name","package_code","no_of_packages_declared","package_weight","cha_code","cargo_type","commodity_id","exporter_name","cha_name")
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE
@@ -76,7 +76,7 @@ class CCLSCargoInsertSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = MasterCargoDetails
-        fields = ("gross_weight", "private_or_concor_labour_flag", "shipping_liner_code","cncl_flag","icd_location_code","truck_details","container_info","bill_details","carting_details","job_type","fcl_or_lcl","stuffing_details","destuffing_details","delivery_details","cha_name")
+        fields = ("gross_weight", "private_or_concor_labour_flag", "shipping_liner_code","cncl_flag","icd_location_code","truck_details","container_info","bill_details","carting_details","job_type","fcl_or_lcl","stuffing_details","destuffing_details","delivery_details","cha_name","seal_number")
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE

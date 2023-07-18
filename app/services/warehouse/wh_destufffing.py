@@ -47,8 +47,9 @@ class WarehouseDeStuffing(object):
         latest_bill_details = cargo_details.pop('bill_details_list')
         for item in latest_bill_details:
             for each_bill in existed_bill_details:
-                existed_bill_number = each_bill[constants.BACKEND_BILL_OF_ENTRY_NUMBER] if constants.BACKEND_BILL_OF_ENTRY_NUMBER in each_bill else each_bill[constants.BACKEND_BILL_OF_LADEN_NUMBER]
-                latest_bill_number = item[constants.CCLS_BILL_OF_ENTRY_NUMBER] if constants.CCLS_BILL_OF_ENTRY_NUMBER in item else item[constants.CCLS_BILL_OF_LADEN_NUMBER]
+                existed_bill_number = each_bill[constants.BACKEND_BILL_OF_ENTRY_NUMBER] if constants.BACKEND_BILL_OF_ENTRY_NUMBER in each_bill and  each_bill[constants.BACKEND_BILL_OF_ENTRY_NUMBER] else each_bill[constants.BACKEND_BILL_OF_LADEN_NUMBER]
+                latest_bill_number = item[constants.CCLS_BILL_OF_ENTRY_NUMBER] if constants.CCLS_BILL_OF_ENTRY_NUMBER in item and item[constants.CCLS_BILL_OF_ENTRY_NUMBER] else item[constants.CCLS_BILL_OF_LADEN_NUMBER]
+                logger.debug("{}, {}, {}, {}, {}, {}, {}, {}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_GET_BILL_DETAILS_FROM_DB,'JT_'+str(cargo_details.get('job_type')),request_parameter,existed_bill_number,latest_bill_number))
                 if existed_bill_number==latest_bill_number:
                 # if int(item[constants.CCLS_BILL_OF_ENTRY_NUMBER]) == each_bill[constants.BACKEND_BILL_OF_ENTRY_NUMBER] or int(item[constants.CCLS_BILL_OF_LADEN_NUMBER] == each_bill[constants.BACKEND_BILL_OF_LADEN_NUMBER]):
                     item['id'] = each_bill['id']

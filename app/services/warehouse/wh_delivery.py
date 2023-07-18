@@ -50,8 +50,8 @@ class WarehouseDelivery(object):
         latest_bill_details = cargo_details.pop('bill_details_list')
         for item in latest_bill_details:
             for each_bill in existed_bill_details:
-                existed_bill_number = each_bill[constants.BACKEND_BILL_OF_ENTRY_NUMBER] if constants.BACKEND_BILL_OF_ENTRY_NUMBER in each_bill else each_bill[constants.BACKEND_BILL_OF_LADEN_NUMBER]
-                latest_bill_number = item[constants.CCLS_BILL_OF_ENTRY_NUMBER] if constants.CCLS_BILL_OF_ENTRY_NUMBER in item else item[constants.CCLS_BILL_OF_LADEN_NUMBER]
+                existed_bill_number = each_bill[constants.BACKEND_BILL_OF_ENTRY_NUMBER] if constants.BACKEND_BILL_OF_ENTRY_NUMBER in each_bill and each_bill[constants.BACKEND_BILL_OF_ENTRY_NUMBER] else each_bill[constants.BACKEND_BILL_OF_LADEN_NUMBER]
+                latest_bill_number = item[constants.CCLS_BILL_OF_ENTRY_NUMBER] if constants.CCLS_BILL_OF_ENTRY_NUMBER in item and item[constants.CCLS_BILL_OF_ENTRY_NUMBER] else item[constants.CCLS_BILL_OF_LADEN_NUMBER]
                 if existed_bill_number==latest_bill_number:
                     item['id'] = each_bill['id']
             item['job_order_id'] = job_order_id

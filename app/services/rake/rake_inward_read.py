@@ -32,8 +32,8 @@ class RakeInwardReadService:
                 #     result = soap_service.get_train_data(query_values["train_number"])
             if "trans_date" in query_values:
                 trans_date = query_values.pop('trans_date')
-                start_date = trans_date - timedelta(days = 2)
-                end_date =  trans_date + timedelta(days = 2)
+                start_date = trans_date - timedelta(days = 5)
+                end_date =  trans_date + timedelta(days = 5)
                 rake_query = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)>=start_date, cast(CCLSRake.trans_date, DATE)<=end_date)
                 rake_query = rake_query.filter_by(**query_values)
             else:
@@ -156,6 +156,7 @@ class RakeInwardReadService:
                 container_record[Constants.LDD_MT_FLAG] = {Constants.VALUE : data[i].ldd_mt_flg} 
                 container_record[Constants.KEY_SLINE_CODE] =  {Constants.VALUE : data[i].sline_code}
                 container_record[Constants.WAGON_NUMBER] = { Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:data[i].wagon_sequence_number}
-                container_record[Constants.CONTAINER_STAT] = "L" if data[i].container_gross_weight else "E"
+                # container_record[Constants.CONTAINER_STAT] = "L" if "container_gross_weight" in data[i] and data[i].container_gross_weight else "E"
+                container_record[Constants.CONTAINER_STAT] = "E"
                 response[Constants.CONTAINER_LIST].append(container_record)
         return json.dumps(response)

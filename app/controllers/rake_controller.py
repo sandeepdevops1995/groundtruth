@@ -105,12 +105,12 @@ class PendancyList(View):
     # @api_auth_required
     def get(self):
         gateway_port = request.args.get(Constants.KEY_GATEWAY_PORT,None)
-        pendancy_type = request.args.get(Constants.KEY_PENDANCY_TYPE,None)
-        if gateway_port and pendancy_type:
+        pendency_type = request.args.get(Constants.KEY_PENDENCY_TYPE,None)
+        if gateway_port and pendency_type:
             gateway_ports= gateway_port.split(",")
-            pendancy_type = int(pendancy_type)
+            pendency_types = pendency_type.split(",")
             logger.info("GT, pendacy list for port"+str(gateway_ports))
-            response = PendancyService.get_pendancy_list(pendancy_type,gateway_ports)
+            response = PendancyService.get_pendancy_list(pendency_types,gateway_ports)
             # response = self.format_data(response,gateway_ports)
             return Response(response, status=200, mimetype='application/json')
         else:
@@ -123,7 +123,7 @@ class PendancyList(View):
             output[port] = []
         for each in json.loads(response):
             output[each["gateway_port_code"]].append(each)
-        final_output =[]    
+        final_output =[]
         for port in gateway_ports:
             port_data ={}
             port_data["gateway_port"] = port
@@ -182,7 +182,7 @@ class UpdateCGISurvey(View):
     def post(self):
         data = request.get_json()
         if data:
-            response = RakeInwardWriteService.update_CGI_survey(data)    
+            response = RakeInwardWriteService.update_CGI_survey(data)
             return soap_API_response(response)
         return Response(json.dumps({"message":"please provide valid data"}),status=400,mimetype='application/json')
    
@@ -192,7 +192,7 @@ class UpdateCGOSurvey(View):
     def post(self):
         data = request.get_json()
         if data:
-            response = RakeOutwardWriteService.update_CGO_survey(data)    
+            response = RakeOutwardWriteService.update_CGO_survey(data)
             return soap_API_response(response)
         return Response(json.dumps({"message":"please provide valid data"}),status=400,mimetype='application/json')
    

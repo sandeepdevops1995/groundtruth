@@ -58,9 +58,9 @@ class PendancyService():
                 data["container_life_number"] = data["container_life_number"].strftime("%Y-%m-%dT%H:%M:%S")
                 
             container_stat = CtrStat.query.filter_by(ctr_stat=each["ctrStat"]).all()
-            data["imp_exp_flg"] = container_stat.imp_exp_flg if container_stat else None
-            data["ldd_mt_flg"] = container_stat.ldd_mt_flg if container_stat else None
-            data["gw_port_cd"] = container_stat.gw_port_cd if container_stat else None
+            data["imp_exp_flg"] = container_stat[0].imp_exp_flg if container_stat else None
+            data["ldd_mt_flg"] = container_stat[0].ldd_mt_flg if container_stat else None
+            data["gw_port_cd"] = container_stat[0].gw_port_cd if container_stat else None
 
             pendancy_list.append(data)
     
@@ -86,62 +86,63 @@ class PendancyService():
             logger.exception(str(e))
 
     @query_debugger()
-    def get_pendancy_list(pendancy_type,gateway_ports,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+    def get_pendancy_list(pendency_types,gateway_ports,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
         try:
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 final_data = []
-                if PendencyType.LOADED.value == pendancy_type:
-                    logger.info("fetching LOADED pendancy containers")
-                    for port in gateway_ports:
-                        request_params = {'GW_PORT_CODE': port,
-                                        # 'P_STUFF_AT': 'FAC',
-                                        'P_CUTOFF_DATE': ''}
-                        data = soap_service.get_pendancy_details(request_params)
-                        if data:
-                            final_data += data
-                elif PendencyType.EMPTY.value == pendancy_type:
-                    logger.info("fetching EMPTY pendancy containers")
-                    for port in gateway_ports:
-                        request_params = {'GW_PORT_CODE': port}
-                        data = soap_service.get_empty_pendancy_details(request_params)
-                        if data:
-                            for obj in data:
-                                obj['ctrType'] = 'N/A'
-                                obj['ctrActyCd'] = 'N/A'
-                                obj['stfAt'] = 'N/A'
-                                obj['arrDate'] = None
-                                obj['sealDate'] = None
-                                obj['sealNo'] = 'N/A'
-                                obj['odcFlg'] = 'N/A'
-                                obj['wt'] = 0
-                            final_data += data
+                for pendency_type in vs:
+                    if PendencyType.LOADED.name == pendency_type:
+                        logger.info("fetching LOADED pendancy containers")
+                        for port in gateway_ports:
+                            request_params = {'GW_PORT_CODE': port,
+                                            # 'P_STUFF_AT': 'FAC',
+                                            'P_CUTOFF_DATE': ''}
+                            data = soap_service.get_pendancy_details(request_params)
+                            if data:
+                                final_data += data
+                    elif PendencyType.EMPTY.name == pendency_type:
+                        logger.info("fetching EMPTY pendancy containers")
+                        for port in gateway_ports:
+                            request_params = {'GW_PORT_CODE': port}
+                            data = soap_service.get_empty_pendancy_details(request_params)
+                            if data:
+                                for obj in data:
+                                    obj['ctrType'] = 'N/A'
+                                    obj['ctrActyCd'] = 'N/A'
+                                    obj['stfAt'] = 'N/A'
+                                    obj['arrDate'] = None
+                                    obj['sealDate'] = None
+                                    obj['sealNo'] = 'N/A'
+                                    obj['odcFlg'] = 'N/A'
+                                    obj['wt'] = 0
+                                final_data += data
 
-                elif PendencyType.BLOCK.value == pendancy_type:
-                    logger.info("fetching BLOCK pendancy containers")
-                    for port in gateway_ports:
-                        request_params = {'GW_PORT_CODE': port}
-                        data = soap_service.get_block_pendancy_details(request_params)
-                        if data:
-                           final_data += data
+                    elif PendencyType.BLOCK.name == pendency_type:
+                        logger.info("fetching BLOCK pendancy containers")
+                        for port in gateway_ports:
+                            request_params = {'GW_PORT_CODE': port}
+                            data = soap_service.get_block_pendancy_details(request_params)
+                            if data:
+                                final_data += data
 
-                elif PendencyType.EXPRESS.value == pendancy_type:
-                    logger.info("fetching EXPRESS pendancy containers")
-                    for port in gateway_ports:
-                        request_params = {'GW_PORT_CODE': port}
-                        data = soap_service.get_express_pendancy_details(request_params)
-                        if data:
-                            final_data += data
+                    elif PendencyType.EXPRESS.name == pendency_type:
+                        logger.info("fetching EXPRESS pendancy containers")
+                        for port in gateway_ports:
+                            request_params = {'GW_PORT_CODE': port}
+                            data = soap_service.get_express_pendancy_details(request_params)
+                            if data:
+                                final_data += data
 
-                elif PendencyType.LCL.value == pendancy_type:
-                    pass
-                    # logger.info("fetching LCL peendancy containers")
-                    # for port in gateway_ports:
-                    #     request_params = {'GW_PORT_CODE': port}
-                    #     data = soap_service.get_lcl_pendancy_details(request_params)
-                    #     if data:
-                    #         final_data += data
+                    elif PendencyType.LCL.name == pendency_type:
+                        pass
+                        # logger.info("fetching LCL peendancy containers")
+                        # for port in gateway_ports:
+                        #     request_params = {'GW_PORT_CODE': port}
+                        #     data = soap_service.get_lcl_pendancy_details(request_params)
+                        #     if data:
+                        #         final_data += data
 
                 if final_data:
                     data = PendancyService.format_data_from_ccls(final_data,True)

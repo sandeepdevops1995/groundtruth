@@ -459,6 +459,7 @@ class GateDbService:
         post_data = {}
         try:
             post_data[Constants.KEY_SOAP_G_VEH_NO] = data["vehicle_no"]
+            post_data[Constants.KEY_SOAP_G_DT_VEH_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S') if "gate_in_time" in data and data["gate_in_time"] else None
             post_data[Constants.KEY_SOAP_G_VEH_TYPE] = data["vehicle_type"].upper() if "vehicle_type" in data and data["vehicle_type"] else None
             post_data[Constants.KEY_SOAP_G_GT_DOC_NO] = data["permit_no"]
             post_data[Constants.KEY_SOAP_G_DT_GT_DOC] = datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S') if data["permit_date"] else None
@@ -470,7 +471,7 @@ class GateDbService:
             post_data[Constants.KEY_SOAP_G_GATE_NO] = data["gate_no"] 
             post_data[Constants.KEY_SOAP_G_STK_LOC] = data["stk_loc"] 
             if "gate_in_time" in data:
-                # post_data[Constants.KEY_SOAP_G_DT_VEH_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S') if data["gate_in_time"] else None
+                # post_data[Constants.KEY_SOAP_G_DT_VEH_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S')
                 post_data[Constants.KEY_SOAP_G_DT_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S') if data["gate_in_time"] else None
             if "gate_out_time" in data:
                 post_data[Constants.KEY_SOAP_G_DT_VEH_DEP] = datetime.strptime(data["gate_out_time"], '%Y-%m-%d %H:%M:%S') if data["gate_out_time"] else None
@@ -506,7 +507,7 @@ class GateDbService:
             post_data[Constants.KEY_SOAP_G_HAZ_FLG] = "Y" if "hazard_status" in data and data["hazard_status"] else "N" 
             post_data[Constants.KEY_SOAP_G_STK_LOC] = data["stk_loc"] 
             if "gate_in_time" in data:
-                # post_data[Constants.KEY_SOAP_G_DT_VEH_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S') if data["gate_in_time"] else None
+                # post_data[Constants.KEY_SOAP_G_DT_VEH_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S')
                 post_data[Constants.KEY_SOAP_G_ARR_PMT_NO] = data["permit_no"] if "permit_no" in data else "TEST"
                 post_data[Constants.KEY_SOAP_G_DT_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S') if data["gate_in_time"] else None
             if "gate_out_time" in data:

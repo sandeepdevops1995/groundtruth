@@ -45,7 +45,7 @@ KEY_ID = "id"
 KEY_FROM_DATE = "from_date"
 KEY_TO_DATE = "to_date"
 KEY_GATEWAY_PORT = "gateway_port"
-KEY_PENDANCY_TYPE = "pendancy_type"
+KEY_PENDENCY_TYPE = "pendency_type"
 
 
 # RAKE 

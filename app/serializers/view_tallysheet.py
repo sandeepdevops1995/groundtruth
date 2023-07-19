@@ -115,6 +115,7 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     gross_weight = fields.Method("get_gross_weight")
     cha_name = fields.Method("get_cha_name")
     serial_number = fields.Method("get_serial_number")
+    seal_number = fields.Method("get_seal_number")
     cargo_details = fields.Nested(CTMSbillDetailsSchema, many=True)
 
     def get_cargo_carting_number(self, obj):
@@ -205,8 +206,11 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
                 serial_number_prefix=SerialNumberType.DIRECT_DELIVERY.value
             return serial_number_prefix+str(obj.serial_number)
         return obj.serial_number
+    
+    def get_seal_number(self,obj):
+        return obj.ctms_job_order.seal_number
 
     class Meta:
         model = CTMSCargoJob
-        fields = ("id","cargo_carting_number","crn_number","gpm_number","gpm_date","total_package_count","job_type","container_flag","equipment_id","created_on_epoch",'container_number','job_start_time','job_end_time','sline_code','container_location_code','container_life','container_type','container_size','container_iso_code','private_or_concor_labour_flag','icd_location_code','handling_code','cargo_details',"gw_port_code","reserved_flag","contractor_job_order_no","contractor_job_order_date","gross_weight","cha_name","serial_number","destuffing_date")
+        fields = ("id","cargo_carting_number","crn_number","gpm_number","gpm_date","total_package_count","job_type","container_flag","equipment_id","created_on_epoch",'container_number','job_start_time','job_end_time','sline_code','container_location_code','container_life','container_type','container_size','container_iso_code','private_or_concor_labour_flag','icd_location_code','handling_code','cargo_details',"gw_port_code","reserved_flag","contractor_job_order_no","contractor_job_order_date","gross_weight","cha_name","serial_number","destuffing_date","seal_number")
         include_relationships = True

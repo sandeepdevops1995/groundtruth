@@ -37,7 +37,7 @@ class ContainerData(View):
         else:
             operation_type = None
         if not operation_type or operation_type not in ["EXIM","DOM"]:
-            return Response(json.dumps({"message": "lane_type is missed/invalid"}), status=404, mimetype='application/json')
+            return Response(json.dumps({"message": "operation_type is missed/invalid"}), status=404, mimetype='application/json')
         logger.info('GT,Get request from the GATE service : {}'.format(permit_number))
         result = GateDbService().get_details_permit_number(permit_number,operation_type)
         logger.info('Conainer details response: {}'.format(result))
@@ -65,7 +65,7 @@ class CclsData(View):
         else:
             operation_type = None
         if not operation_type or operation_type not in ["EXIM","DOM"]:
-            return Response(json.dumps({"message": "lane_type is missed/invalid"}), status=404, mimetype='application/json')
+            return Response(json.dumps({"message": "operation_type is missed/invalid"}), status=404, mimetype='application/json')
         if permit_number is not None:
             logger.info('GT,Get request from the GATE service : {}'.format(permit_number))
             result = GateDbService().get_details_permit_number(permit_number,operation_type)

@@ -92,7 +92,7 @@ class PendancyService():
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 final_data = []
-                for pendency_type in vs:
+                for pendency_type in pendency_types:
                     if PendencyType.LOADED.name == pendency_type:
                         logger.info("fetching LOADED pendancy containers")
                         for port in gateway_ports:

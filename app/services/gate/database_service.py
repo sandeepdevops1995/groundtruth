@@ -145,7 +145,7 @@ class GateDbService:
                             result['PermitDateTime']=datetime.strptime(result['PermitDateTime'], "%d-%b-%y").strftime("%Y-%m-%d %H:%M:%S")
                         except:
                             try:
-                                result['PermitDateTime']=datetime.strptime(result['PermitDateTime'], "%Y-%m-%d %H:%M:%S")
+                                result['PermitDateTime']=datetime.strptime(result['PermitDateTime'], "%Y-%m-%dT%H:%M:%S.%f").strftime("%Y-%m-%d %H:%M:%S")
                             except:
                                 result['PermitDateTime']=None
                 if result['CtrLifeNumber']:
@@ -158,7 +158,7 @@ class GateDbService:
                             result['CtrLifeNumber']=datetime.strptime(result['CtrLifeNumber'], "%d-%b-%y").strftime("%Y-%m-%d %H:%M:%S")
                         except:
                             try:
-                                result['CtrLifeNumber']=datetime.strptime(result['CtrLifeNumber'], "%Y-%m-%d %H:%M:%S")
+                                result['CtrLifeNumber']=datetime.strptime(result['CtrLifeNumber'], "%Y-%m-%dT%H:%M:%S.%f").strftime("%Y-%m-%d %H:%M:%S")
                             except:
                                 result['CtrLifeNumber']=None
                 if result['VehicleGateInDateTime'] and isinstance(result['VehicleGateInDateTime'], datetime):

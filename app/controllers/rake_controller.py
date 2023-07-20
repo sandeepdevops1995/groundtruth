@@ -109,7 +109,7 @@ class PendancyList(View):
         if gateway_port and pendency_type:
             gateway_ports= gateway_port.split(",")
             pendency_types = pendency_type.split(",")
-            logger.info("GT, pendacy list for port"+str(gateway_ports))
+            logger.info("GT, pendacy list for ports: "+str(gateway_ports)+" and pendency types: "+str(pendency_types))
             response = PendancyService.get_pendancy_list(pendency_types,gateway_ports)
             # response = self.format_data(response,gateway_ports)
             return Response(response, status=200, mimetype='application/json')

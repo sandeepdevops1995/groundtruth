@@ -7,7 +7,7 @@ class PendancyContainer(db.Model):
     container_life_number = db.Column(db.DateTime())
     container_stat = db.Column(db.String(2))
     container_size = db.Column(db.Integer())
-    container_type = db.Column(db.String(2))
+    container_type = db.Column(db.String(5))
     container_weight = db.Column(db.Float())
     container_acty_code = db.Column(db.String(10))
     icd_loc_code = db.Column(db.String(10))
@@ -23,7 +23,7 @@ class PendancyContainer(db.Model):
     pid_number = db.Column(db.String(10))
     odc_flag = db.Column(db.String(10))
     hold_flg = db.Column(db.String(10))
-    hold_rels_flg = db.Column(db.String(10))
+    hold_rels_flg = db.Column(db.String(30))
     hold_rels_flg_next = db.Column(db.String(10))
     q_no = db.Column(db.String(10))
     

@@ -10,6 +10,8 @@ from app.services.rake.gt_upload_service import commit,save_in_diagnostics
 from app.models.utils import db_format
 import json
 from zeep.transports import Transport
+import xmltodict
+
 transport = Transport(timeout=10)
 
 
@@ -20,13 +22,34 @@ def get_permit_details(permit_number):
         # soap = zeep.Client(wsdl=wsdl_url, 
         #                 service_name="emptytrailerbpel_client_ep",
         #                 port_name="EmptyTrailerBPEL_pt")
+        # soap = zeep.Client(config.WSDL_FILE,transport=transport)
+        # logger.debug('Get Permit, soap service request with permit_number ( EXIM ) : '+permit_number)
+        # start_time = datetime.now()
+        # result = soap.service.process(permit_number)
+        # end_time = datetime.now()
+        # save_in_diagnostics(Constants.CCLS_DATA_ENDPOINT+ " (EXIM) ",{"permit_number":permit_number},{"output":str(result)},start_time,end_time)
+        # logger.debug('Get Permit, soap service response ( EXIM ) : '+str(result))
+        
         soap = zeep.Client(config.WSDL_FILE,transport=transport)
         logger.debug('Get Permit, soap service request with permit_number ( EXIM ) : '+permit_number)
-        start_time = datetime.now()
-        result = soap.service.process(permit_number)
-        end_time = datetime.now()
-        save_in_diagnostics(Constants.CCLS_DATA_ENDPOINT+ " (EXIM) ",{"permit_number":permit_number},{"output":str(result)},start_time,end_time)
-        logger.debug('Get Permit, soap service response ( EXIM ) : '+str(result))
+        result = {}
+        with soap.settings(raw_response=True):
+            start_time = datetime.now()
+            soap_res = soap.service.process(permit_number)
+            end_time = datetime.now()
+            data = xmltodict.parse(soap_res.text)
+            result = json.loads(json.dumps(data, indent=3))
+        if result and 'env:Envelope' in result and 'env:Body' in result['env:Envelope'] and 'EmptyTrailerOutput' in result['env:Envelope']['env:Body']:
+            result = result['env:Envelope']['env:Body']['EmptyTrailerOutput']
+            result.pop('@xmlns')
+            result['DamageStatus'] = None
+            result['VehicleGateInDateTime'] = None
+            for a in result:
+                if isinstance(result[a],dict):
+                    result[a] = None
+            # save in diagnostice
+            save_in_diagnostics(Constants.CCLS_DATA_ENDPOINT+ " (EXIM) ",{"permit_number":permit_number},{"output":str(result)},start_time,end_time)
+        print(result)
     except Exception as e:
         logger.exception('Get Permit, Exception ( EXIM ) : '+str(e))
         result = {}

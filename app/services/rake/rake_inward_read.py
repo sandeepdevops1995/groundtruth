@@ -6,7 +6,7 @@ import app.constants as Constants
 from app.services import soap_service
 from app.logger import logger
 from app.services.rake.gt_upload_service import commit
-from sqlalchemy import cast, DATE
+from sqlalchemy import cast, DATE, desc
 from datetime import datetime,timedelta
 import config
 import json
@@ -45,7 +45,7 @@ class RakeInwardReadService:
                 update_data['rake_id'] = rake_id
             rake_query.update(dict(update_data))
             commit()
-            data = rake_query.order_by('trans_date').all()
+            data = rake_query.order_by(desc('trans_date')).all()
             if 'rake_id' in query_values:
                 missed_containers = MissedInwardContainers.query.filter_by(rake_id=query_values['rake_id']).all()
                 data = data + missed_containers

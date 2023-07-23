@@ -10,10 +10,13 @@
     <xsd:sequence>
       <xsd:element name="carting_order_number" type="xsd:string"/>
       <xsd:element name="cha_code" type="xsd:string"/>
+      <xsd:element name="cha_Name" type="xsd:string"/>
       <xsd:element name="con_date" type="xsd:dateTime"/>
+      <xsd:element name="gw_port_code" type="xsd:string"/>
       <xsd:element name="max_date_unloading" type="xsd:dateTime"/>
       <xsd:element name="no_of_packages_unloaded" type="xsd:integer"/>
       <xsd:element name="party_code" type="xsd:string"/>
+      <xsd:element name="is_cargo_card_generated" type="xsd:string"/>
       <xsd:element name="reserve_flag" type="xsd:boolean"/>
       <xsd:element name="gross_weight" type="xsd:float"/>
       <xsd:element name="icd_location_code" type="xsd:string"/>
@@ -22,6 +25,8 @@
       <xsd:element name="container_size" type="xsd:string"/>
       <xsd:element name="container_life" type="xsd:dateTime"/>
       <xsd:element name="cncl_flag" type="xsd:string"/>
+      <xsd:element name="exporter_name" type="xsd:string"/>
+      <xsd:element name="private_or_concor_labour_flag" type="xsd:string"/>
       <xsd:element maxOccurs="unbounded" name="shipping_bill_details_list">
         <xsd:complexType>
           <xsd:sequence>

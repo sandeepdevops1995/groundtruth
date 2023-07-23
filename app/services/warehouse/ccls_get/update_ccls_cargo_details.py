@@ -8,19 +8,19 @@ import json
 class UpdateCargoDetails(object):
 
     def update_carting_details_schema_for_serializer(self,cargo_details):
-        container_info, carting_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["crn_number","crn_date","carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag","max_date_unloading","contractor_job_order_no","contractor_job_order_date"]])
+        container_info, carting_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["crn_number","crn_date","carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag","max_date_unloading","contractor_job_order_no","contractor_job_order_date","exporter_name"]])
         cargo_details['container_info'] = container_info
         cargo_details['carting_details'] = carting_details
         return cargo_details
     
     def update_stuffing_details_schema_for_serializer(self,cargo_details):
-        container_info, stuffing_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["container_number","stuffing_job_order","hsn_code","cargo_weight_in_crn","crn_number","gw_port_code"]])
+        container_info, stuffing_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["container_number","stuffing_job_order","cargo_weight_in_crn","crn_number","gw_port_code"]])
         cargo_details['container_info'] = container_info
         cargo_details['stuffing_details'] = stuffing_details
         return cargo_details
     
     def update_destuffing_details_schema_for_serializer(self,cargo_details):
-        container_info, destuffing_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["container_number","destuffing_job_order","destuffing_plan_date","handling_code","hld_rls_flag"]])
+        container_info, destuffing_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["container_number","destuffing_job_order","destuffing_plan_date","hld_rls_flag"]])
         cargo_details['container_info'] = container_info
         cargo_details['destuffing_details'] = destuffing_details
         return cargo_details
@@ -83,12 +83,13 @@ class UpdateCargoDetails(object):
                 each_bill['boe_number'] = bill_number
                 #else:
                 each_bill['bol_number'] = bill_number
-            if each_bill[constants.CCLS_BILL_DATE] and isinstance(each_bill[constants.CCLS_BILL_DATE],datetime):
-                each_bill[constants.CCLS_BILL_DATE] = convert_ccls_date_to_timestamp(each_bill[constants.CCLS_BILL_DATE])
-                #each_bill[constants.CCLS_BOL_DATE] = each_bill[constants.CCLS_BILL_DATE]
             if constants.CCLS_BOL_DATE in each_bill:
                 if each_bill[constants.CCLS_BOL_DATE] and isinstance(each_bill[constants.CCLS_BOL_DATE],datetime):
                     each_bill[constants.CCLS_BOL_DATE] = convert_ccls_date_to_timestamp(each_bill[constants.CCLS_BOL_DATE])
+            if each_bill[constants.CCLS_BILL_DATE] and isinstance(each_bill[constants.CCLS_BILL_DATE],datetime):
+                each_bill[constants.CCLS_BILL_DATE] = convert_ccls_date_to_timestamp(each_bill[constants.CCLS_BILL_DATE])
+            if constants.CCLS_BOL_DATE not in each_bill:
+                each_bill[constants.CCLS_BOL_DATE] = each_bill[constants.CCLS_BILL_DATE]
             self.update_each_bill(each_bill)
 
     def update_carting_details(self,cargo_details,job_type,crn_number):
@@ -106,8 +107,10 @@ class UpdateCargoDetails(object):
         else:
             container_flag=ContainerFlag.LCL.value
             self.check_date_and_format_type(cargo_details,constants.CCLS_CON_DATE)
-        if "is_cargo_card_generated" not in cargo_details:
-            cargo_details["is_cargo_card_generated"]='Y'
+        if 'cha_Name' in cargo_details:
+            cargo_details["cha_name"]=cargo_details["cha_Name"]
+        # if "is_cargo_card_generated" not in cargo_details:
+        cargo_details["is_cargo_card_generated"]='Y'
         if "reserve_flag" in cargo_details and cargo_details['reserve_flag'] is False:
             cargo_details["reserve_flag"]='Y'
         if "max_date_unloading" in cargo_details and cargo_details['max_date_unloading'] :
@@ -136,7 +139,7 @@ class UpdateCargoDetails(object):
             container_flag = ContainerFlag.FCL.value
         if cargo_details and isinstance(cargo_details,list):
             cargo_details=cargo_details[0]
-        if "stuffing_job_order" not in cargo_details:
+        if "stuffing_job_order" not in cargo_details or not cargo_details['stuffing_job_order']:
             cargo_details["stuffing_job_order"]='Y'
         self.update_shipping_bill_details(cargo_details)
         self.update_container(cargo_details)
@@ -151,8 +154,8 @@ class UpdateCargoDetails(object):
             container_flag = ContainerFlag.LCL.value
         if cargo_details and isinstance(cargo_details,list):
             cargo_details=cargo_details[0]
-        if "destuffing_job_order" not in cargo_details:
-            cargo_details["destuffing_job_order"]='Y'
+        # if "destuffing_job_order" not in cargo_details:
+            # cargo_details["destuffing_job_order"]=None
         self.check_date_and_format_type(cargo_details,"destuffing_plan_date")
         self.update_bill_details(cargo_details,container_flag)
         self.update_container(cargo_details)
@@ -179,8 +182,14 @@ class UpdateCargoDetails(object):
         return cargo_details
     
     def check_date_and_format_type(self,cargo_details,date_key):
-        if date_key in cargo_details:
-            if cargo_details[date_key] and isinstance(cargo_details[date_key], datetime):
+        if date_key in cargo_details and cargo_details[date_key] :
+            if isinstance(cargo_details[date_key],str):
+                try:
+                    cargo_details[date_key] = int(cargo_details[date_key])
+                except Exception as e:
+                    max_date_unloading = cargo_details[date_key].replace('T',' ')
+                    cargo_details[date_key] = datetime.strptime(max_date_unloading, '%Y-%m-%d %H:%M:%S.%f%z')
+            if isinstance(cargo_details[date_key],datetime):
                 cargo_details[date_key]=convert_ccls_date_to_timestamp(cargo_details[date_key])
         else:
             cargo_details[date_key]=int(time.time())*1000

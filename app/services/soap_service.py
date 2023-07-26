@@ -242,6 +242,8 @@ def update_container_stack_location(data):
         stack_data["createdDate"] = str(datetime.now().isoformat())                                                                                   
         stack_data["ctrNo"] = data["container_number"]
         stack_data["stkLoc"] = data["stack_location"]
+        stack_data["attribute1"] = data["equipment_id"]
+        stack_data["trlNo"] = data["trailer_number"] 
         stack_data["updatedDate"] = str(datetime.strptime(data["updated_at"], '%Y-%m-%d %H:%M:%S').isoformat())
         stack_data["updatedBy"] = "ctms_user"
         logger.debug('Update Container Stack Location, soap service request with data : '+ str(stack_data))

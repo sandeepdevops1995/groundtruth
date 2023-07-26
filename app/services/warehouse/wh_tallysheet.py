@@ -65,21 +65,10 @@ class WarehouseTallySheetView(object):
         
     def get_destuffing_date_for_delivery(self,tally_sheet_data,job_type):
         start_time=None
-        query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.container_number==tally_sheet_data.get('container_number'))
-        for each_bill in tally_sheet_data['cargo_details']:
-            bill_date=each_bill['bill_date']
-            if job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
-                bill_number=each_bill['bill_of_entry']
-                query_object = query_object.filter(CTMSCargoJob.cargo_details.any(CTMSBillDetails.ccls_bill.has(CCLSCargoBillDetails.bill_of_entry==bill_number))).filter(CTMSCargoJob.cargo_details.any(CTMSBillDetails.ccls_bill.has(CCLSCargoBillDetails.bill_date==bill_date)))
-            else:
-                bill_number=each_bill['bill_of_lading']
-                query_object = query_object.filter(CTMSCargoJob.cargo_details.any(CTMSBillDetails.ccls_bill.has(CCLSCargoBillDetails.bill_of_lading==bill_number))).filter(CTMSCargoJob.cargo_details.any(CTMSBillDetails.ccls_bill.has(CCLSCargoBillDetails.bol_date==bill_date)))
-            query_object = query_object.order_by(CTMSCargoJob.created_at.desc()).first()
-            if query_object:
-                start_time = query_object.job_start_time
-                break
-            else:
-                continue
+        query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.container_number==tally_sheet_data.get('container_number')).filter((CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==JobOrderType.DE_STUFFING_FCL.value)) | (CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==JobOrderType.DE_STUFFING_LCL.value)))
+        query_object = query_object.order_by(CTMSCargoJob.created_at.desc()).first()
+        if query_object:
+            start_time = query_object.job_start_time
         return start_time
 
     def update_tally_sheet_info(self,tally_sheet_data):

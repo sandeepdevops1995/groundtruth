@@ -13,12 +13,16 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     def get_data_from_context(self, data, **kwargs):
         if not data.get('cha_code'):
             data['cha_code'] = self.context.get('cha_code')
+        if not data.get('cha_name'):
+            data['cha_name'] = self.context.get('cha_name')
         data['truck_number'] = self.context.get('truck_number_'+str(data['ctms_cargo_job_id']))
         truck_query = db.session.query(TruckDetails).filter(TruckDetails.truck_number==data['truck_number']).order_by(TruckDetails.created_at.desc()).first()
         if truck_query:
             data['truck_arrival_date'] = truck_query.truck_arrival_date
         else:
             data['truck_arrival_date'] = None
+        if not data.get('exporter_name'):
+            data['exporter_name'] = self.context.get('exporter_name')
         return data
 
     shipping_bill = fields.Method("get_shipping_bill")
@@ -38,6 +42,7 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     exporter_name = fields.Method("get_exporter_name")
     importer_name = fields.Method("get_importer_name")
     no_of_packages_declared = fields.Method("get_no_of_packages_declared")
+    cha_name = fields.Method("get_cha_name")
 
     def get_shipping_bill(self, obj):
         return obj.ccls_bill.shipping_bill_number
@@ -74,6 +79,9 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     
     def get_no_of_packages_declared(self,obj):
         return obj.ccls_bill.no_of_packages_declared
+    
+    def get_cha_name(self, obj):
+        return obj.ccls_bill.cha_name
 
 
     class Meta:
@@ -86,6 +94,7 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     @pre_dump()
     def add_data_to_context(self, data, **kwargs):
         self.context['cha_code'] = data.ctms_job_order.carting_details.cha_code if data.ctms_job_order.carting_details else data.ctms_job_order.delivery_details.cha_code if data.ctms_job_order.delivery_details else None
+        self.context['exporter_name'] =  data.ctms_job_order.carting_details.exporter_name if data.ctms_job_order.carting_details else None
         self.context['truck_number_'+str(data.id)] = data.truck_number
         return data
     
@@ -116,6 +125,7 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     cha_name = fields.Method("get_cha_name")
     serial_number = fields.Method("get_serial_number")
     seal_number = fields.Method("get_seal_number")
+    exporter_name = fields.Method("get_exporter_name")
     cargo_details = fields.Nested(CTMSbillDetailsSchema, many=True)
 
     def get_cargo_carting_number(self, obj):
@@ -209,6 +219,9 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     
     def get_seal_number(self,obj):
         return obj.ctms_job_order.seal_number
+    
+    def get_exporter_name(self,obj):
+        self.context['exporter_name'] =  obj.ctms_job_order.carting_details.exporter_name if obj.ctms_job_order.carting_details else None
 
     class Meta:
         model = CTMSCargoJob

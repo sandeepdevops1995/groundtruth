@@ -10,7 +10,7 @@ class CartingJobUpdateSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CartingCargoDetails
-        fields = ("id","crn_number", "crn_date", "carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag","max_date_unloading","contractor_job_order_no","contractor_job_order_date")
+        fields = ("id","crn_number", "crn_date", "carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag","max_date_unloading","contractor_job_order_no","contractor_job_order_date","exporter_name")
         include_relationships = True
         load_instance = True
  
@@ -18,7 +18,7 @@ class StuffingJobUpdateSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = StuffingCargoDetails
-        fields = ("id","container_number", "stuffing_job_order", "crn_number", "cargo_weight_in_crn","hsn_code","gw_port_code")
+        fields = ("id","container_number", "stuffing_job_order", "crn_number", "cargo_weight_in_crn","gw_port_code")
         include_relationships = True
         load_instance = True
 
@@ -57,7 +57,7 @@ class CCLSBillDetailsUpdateSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CCLSCargoBillDetails
-        fields = ("id","shipping_bill_number", "boe_number","bol_number","bill_date","bol_date","importer_code","importer_name","package_code","no_of_packages_declared","package_weight","cha_code","cargo_type","commodity_id","job_order_id","exporter_name","cha_name")
+        fields = ("id","shipping_bill_number", "boe_number","bol_number","bill_date","bol_date","importer_code","importer_name","package_code","no_of_packages_declared","package_weight","cha_code","cargo_type","commodity_id","job_order_id","exporter_name","cha_name","hsn_code")
         # include_relationships = True
         load_instance = True
         unknown = EXCLUDE

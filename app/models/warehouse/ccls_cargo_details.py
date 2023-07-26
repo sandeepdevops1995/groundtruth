@@ -49,6 +49,7 @@ class CartingCargoDetails(db.Model):
     max_date_unloading = db.Column(db.BigInteger(), nullable=True)
     contractor_job_order_no = db.Column(db.String(20), nullable=True)
     contractor_job_order_date = db.Column(db.BigInteger(), nullable=True)
+    exporter_name = db.Column(db.String(100), nullable=True)
     carting_job = db.relationship("MasterCargoDetails", back_populates="carting_details", lazy='joined')
 
     __tablename__ = 'ccls_carting_cargo_details'
@@ -59,7 +60,7 @@ class StuffingCargoDetails(db.Model):
     crn_number = db.Column(db.String(20), nullable=True)
     stuffing_job_order = db.Column(db.String(20), nullable=True)
     cargo_weight_in_crn = db.Column(db.Float(), nullable=True)
-    hsn_code = db.Column(db.String(20), nullable=True)
+    # hsn_code = db.Column(db.String(20), nullable=True)
     gw_port_code = db.Column(db.String(20), nullable=True)
     stuffing_job = db.relationship("MasterCargoDetails", back_populates="stuffing_details", lazy='joined')
 
@@ -106,6 +107,7 @@ class CCLSCargoBillDetails(db.Model):
     package_weight = db.Column(db.Float(), nullable=True)
     cha_code = db.Column(db.String(20), nullable=True)
     cha_name = db.Column(db.String(100), nullable=True)
+    hsn_code = db.Column(db.String(20), nullable=True)
     cargo_type = db.Column(db.String(20), nullable=True)
     job_order_id = db.Column(db.BigInteger, db.ForeignKey('ccls_master_cargo_details.id'))
     master_job_order_bill_details = db.relationship("MasterCargoDetails", back_populates="bill_details", lazy='joined')

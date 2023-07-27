@@ -52,8 +52,12 @@ class PendancyService():
                 data["container_weight"] = float(data["container_weight"])
             if data["seal_date"]:
                 data["seal_date"] = data["seal_date"].strftime("%Y-%m-%dT%H:%M:%S")
-            if data["arrival_date"]:
+            if data["arrival_date"] and isinstance(data['arrival_date'], datetime):
                 data["arrival_date"] = data["arrival_date"].strftime("%Y-%m-%dT%H:%M:%S")
+            else:
+                logger.warn("arrival_date is not datetime format: "+str(data['arrival_date']))
+                data['arrival_date'] = None
+
             if data["container_life_number"]:
                 data["container_life_number"] = data["container_life_number"].strftime("%Y-%m-%dT%H:%M:%S")
                 

@@ -218,6 +218,7 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
         return obj.serial_number
     
     def get_seal_number(self,obj):
+        return obj.seal_number
         return obj.ctms_job_order.seal_number
     
     def get_exporter_name(self,obj):

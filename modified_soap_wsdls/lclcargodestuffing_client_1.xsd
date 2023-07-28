@@ -13,13 +13,13 @@
           <xsd:sequence>
             <xsd:element name="bill_date" type="xsd:dateTime"/>
             <xsd:element name="bol_number" type="xsd:string"/>
-            <xsd:element name="boe_number" type="xsd:string"/>
             <xsd:element name="commodity_code" type="xsd:string"/>
             <xsd:element name="commodity_description" type="xsd:string"/>
             <xsd:element name="importer_code" type="xsd:string"/>
             <xsd:element name="importer_name" type="xsd:string"/>
             <xsd:element name="no_of_packages_declared" type="xsd:string"/>
             <xsd:element name="package_code" type="xsd:string"/>
+            <xsd:element name="package_type" type="xsd:string"/>
             <xsd:element name="package_weight" type="xsd:float"/>
             <xsd:element name="cha_code" type="xsd:string"/>
             <xsd:element name="cha_name" type="xsd:string"/>

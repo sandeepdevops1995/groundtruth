@@ -19,10 +19,16 @@
       <xsd:element name="reserve_flag" type="xsd:boolean"/>
       <xsd:element name="gross_weight" type="xsd:float"/>
       <xsd:element name="icd_location_code" type="xsd:string"/>
-      <xsd:element name="container_number" type="xsd:string"/>
-      <xsd:element name="container_type" type="xsd:string"/>
-      <xsd:element name="container_size" type="xsd:string"/>
-      <xsd:element name="container_life" type="xsd:dateTime"/>
+      <xsd:element maxOccurs="unbounded" name="Container_details">
+        <xsd:complexType>
+          <xsd:sequence>
+           <xsd:element name="container_number" type="xsd:string"/>
+           <xsd:element name="container_type" type="xsd:string"/>
+           <xsd:element name="container_size" type="xsd:string"/>
+           <xsd:element name="container_life" type="xsd:dateTime"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
       <xsd:element name="cncl_flag" type="xsd:string"/>
       <xsd:element name="exporter_name" type="xsd:string"/>
       <xsd:element name="private_or_concor_labour_flag" type="xsd:string"/>
@@ -43,7 +49,8 @@
       <xsd:element name="shipping_liner_code" type="xsd:string"/>
       <xsd:element maxOccurs="unbounded" name="truck_details">
         <xsd:complexType>
-          <xsd:sequence>
+	  <xsd:sequence>
+	    <xsd:element name="truck_arrival_date" type="xsd:dateTime"/>
             <xsd:element name="truck_number" type="xsd:string"/>
           </xsd:sequence>
         </xsd:complexType>

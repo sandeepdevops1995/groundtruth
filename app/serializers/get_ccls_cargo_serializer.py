@@ -94,5 +94,5 @@ class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = MasterCargoDetails
-        fields = ("cargo_carting_number", "container_flag", "container_number","crn_number","gpm_number","truck_details","bill_details","is_cargo_card_generated","sline_code","stuffing_job_order","destuffing_job_order","crn_date","con_date","gpm_valid_date")
+        fields = ("cargo_carting_number", "container_flag", "container_number","crn_number","gpm_number","truck_details","bill_details","is_cargo_card_generated","sline_code","stuffing_job_order","destuffing_job_order","crn_date","con_date","gpm_valid_date","seal_number")
         include_relationships = True

@@ -34,3 +34,9 @@ def convert_timestamp_to_ccls_date(timestamp):
         ccls_date = datetime.fromtimestamp(int(timestamp)/1000, tz=pytz.utc)
         return ccls_date
     return None
+
+def datetime_handler(x):
+    if isinstance(x, datetime.datetime):
+        return convert_ccls_date_to_timestamp(x)
+    else:
+        return x

@@ -43,11 +43,8 @@ class CTMSCargoJobInsertSchema(ma.SQLAlchemyAutoSchema):
         job_type = self.context.get('job_type')
         db_obj = db.session.query(CTMSCargoJob).join(MasterCargoDetails).filter(MasterCargoDetails.job_type==job_type).order_by(CTMSCargoJob.id.desc()).first()
         if db_obj:
-                serial_number = int(db_obj.serial_number) if db_obj.serial_number else config.TS_SERIAL_NUMBER
-                if config.IS_PREFIX_REQUIRED:
-                    serial_number = str(serial_number+1)
-                else:
-                    serial_number = str(serial_number+1)
+                serial_number = int(db_obj.serial_number) if db_obj.serial_number else int(config.TS_SERIAL_NUMBER)
+                serial_number = str(serial_number+1)
         else:
             serial_number = str(config.TS_SERIAL_NUMBER)
         data['serial_number'] = serial_number
@@ -62,7 +59,7 @@ class CTMSCargoJobInsertSchema(ma.SQLAlchemyAutoSchema):
     end_time = fields.Integer(attribute='job_end_time')
     class Meta:
         model = CTMSCargoJob
-        fields = ("equipment_id", "ph_location", "start_time","end_time","total_package_count","total_no_of_packages_damaged","total_no_area","max_date_unloading","total_no_of_packages_excess","total_no_of_packages_short","gate_number","container_number","created_on_epoch","job_order_id","cargo_details","truck_number","serial_number","destuffing_date")
+        fields = ("equipment_id", "ph_location", "start_time","end_time","total_package_count","total_no_of_packages_damaged","total_no_area","max_date_unloading","total_no_of_packages_excess","total_no_of_packages_short","gate_number","container_number","created_on_epoch","job_order_id","cargo_details","truck_number","serial_number","destuffing_date","seal_number")
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE

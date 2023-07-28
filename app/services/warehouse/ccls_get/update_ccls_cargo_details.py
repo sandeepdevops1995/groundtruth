@@ -1,7 +1,7 @@
 import time
 from app.enums import JobOrderType, ContainerFlag
 from datetime import datetime
-from app.controllers.utils import convert_ccls_date_to_timestamp
+from app.controllers.utils import convert_ccls_date_to_timestamp, datetime_handler
 import app.services.warehouse.constants as constants
 import json
 
@@ -9,7 +9,7 @@ class UpdateCargoDetails(object):
 
     def update_carting_details_schema_for_serializer(self,cargo_details):
         container_info, carting_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["crn_number","crn_date","carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag","max_date_unloading","contractor_job_order_no","contractor_job_order_date","exporter_name"]])
-        cargo_details['container_info'] = container_info
+        cargo_details['container_info'] = json.loads(json.dumps(cargo_details['Container_details'], default=datetime_handler))[0] if 'Container_details' in cargo_details and cargo_details['Container_details'] else container_info
         cargo_details['carting_details'] = carting_details
         return cargo_details
     

@@ -52,7 +52,7 @@ class WarehouseTallySheetView(object):
             query_object = query_object.filter(MasterCargoDetails.destuffing_details.has(DeStuffingCargoDetails.container_number==tally_sheet_data.get('container_number')))
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
             query_object = query_object.filter(MasterCargoDetails.delivery_details.has(DeliveryCargoDetails.gpm_number==tally_sheet_data.get('gpm_number')))
-            tally_sheet_data['destuffing_date'] = self.get_destuffing_date_for_delivery(tally_sheet_data,job_type)
+            tally_sheet_data['destuffing_date'] = self.get_destuffing_date_for_delivery(tally_sheet_data.get('container_number'))
         query_object = query_object.order_by(MasterCargoDetails.updated_at.desc()).first()
         if query_object:
             job_order_id = query_object.id
@@ -63,9 +63,9 @@ class WarehouseTallySheetView(object):
         else:
             raise DataNotFoundException("GTService: ccls data doesn't exists in database")
         
-    def get_destuffing_date_for_delivery(self,tally_sheet_data,job_type):
+    def get_destuffing_date_for_delivery(self,container_number):
         start_time=None
-        query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.container_number==tally_sheet_data.get('container_number')).filter((CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==JobOrderType.DE_STUFFING_FCL.value)) | (CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==JobOrderType.DE_STUFFING_LCL.value)))
+        query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.container_number==container_number).filter((CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==JobOrderType.DE_STUFFING_FCL.value)) | (CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==JobOrderType.DE_STUFFING_LCL.value)))
         query_object = query_object.order_by(CTMSCargoJob.created_at.desc()).first()
         if query_object:
             start_time = query_object.job_start_time

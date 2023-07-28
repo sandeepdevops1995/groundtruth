@@ -20,14 +20,14 @@ def trim_grid_no(job_info):
     return job_info
 
 
-def get_job_order_info(input_value,service_type,service_name,port_name,request_data,job_type):
+def get_job_order_info(input_value,service_type,service_name,port_name,request_data,job_type,strict=True):
     
     try:
             if config.IS_MOCK_ENABLED or (job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value] and config.IS_STUFFING_MOCK_ENABLED):
                 wsdl_url = config.WSDL_URL+"/soa-infra/services/default/"+service_type+"/"+service_name+"?WSDL"
                 logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_GET_REQUEST_TO_CCLS_TO_FETCH_JOB_ORDER_DATA,input_value,wsdl_url))
                 soap = zeep.Client(wsdl=wsdl_url, service_name=service_name)
-                with soap.settings(raw_response=False):
+                with soap.settings(strict=strict, raw_response=False, xsd_ignore_sequence_order=True):
                     result = soap.service.process(input_value)
                     import xml.etree.ElementTree as ET
                     # data = xmltodict.parse(result)
@@ -41,7 +41,7 @@ def get_job_order_info(input_value,service_type,service_name,port_name,request_d
                 logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_GET_REQUEST_TO_CCLS_TO_FETCH_JOB_ORDER_DATA,input_value,wsdl_path))
                 start_time = datetime.now()
                 soap = zeep.Client(wsdl_path)
-                with soap.settings(raw_response=False):
+                with soap.settings(strict=strict, raw_response=False, xsd_ignore_sequence_order=True):
                     zeep_object = soap.service.process(**request_data)
                     result = serialize_object(zeep_object)
                 end_time = datetime.now()

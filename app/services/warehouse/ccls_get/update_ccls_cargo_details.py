@@ -41,8 +41,12 @@ class UpdateCargoDetails(object):
             for i in range(0,len(truck_details)):
                 if 'truck_arrival_date' not in truck_details[i]:
                     truck_details[i]['truck_arrival_date'] = int(time.time())*1000
+                else:
+                    if isinstance(truck_details[i]['truck_arrival_date'],datetime):
+                        truck_details[i]['truck_arrival_date'] = convert_ccls_date_to_timestamp(truck_details[i]['truck_arrival_date'])
                 if truck_details[i]['truck_number'] is None:
                     del truck_details[i]
+            cargo_details['truck_details'] = truck_details
 
     def update_container(self,cargo_details):
         if 'container_life' not in cargo_details or cargo_details["container_life"] is None:

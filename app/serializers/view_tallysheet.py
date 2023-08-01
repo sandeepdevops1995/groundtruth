@@ -98,6 +98,15 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
         self.context['truck_number_'+str(data.id)] = data.truck_number
         return data
     
+    @post_dump()
+    def update_data(self, data, **kwargs):
+        if data.get('job_type') in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value]:
+            if not data.get('destuffing_date'):
+                container_number = data.get('container_number')
+                from app.services.warehouse.wh_tallysheet import WarehouseTallySheetView
+                data['destuffing_date'] = WarehouseTallySheetView().get_destuffing_date_for_delivery(container_number)
+        return data
+    
     cargo_carting_number = fields.Method("get_cargo_carting_number")
     crn_number = fields.Method("get_crn_number")
     gpm_number = fields.Method("get_gpm_number")

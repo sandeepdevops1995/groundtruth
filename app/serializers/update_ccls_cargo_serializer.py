@@ -73,7 +73,7 @@ class CCLSCargoUpdateSchema(ma.SQLAlchemyAutoSchema):
     
     class Meta:
         model = MasterCargoDetails
-        fields = ("id","gross_weight", "private_or_concor_labour_flag", "shipping_liner_code","cncl_flag","icd_location_code","container_info","carting_details","job_type","fcl_or_lcl","stuffing_details","destuffing_details","delivery_details","cha_name","seal_number")
+        fields = ("id","gross_weight", "private_or_concor_labour_flag", "shipping_liner_code","cncl_flag","icd_location_code","container_info","carting_details","job_type","fcl_or_lcl","stuffing_details","destuffing_details","delivery_details","cha_name")
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE

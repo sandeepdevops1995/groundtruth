@@ -42,3 +42,26 @@ class PendencyType(enum.Enum):
     LCL = 3
     BLOCK = 4
     EXPRESS = 5
+
+class EquipmentNames(enum.Enum):
+    RMGTRCK = "RMG2"
+    RST03 = "RH03"
+    RST04 = "RH04"
+    RST05 = "RH05"
+    RST06 = "RH06"
+    RST07 = "RH07"
+    RST08 = "RH08"
+    RST10 = "RH10"
+    RST12 = "RH12"
+    RST13 = "RH13"
+    RST14 = "RH14"
+    RTG03 = "RTG3"
+    RTG04 = "RTG4"
+    RTG05 = "RTG5"
+    RTG6 = "RTG6"
+    RTG07 = "RTG7"
+    RTG08 = "RTG8"
+    RTG09 = "RTG9"
+    SANY01 = "R-S1"
+    SANY02 = "R-S2"
+    SANY03 = "R-S3"

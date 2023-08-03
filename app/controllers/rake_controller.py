@@ -258,9 +258,11 @@ class UpdateOutwardRakeDetails(View):
     def post(self):
         data = request.get_json()
         if set(Constants.rake_write_required_fields).issubset(set(data.keys())):
-            result = {}
-            result =  RakeOutwardWriteService.update_outward_train_summary(data)
-            return soap_API_response(result)
+            if data[Constants.KEY_CONTAINER_TYPE] != "CXNU":
+                result = RakeOutwardWriteService.update_outward_train_summary(data)
+                return soap_API_response(result)
+            else:
+                return Response(json.dumps({"message": "Container type 'CXNU' is not allowed."}), status=400, mimetype='application/json')
         else:
             return Response(json.dumps({"message":"please provide all required fields", "required fields" :Constants.rake_write_required_fields}), status=400, mimetype='application/json')
     

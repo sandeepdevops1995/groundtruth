@@ -7,6 +7,7 @@ import app.constants as Constants
 import config
 import time
 from datetime import datetime
+from app.enums import EquipmentNames
 
 
 
@@ -26,7 +27,7 @@ class RakeOutwardWriteService():
         if Constants.KEY_DT_WTR in data:
             rake_data[Constants.KEY_SOAP_DT_WTR] = datetime.strptime(data[Constants.KEY_DT_WTR], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_EQUIPMENT_ID in data:
-            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = data[Constants.KEY_EQUIPMENT_ID]
+            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data[Constants.KEY_EQUIPMENT_ID]].value
         if Constants.KEY_GATEWAY_PORT_CD in data:
             rake_data[Constants.KEY_SOAP_GATEWAY_PORT_CD] = data[Constants.KEY_GATEWAY_PORT_CD]
         if Constants.KEY_CONTAINER_NUMBER in data:
@@ -49,6 +50,8 @@ class RakeOutwardWriteService():
             rake_data[Constants.KEY_SOAP_CONTAINER_SIZE] = data[Constants.KEY_CONTAINER_SIZE]
         if Constants.KEY_CONTAINER_TYPE in data:
             rake_data[Constants.KEY_SOAP_CONTAINER_TYPE] = data[Constants.KEY_CONTAINER_TYPE]
+        else:
+            rake_data[Constants.KEY_SOAP_CONTAINER_TYPE] = "GL"
         if Constants.KEY_CONTAINER_STAT in data:
             rake_data[Constants.KEY_SOAP_CONTAINER_STAT] = data[Constants.KEY_CONTAINER_STAT] 
         if Constants.KEY_CONTAINER_WEIGHT in data:
@@ -87,8 +90,8 @@ class RakeOutwardWriteService():
             rake_data[Constants.KEY_SOAP_STATUS_FLG] = data[Constants.KEY_STATUS_FLG]
         if Constants.KEY_READ_FLG in data:
             rake_data[Constants.KEY_SOAP_READ_FLG] = data[Constants.KEY_READ_FLG]
-        if "equipment_name" in data:
-            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = data["equipment_name"]
+        if Constants.KEY_EQUPMENT_NAME in data:
+            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data["equipment_name"]].value
         return rake_data
     
     @query_debugger()
@@ -97,6 +100,8 @@ class RakeOutwardWriteService():
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                if data[Constants.KEY_CONTAINER_TYPE] == "CXNU":
+                    return {}                    
                 ccls_data = RakeOutwardWriteService.format_data_to_ccls_format(data)
                 result = soap_service.update_outward_rake(ccls_data,Constants.UPDATE_RAKE_CONTAINER_ENDPOINT)
                 return result
@@ -114,6 +119,8 @@ class RakeOutwardWriteService():
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                if data[Constants.KEY_CONTAINER_TYPE] == "CXNU":
+                    return {}
                 ccls_data = RakeOutwardWriteService.format_data_to_ccls_format(data)
                 result = soap_service.update_outward_rake(ccls_data,Constants.CGO_SURVEY_ENDPOINT)
                 return result
@@ -132,6 +139,8 @@ class RakeOutwardWriteService():
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                if data and data[Constants.KEY_CONTAINER_TYPE] == "CXNU":
+                    return {}
                 request_data = RakeOutwardWriteService.format_data_to_ccls_format(data)
                 result = soap_service.update_outward_rake(request_data,Constants.UPDATE_OUTWARD_WTR_ENDPOINT)
                 return result

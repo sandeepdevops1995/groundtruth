@@ -31,7 +31,9 @@ class RakeOutwardWriteService():
         if Constants.KEY_GATEWAY_PORT_CD in data:
             rake_data[Constants.KEY_SOAP_GATEWAY_PORT_CD] = data[Constants.KEY_GATEWAY_PORT_CD]
         if Constants.KEY_CONTAINER_NUMBER in data:
-            rake_data[Constants.KEY_SOAP_CONTAINER_NUMBER] = data[Constants.KEY_CONTAINER_NUMBER]
+            container_number = data[Constants.KEY_CONTAINER_NUMBER]
+            if not container_number.startswith("CXNU"):
+                rake_data[Constants.KEY_SOAP_CONTAINER_NUMBER] = container_number
         if Constants.KEY_CONTAINER_LIFE_NUMBER in data:
             rake_data[Constants.KEY_SOAP_CONTAINER_LIFE_NUMBER] = datetime.strptime(data[Constants.KEY_CONTAINER_LIFE_NUMBER], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_WAGON_NUMBER in data:
@@ -50,8 +52,6 @@ class RakeOutwardWriteService():
             rake_data[Constants.KEY_SOAP_CONTAINER_SIZE] = data[Constants.KEY_CONTAINER_SIZE]
         if Constants.KEY_CONTAINER_TYPE in data:
             rake_data[Constants.KEY_SOAP_CONTAINER_TYPE] = data[Constants.KEY_CONTAINER_TYPE]
-        else:
-            rake_data[Constants.KEY_SOAP_CONTAINER_TYPE] = "GL"
         if Constants.KEY_CONTAINER_STAT in data:
             rake_data[Constants.KEY_SOAP_CONTAINER_STAT] = data[Constants.KEY_CONTAINER_STAT] 
         if Constants.KEY_CONTAINER_WEIGHT in data:
@@ -90,20 +90,21 @@ class RakeOutwardWriteService():
             rake_data[Constants.KEY_SOAP_STATUS_FLG] = data[Constants.KEY_STATUS_FLG]
         if Constants.KEY_READ_FLG in data:
             rake_data[Constants.KEY_SOAP_READ_FLG] = data[Constants.KEY_READ_FLG]
-        if Constants.KEY_EQUPMENT_NAME in data:
+        if Constants.KEY_EQUPIMENT_NAME in data:
             rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data["equipment_name"]].value
+            print(rake_data)
         return rake_data
-    
+            
     @query_debugger()
     def update_container(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
         try:
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-                if data[Constants.KEY_CONTAINER_TYPE] == "CXNU":
-                    return {}                    
                 ccls_data = RakeOutwardWriteService.format_data_to_ccls_format(data)
-                result = soap_service.update_outward_rake(ccls_data,Constants.UPDATE_RAKE_CONTAINER_ENDPOINT)
+                if not ccls_data:
+                    return {} 
+                result = soap_service.update_outward_rake(ccls_data, Constants.UPDATE_RAKE_CONTAINER_ENDPOINT)
                 return result
             return {}
         except Exception as e:
@@ -111,18 +112,19 @@ class RakeOutwardWriteService():
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY)
-                RakeOutwardWriteService.update_container(data,count)
-    
+                return RakeOutwardWriteService.update_container(data, count)
+
+
     @query_debugger()
-    def update_CGO_survey(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+    def update_CGO_survey(data, count=Constants.KEY_RETRY_COUNT, isRetry=Constants.KEY_RETRY_VALUE):
         try:
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-                if data[Constants.KEY_CONTAINER_TYPE] == "CXNU":
-                    return {}
                 ccls_data = RakeOutwardWriteService.format_data_to_ccls_format(data)
-                result = soap_service.update_outward_rake(ccls_data,Constants.CGO_SURVEY_ENDPOINT)
+                if not ccls_data:
+                    return{}
+                result = soap_service.update_outward_rake(ccls_data, Constants.CGO_SURVEY_ENDPOINT)
                 return result
             return {}
         except Exception as e:
@@ -130,7 +132,7 @@ class RakeOutwardWriteService():
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY)
-                RakeOutwardWriteService.update_CGO_survey(data,count)
+                return RakeOutwardWriteService.update_CGO_survey(data,count)
                 
     
     @query_debugger()
@@ -139,10 +141,10 @@ class RakeOutwardWriteService():
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-                if data and data[Constants.KEY_CONTAINER_TYPE] == "CXNU":
-                    return {}
                 request_data = RakeOutwardWriteService.format_data_to_ccls_format(data)
-                result = soap_service.update_outward_rake(request_data,Constants.UPDATE_OUTWARD_WTR_ENDPOINT)
+                if not request_data:
+                    return{}
+                result = soap_service.update_outward_rake(request_data, Constants.UPDATE_OUTWARD_WTR_ENDPOINT)
                 return result
         except Exception as e:
             logger.exception(str(e))

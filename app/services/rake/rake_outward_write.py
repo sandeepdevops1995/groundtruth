@@ -14,11 +14,11 @@ from app.enums import EquipmentNames
 class RakeOutwardWriteService():
     def format_data_to_ccls_format(data):
         rake_data = {}
-        if data.get[Constants.KEY_CONTAINER_NUMBER]:
+        if Constants.KEY_CONTAINER_NUMBER in data:
             container_number = data[Constants.KEY_CONTAINER_NUMBER]
-        if not container_number.startswith("CXNU"):
-                return{}
-        rake_data[Constants.KEY_SOAP_CONTAINER_NUMBER] = container_number
+            if container_number.startswith("CXNU"):
+                return {}
+            rake_data[Constants.KEY_SOAP_CONTAINER_NUMBER] = container_number
         if  Constants.KEY_TRAIN_NUMBER in data :
             rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = "TEST_TRAIN" if data[Constants.KEY_TRAIN_NUMBER] else "TEST_TRAIN"
         else :
@@ -35,8 +35,6 @@ class RakeOutwardWriteService():
             rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data[Constants.KEY_EQUIPMENT_ID]].value
         if Constants.KEY_GATEWAY_PORT_CD in data:
             rake_data[Constants.KEY_SOAP_GATEWAY_PORT_CD] = data[Constants.KEY_GATEWAY_PORT_CD]
-        if Constants.KEY_CONTAINER_NUMBER in data:
-            rake_data[Constants.KEY_CONTAINER_NUMBER] = data[Constants.KEY_CONTAINER_NUMBER]
         if Constants.KEY_CONTAINER_LIFE_NUMBER in data:
             rake_data[Constants.KEY_SOAP_CONTAINER_LIFE_NUMBER] = datetime.strptime(data[Constants.KEY_CONTAINER_LIFE_NUMBER], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_WAGON_NUMBER in data:
@@ -95,7 +93,6 @@ class RakeOutwardWriteService():
             rake_data[Constants.KEY_SOAP_READ_FLG] = data[Constants.KEY_READ_FLG]
         if Constants.KEY_EQUIPMENT_NAME in data:
             rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data["equipment_name"]].value
-        print(rake_data)
         return rake_data
             
     @query_debugger()
@@ -143,8 +140,8 @@ class RakeOutwardWriteService():
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-                if data.get[Constants.KEY_CONTAINER_TYPE] == "CXNU" and data.get[Constants.KEY_CONTAINER_NUMBER]:
-                    return{}
+                if Constants.KEY_CONTAINER_NUMBER in data and data[Constants.KEY_CONTAINER_NUMBER].startswith("CXNU"):
+                    return {}
                 request_data = RakeOutwardWriteService.format_data_to_ccls_format(data)
                 result = soap_service.update_outward_rake(request_data, Constants.UPDATE_OUTWARD_WTR_ENDPOINT)
                 return result

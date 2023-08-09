@@ -15,8 +15,9 @@ import app.services.warehouse.constants as constants
 
 def trim_grid_no(job_info):
     grid_no = job_info['gridNo']
-    if len(grid_no)>3:
-        job_info['gridNo'] = grid_no[-3:]
+    if grid_no:
+        if len(grid_no)>3:
+            job_info['gridNo'] = grid_no[-3:]
     return job_info
 
 

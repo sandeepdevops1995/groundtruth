@@ -51,10 +51,14 @@ class UpdateCargoDetails(object):
     def update_container(self,cargo_details):
         if 'container_life' not in cargo_details or cargo_details["container_life"] is None:
             cargo_details["container_life"]=int(time.time())*1000
+        if cargo_details['container_life'] and isinstance(cargo_details['container_life'], str):
+            try:
+                cargo_details['container_life']=int(float(cargo_details['container_life']))
+            except Exception as e:
+                container_life = cargo_details['container_life'].replace('T',' ')
+                cargo_details['container_life'] = datetime.strptime(container_life, '%Y-%m-%d %H:%M:%S.%f%z')
         if cargo_details['container_life'] and isinstance(cargo_details['container_life'], datetime):
             cargo_details['container_life']=convert_ccls_date_to_timestamp(cargo_details['container_life'])
-        if cargo_details['container_life'] and isinstance(cargo_details['container_life'], str):
-            cargo_details['container_life']=int(float(cargo_details['container_life']))
         cargo_details['container_size'] = cargo_details['container_size'] if 'container_size' in cargo_details else None
         if cargo_details['container_size'] and isinstance(cargo_details['container_size'], str):
             cargo_details['container_size'] = int(float(cargo_details['container_size']))

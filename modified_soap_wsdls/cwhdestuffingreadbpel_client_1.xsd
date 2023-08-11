@@ -14,6 +14,7 @@
             <xsd:element name="bill_date" type="xsd:dateTime"/>
             <xsd:element name="bol_number" type="xsd:string"/>
             <xsd:element name="boe_number" type="xsd:string"/>
+            <xsd:element name="GWPortCode" type="xsd:string"/>
             <xsd:element name="commodity_code" type="xsd:string"/>
             <xsd:element name="commodity_description" type="xsd:string"/>
             <xsd:element name="importer_code" type="xsd:string"/>
@@ -39,6 +40,7 @@
       <xsd:element name="destuffing_plan_date" type="xsd:string"/>
       <xsd:element name="cncl_flag" type="xsd:string"/>
       <xsd:element name="hld_rls_flag" type="xsd:string"/>
+      <xsd:element name="Forwarder" type="xsd:string"/>
     </xsd:sequence>
   </xsd:complexType>
 </xsd:schema>

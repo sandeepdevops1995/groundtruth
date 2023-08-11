@@ -15,7 +15,7 @@ from app.user_defined_exception import DataNotFoundException
 class WarehouseDeStuffing(object):
 
     def get_destuffing_details(self,container_number,job_type,service_type,service_name,port_name,request_data):
-        cargo_details = get_job_order_info(container_number,service_type,service_name,port_name,request_data,job_type)
+        cargo_details = get_job_order_info(container_number,service_type,service_name,port_name,request_data,job_type,strict=False)
         if cargo_details:
             cargo_details = UpdateCargoDetails().update_destuffing_details(cargo_details,job_type)
             logger.debug("{}, {}, {}, {}, {}, {}, {}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_AFTER_MODIFICATION_CARGO_DETAILS,'JT_'+str(cargo_details.get('job_type')),container_number,cargo_details))
@@ -25,7 +25,7 @@ class WarehouseDeStuffing(object):
             raise DataNotFoundException('GTService: job data not found in ccls system') 
 
     def save_data_db(self,cargo_details):
-        destuffing_cargo_query = db.session.query(DeStuffingCargoDetails).join(MasterCargoDetails).filter(DeStuffingCargoDetails.destuffing_job.property.mapper.class_.container_info.property.mapper.class_.container_life==cargo_details['container_info'].get('container_life'),DeStuffingCargoDetails.container_number==cargo_details['destuffing_details'].get('container_number')).first()
+        destuffing_cargo_query = db.session.query(DeStuffingCargoDetails).join(DeStuffingCargoDetails.destuffing_job).join(MasterCargoDetails.container_info).filter(DeStuffingCargoDetails.destuffing_job.property.mapper.class_.container_info.property.mapper.class_.container_life==cargo_details['container_info'].get('container_life'),DeStuffingCargoDetails.container_number==cargo_details['destuffing_details'].get('container_number')).first()
         if destuffing_cargo_query:
             job_order_id = destuffing_cargo_query.destuffing_job[0].id
             cargo_details['id'] = job_order_id

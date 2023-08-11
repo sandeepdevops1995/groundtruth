@@ -24,7 +24,7 @@ class WarehouseStuffing(object):
             raise DataNotFoundException('GTService: job data not found in ccls system') 
     
     def save_data_db(self,cargo_details):
-        stuffing_cargo_query = db.session.query(StuffingCargoDetails).join(MasterCargoDetails).filter(StuffingCargoDetails.stuffing_job.property.mapper.class_.container_info.property.mapper.class_.container_life==cargo_details['container_info'].get('container_life'),StuffingCargoDetails.container_number==cargo_details['stuffing_details'].get('container_number')).first()
+        stuffing_cargo_query = db.session.query(StuffingCargoDetails).join(StuffingCargoDetails.stuffing_job).join(MasterCargoDetails.container_info).filter(StuffingCargoDetails.stuffing_job.property.mapper.class_.container_info.property.mapper.class_.container_life==cargo_details['container_info'].get('container_life'),StuffingCargoDetails.container_number==cargo_details['stuffing_details'].get('container_number')).first()
         if stuffing_cargo_query:
             job_order_id = stuffing_cargo_query.stuffing_job[0].id
             cargo_details['id'] = job_order_id

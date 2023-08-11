@@ -36,7 +36,7 @@ def convert_timestamp_to_ccls_date(timestamp):
     return None
 
 def datetime_handler(x):
-    if isinstance(x, datetime.datetime):
+    if isinstance(x, datetime):
         return convert_ccls_date_to_timestamp(x)
     else:
         return x

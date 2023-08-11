@@ -83,7 +83,7 @@ class RakeOutwardPlanService():
                 container_record[Constants.KEY_CONTAINER_LIFE_NUMBER] = data[i].container_life_number
                 container_record[Constants.COMMIDITY]= data[i].attribute_2
                 container_record[Constants.LINER_SEAL] = {Constants.VALUE : data[i].attribute_3}
-                container_record[Constants.CUSTOM_SEAL] = {Constants.VALUE : data[i].attribute_3}
+                container_record[Constants.CUSTOM_SEAL] = {Constants.VALUE : data[i].seal_number}
                 container_record[Constants.POD] = data[i].first_pod
                 container_record[Constants.ISO_CODE] = {Constants.VALUE : data[i].iso_code if data[i].iso_code else str(data[i].container_size)+str(data[i].container_type) if data[i].container_size and data[i].container_type else None}
                 container_record[Constants.LDD_MT_FLAG] = {Constants.VALUE : data[i].ldd_mt_flg} 

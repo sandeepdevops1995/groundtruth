@@ -47,6 +47,7 @@ class RakePlan(db.Model):
     container_type = db.Column(db.String(2))
     container_status = db.Column(db.String(2))
     iso_code = db.Column(db.String(25))
+    seal_number = db.Column(db.String(20))
     ldd_mt_flg = db.Column(db.String(2))
     damage_code = db.Column(db.String(25))
     container_weight = db.Column(db.Float())

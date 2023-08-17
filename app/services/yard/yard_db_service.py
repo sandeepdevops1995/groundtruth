@@ -39,6 +39,8 @@ class YardDbService:
                 result = GateDbService().update_ctr_stack_info(data)
                 return result
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                if "stack_location" in data and data["stack_location"]:
+                    data["stack_location"] = YardDbService.get_stack_location(data["stack_location"])
                 result =  update_container_stack_location(data)
                 if result:
                     return result
@@ -53,6 +55,16 @@ class YardDbService:
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
                 YardDbService.update_container_location(data,count)
+
+        
+    def get_stack_location(stack_location):
+        if stack_location == "Truck":
+            return  "TT"
+        elif stack_location == "Lane":
+            return "WHF"
+        elif stack_location == "Track":
+            return "RS"
+        return stack_location
 
         
         

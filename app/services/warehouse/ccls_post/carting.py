@@ -28,9 +28,10 @@ class BuildCartingObject(object):
         self.fclLclFlg = ContainerFlag(int(data.get('container_flag',1))).name
         self.pvtCncrFlg = data.get('private_or_concor_labour_flag',None)
         self.icdLocCd = data.get('icd_location_code',None)
-        self.createdDate = None
-        self.createdBy = None
-        self.updatedDate = None
-        self.updatedBy = None
+        self.fullPartFlg=data.get('full_or_part_flag',None)
+        self.createdDate = data.get('created_at',None)
+        self.createdBy = data.get('created_by',None)
+        self.updatedDate = data.get('updated_at',None)
+        self.updatedBy = data.get('updated_by',None)
         self.errorMsg = None
         self.statusFlag = None

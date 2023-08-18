@@ -34,9 +34,9 @@ class BuildStuffingObject(object):
         self.ctrType=data.get('container_type',None)
         self.sealNo=None
         self.dtSeal=None
-        self.createdDate=None
-        self.createdBy=None
-        self.updatedDate=None
-        self.updatedBy=None
+        self.createdDate = data.get('created_at',None)
+        self.createdBy = data.get('created_by',None)
+        self.updatedDate = data.get('updated_at',None)
+        self.updatedBy = data.get('updated_by',None)
         self.errorMsg=None
         self.statusFlag=None

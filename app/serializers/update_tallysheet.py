@@ -15,7 +15,7 @@ class CTMSBillDetailsUpdateSchema(ma.SQLAlchemyAutoSchema):
     
     class Meta:
         model = CTMSBillDetails
-        fields = ("id","full_or_part_destuff", "package_count","damaged_count","area_of_cargo","grid_number","grid_locations","ccls_grid_locations","packages_weight","damaged_packages_weight","area_of_damaged_cargo")
+        fields = ("id","full_or_part_destuff", "package_count","damaged_count","area_of_cargo","grid_number","grid_locations","ccls_grid_locations","packages_weight","damaged_packages_weight","area_of_damaged_cargo","full_or_part_flag")
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE

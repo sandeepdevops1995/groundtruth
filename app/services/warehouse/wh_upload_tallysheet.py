@@ -25,35 +25,39 @@ class WarehouseUploadTallySheetView(object):
         user_id = request_data.get('user_id')
         trans_date_time = convert_timestamp_to_ccls_date(request_data.get('trans_date_time'))
         if job_type==JobOrderType.CARTING_FCL.value:
-           self.send_carting_data_to_ccls(result,user_id,trans_date_time,request_parameter)
+           self.send_carting_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
         elif job_type==JobOrderType.CARTING_LCL.value:
-           self.send_carting_data_to_ccls(result,user_id,trans_date_time,request_parameter)
+           self.send_carting_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
         elif job_type in  [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value]:
-           self.send_stuffing_data_to_ccls(result,user_id,trans_date_time,request_parameter)
+           self.send_stuffing_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
         elif job_type in  [JobOrderType.DE_STUFFING_FCL.value,JobOrderType.DE_STUFFING_LCL.value]:
-           self.send_destuffing_data_to_ccls(result,user_id,trans_date_time,request_parameter)
+           self.send_destuffing_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
         elif job_type in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
-           self.send_delivery_data_to_ccls(result,user_id,trans_date_time,request_parameter)
+           self.send_delivery_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
         self.update_tallysheet_status(data.get('id'),request_parameter,job_type)
 
-   def send_carting_data_to_ccls(self,result,user_id,trans_date_time,request_parameter):
+   def send_carting_data_to_ccls(self,result,user_id,trans_date_time,request_parameter,job_type):
       for each_job in result:
          job_details = BuildCartingObject(each_job,user_id,trans_date_time).__dict__
+         logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_REQUEST_DATA_FOR_UPLOAD_TALLYSHEET,'JT_'+str(job_type),request_parameter,job_details))
          upload_tallysheet_data(job_details,"CWHExportCrgUNLDGTSWrite","cwhexportcrgunldgtsbpel_client_ep","CWHExportCrgUNLDGTSBPEL_pt",request_parameter)
 
-   def send_stuffing_data_to_ccls(self,result,user_id,trans_date_time,request_parameter):
+   def send_stuffing_data_to_ccls(self,result,user_id,trans_date_time,request_parameter,job_type):
       for each_job in result:
          job_details = BuildStuffingObject(each_job,user_id,trans_date_time).__dict__
+         logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_REQUEST_DATA_FOR_UPLOAD_TALLYSHEET,'JT_'+str(job_type),request_parameter,job_details))
          upload_tallysheet_data(job_details,"CWHExprtCrgDSTFWrite","cwhexprtcrgdstfwritebpel_client_ep","CWHExprtCrgDSTFWriteBPEL_pt",request_parameter)
 
-   def send_destuffing_data_to_ccls(self,result,user_id,trans_date_time,request_parameter):
+   def send_destuffing_data_to_ccls(self,result,user_id,trans_date_time,request_parameter,job_type):
       for each_job in result:
          job_details = BuildDeStuffingObject(each_job,user_id,trans_date_time).__dict__
+         logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_REQUEST_DATA_FOR_UPLOAD_TALLYSHEET,'JT_'+str(job_type),request_parameter,job_details))
          upload_tallysheet_data(job_details,"CWHImportCrgDSTFWrite","cwhimportcrgdstfwritebpel_client_ep","CWHImportCrgDSTFWriteBPEL_pt",request_parameter)
 
-   def send_delivery_data_to_ccls(self,result,user_id,trans_date_time,request_parameter):
+   def send_delivery_data_to_ccls(self,result,user_id,trans_date_time,request_parameter,job_type):
       for each_job in result:
          job_details = BuildDeliveryObject(each_job,user_id,trans_date_time).__dict__
+         logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_REQUEST_DATA_FOR_UPLOAD_TALLYSHEET,'JT_'+str(job_type),request_parameter,job_details))
          upload_tallysheet_data(job_details,"CWHImportCrgLDGTS","cwhimportcrgldgts_client_ep","CWHImportCrgLDGTS_pt",request_parameter)
 
 
@@ -68,4 +72,4 @@ class WarehouseUploadTallySheetView(object):
    def update_tallysheet_status(self,ctms_job_order_id,request_parameter,job_type):
       db.session.query(CTMSCargoJob).filter(CTMSCargoJob.id==ctms_job_order_id).update({"status":JobStatus.TALLYSHEET_UPLOADED.value})
       db_response = db.session.commit()
-      logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_UPDATE_STATUS_AFTER_UPLOAD_TALLYSHEET,'JT_'+str(job_type),request_parameter,db_response))
+      logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_UPDATE_STATUS_AFTER_UPLOAD_TALLYSHEET,'JT_'+str(job_type),request_parameter,db_response))

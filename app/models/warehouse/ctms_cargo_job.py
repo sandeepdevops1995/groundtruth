@@ -54,6 +54,7 @@ class CTMSBillDetails(db.Model):
     gate_number = db.Column(db.String(10), nullable=True)
     warehouse_id = db.Column(db.String(50), nullable=True)
     stacking_type = db.Column(db.Integer(), nullable=True)
+    full_or_part_flag = db.Column(db.String(20), nullable=True)
     ctms_cargo_job_id = db.Column(db.Integer, db.ForeignKey('ctms_cargo_job.id'))
     ctms_job_order_bill_details = db.relationship("CTMSCargoJob", back_populates="cargo_details", lazy='joined')
     ccls_bill_id = db.Column(db.Integer, db.ForeignKey('ccls_cargo_bill_details.id'))

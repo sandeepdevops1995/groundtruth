@@ -40,8 +40,10 @@ class YardDbService:
                 return result
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 # updating stack location based on it's value
-                if "stack_location" in data and data["stack_location"]:
-                    data["stack_location"] = YardDbService.get_stack_location(data["stack_location"])
+                if "from_location" in data and data["from_location"]:
+                    data["from_location"] = YardDbService.get_stack_location(data["from_location"])
+                if "to_location" in data and data["to_location"]:
+                    data["to_location"] = YardDbService.get_stack_location(data["to_location"])
                 result =  update_container_stack_location(data)
                 if result:
                     return result

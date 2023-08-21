@@ -21,12 +21,15 @@ class RakeOutwardPlanService():
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 pass
             try:
-                print(type(rake_data))
                 containers =  rake_data.pop("containers")
                 for each in containers:
                     each.update(rake_data)
-                    rake_plan_container = RakePlan(**each)
-                    db.session.add(rake_plan_container)
+                    result = RakePlan.query.filter_by(rake_id=each["rake_id"],container_number=each["container_number"])
+                    if result.all():
+                        result.update(dict(each))
+                    else:
+                        rake_plan_container = RakePlan(**each)
+                        db.session.add(rake_plan_container)
                 return commit()
             except Exception as e:
                 logger.exception(str(e))
@@ -80,7 +83,7 @@ class RakeOutwardPlanService():
                 response[Constants.WAGON_LIST].append(wagon_record)
                 container_record ={}
                 container_record[Constants.CONTAINER_NUMBER] = {Constants.VALUE : data[i].container_number}
-                container_record[Constants.KEY_CONTAINER_LIFE_NUMBER] = data[i].container_life_number
+                container_record[Constants.KEY_CONTAINER_LIFE_NUMBER] = data[i].container_life_number.strftime("%Y-%m-%dT%H:%M:%S") if data[i].container_life_number else None
                 container_record[Constants.COMMIDITY]= data[i].attribute_2
                 container_record[Constants.LINER_SEAL] = {Constants.VALUE : data[i].attribute_3}
                 container_record[Constants.CUSTOM_SEAL] = {Constants.VALUE : data[i].seal_number}

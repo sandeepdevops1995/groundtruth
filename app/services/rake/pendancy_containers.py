@@ -51,15 +51,39 @@ class PendancyService():
             if data["container_weight"]:
                 data["container_weight"] = float(data["container_weight"])
             if data["seal_date"]:
-                data["seal_date"] = data["seal_date"].strftime("%Y-%m-%dT%H:%M:%S")
-            if data["arrival_date"] and isinstance(data['arrival_date'], datetime):
+                data["seal_date"] = each["dtSeal"]
+            if data["seal_date"]:
+                #data["seal_date"] = data["seal_date"].strftime("%Y-%m-%dT%H:%M:%S")
+                #data['seal_date'] = datetime.strptime(data['seal_date'], '%Y-%m-%d %H:%M:%S').isoformat()
+                data['seal_date'] = data['seal_date'].isoformat()
+                logger.warn("seal_date type:"+str(type(data['seal_date'])))
+            """
+            if data["seal_datetime"]:
+                #data["seal_datetime"] = data["seal_datetime"].strftime("%Y-%m-%dT%H:%M:%S")
+                data['seal_datetime'] = datetime.strptime(data['seal_datetime'], '%Y-%m-%d %H:%M:%S').isoformat()
+                logger.warn("seal_datetime type:"+str(type(data['seal_datetime'])))
+            """
+            if isinstance(data['arrival_date'], datetime) and data["arrival_date"]:
                 data["arrival_date"] = data["arrival_date"].strftime("%Y-%m-%dT%H:%M:%S")
             else:
                 logger.warn("arrival_date is not datetime format: "+str(data['arrival_date']))
-                data['arrival_date'] = None
-
+                ##data['arrival_date'] = None
+                data['arrival_date'] = datetime.now().replace(microsecond=0).isoformat()
+                ##data['arrival_date'] = datetime.now()
+                ##data['arrival_date'] = datetime.strptime(data['arrival_date'], '%Y-%m-%d %H:%M:%S').isoformat()
+                #data['arrival_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+                ###datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S').isoformat() if data["permit_date"]
+                #data['arrival_date'] = datetime.now()
+                logger.warn("arrival_date type:"+str(type(data['arrival_date'])))
+                ##logger.warn("arrival_date value: "+data['arrival_date'])
             if data["container_life_number"]:
-                data["container_life_number"] = data["container_life_number"].strftime("%Y-%m-%dT%H:%M:%S")
+                ##data["container_life_number"] = data["container_life_number"].strftime("%Y-%m-%dT%H:%M:%S")
+                #data['container_life_number'] = datetime.strptime(data['container_life_number'], '%Y-%m-%d %H:%M:%S').isoformat()
+                data['container_life_number'] = data['container_life_number'].isoformat()
+                logger.warn("container_life_number data type:"+str(type(data['container_life_number'])))
+            if data["hold_rels_flg"]:
+                data['hold_rels_flg'] = data['hold_rels_flg'].isoformat()
+                logger.warn("hold rels flag data type:"+str(type(data['hold_rels_flg'])))
                 
             container_stat = CtrStat.query.filter_by(ctr_stat=each["ctrStat"]).all()
             data["imp_exp_flg"] = container_stat[0].imp_exp_flg if container_stat else None
@@ -153,7 +177,7 @@ class PendancyService():
 
                 if final_data:
                     data = PendancyService.format_data_from_ccls(final_data,True)
-                    logger.info("data fetched from CCLS service")
+                    #logger.info("data fetched from CCLS service: "+str(data))
                     return json.dumps(data)
                 
             data = PendancyContainer.query.filter(PendancyContainer.gateway_port_code.in_(gateway_ports)).order_by(PendancyContainer.gateway_port_code).all()

@@ -59,7 +59,7 @@ class RakeInwardWriteService():
         if Constants.KEY_WAGON_NUMBER in data:
             rake_data[Constants.KEY_SOAP_WAGON_NUMBER] = data[Constants.KEY_WAGON_NUMBER]
         if Constants.KEY_WAGON_LIFE_NUMBER in data:
-            rake_data[Constants.KEY_SOAP_WAGON_LIFE_NUMBER] = datetime.strptime(data[Constants.KEY_WAGON_LIFE_NUMBER], '%Y-%m-%d %H:%M:%S')
+            rake_data[Constants.KEY_SOAP_WAGON_LIFE_NUMBER] = datetime.strptime(data[Constants.KEY_WAGON_LIFE_NUMBER].split('.')[0], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_WAGON_TYPE in data:
             rake_data[Constants.KEY_SOAP_WAGON_TYPE] = data[Constants.KEY_WAGON_TYPE]
         if Constants.KEY_DAMAGE_FLAG in data:

@@ -243,8 +243,9 @@ def update_container_stack_location(data):
         stack_data["ctrNo"] = data["container_number"]
         stack_data["stkLoc"] = data["stack_location"]
         stack_data["attribute1"] = data["equipment_id"]
-        stack_data["trlNo"] = data["trailer_number"] 
-        stack_data["tmOpn"] = str(datetime.strptime(data["operation_time"], '%Y-%m-%d %H:%M:%S').isoformat())
+        stack_data["trlNo"] = data["trailer_number"]
+        # RECHECK THIS LINE OF CODE
+        #stack_data["tmOpn"] = str(datetime.strptime(data["operation_time"], '%Y-%m-%d %H:%M:%S').isoformat())
         stack_data["frmLoc"] = data["from_location"]
         stack_data["toLoc"] = data["to_location"]
         stack_data["updatedDate"] = str(datetime.now().isoformat())

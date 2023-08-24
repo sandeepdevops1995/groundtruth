@@ -11,9 +11,10 @@ from app.logger import logger
 import time;
 from sqlalchemy.exc import SQLAlchemyError
 from app.constants import GroundTruthType
-from app.models import CCLSRake
+from app.models import CCLSRake,DomesticContainers
 from app.services import soap_service
 from app.services.rake.rake_inward_read import RakeInwardReadService
+from app.services.rake.dtms_rake_inward_read import DTMSRakeInwardReadService
 from app.services.rake.gt_upload_service import commit
 from app.models import *
 from app.models.utils import db_format,db_functions
@@ -77,14 +78,19 @@ class RakeDbService:
                 RakeDbService.get_rake_details_by_track_number(track_number,rake_type,count=count,isRetry=Constants.KEY_RETRY_VALUE)
 
 
-    def get_container_data(rake_id,container_number):
+    def get_container_data(rake_id,container_number, rake_tx_type=Constants.EXIM_RAKE ):
+        data = {}
         if config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-            data = CCLSRake.query.filter_by(rake_id=rake_id,container_number=container_number).all()
-            if not data:
-                data = MissedInwardContainers.query.filter_by(rake_id=rake_id,container_number=container_number).all()
+            if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
+                data = DomesticContainers.query.filter_by(rake_id=rake_id,container_number=container_number).all()
+                if data:
+                    return DTMSRakeInwardReadService.format_rake_data(data)
+            if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE]:
+                data = CCLSRake.query.filter_by(rake_id=rake_id,container_number=container_number).all()
+            data = MissedInwardContainers.query.filter_by(rake_id=rake_id,container_number=container_number).all()
             if data:
                 return RakeInwardReadService.format_rake_data(data)
-            return {}
+            return data
         
 
     @query_debugger()

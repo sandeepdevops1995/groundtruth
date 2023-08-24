@@ -11,6 +11,7 @@ from app.services.master_db_service import MasterData as master_db
 from app.services.rake.rake_inward_write import RakeInwardWriteService,WriteInContainer
 from app.services.rake.rake_outward_write import RakeOutwardWriteService
 from app.services.rake.rake_inward_read import RakeInwardReadService
+from app.services.rake.dtms_rake_inward_read import DTMSRakeInwardReadService
 from app.services.rake.rake_outward_plan import RakeOutwardPlanService
 from app.services.rake.pendancy_containers import  PendancyService
 from datetime import date, datetime, timedelta
@@ -25,6 +26,7 @@ class TrainDetails(View):
         track_number = request.args.get(Constants.TRACK_NUMBER,None)
         rake_id = request.args.get(Constants.RAKE_ID,None)
         rake_type = request.args.get(Constants.RAKE_TYPE,"AR")
+        rake_tx_type = request.args.get(Constants.RAKE_TX_TYPE,Constants.EXIM_RAKE)
         wagon_number = request.args.get(Constants.WAGON_NUMBER,None)
         container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
         container_life_number = request.args.get(Constants.KEY_CN_LIFE_NUMBER,None)
@@ -49,12 +51,24 @@ class TrainDetails(View):
         logger.info('GT,Get request from the Rake service : {}'.format(train_number))
         result = {}
         if rake_type == "AR":
-            result = RakeInwardReadService.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
-            if not result:
-                from_date = (datetime.now()-timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
-                to_date = (datetime.now()+timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
-                RakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
+            result = []
+            if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE] :
                 result = RakeInwardReadService.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
+                if not result:
+                    from_date = (datetime.now()-timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
+                    to_date = (datetime.now()+timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
+                    RakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
+                    exim_containers = RakeInwardReadService.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
+                    result += exim_containers
+            if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
+                result = DTMSRakeInwardReadService.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
+                if not result:
+                    from_date = (datetime.now()-timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
+                    to_date = (datetime.now()+timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
+                    DTMSRakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
+                    dom_containers = DTMSRakeInwardReadService.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
+                    result += dom_containers
+
         elif rake_type == "DE":
             result = RakeOutwardPlanService.get_rake_plan(rake_id,train_number,track_number)
         else:

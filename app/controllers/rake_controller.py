@@ -105,17 +105,19 @@ class PendancyList(View):
     @custom_exceptions
     # @api_auth_required
     def get(self):
-        gateway_port = request.args.get(Constants.KEY_GATEWAY_PORT,None)
-        pendency_type = request.args.get(Constants.KEY_PENDENCY_TYPE,None)
-        if gateway_port and pendency_type:
-            gateway_ports= gateway_port.split(",")
-            pendency_types = pendency_type.split(",")
-            logger.info("GT, pendacy list for ports: "+str(gateway_ports)+" and pendency types: "+str(pendency_types))
-            response = PendancyService.get_pendancy_list(pendency_types,gateway_ports)
+        pendency_types = request.args.getlist(Constants.KEY_PENDENCY_TYPE,None)
+        pendency_types_formatted = []
+        for pendancy in pendency_types:
+            pendancy_type, port = pendancy[1:-1].split('[')
+            ports = port[:-1].split(',')
+            pendency_types_formatted.append(tuple([pendancy_type.split(",")[0],ports]))
+        if pendency_types:
+            logger.info("GT, pendacy list for pendency types: "+str(pendency_types_formatted))
+            response = PendancyService.get_pendancy_list(pendency_types_formatted)
             # response = self.format_data(response,gateway_ports)
             return Response(response, status=200, mimetype='application/json')
         else:
-            return Response(json.dumps({"message":"please provide gateway port and pendancy type"}), status=400, mimetype='application/json')
+            return Response(json.dumps({"message":"please provide pendancy types"}), status=400, mimetype='application/json')
     
     
     def format_data(self,response,gateway_ports):

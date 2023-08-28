@@ -114,17 +114,16 @@ class PendancyService():
             logger.exception(str(e))
 
     @query_debugger()
-    def get_pendancy_list(pendency_types,gateway_ports,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+    def get_pendancy_list(pendency_types,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
         try:
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 final_data = []
-                logger.info("pendency types = ",str(pendency_types), type(pendency_types))
-                for pendency_type in pendency_types:
+                for pendency_type,gateway_ports in pendency_types:
                     pendency_type = int(pendency_type)
                     if PendencyType.LOADED.value == pendency_type:
-                        logger.info("fetching LOADED pendancy containers")
+                        logger.info("fetching LOADED pendancy containers"+str(gateway_ports))
                         for port in gateway_ports:
                             request_params = {'GW_PORT_CODE': port,
                                             # 'P_STUFF_AT': 'FAC',
@@ -133,7 +132,7 @@ class PendancyService():
                             if data:
                                 final_data += data
                     elif PendencyType.EMPTY.value == pendency_type:
-                        logger.info("fetching EMPTY pendancy containers")
+                        logger.info("fetching EMPTY pendancy containers"+str(gateway_ports))
                         for port in gateway_ports:
                             request_params = {'GW_PORT_CODE': port}
                             data = soap_service.get_empty_pendancy_details(request_params)
@@ -150,7 +149,7 @@ class PendancyService():
                                 final_data += data
 
                     elif PendencyType.BLOCK.value == pendency_type:
-                        logger.info("fetching BLOCK pendancy containers")
+                        logger.info("fetching BLOCK pendancy containers"+str(gateway_ports))
                         for port in gateway_ports:
                             request_params = {'GW_PORT_CODE': port}
                             data = soap_service.get_block_pendancy_details(request_params)
@@ -158,7 +157,7 @@ class PendancyService():
                                 final_data += data
 
                     elif PendencyType.EXPRESS.value == pendency_type:
-                        logger.info("fetching EXPRESS pendancy containers")
+                        logger.info("fetching EXPRESS pendancy containers"+str(gateway_ports))
                         for port in gateway_ports:
                             request_params = {'GW_PORT_CODE': port}
                             data = soap_service.get_express_pendancy_details(request_params)
@@ -166,7 +165,7 @@ class PendancyService():
                                 final_data += data
 
                     elif PendencyType.LCL.value == pendency_type:
-                        logger.info("fetching LCL pendancy containers")
+                        logger.info("fetching LCL pendancy containers"+str(gateway_ports))
                         pass
                         # logger.info("fetching LCL peendancy containers")
                         # for port in gateway_ports:

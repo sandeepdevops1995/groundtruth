@@ -16,7 +16,7 @@ import time
 class RakeInwardReadService:
 
     @query_debugger()
-    def get_train_details(query_values,rake_id=None,track_number=None,from_date=None,to_date=None,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+    def get_train_details(query_values,rake_id=None,track_number=None,trans_delay=2,from_date=None,to_date=None,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
         try:
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
@@ -32,8 +32,8 @@ class RakeInwardReadService:
                 #     result = soap_service.get_train_data(query_values["train_number"])
             if "trans_date" in query_values:
                 trans_date = query_values.pop('trans_date')
-                start_date = trans_date - timedelta(days = 5)
-                end_date =  trans_date + timedelta(days = 5)
+                start_date = trans_date - timedelta(days = trans_delay)
+                end_date =  trans_date + timedelta(days = trans_delay)
                 rake_query = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)>=start_date, cast(CCLSRake.trans_date, DATE)<=end_date)
                 rake_query = rake_query.filter_by(**query_values)
             else:
@@ -62,7 +62,7 @@ class RakeInwardReadService:
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
-                RakeInwardReadService.get_train_details(query_values,rake_id,track_number,from_date,to_date,count,isRetry)
+                RakeInwardReadService.get_train_details(query_values,rake_id,track_number,trans_delay,from_date,to_date,count,isRetry)
 
     def save_in_db(data_list):
         final_data = []

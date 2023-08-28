@@ -29,6 +29,7 @@ class TrainDetails(View):
         container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
         container_life_number = request.args.get(Constants.KEY_CN_LIFE_NUMBER,None)
         trans_date = request.args.get(Constants.KEY_TRANS_DATE,None)
+        trans_delay = request.args.get(Constants.KEY_TRANS_DELAY,2)
         from_date = request.args.get(Constants.KEY_FROM_DATE,None)
         to_date = request.args.get(Constants.KEY_TO_DATE,None)
         data = {}
@@ -49,12 +50,12 @@ class TrainDetails(View):
         logger.info('GT,Get request from the Rake service : {}'.format(train_number))
         result = {}
         if rake_type == "AR":
-            result = RakeInwardReadService.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
+            result = RakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
             if not result:
-                from_date = (datetime.now()-timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
-                to_date = (datetime.now()+timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
+                from_date = (datetime.now()-timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
+                to_date = (datetime.now()+timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
                 RakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
-                result = RakeInwardReadService.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
+                result = RakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
         elif rake_type == "DE":
             result = RakeOutwardPlanService.get_rake_plan(rake_id,train_number,track_number)
         else:

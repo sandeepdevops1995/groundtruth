@@ -49,7 +49,7 @@ def get_permit_details(permit_number):
                     result[a] = None
             # save in diagnostice
             save_in_diagnostics(Constants.CCLS_DATA_ENDPOINT+ " (EXIM) ",{"permit_number":permit_number},{"output":str(result)},start_time,end_time)
-        print(result)
+        logger.debug('Get Permit, soap service response ( EXIM ) : '+str(result))
     except Exception as e:
         logger.exception('Get Permit, Exception ( EXIM ) : '+str(e))
         result = {}

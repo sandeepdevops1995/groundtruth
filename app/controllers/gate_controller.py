@@ -21,7 +21,7 @@ class ContainerData(View):
             logger.debug('Added data to the database')
             return Response(None, status=200, mimetype='application/json')
         except Exception as e:
-            print(e)
+            logger.exception('posting container data : '+str(e))
         return Response(None, status=406, mimetype='application/json')
     
     
@@ -57,7 +57,7 @@ class CclsData(View):
         permit_number = request.args.get(Constants.KEY_PERMIT_NUMBER,None)
         container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
         crn_number = request.args.get(Constants.KEY_CRN_NUMBER,None)
-        lane_type = request.args.get(Constants.KEY_LANE_TYPE,"EXIM-ROAd-IN")
+        lane_type = request.args.get(Constants.KEY_LANE_TYPE,"EXIM-ROAD-IN")
         if "EXIM" in lane_type.split("-"):
             operation_type = "EXIM"
         elif "DOM" in lane_type.split("-"):

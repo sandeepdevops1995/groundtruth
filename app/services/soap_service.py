@@ -107,7 +107,7 @@ def get_exim_train_details(train_number='',from_date='', to_date = ''):
         return result
     except Exception as e:
         logger.exception('Get EXIM Train Details, Exception : '+str(e))
-        result = {}
+        result = []
         return result
     
 def get_domestic_train_details(train_number='',from_date='', to_date = ''):
@@ -126,7 +126,7 @@ def get_domestic_train_details(train_number='',from_date='', to_date = ''):
         return result
     except Exception as e:
         logger.exception('Get Domestic Train Details, Exception : '+str(e))
-        result = {}
+        result = []
         return result
     
 

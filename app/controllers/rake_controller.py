@@ -52,30 +52,38 @@ class TrainDetails(View):
         logger.info('GT,Get request from the Rake service : {}'.format(train_number))
         result = {}
         if rake_type == "AR":
-            result = []
-            if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE] :
-                result = RakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
-                if not result:
-                    from_date = (datetime.now()-timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
-                    to_date = (datetime.now()+timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
-                    RakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
-                    exim_containers = RakeInwardReadService.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
-                    result += exim_containers
-            if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
-                result = DTMSRakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
-                if not result:
-                    from_date = (datetime.now()-timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
-                    to_date = (datetime.now()+timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
-                    DTMSRakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
-                    dom_containers = DTMSRakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
-                    result += dom_containers
-
+            result = self.get_inward_summary_containers(self,data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date)
+            if not result:
+                self.request_soap_api(self,trans_delay,rake_tx_type)
+                result = self.get_inward_summary_containers(self,data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date)
         elif rake_type == "DE":
             result = RakeOutwardPlanService.get_rake_plan(rake_id,train_number,track_number)
         else:
             return Response({"mesaage":"unknown rake type"}, status=400, mimetype='application/json')
         logger.info('Conainer details response')
         return Response(result, status=200, mimetype='application/json')
+    
+
+    def get_inward_summary_containers(self,data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date):
+        result = []
+        if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE] :
+            exim_containers = RakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
+            result += exim_containers
+        if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
+            dom_containers = DTMSRakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
+            result += dom_containers
+        return result
+
+    def request_soap_api(self,trans_delay,rake_tx_type):
+        if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE] :
+            from_date = (datetime.now()-timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
+            to_date = (datetime.now()+timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
+            RakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
+        if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
+            from_date = (datetime.now()-timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
+            to_date = (datetime.now()+timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
+            DTMSRakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
+
 
 
 class RakeData(View):

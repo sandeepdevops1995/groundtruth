@@ -84,7 +84,13 @@ def scheduleTask():
         from app.logger import logger
         from_date = (datetime.now()-timedelta(days = 1)).strftime("%Y-%m-%dT%H:%M:%S")
         to_date = (datetime.now()+timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
+        
+        #Exim train details
         result = RakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
+        
+        #Domestic train details
+        from app.services.rake.dtms_rake_inward_read import DTMSRakeInwardReadService
+        result = DTMSRakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
         logger.info("Task Scheduled from_date: "+from_date+" to_date: "+to_date)
  
 register_controllers()

@@ -91,22 +91,41 @@ def update_container_details(update_data):
         result = {}
     return result
 
-def get_train_data(train_number='',from_date='', to_date = ''):
+def get_exim_train_details(train_number='',from_date='', to_date = ''):
     try:
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/RakeReadOperation/rakereadproocess_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="rakereadproocess_client_ep",
                         port_name="RakeReadProocess_pt")
         rake_data = {'TrainNumber': train_number, 'From': from_date,'To':to_date }
-        logger.debug('Get Train Details, soap service request with data : '+ str(rake_data))
+        logger.debug('Get EXIM Train Details, soap service request with data : '+ str(rake_data))
         start_time = datetime.now()
         result = soap.service.process(**rake_data)
         end_time = datetime.now()
         save_in_diagnostics(Constants.TRAIN_DETAILS_ENDPOINT,{"data":str(rake_data)},{"output":str(result)},start_time,end_time)
-        logger.debug('Get Train Details, soap service response : '+ str(result))
+        logger.debug('Get EXIM Train Details, soap service response : '+ str(result))
         return result
     except Exception as e:
-        logger.exception('Get Train Details, Exception : '+str(e))
+        logger.exception('Get EXIM Train Details, Exception : '+str(e))
+        result = {}
+        return result
+    
+def get_domestic_train_details(train_number='',from_date='', to_date = ''):
+    try:
+        wsdl_url = config.WSDL_URL+'/soa-infra/services/default/DTMSRakeInwardProcess/dtmsrakeinwardapi_client_ep?WSDL'
+        soap = zeep.Client(wsdl=wsdl_url, 
+                        service_name="dtmsrakeinwardapi_client_ep",
+                        port_name="DTMSRakeInwardAPI_pt")
+        rake_data = {'TrainNumber': train_number, 'From': from_date,'To':to_date }
+        logger.debug('Get Domestic Train Details, soap service request with data : '+ str(rake_data))
+        start_time = datetime.now()
+        result = soap.service.process(**rake_data)
+        end_time = datetime.now()
+        save_in_diagnostics(Constants.TRAIN_DETAILS_ENDPOINT,{"data":str(rake_data)},{"output":str(result)},start_time,end_time)
+        logger.debug('Get Domestic Train Details, soap service response : '+ str(result))
+        return result
+    except Exception as e:
+        logger.exception('Get Domestic Train Details, Exception : '+str(e))
         result = {}
         return result
     

@@ -51,6 +51,10 @@ KEY_PENDENCY_TYPE = "pendency_type"
 
 # RAKE 
 KEY_RAKE_ID = "rake_id"
+RAKE_TX_TYPE = "trans_type" # EXIM/DOM
+EXIM_RAKE    = "EXIM"
+DOMESTIC_RAKE  = "DOM"
+HYBRID_RAKE = "HYBRID"
 KEY_TRAIN_NUMBER = 'train_number'
 KEY_TRACK_NUMBER = "track_number"
 KEY_RAKE_NUMBER = "rake_number"

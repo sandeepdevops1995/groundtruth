@@ -45,9 +45,11 @@ RAKE_DATA_DIRECTORY = 'rake_data'
 GROUND_TRUTH = GroundTruthType.SOAP.value
 # WSDL_URL = "http://172.16.30.114:8007"
 WSDL_URL = env('WSDL_URL')
+REVENUE_WSDL_URL = env('REVENUE_WSDL_URL')
 
 #mock service
 IS_MOCK_ENABLED=env.bool('IS_MOCK_ENABLED')
+IS_REVENUE_MOCK_ENABLED=env.bool('IS_REVENUE_MOCK_ENABLED')
 
 #logstash config
 LOGSTASH_IP = env('LOGSTASH_IP')

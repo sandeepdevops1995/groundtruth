@@ -21,14 +21,9 @@ def trim_grid_no(job_info):
     return job_info
 
 
-def get_revenue_details(from_date,to_date,type):
+def get_revenue_details(from_date,to_date,service_type,service_name,port_name):
     try:
-        if type=='import':
-            wsdl_url = config.WSDL_URL+"/soa-infra/services/default/ImportBillDetails/importbill_details?WSDL"
-            service_name = 'importbill_details'
-        else:
-            wsdl_url = config.WSDL_URL+"/soa-infra/services/default/ExportBillDetails/exportbill_details?WSDL"
-            service_name = 'exportbill_details'
+        wsdl_url = config.REVENUE_WSDL_URL+"/soa-infra/services/default/"+service_type+"/"+service_name+"?WSDL"
         logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_GET_REQUEST_TO_CCLS_TO_FETCH_JOB_ORDER_DATA,from_date,to_date,wsdl_url))
         soap = zeep.Client(wsdl=wsdl_url, service_name=service_name)
         with soap.settings(strict=False, raw_response=False, xsd_ignore_sequence_order=True):
@@ -40,8 +35,7 @@ def get_revenue_details(from_date,to_date,type):
                 # using json.dumps to convert dictionary to JSON
                 result = json.loads(json.dumps(data, indent = 3))
                 result = result['root']['result_json_list']
-                if result:
-                    print("result-----------------",len(result))
+                
             else:
                 result = serialize_object(zeep_object)
     except requests.exceptions.ConnectionError as e:

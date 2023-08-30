@@ -1,3 +1,4 @@
+from app.services.warehouse.wh_revenue import RevenueView
 from flask_restful import Resource, reqparse
 from flask import json, Response,request
 from app.logger import logger
@@ -116,10 +117,8 @@ class WarehouseRevenue(View):
         from_date = request.args.get('from_date')
         to_date = request.args.get('to_date')
         type = request.args.get('type')
-        print("filter date-------",from_date,to_date)
         logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_WAREHOUSE_REVENUE,LM.KEY_GET_REQUEST_FROM_CTMS_FOR_WAREHOUSE_REVENUE,from_date,to_date,type))
-        from app.services.warehouse.soap_api_call import get_revenue_details
-        result = get_revenue_details(from_date,to_date,type)
+        result = RevenueView().get_revenue_details(from_date,to_date,type)
         if not result:
             logger.exception("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_WAREHOUSE_REVENUE,LM.KEY_WAREHOUSE_REVENUE_DOES_NOT_EXISTS,from_date,to_date,type))
             return Response(None, status=204, mimetype='application/json')

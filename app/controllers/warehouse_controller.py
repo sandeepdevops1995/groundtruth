@@ -1,3 +1,4 @@
+from app.services.warehouse.wh_revenue import RevenueView
 from flask_restful import Resource, reqparse
 from flask import json, Response,request
 from app.logger import logger
@@ -8,6 +9,7 @@ from app.services.warehouse.wh_upload_tallysheet import WarehouseUploadTallyShee
 import pandas as pd
 import app.logging_message as LM
 from app.services.warehouse.wh_exception_handler import custom_exceptions
+from datetime import datetime
 
 parser = reqparse.RequestParser()
 
@@ -105,6 +107,22 @@ class WarehousePrintTallySheet(View):
             logger.exception("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_PRINT_TALLYSHEET,LM.KEY_TALLYSHEET_DOES_NOT_EXISTS,'JT_'+str(request.args.get('job_type')),request.args.get('request_parameter')))
             return Response(None, status=204, mimetype='application/json')
         logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_PRINT_TALLYSHEET,LM.KEY_FETCH_PRINT_TALLYSHEET_DATA,'JT_'+str(request.args.get('job_type')),request.args.get('request_parameter')))
+        return Response(json.dumps(result), status=200, mimetype='application/json')
+    
+
+class WarehouseRevenue(View):
+
+    @custom_exceptions(LM.KEY_WAREHOUSE_REVENUE)
+    def get(self):
+        from_date = request.args.get('from_date')
+        to_date = request.args.get('to_date')
+        type = request.args.get('type')
+        logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_WAREHOUSE_REVENUE,LM.KEY_GET_REQUEST_FROM_CTMS_FOR_WAREHOUSE_REVENUE,from_date,to_date,type))
+        result = RevenueView().get_revenue_details(from_date,to_date,type)
+        if not result:
+            logger.exception("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_WAREHOUSE_REVENUE,LM.KEY_WAREHOUSE_REVENUE_DOES_NOT_EXISTS,from_date,to_date,type))
+            return Response(None, status=204, mimetype='application/json')
+        logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_WAREHOUSE_REVENUE,LM.KEY_FETCH_WAREHOUSE_REVENUE_DATA,from_date,to_date,type))
         return Response(json.dumps(result), status=200, mimetype='application/json')
 
 

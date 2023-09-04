@@ -8,6 +8,7 @@ from app import postgres_db as db
 from app.logger import logger
 from app.services.rake.gt_upload_service import commit,save_in_diagnostics
 from app.models.utils import db_format
+from app.enums import EquipmentNames
 import json
 from zeep.transports import Transport
 import xmltodict
@@ -280,7 +281,8 @@ def update_container_stack_location(data):
         stack_data["createdDate"] = str(datetime.now().isoformat())                                                                                   
         stack_data["ctrNo"] = data["container_number"]
         stack_data["stkLoc"] = data["stack_location"]
-        stack_data["attribute1"] = data["equipment_id"]
+        # stack_data["attribute1"] = data["equipment_id"]
+        stack_data["attribute1"] = EquipmentNames[data["equipment_id"]].value if EquipmentNames[data["equipment_id"]].value else "CHE"
         stack_data["trlNo"] = data["trailer_number"]
         # RECHECK THIS LINE OF CODE
         #stack_data["tmOpn"] = str(datetime.strptime(data["operation_time"], '%Y-%m-%d %H:%M:%S').isoformat())

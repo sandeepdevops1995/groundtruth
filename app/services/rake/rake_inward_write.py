@@ -16,8 +16,9 @@ from datetime import datetime
 class RakeInwardWriteService():
     def format_data_to_ccls_format(data):
         rake_data = {}
+        rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = "TEST"
         if  Constants.KEY_TRAIN_NUMBER in data :
-            rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = data[Constants.KEY_TRAIN_NUMBER]
+            rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = data[Constants.KEY_TRAIN_NUMBER] if data[Constants.KEY_TRAIN_NUMBER] else "TEST"
         if Constants.KEY_DT_ACTUAL_DEPART in data:
             rake_data[Constants.KEY_SOAP_DT_ACTUAL_DEPART] = datetime.strptime(data[Constants.KEY_DT_ACTUAL_DEPART], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_IMP_EXP_FLG in data:

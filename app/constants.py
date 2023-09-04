@@ -231,6 +231,27 @@ KEY_SOAP_G_ATTRIBUTE7 = "attribute7"
 KEY_SOAP_G_ATTRIBUTE8 = "attribute8"
 KEY_SOAP_G_ATTRIBUTE9 = "attribute9"
 KEY_SOAP_G_ATTRIBUTE10 = "attribute10"
+# Domestic Gate
+KEY_SOAP_G_DTMS_GATEPASS_NUMER = 'davgpnumb'
+KEY_SOAP_G_DTMS_VEH_NUMBER = 'davvhclnumb'
+KEY_SOAP_G_DTMS_CTR_IN_OUT_FLAG = 'dacinoutfalg'
+KEY_SOAP_G_DTMS_IN_OUT_TIMEIN = 'dadinouttimeIn'
+KEY_SOAP_G_DTMS_IN_OUT_TIMEOUT = 'dadinouttimeOut'
+KEY_SOAP_G_DTMS_CARGO_CONTAINER_FLAG = 'daccrgocntrflag'
+KEY_SOAP_G_DTMS_CTR_NUMBER = 'daccntrnumb'
+KEY_SOAP_G_DTMS_CTR_SIZE = 'dancntrsize'
+KEY_SOAP_G_DTMS_HAZARD_STATUS = 'hazardiousStatus'
+KEY_SOAP_G_DTMS_CTR_TYPE = 'daccntrtype'
+KEY_SOAP_G_DTMS_DAMAGE_STATUS = 'damageStatus'
+KEY_SOAP_G_DTMS_CTR_LDD_EMPTY_FLAG = 'dacleflag'
+KEY_SOAP_G_DTMS_CARGO_LDD_EMPTY_FLAG_VEH = 'dacleflagVhcl'
+KEY_SOAP_G_DTMS_FACTORY_IN_TIME = 'dadfactintime'
+KEY_SOAP_G_DTMS_FACTORY_OUT_TIME = 'dadfactouttime'
+KEY_SOAP_G_DTMS_FACTORY_REACH_TIME = 'dadfactreachtime'
+KEY_SOAP_G_DTMS_USER_ID = 'davuserid'
+KEY_SOAP_G_DTMS_REASON_CODE = 'dacresncode'
+
+
 
 
 #RABBIT_MQ QUEUES

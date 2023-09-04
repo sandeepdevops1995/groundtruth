@@ -13,6 +13,7 @@ from app.models import Permit
 from app.models.utils import db_format,db_functions
 from app.logger import logger
 from app import postgres_db
+from app.services.gate.dtms_gate_write import DTMSGateWriteService
 import random
 import time
 
@@ -429,15 +430,27 @@ class GateDbService:
                 return query.keys()     
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 is_container_trailer = data.pop("is_container_trailer")
+                trans_type = data.pop("trans_type","EXIM")
                 result = {}
-                if is_container_trailer:
-                    update_data = GateDbService.get_soap_format_for_container(data)
-                else:
-                    update_data = GateDbService.get_soap_format_for_truck(data)
-                if update_data:
-                    result= soap_service.update_container_details(update_data)
-                else:
-                    logger.info('GT, please check whether required keys available or not')
+                if "EXIM" in trans_type.split("-"):
+                    if is_container_trailer:
+                        update_data = GateDbService.get_soap_format_for_container(data)
+                    else:
+                        update_data = GateDbService.get_soap_format_for_truck(data)
+                    if update_data:
+                        result= soap_service.update_exim_container_details(update_data)
+                    else:
+                        logger.info('GT, please check whether required keys available or not')
+                elif "DOM" in trans_type.split("-"):
+                    if is_container_trailer:
+                        update_data = DTMSGateWriteService.get_dtms_soap_format_for_container(data)
+                    else:
+                        update_data = DTMSGateWriteService.get_dtms_soap_format_for_truck(data)
+                    if update_data:
+                        result= soap_service.update_domestic_container_details(update_data)
+                    else:
+                        logger.info('GT, please check whether required keys available or not')
+
                 if result:
                     logger.info('GT, Updated in soap service')
                     return True

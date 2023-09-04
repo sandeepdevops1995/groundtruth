@@ -72,10 +72,10 @@ def get_domestic_permit_details(permit_number):
         result = {}
     return result
 
-def update_container_details(update_data):
+def update_exim_container_details(update_data):
     wsdl_url = config.WSDL_URL+"/soa-infra/services/default/GateWriteOperation/gatewriteoperation_client_ep?WSDL"
     try:      
-        logger.debug('Update Container Details, soap service request with data : '+ str(update_data))
+        logger.debug('Update EXIM Container Details, soap service request with data : '+ str(update_data))
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="gatewriteoperation_client_ep",
                         port_name="GateWriteOperation_pt")
@@ -84,10 +84,29 @@ def update_container_details(update_data):
         result = soap.service.process(**update_data)
         end_time = datetime.now()
         save_in_diagnostics(Constants.UPDATE_CONTAINER_DETAILS_ENDPOINT,{"data":str(update_data)},{"output":str(result)},start_time,end_time)
-        logger.debug('Update Container Details, soap service response : '+ str(result))
+        logger.debug('Update EXIM Container Details, soap service response : '+ str(result))
         
     except Exception as e:
-        # logger.exception('Update Container Details, Exception : '+str(e))
+        logger.exception('Update EXIM Container Details, Exception : '+str(e))
+        result = {}
+    return result
+
+def update_domestic_container_details(update_data):
+    wsdl_url = config.WSDL_URL+"/soa-infra/services/default/DTMSGateWriteProcess/dtmswritebpel_client_ep?WSDL"
+    try:      
+        logger.debug('Update Domestic Container Details, soap service request with data : '+ str(update_data))
+        soap = zeep.Client(wsdl=wsdl_url, 
+                        service_name="dtmswritebpel_client_ep",
+                        port_name="DTMSWriteBPEL_pt")
+        
+        start_time = datetime.now()
+        result = soap.service.process(**update_data)
+        end_time = datetime.now()
+        save_in_diagnostics(Constants.UPDATE_CONTAINER_DETAILS_ENDPOINT,{"data":str(update_data)},{"output":str(result)},start_time,end_time)
+        logger.debug('Update Domestic Container Details, soap service response : '+ str(result))
+        
+    except Exception as e:
+        logger.exception('Update Domestic Container Details, Exception : '+str(e))
         result = {}
     return result
 

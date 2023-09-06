@@ -11,7 +11,7 @@ from app.logger import logger
 import time;
 from sqlalchemy.exc import SQLAlchemyError
 from app.constants import GroundTruthType
-from app.models import CCLSRake,DomesticContainers
+from app.models import CCLSRake,DomesticContainers,MissedInwardContainers
 from app.services import soap_service
 from app.services.rake.rake_inward_read import RakeInwardReadService
 from app.services.rake.dtms_rake_inward_read import DTMSRakeInwardReadService
@@ -87,7 +87,8 @@ class RakeDbService:
                     return DTMSRakeInwardReadService.format_rake_data(data)
             if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE]:
                 data = CCLSRake.query.filter_by(rake_id=rake_id,container_number=container_number).all()
-            data = MissedInwardContainers.query.filter_by(rake_id=rake_id,container_number=container_number).all()
+            if not data:
+                data = MissedInwardContainers.query.filter_by(rake_id=rake_id,container_number=container_number).all()
             if data:
                 return RakeInwardReadService.format_rake_data(data)
             return data

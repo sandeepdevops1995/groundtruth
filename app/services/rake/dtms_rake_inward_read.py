@@ -157,5 +157,6 @@ class DTMSRakeInwardReadService:
                 container_record[Constants.KEY_SLINE_CODE] =  {Constants.VALUE : None}
                 container_record[Constants.WAGON_NUMBER] = { Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:None}
                 container_record[Constants.CONTAINER_STAT] = "E"
+                container_record[Constants.CATEGORY] = "Domestic"
                 response[Constants.CONTAINER_LIST].append(container_record)
         return json.dumps(response)

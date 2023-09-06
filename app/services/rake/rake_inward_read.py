@@ -158,5 +158,8 @@ class RakeInwardReadService:
                 container_record[Constants.WAGON_NUMBER] = { Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:data[i].wagon_sequence_number}
                 # container_record[Constants.CONTAINER_STAT] = "L" if "container_gross_weight" in data[i] and data[i].container_gross_weight else "E"
                 container_record[Constants.CONTAINER_STAT] = "E"
+                # category: "Import/Export/Domestic/Transhipment"
+                container_record[Constants.CATEGORY] = "Import"
+
                 response[Constants.CONTAINER_LIST].append(container_record)
         return json.dumps(response)

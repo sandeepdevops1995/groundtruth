@@ -16,6 +16,7 @@ from app.services.rake.rake_outward_plan import RakeOutwardPlanService
 from app.services.rake.pendancy_containers import  PendancyService
 from datetime import date, datetime, timedelta
 from app.controllers.utils import View, soap_API_response
+import json
 
 
 class TrainDetails(View):   
@@ -52,10 +53,13 @@ class TrainDetails(View):
         logger.info('GT,Get request from the Rake service : {}'.format(train_number))
         result = {}
         if rake_type == "AR":
-            result = self.get_inward_summary_containers(self,data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date)
+            if from_date and to_date:
+                self.request_soap_api(trans_delay,rake_tx_type,from_date,to_date)
+                return Response({"message":"requested soap API"}, status=200, mimetype='application/json')
+            result = self.get_inward_summary_containers(data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date)
             if not result:
-                self.request_soap_api(self,trans_delay,rake_tx_type)
-                result = self.get_inward_summary_containers(self,data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date)
+                self.request_soap_api(trans_delay,rake_tx_type)
+                result = self.get_inward_summary_containers(data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date)
         elif rake_type == "DE":
             result = RakeOutwardPlanService.get_rake_plan(rake_id,train_number,track_number)
         else:
@@ -74,14 +78,14 @@ class TrainDetails(View):
             result += dom_containers
         return result
 
-    def request_soap_api(self,trans_delay,rake_tx_type):
-        if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE] :
+    def request_soap_api(self,trans_delay,rake_tx_type,from_date=None,to_date=None):
+        if not from_date:
             from_date = (datetime.now()-timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
+        if not to_date:
             to_date = (datetime.now()+timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
+        if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE] :
             RakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
         if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
-            from_date = (datetime.now()-timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
-            to_date = (datetime.now()+timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
             DTMSRakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
 
 
@@ -120,6 +124,8 @@ class RakeData(View):
             return Response(json.dumps({"message":message}), status=204,mimetype='application/json')
         logger.info('GT,Get request from the Rake service : {} {} {}'.format(rake_id,rake_number,track_number))
         result = RakeInwardReadService.get_train_details(data)
+        if not json.loads(result):
+            result = DTMSRakeInwardReadService.get_train_details(data)
         logger.info('Conainer details response')
         return Response(result, status=200, mimetype='application/json')
 

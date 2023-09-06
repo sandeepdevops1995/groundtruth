@@ -45,6 +45,7 @@ class PendencyType(enum.Enum):
 
 class EquipmentNames(enum.Enum):
     RMGTRCK = "RMG2"
+    RMGTRCK02 = "RMG2"
     RST03 = "RH03"
     RST04 = "RH04"
     RST05 = "RH05"

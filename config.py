@@ -8,6 +8,7 @@ env = Env()
 
 BASE_DIR = os.path.dirname(__file__)
 SQL_DIR =(os.path.join(BASE_DIR,'app','sql'))
+WSDL_DIR = os.path.join(BASE_DIR,'soap_wsdls')
 WSDL_FILE = os.path.join(BASE_DIR,'GateWithEmptyTrailer.wsdl')
 
 # Server config

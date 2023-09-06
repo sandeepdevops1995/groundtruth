@@ -1,4 +1,4 @@
-
+import os
 import zeep
 import config
 from datetime import datetime
@@ -15,6 +15,9 @@ import xmltodict
 
 transport = Transport(timeout=10)
 
+def get_zeep_wsdl_client(file_name):
+    wsdl_file = os.path.join(config.WSDL_DIR,file_name)
+    return zeep.Client(wsdl_file)
 
 def get_permit_details(permit_number):
     wsdl_url = config.WSDL_URL+"/soa-infra/services/default/EmpltyTrailer/emptytrailerbpel_client_ep?WSDL"

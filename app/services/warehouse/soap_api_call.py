@@ -8,10 +8,11 @@ import requests
 import app.logging_message as LM
 import os
 from zeep.helpers import serialize_object
-from app.enums import JobOrderType
+from app.enums import JobOrderType,RevenueType
 from app.services.rake.gt_upload_service import save_in_diagnostics
 from datetime import datetime
 import app.services.warehouse.constants as constants
+from app.controllers.utils import get_random_number
 
 def trim_grid_no(job_info):
     grid_no = job_info['gridNo']
@@ -28,7 +29,7 @@ def get_revenue_details(from_date,to_date,service_type,service_name,port_name):
         soap = zeep.Client(wsdl=wsdl_url, service_name=service_name)
         with soap.settings(strict=False, raw_response=False, xsd_ignore_sequence_order=True):
             zeep_object = soap.service.process(from_date,to_date)
-            if config.IS_MOCK_ENABLED:
+            if config.IS_REVENUE_MOCK_ENABLED:
                 import xml.etree.ElementTree as ET
                 data = xmltodict.parse(zeep_object)
                 # data = xmltodict.parse(result,force_list={'truck_details': True, 'shipping_bill_details_list': True, 'bill_details_list': True})
@@ -43,6 +44,34 @@ def get_revenue_details(from_date,to_date,service_type,service_name,port_name):
     except Exception as e:
         logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_RESPONSE_FROM_CCLS_OF_JOB_ORDER_DATA,from_date,to_date,e))
         result={}
+        #raise Exception('GTService: getting internal error while fetching job details from ccls service').with_traceback(e.__traceback__)
+    return result
+
+def get_revenue_amount(request_data,request_type,service_type,service_name,port_name):
+    try:
+        wsdl_url = config.REVENUE_WSDL_URL+"/soa-infra/services/default/"+service_type+"/"+service_name+"?WSDL"
+        logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_GET_REQUEST_TO_CCLS_TO_FETCH_JOB_ORDER_DATA,request_type,request_data,wsdl_url))
+        soap = zeep.Client(wsdl=wsdl_url, service_name=service_name)
+        with soap.settings(strict=False, raw_response=False, xsd_ignore_sequence_order=True):
+            zeep_object = soap.service.process(**request_data)
+            result = serialize_object(zeep_object)
+    except requests.exceptions.ConnectionError as e:
+        if config.IS_MOCK_ENABLED:
+            amount = get_random_number(100,10000)
+            result = {"amount":amount}
+            if request_type==RevenueType.EXPORT_FCL_REVENUE.value:
+                free_days = get_random_number(1,10)
+                result.update({'free_days':free_days})
+        else:
+            raise ConnectionError('GTService: getting connection error while calling to ccls service').with_traceback(e.__traceback__)
+    except Exception as e:
+        logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_RESPONSE_FROM_CCLS_OF_JOB_ORDER_DATA,request_data,request_type,e))
+        if config.IS_MOCK_ENABLED:
+            amount = get_random_number(100,10000)
+            result = {"amount":amount}
+            if request_type==RevenueType.EXPORT_FCL_REVENUE.value:
+                free_days = get_random_number(1,10)
+                result.update({'free_days':free_days})
         #raise Exception('GTService: getting internal error while fetching job details from ccls service').with_traceback(e.__traceback__)
     return result
 

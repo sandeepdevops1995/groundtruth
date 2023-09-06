@@ -133,15 +133,10 @@ class PendancyList(View):
     @custom_exceptions
     # @api_auth_required
     def get(self):
-        pendency_types = request.args.getlist(Constants.KEY_PENDENCY_TYPE,None)
-        pendency_types_formatted = []
-        for pendancy in pendency_types:
-            pendancy_type, port = pendancy[1:-1].split('[')
-            ports = port[:-1].split(',')
-            pendency_types_formatted.append(tuple([pendancy_type.split(",")[0],ports]))
+        pendency_types = request.args.get(Constants.KEY_PENDENCY_TYPE,None)
         if pendency_types:
-            logger.info("GT, pendacy list for pendency types: "+str(pendency_types_formatted))
-            response = PendancyService.get_pendancy_list(pendency_types_formatted)
+            logger.info("GT, pendacy list for pendency types: "+pendency_types)
+            response = PendancyService.get_pendancy_list(json.loads(pendency_types))
             # response = self.format_data(response,gateway_ports)
             return Response(response, status=200, mimetype='application/json')
         else:

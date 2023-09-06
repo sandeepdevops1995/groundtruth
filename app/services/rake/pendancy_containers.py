@@ -121,8 +121,9 @@ class PendancyService():
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 final_data = []
-                for pendency_type,gateway_ports in pendency_types:
-                    pendency_type = int(pendency_type)
+                for each in pendency_types:
+                    pendency_type = int(each['pendency_type'])
+                    gateway_ports = each['gateway_port']
                     if PendencyType.LOADED.value == pendency_type:
                         logger.info("fetching LOADED pendancy containers"+str(gateway_ports))
                         for port in gateway_ports:
@@ -181,8 +182,8 @@ class PendancyService():
                     return json.dumps(final_data)
             logger.info("data fetched from local db")
             data = []
-            for pendency_type,gateway_ports in pendency_types:
-                data += PendancyContainer.query.filter(PendancyContainer.gateway_port_code.in_(gateway_ports),PendancyContainer.pendency_type == int(pendency_type)).all()
+            for each in pendency_types:
+                data += PendancyContainer.query.filter(PendancyContainer.gateway_port_code.in_(each['gateway_port']),PendancyContainer.pendency_type == int(each["pendency_type"])).all()
             data = db_functions(data).as_json()
             return data
         except Exception as e:

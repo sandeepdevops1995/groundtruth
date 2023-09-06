@@ -17,7 +17,7 @@ import time
 
 class PendancyService():
 
-    def format_data_from_ccls(ccls_data,save_data=False):
+    def format_data_from_ccls(ccls_data,pendency_type,save_data=False):
         pendancy_list = []
         for each in ccls_data:
             data = {}
@@ -44,6 +44,7 @@ class PendancyService():
             data["hold_rels_flg"] = each["holdRelsFlg"]
             data["hold_rels_flg_next"] = None
             data["q_no"] = None
+            data["pendency_type"] = int(pendency_type)
 
             if save_data:
                 PendancyService.save_in_db(data)
@@ -119,7 +120,7 @@ class PendancyService():
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-                final_data = {}
+                final_data = []
                 for pendency_type,gateway_ports in pendency_types:
                     pendency_type = int(pendency_type)
                     if PendencyType.LOADED.value == pendency_type:
@@ -130,7 +131,7 @@ class PendancyService():
                                             'P_CUTOFF_DATE': ''}
                             data = soap_service.get_pendancy_details(request_params)
                             if data:
-                                final_data[PendencyType.LOADED.value] =  PendancyService.format_data_from_ccls(data,True)
+                                final_data +=PendancyService.format_data_from_ccls(data,PendencyType.LOADED.value,True)
                     elif PendencyType.EMPTY.value == pendency_type:
                         logger.info("fetching EMPTY pendancy containers"+str(gateway_ports))
                         for port in gateway_ports:
@@ -146,7 +147,7 @@ class PendancyService():
                                     obj['sealNo'] = 'N/A'
                                     obj['odcFlg'] = 'N/A'
                                     obj['wt'] = 0
-                                final_data[PendencyType.EMPTY.value] = PendancyService.format_data_from_ccls(data,True)
+                                final_data += PendancyService.format_data_from_ccls(data,PendencyType.EMPTY.value,True)
 
                     elif PendencyType.BLOCK.value == pendency_type:
                         logger.info("fetching BLOCK pendancy containers"+str(gateway_ports))
@@ -154,7 +155,7 @@ class PendancyService():
                             request_params = {'GW_PORT_CODE': port}
                             data = soap_service.get_block_pendancy_details(request_params)
                             if data:
-                                final_data[PendencyType.BLOCK.value] = PendancyService.format_data_from_ccls(data,True)
+                                final_data += PendancyService.format_data_from_ccls(data,PendencyType.BLOCK.value,True)
 
                     elif PendencyType.EXPRESS.value == pendency_type:
                         logger.info("fetching EXPRESS pendancy containers"+str(gateway_ports))
@@ -162,7 +163,7 @@ class PendancyService():
                             request_params = {'GW_PORT_CODE': port}
                             data = soap_service.get_express_pendancy_details(request_params)
                             if data:
-                                final_data[PendencyType.EXPRESS.value] = PendancyService.format_data_from_ccls(data,True)
+                                final_data += PendancyService.format_data_from_ccls(data,PendencyType.EXPRESS.value,True)
 
                     elif PendencyType.LCL.value == pendency_type:
                         logger.info("fetching LCL pendancy containers"+str(gateway_ports))
@@ -172,17 +173,18 @@ class PendancyService():
                         #     request_params = {'GW_PORT_CODE': port}
                         #     data = soap_service.get_lcl_pendancy_details(request_params)
                         #     if data:
-                        #         final_data[PendencyType.LCL.value] = PendancyService.format_data_from_ccls(data,True)
+                        #         final_data += PendancyService.format_data_from_ccls(data,PendencyType.EXPRESS.value,True)
 
                 if final_data:
                     # data = PendancyService.format_data_from_ccls(final_data,True)
                     #logger.info("data fetched from CCLS service: "+str(data))
                     return json.dumps(final_data)
-                
-            data = PendancyContainer.query.filter(PendancyContainer.gateway_port_code.in_(gateway_ports)).order_by(PendancyContainer.gateway_port_code).all()
             logger.info("data fetched from local db")
+            data = []
+            for pendency_type,gateway_ports in pendency_types:
+                data += PendancyContainer.query.filter(PendancyContainer.gateway_port_code.in_(gateway_ports),PendancyContainer.pendency_type == int(pendency_type)).all()
             data = db_functions(data).as_json()
-            return {0:data}
+            return data
         except Exception as e:
             logger.exception(str(e))
             if isRetry and count >= 0 :

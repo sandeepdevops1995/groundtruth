@@ -16,11 +16,11 @@ class DTMSGateWriteService:
 
     def format_data_to_ccls_format(data,soap_data={}):
         if "factory_in_time" in data:
-            soap_data[Constants.KEY_SOAP_G_DTMS_FACTORY_IN_TIME] = data['factory_in_time']
+            soap_data[Constants.KEY_SOAP_G_DTMS_FACTORY_IN_TIME] = datetime.strptime("factory_in_time", '%Y-%m-%d %H:%M:%S').isoformat() if data["factory_in_time"] else None
         if "factory_out_time" in data:
-            soap_data[Constants.KEY_SOAP_G_DTMS_FACTORY_OUT_TIME] = data['factory_out_time']
+            soap_data[Constants.KEY_SOAP_G_DTMS_FACTORY_OUT_TIME] = datetime.strptime("factory_out_time", '%Y-%m-%d %H:%M:%S').isoformat() if data["factory_out_time"] else None
         if "factory_reach_time" in data:
-            soap_data[Constants.KEY_SOAP_G_DTMS_FACTORY_REACH_TIME] = data['factory_reach_time']
+            soap_data[Constants.KEY_SOAP_G_DTMS_FACTORY_REACH_TIME] = datetime.strptime("factory_reach_time", '%Y-%m-%d %H:%M:%S').isoformat() if data["factory_reach_time"] else None
         if "user_id" in data:
             soap_data[Constants.KEY_SOAP_G_DTMS_USER_ID] = data['user_id']
         if 'reason_code' in data:
@@ -36,15 +36,15 @@ class DTMSGateWriteService:
         if Constants.KEY_ATTRIBUTE5 in data:
             soap_data[Constants.KEY_SOAP_ATTRIBUTE5] = data[Constants.KEY_ATTRIBUTE5]
         if Constants.KEY_ATTRIBUTE6 in data:
-            soap_data[Constants.KEY_SOAP_ATTRIBUTE6] = datetime.strptime(data[Constants.KEY_ATTRIBUTE6], '%Y-%m-%d %H:%M:%S')
+            soap_data[Constants.KEY_SOAP_ATTRIBUTE6] = datetime.strptime(data[Constants.KEY_ATTRIBUTE6], '%Y-%m-%d %H:%M:%S').isoformat() if data[Constants.KEY_ATTRIBUTE6] else None
         if Constants.KEY_ATTRIBUTE7 in data:
-            soap_data[Constants.KEY_SOAP_ATTRIBUTE7] = datetime.strptime(data[Constants.KEY_ATTRIBUTE7], '%Y-%m-%d %H:%M:%S')
+            soap_data[Constants.KEY_SOAP_ATTRIBUTE7] = datetime.strptime(data[Constants.KEY_ATTRIBUTE7], '%Y-%m-%d %H:%M:%S').isoformat() if data[Constants.KEY_ATTRIBUTE7] else None
         if Constants.KEY_CREATED_AT in data:
-            soap_data[Constants.KEY_SOAP_CREATED_AT] = datetime.strptime(data[Constants.KEY_CREATED_AT], '%Y-%m-%d %H:%M:%S')
+            soap_data[Constants.KEY_SOAP_CREATED_AT] = datetime.strptime(data[Constants.KEY_CREATED_AT], '%Y-%m-%d %H:%M:%S').isoformat() if data[Constants.KEY_CREATED_AT] else None
         if Constants.KEY_CREATED_BY in data:
             soap_data[Constants.KEY_SOAP_CREATED_BY] = data[Constants.KEY_CREATED_BY]
         if Constants.KEY_UPDATED_AT in data:
-            soap_data[Constants.KEY_SOAP_UPDATED_AT] = datetime.strptime(data[Constants.KEY_UPDATED_AT], '%Y-%m-%d %H:%M:%S')
+            soap_data[Constants.KEY_SOAP_UPDATED_AT] = datetime.strptime(data[Constants.KEY_UPDATED_AT], '%Y-%m-%d %H:%M:%S').isoformat() if data[Constants.KEY_UPDATED_AT] else None
         if Constants.KEY_UPDATED_BY in data:
             soap_data[Constants.KEY_SOAP_UPDATED_BY] = data[Constants.KEY_UPDATED_BY]
         if Constants.KEY_ERROR_MSG in data:
@@ -61,9 +61,9 @@ class DTMSGateWriteService:
             soap_data[Constants.KEY_SOAP_G_DTMS_GATEPASS_NUMER] = data['permit_no']
             soap_data[Constants.KEY_SOAP_G_DTMS_VEH_NUMBER] = data['vehicle_no']
             if "gate_in_time" in data:
-                soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEIN] = data['gate_in_time']
+                soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEIN] = datetime.strptime(data['gate_in_time'], '%Y-%m-%d %H:%M:%S').isoformat() if data['gate_in_time'] else None
             if "gate_out_time" in data:
-                soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEOUT] = data["gate_out_time"]
+                soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEOUT] = soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEOUT] = datetime.strptime(data['gate_out_time'], '%Y-%m-%d %H:%M:%S').isoformat() if data['gate_out_time'] else None
             soap_data[Constants.KEY_SOAP_G_DTMS_CARGO_CONTAINER_FLAG] = 'cargo'
             soap_data[Constants.KEY_SOAP_G_DTMS_CARGO_LDD_EMPTY_FLAG_VEH] = "L" if data["is_empty_or_laden"]=="Laden" else "E"
             DTMSGateWriteService.format_data_to_ccls_format(data,soap_data)
@@ -84,12 +84,12 @@ class DTMSGateWriteService:
             soap_data[Constants.KEY_SOAP_G_DTMS_CTR_TYPE] = data['container_type']
             soap_data[Constants.KEY_SOAP_G_DTMS_DAMAGE_STATUS] = "Y" if "damage_status" in data  and data["damage_status"] else "N"        
             if "gate_in_time" in data:
-                soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEIN] = data['gate_in_time']
-                soap_data[Constants.KEY_SOAP_G_DTMS_CTR_IN_OUT_FLAG] = 'in'
+                soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEIN] = datetime.strptime(data['gate_in_time'], '%Y-%m-%d %H:%M:%S').isoformat() if data['gate_in_time'] else None
+                soap_data[Constants.KEY_SOAP_G_DTMS_CTR_IN_OUT_FLAG] = 'I' 
             if "gate_out_time" in data:
-                soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEOUT] = data["gate_out_time"]
-                soap_data[Constants.KEY_SOAP_G_DTMS_CTR_IN_OUT_FLAG] = 'out'
-            soap_data[Constants.KEY_SOAP_G_DTMS_CARGO_CONTAINER_FLAG] = 'container'
+                soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEOUT] = datetime.strptime(data['gate_out_time'], '%Y-%m-%d %H:%M:%S').isoformat() if data['gate_out_time'] else None
+                soap_data[Constants.KEY_SOAP_G_DTMS_CTR_IN_OUT_FLAG] = 'O'
+            soap_data[Constants.KEY_SOAP_G_DTMS_CARGO_CONTAINER_FLAG] = 'C'
             soap_data[Constants.KEY_SOAP_G_DTMS_CTR_LDD_EMPTY_FLAG] = "L" if data["is_empty_or_laden"]=="Laden" else "E"
             DTMSGateWriteService.format_data_to_ccls_format(data,soap_data)
             return soap_data

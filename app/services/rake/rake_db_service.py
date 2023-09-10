@@ -96,7 +96,7 @@ class RakeDbService:
         
 
     @query_debugger()
-    def get_ground_truth_details(train_number, trans_date, count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+    def get_ground_truth_details(train_number, trans_date, trans_type, count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
 
         trans_date = datetime.strptime(trans_date, '%Y-%m-%d %H:%M:%S').date()
         try:
@@ -104,8 +104,10 @@ class RakeDbService:
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 pass
-            
-            data = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)==trans_date).filter_by(train_number=train_number).all()
+            if trans_type == "EXIM":
+                data = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)==trans_date).filter_by(train_number=train_number).all()
+            else:
+                data = DomesticContainers.query.filter(cast(DomesticContainers.trans_date, DATE)==trans_date).filter_by(train_number=train_number).all()
             if data:
                 return db_functions(data).as_json()
             else:
@@ -116,7 +118,7 @@ class RakeDbService:
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
-                RakeDbService.get_ground_truth_details(train_number, trans_date, count=count,isRetry=Constants.KEY_RETRY_VALUE)
+                RakeDbService.get_ground_truth_details(train_number, trans_date, trans_type, count=count,isRetry=Constants.KEY_RETRY_VALUE)
 
     @query_debugger()
     def post_ground_truth_details(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
@@ -126,15 +128,37 @@ class RakeDbService:
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 pass
             for each in data:
+                trans_type = "EXIM"
+                if "trans_type" in each:
+                    trans_type = each.pop("trans_type")
                 if "id" in each:
-                        each.pop("id")
-                result = CCLSRake.query.filter_by(train_number = each['train_number'],wagon_number= each['wagon_number'],container_number= each['container_number'],container_life_number= each['container_life_number']).all()
-                if not result:
-                    wagon = CCLSRake(**each)
-                    db.session.add(wagon)
+                    each.pop("id")
+                if trans_type == "EXIM":
+                    result = CCLSRake.query.filter_by(train_number = each['train_number'],wagon_number= each['wagon_number'],container_number= each['container_number'],container_life_number= each['container_life_number']).all()
+                    if not result:
+                        wagon = CCLSRake(**each)
+                        db.session.add(wagon)
+                    else:
+                        print(each["train_number"],each["wagon_number"],each["container_number"])
+                        logger.info("corresponding EXIM train, wagon and container exists in given trans_date")
                 else:
-                    print(each["train_number"],each["wagon_number"],each["container_number"])
-                    logger.info("corresponding train, wagon and container exists in given trans_date")
+                    if "gw_port_cd" in each:
+                        each.pop("gw_port_cd")
+                    if "sline_code" in each:
+                        each.pop("sline_code")
+                    if "attribute_5" in each:
+                        each.pop("attribute_5")
+                    if "container_life_number" in each:
+                        each.pop("container_life_number")
+                    if "wagon_life_number" in each:
+                        each.pop("wagon_life_number")
+                    result = DomesticContainers.query.filter_by(train_number = each['train_number'],wagon_number= each['wagon_number'],container_number= each['container_number'] ).all()
+                    if not result:
+                        wagon = DomesticContainers(**each)
+                        db.session.add(wagon)
+                    else:
+                        print(each["train_number"],each["wagon_number"],each["container_number"])
+                        logger.info("corresponding Domestic train, wagon and container exists in given trans_date")
             try:
                 commit()
                 return True,"Saved Successfully"

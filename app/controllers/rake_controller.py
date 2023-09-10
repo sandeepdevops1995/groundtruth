@@ -309,8 +309,9 @@ class GroundTruthData(View):
     def get(self):
         train_number = request.args.get(Constants.TRAIN_NUMBER,None)
         trans_date = request.args.get(Constants.KEY_TRANS_DATE,None)
+        trans_type = request.args.get(Constants.RAKE_TX_TYPE,"EXIM")
         if train_number and trans_date:
-            response =  db_service.get_ground_truth_details(train_number,trans_date)
+            response =  db_service.get_ground_truth_details(train_number,trans_date,trans_type)
             if response:
                 # logger.info('Ground truth found for given train_number ',train_number, 'for trans_date ',trans_date)
                 return Response(response, status=200, mimetype='application/json')

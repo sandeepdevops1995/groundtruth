@@ -59,9 +59,9 @@ def get_permit_details(permit_number):
         logger.exception('Get Permit, Exception ( EXIM ) : '+str(e))
         failed_data = {
             "method_name":"get_permit_details",
-            "request_data":[{
+            "request_data":{
                 "permit_number":permit_number
-            }]
+            }
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
@@ -73,7 +73,7 @@ def get_domestic_permit_details(permit_number):
     try:
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="dtmsgatereadbpel_client_ep",
-                        port_name="DTMSGateReadBPEL_pt")
+                        port_name="DTMSGateReadBPEL_pt",transport=transport)
         logger.debug('Get Permit, soap service request with permit_number ( DOM ) : '+permit_number)
         start_time = datetime.now()
         result = soap.service.process(permit_number)
@@ -84,9 +84,9 @@ def get_domestic_permit_details(permit_number):
         logger.exception('Get Permit, Exception ( DOM ) : '+str(e))
         failed_data = {
             "method_name":"get_domestic_permit_details",
-            "request_data":[{
+            "request_data":{
                 "permit_number":permit_number
-            }]
+            }
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
@@ -99,7 +99,7 @@ def update_exim_container_details(update_data):
         logger.debug('Update EXIM Container Details, soap service request with data : '+ str(update_data))
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="gatewriteoperation_client_ep",
-                        port_name="GateWriteOperation_pt")
+                        port_name="GateWriteOperation_pt",transport=transport)
         
         start_time = datetime.now()
         result = soap.service.process(**update_data)
@@ -111,9 +111,9 @@ def update_exim_container_details(update_data):
         logger.exception('Update EXIM Container Details, Exception : '+str(e))
         failed_data = {
             "method_name":"update_exim_container_details",
-            "request_data":[{
+            "request_data":{
                 "update_data":update_data
-            }]
+            }
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
@@ -126,7 +126,7 @@ def update_domestic_container_details(update_data):
         logger.debug('Update Domestic Container Details, soap service request with data : '+ str(update_data))
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="dtmswritebpel_client_ep",
-                        port_name="DTMSWriteBPEL_pt")
+                        port_name="DTMSWriteBPEL_pt",transport=transport)
         
         start_time = datetime.now()
         result = soap.service.process(**update_data)
@@ -138,9 +138,9 @@ def update_domestic_container_details(update_data):
         logger.exception('Update Domestic Container Details, Exception : '+str(e))
         failed_data = {
             "method_name":"update_domestic_container_details",
-            "request_data":[{
+            "request_data":{
                 "update_data":update_data
-            }]
+            }
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
@@ -152,7 +152,7 @@ def get_exim_train_details(train_number='',from_date='', to_date = ''):
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/RakeReadOperation/rakereadproocess_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="rakereadproocess_client_ep",
-                        port_name="RakeReadProocess_pt")
+                        port_name="RakeReadProocess_pt",transport=transport)
         rake_data = {'TrainNumber': train_number, 'From': from_date,'To':to_date }
         logger.debug('Get EXIM Train Details, soap service request with data : '+ str(rake_data))
         start_time = datetime.now()
@@ -165,11 +165,11 @@ def get_exim_train_details(train_number='',from_date='', to_date = ''):
         logger.exception('Get EXIM Train Details, Exception : '+str(e))
         failed_data = {
             "method_name":"get_exim_train_details",
-            "request_data":[{
+            "request_data":{
                 "train_number":train_number,
                 "from_date":from_date,
                 "to_date":to_date
-            }]
+            }
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
@@ -181,7 +181,7 @@ def get_domestic_train_details(train_number='',from_date='', to_date = ''):
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/DTMSRakeInwardProcess/dtmsrakeinwardapi_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="dtmsrakeinwardapi_client_ep",
-                        port_name="DTMSRakeInwardAPI_pt")
+                        port_name="DTMSRakeInwardAPI_pt",transport=transport)
         rake_data = {'TrainNumber': train_number, 'From': from_date,'To':to_date }
         logger.debug('Get Domestic Train Details, soap service request with data : '+ str(rake_data))
         start_time = datetime.now()
@@ -194,11 +194,11 @@ def get_domestic_train_details(train_number='',from_date='', to_date = ''):
         logger.exception('Get Domestic Train Details, Exception : '+str(e))
         failed_data = {
             "method_name":"get_domestic_train_details",
-            "request_data":[{
+            "request_data":{
                 "train_number":train_number,
                 "from_date":from_date,
                 "to_date":to_date
-            }]
+            }
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
@@ -211,7 +211,7 @@ def update_inward_rake(rake_data,api_url="Inward Write"):
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/RakeInwardWriteOperation/rakewriteinward_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="rakewriteinward_client_ep",
-                        port_name="RakeWriteInward_pt")
+                        port_name="RakeWriteInward_pt",transport=transport)
         logger.debug('Update Inward Rake Details, soap service request with data : '+ str(rake_data))
         start_time = datetime.now()
         result = soap.service.process(**rake_data)
@@ -223,10 +223,9 @@ def update_inward_rake(rake_data,api_url="Inward Write"):
         logger.exception('Update Inward Rake Details, Exception : '+str(e))
         failed_data = {
             "method_name":"update_inward_rake",
-            "request_data":[{
-                "rake_data":rake_data,
-                "api_url":api_url
-            }]
+            "request_data":{
+                "rake_data":rake_data
+            }
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
@@ -239,7 +238,7 @@ def get_pendancy_details(gateway_port_data,api_url="/pendency_containers"):
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/CCLSRakePendencyList/cclsrakependencybpel_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url,
                         service_name="cclsrakependencybpel_client_ep",
-                        port_name="CCLSRakePendencyBPEL_pt")
+                        port_name="CCLSRakePendencyBPEL_pt",transport=transport)
         start_time = datetime.now()
         result = soap.service.process(**gateway_port_data)
         end_time = datetime.now()
@@ -250,10 +249,9 @@ def get_pendancy_details(gateway_port_data,api_url="/pendency_containers"):
         logger.exception('Get LOADED pendancy container details, Exception : '+str(e))
         failed_data = {
             "method_name":"get_pendancy_details",
-            "request_data":[{
-                "gateway_port_data":gateway_port_data,
-                "api_url":api_url
-            }]
+            "request_data":{
+                "gateway_port_data":gateway_port_data
+            }
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
@@ -264,7 +262,7 @@ def get_empty_pendancy_details(gateway_port_data,api_url="/pendency_containers")
     try: 
         result = []        
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/CCLSRakeEmptyPendency/cclsrakeemptypendencybpel_client_ep?WSDL'
-        soap = zeep.Client(wsdl=wsdl_url, service_name="cclsrakeemptypendencybpel_client_ep", port_name="CCLSRakeEmptyPendencyBPEL_pt")
+        soap = zeep.Client(wsdl=wsdl_url, service_name="cclsrakeemptypendencybpel_client_ep", port_name="CCLSRakeEmptyPendencyBPEL_pt",transport=transport)
         start_time = datetime.now()
         result = soap.service.process(**gateway_port_data)
         end_time = datetime.now()
@@ -276,10 +274,9 @@ def get_empty_pendancy_details(gateway_port_data,api_url="/pendency_containers")
         logger.exception('Get EMPTY pendancy container details, Exception : '+str(e))
         failed_data = {
             "method_name":"get_empty_pendancy_details",
-            "request_data":[{
-                "gateway_port_data":gateway_port_data,
-                "api_url":api_url
-            }]
+            "request_data":{
+                "gateway_port_data":gateway_port_data
+            }
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
@@ -290,7 +287,7 @@ def get_block_pendancy_details(gateway_port_data,api_url="/pendency_containers")
     try: 
         result = []        
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/CCLSRakeBlockPendncy/cclsblockpendencybpel_client_ep?WSDL'
-        soap = zeep.Client(wsdl=wsdl_url, service_name="cclsblockpendencybpel_client_ep", port_name="CCLSBlockpendencyBpel_pt")
+        soap = zeep.Client(wsdl=wsdl_url, service_name="cclsblockpendencybpel_client_ep", port_name="CCLSBlockpendencyBpel_pt",transport=transport)
         start_time = datetime.now()
         result = soap.service.process(**gateway_port_data)
         end_time = datetime.now()
@@ -302,10 +299,9 @@ def get_block_pendancy_details(gateway_port_data,api_url="/pendency_containers")
         logger.exception('Get BLOCK pendancy container details, Exception : '+str(e))
         failed_data = {
             "method_name":"get_block_pendancy_details",
-            "request_data":[{
-                "gateway_port_data":gateway_port_data,
-                "api_url":api_url
-            }]
+            "request_data":{
+                "gateway_port_data":gateway_port_data
+            }
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
@@ -316,7 +312,7 @@ def get_express_pendancy_details(gateway_port_data,api_url="/pendency_containers
     try: 
         result = []        
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/CCLSRakeExpressPendency/expressbpel_client_ep?WSDL'
-        soap = zeep.Client(wsdl=wsdl_url, service_name="expressbpel_client_ep", port_name="ExpressBpel_pt")
+        soap = zeep.Client(wsdl=wsdl_url, service_name="expressbpel_client_ep", port_name="ExpressBpel_pt",transport=transport)
         start_time = datetime.now()
         result = soap.service.process(**gateway_port_data)
         end_time = datetime.now()
@@ -328,10 +324,9 @@ def get_express_pendancy_details(gateway_port_data,api_url="/pendency_containers
         logger.exception('Get EXPRESS pendancy container details, Exception : '+str(e))
         failed_data = {
             "method_name":"get_block_pendancy_details",
-            "request_data":[{
-                "gateway_port_data":gateway_port_data,
-                "api_url":api_url
-            }]
+            "request_data":{
+                "gateway_port_data":gateway_port_data
+            }
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
@@ -360,7 +355,7 @@ def update_outward_rake(rake_data,api_url="Outward Write"):
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/RakeOutwardWriteOperation/rakeoutwardwrite_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="rakeoutwardwrite_client_ep",
-                        port_name="RakeOutwardWrite_pt")
+                        port_name="RakeOutwardWrite_pt",transport=transport)
         logger.debug('Update Outward Rake Details, soap service request with data : '+ str(rake_data))
         start_time = datetime.now()
         result = soap.service.process(**rake_data)
@@ -372,10 +367,9 @@ def update_outward_rake(rake_data,api_url="Outward Write"):
         logger.exception('Update Outward Rake Details, Exception : '+str(e))
         failed_data = {
             "method_name":"update_outward_rake",
-            "request_data":[{
-                "rake_data":rake_data,
-                "api_url":api_url
-            }]
+            "request_data":{
+                "rake_data":rake_data
+            }
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
@@ -404,7 +398,7 @@ def update_container_stack_location(data):
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/YardWriteOperation/yardwriteoperation_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="yardwriteoperation_client_ep",
-                        port_name="YardWriteOperation_pt")
+                        port_name="YardWriteOperation_pt",transport=transport)
         start_time = datetime.now()
         result = soap.service.process(**stack_data)
         end_time = datetime.now()
@@ -415,9 +409,9 @@ def update_container_stack_location(data):
         logger.exception('Update Container Stack Location, Exception : '+str(e))
         failed_data = {
             "method_name":"update_container_stack_location",
-            "request_data":[{
+            "request_data":{
                 "data":data
-            }]
+            }
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)

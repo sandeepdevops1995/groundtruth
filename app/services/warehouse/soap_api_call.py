@@ -21,6 +21,16 @@ def trim_grid_no(job_info):
             job_info['gridNo'] = grid_no[-3:]
     return job_info
 
+def update_env_ip_in_wsdl(client,event):
+    ccls_address = client.service._binding_options["address"]
+    logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,event,LM.KEY_BEFORE_UPDATE_CCLS_IP_IN_WSDL,ccls_address))
+    split_ccls_address = ccls_address.split('/',3)
+    ip,path = split_ccls_address[2],split_ccls_address[3]
+    split_ip_port = ip.split(':')
+    ip,port = split_ip_port[0],split_ip_port[1]
+    ip = config.CCLS_WSDL_URL
+    client.service._binding_options["address"] = ip+':'+port+'/'+path
+    logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,event,LM.KEY_AFTER_UPDATE_CCLS_IP_IN_WSDL,client.service._binding_options["address"]))
 
 def get_revenue_details(from_date,to_date,service_type,service_name,port_name):
     try:
@@ -56,7 +66,7 @@ def get_revenue_amount(request_data,request_type,service_type,service_name,port_
             zeep_object = soap.service.process(**request_data)
             result = serialize_object(zeep_object)
     except requests.exceptions.ConnectionError as e:
-        if config.IS_MOCK_ENABLED:
+        if config.IS_REVENUE_MOCK_ENABLED:
             amount = get_random_number(100,10000)
             result = {"amount":amount}
             if request_type==RevenueType.EXPORT_FCL_REVENUE.value:
@@ -66,7 +76,7 @@ def get_revenue_amount(request_data,request_type,service_type,service_name,port_
             raise ConnectionError('GTService: getting connection error while calling to ccls service').with_traceback(e.__traceback__)
     except Exception as e:
         logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_RESPONSE_FROM_CCLS_OF_JOB_ORDER_DATA,request_data,request_type,e))
-        if config.IS_MOCK_ENABLED:
+        if config.IS_REVENUE_MOCK_ENABLED:
             amount = get_random_number(100,10000)
             result = {"amount":amount}
             if request_type==RevenueType.EXPORT_FCL_REVENUE.value:
@@ -96,6 +106,7 @@ def get_job_order_info(input_value,service_type,service_name,port_name,request_d
                 logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_GET_REQUEST_TO_CCLS_TO_FETCH_JOB_ORDER_DATA,input_value,wsdl_path))
                 start_time = datetime.now()
                 soap = zeep.Client(wsdl_path)
+                update_env_ip_in_wsdl(soap,LM.KEY_GET_JOB_ORDER_DATA)
                 with soap.settings(strict=strict, raw_response=False, xsd_ignore_sequence_order=True):
                     zeep_object = soap.service.process(**request_data)
                     result = serialize_object(zeep_object)
@@ -128,6 +139,7 @@ def upload_tallysheet_data(job_info,service_type,service_name,port_name,request_
                 job_info = trim_grid_no(job_info)
                 logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_UPLOAD_TALLYSHEET_TRIM_GRID_NO,request_parameter,wsdl_path,job_info['gridNo']))
             soap = zeep.Client(wsdl_path)
+            update_env_ip_in_wsdl(soap,LM.KEY_UPLOAD_TALLYSHEET)
             with soap.settings(raw_response=False):
                 result = soap.service.process(**job_info)
         logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_RESPONSE_FROM_CCLS_OF_UPLOAD_TALLYSHEET,request_parameter,result))

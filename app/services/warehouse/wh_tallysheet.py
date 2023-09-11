@@ -6,6 +6,7 @@ from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingC
 from app.serializers.generate_tallysheet import CTMSCargoJobInsertSchema
 from app.serializers.update_tallysheet import CTMSCargoJobUpdateSchema
 from app.user_defined_exception import DataNotFoundException
+from datetime import datetime
 
 class WarehouseTallySheetView(object):
 
@@ -13,11 +14,15 @@ class WarehouseTallySheetView(object):
         job_type = int(request.args.get('job_type',0))
         job_order = request.args.get('request_parameter')
         truck_number = request.args.get('truck_number')
-        query_object = self.get_ctms_job_obj(job_type,job_order,truck_number)
+        crn_number = request.args.get('crn_number')
+        if job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value]:
+            query_object = self.get_ctms_job_obj(job_type,crn_number,truck_number,job_order)
+        else:
+            query_object = self.get_ctms_job_obj(job_type,job_order,truck_number,None)
         result = WarehouseDB().get_tallysheet_details(query_object.first(),job_order,job_type)
         return result
     
-    def get_ctms_job_obj(self,job_type,job_order,truck_number):
+    def get_ctms_job_obj(self,job_type,job_order,truck_number,container_number):
         query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==job_type))
         if job_type==JobOrderType.CARTING_FCL.value:
             query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.carting_details.has(CartingCargoDetails.crn_number==job_order)))
@@ -28,7 +33,9 @@ class WarehouseTallySheetView(object):
             if truck_number:
                 query_object = query_object.filter(CTMSCargoJob.truck_number==truck_number)
         elif job_type==JobOrderType.STUFFING_FCL.value or job_type==JobOrderType.STUFFING_LCL.value or job_type==JobOrderType.DIRECT_STUFFING.value:
-            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.container_number==job_order)))
+            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.crn_number==job_order)))
+            if container_number:
+                query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.container_number==container_number)))
         elif job_type==JobOrderType.DE_STUFFING_FCL.value or job_type==JobOrderType.DE_STUFFING_LCL.value:
             query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.destuffing_details.has(DeStuffingCargoDetails.container_number==job_order)))
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
@@ -74,6 +81,7 @@ class WarehouseTallySheetView(object):
     def update_tally_sheet_info(self,tally_sheet_data):
         query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.id==tally_sheet_data.get('id')).first()
         if query_object:
+            tally_sheet_data['updated_at'] = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")
             master_job_request = CTMSCargoJobUpdateSchema().load(tally_sheet_data, instance=query_object, session=db.session)
             db.session.add(master_job_request)
             db.session.commit()
@@ -84,13 +92,20 @@ class WarehouseTallySheetView(object):
         job_type = int(request.args.get('job_type',0))
         job_order = request.args.get('request_parameter')
         truck_number = request.args.get('truck_number')
-        query_object = self.get_ctms_job_obj(job_type,job_order,None)
+        crn_number = request.args.get('crn_number')
+        if job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value]:
+            query_object = self.get_ctms_job_obj(job_type,crn_number,None,None)
+        else:
+            query_object = self.get_ctms_job_obj(job_type,job_order,None,None)
         result = WarehouseDB().print_tallysheet_details(query_object.all(),job_order,job_type)
         tallysheet_data = {}
         cargo_details = []
         for each_item in result:
             if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value,JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL,JobOrderType.DIRECT_DELIVERY.value]:
                 if each_item['cargo_details'][0]['truck_number'] == truck_number:
+                    tallysheet_data = each_item
+            elif job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value]:
+                if each_item['crn_number'] == crn_number:
                     tallysheet_data = each_item
             else:
                 tallysheet_data = each_item

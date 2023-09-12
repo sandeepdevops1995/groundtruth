@@ -15,6 +15,7 @@ import xmltodict
 import redis
 from app.redis_config import cache
 transport = Transport(timeout=10)
+pendancy_transport = Transport(timeout=20)
 
 def get_zeep_wsdl_client(file_name):
     wsdl_file = os.path.join(config.WSDL_DIR,file_name)
@@ -238,7 +239,7 @@ def get_pendancy_details(gateway_port_data,api_url="/pendency_containers"):
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/CCLSRakePendencyList/cclsrakependencybpel_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url,
                         service_name="cclsrakependencybpel_client_ep",
-                        port_name="CCLSRakePendencyBPEL_pt",transport=transport)
+                        port_name="CCLSRakePendencyBPEL_pt",transport=pendancy_transport)
         start_time = datetime.now()
         result = soap.service.process(**gateway_port_data)
         end_time = datetime.now()
@@ -262,7 +263,7 @@ def get_empty_pendancy_details(gateway_port_data,api_url="/pendency_containers")
     try: 
         result = []        
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/CCLSRakeEmptyPendency/cclsrakeemptypendencybpel_client_ep?WSDL'
-        soap = zeep.Client(wsdl=wsdl_url, service_name="cclsrakeemptypendencybpel_client_ep", port_name="CCLSRakeEmptyPendencyBPEL_pt",transport=transport)
+        soap = zeep.Client(wsdl=wsdl_url, service_name="cclsrakeemptypendencybpel_client_ep", port_name="CCLSRakeEmptyPendencyBPEL_pt",transport=pendancy_transport)
         start_time = datetime.now()
         result = soap.service.process(**gateway_port_data)
         end_time = datetime.now()
@@ -287,7 +288,7 @@ def get_block_pendancy_details(gateway_port_data,api_url="/pendency_containers")
     try: 
         result = []        
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/CCLSRakeBlockPendncy/cclsblockpendencybpel_client_ep?WSDL'
-        soap = zeep.Client(wsdl=wsdl_url, service_name="cclsblockpendencybpel_client_ep", port_name="CCLSBlockpendencyBpel_pt",transport=transport)
+        soap = zeep.Client(wsdl=wsdl_url, service_name="cclsblockpendencybpel_client_ep", port_name="CCLSBlockpendencyBpel_pt",transport=pendancy_transport)
         start_time = datetime.now()
         result = soap.service.process(**gateway_port_data)
         end_time = datetime.now()
@@ -312,7 +313,7 @@ def get_express_pendancy_details(gateway_port_data,api_url="/pendency_containers
     try: 
         result = []        
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/CCLSRakeExpressPendency/expressbpel_client_ep?WSDL'
-        soap = zeep.Client(wsdl=wsdl_url, service_name="expressbpel_client_ep", port_name="ExpressBpel_pt",transport=transport)
+        soap = zeep.Client(wsdl=wsdl_url, service_name="expressbpel_client_ep", port_name="ExpressBpel_pt",transport=pendancy_transport)
         start_time = datetime.now()
         result = soap.service.process(**gateway_port_data)
         end_time = datetime.now()

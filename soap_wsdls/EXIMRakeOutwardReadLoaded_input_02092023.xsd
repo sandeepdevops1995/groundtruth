@@ -1,0 +1,10 @@
+<xsd:schema targetNamespace="http://www.concor.com/cil/PendencyRead/1.0/" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.concor.com/cil/PendencyRead/1.0/" xmlns="http://www.concor.com/cil/PendencyRead/1.0/">
+   <xsd:element name="PendencyRead" type="PendencyReadType"/>
+   <xsd:complexType name="PendencyReadType">
+      <xsd:sequence>
+         <xsd:element name="GW_PORT_CODE" type="xsd:string"/>
+         <xsd:element name="P_STUFF_AT" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="P_CUTOFF_DATE" type="xsd:date" minOccurs="0"/>
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:schema>

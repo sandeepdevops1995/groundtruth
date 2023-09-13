@@ -152,7 +152,7 @@ class DTMSRakeInwardReadService:
                 container_record[Constants.LINER_SEAL] = {Constants.VALUE : None}
                 container_record[Constants.CUSTOM_SEAL] = {Constants.VALUE : data[i].seal_number}
                 container_record[Constants.POD] = data[i].container_to_station
-                container_record[Constants.ISO_CODE] = {Constants.VALUE : data[i].iso_code if data[i].iso_code else str(data[i].container_size)+str(data[i].container_type) if data[i].container_size and data[i].container_type else None}
+                container_record[Constants.ISO_CODE] = {Constants.VALUE : data[i].iso_code if data[i].iso_code else str(int(data[i].container_size))+str(data[i].container_type) if data[i].container_size and data[i].container_type else None}
                 container_record[Constants.LDD_MT_FLAG] = {Constants.VALUE : data[i].ldd_mt_flg} 
                 container_record[Constants.KEY_SLINE_CODE] =  {Constants.VALUE : None}
                 container_record[Constants.WAGON_NUMBER] = { Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:None}

@@ -32,7 +32,7 @@ class TrainDetails(View):
         container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
         container_life_number = request.args.get(Constants.KEY_CN_LIFE_NUMBER,None)
         trans_date = request.args.get(Constants.KEY_TRANS_DATE,None)
-        trans_delay = request.args.get(Constants.KEY_TRANS_DELAY,2)
+        trans_delay = int(request.args.get(Constants.KEY_TRANS_DELAY,2))
         from_date = request.args.get(Constants.KEY_FROM_DATE,None)
         to_date = request.args.get(Constants.KEY_TO_DATE,None)
         data = {}
@@ -309,8 +309,9 @@ class GroundTruthData(View):
     def get(self):
         train_number = request.args.get(Constants.TRAIN_NUMBER,None)
         trans_date = request.args.get(Constants.KEY_TRANS_DATE,None)
+        trans_type = request.args.get(Constants.RAKE_TX_TYPE,"EXIM")
         if train_number and trans_date:
-            response =  db_service.get_ground_truth_details(train_number,trans_date)
+            response =  db_service.get_ground_truth_details(train_number,trans_date,trans_type)
             if response:
                 # logger.info('Ground truth found for given train_number ',train_number, 'for trans_date ',trans_date)
                 return Response(response, status=200, mimetype='application/json')

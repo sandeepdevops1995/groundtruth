@@ -32,7 +32,7 @@ class TrainDetails(View):
         container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
         container_life_number = request.args.get(Constants.KEY_CN_LIFE_NUMBER,None)
         trans_date = request.args.get(Constants.KEY_TRANS_DATE,None)
-        trans_delay = request.args.get(Constants.KEY_TRANS_DELAY,2)
+        trans_delay = int(request.args.get(Constants.KEY_TRANS_DELAY,2))
         from_date = request.args.get(Constants.KEY_FROM_DATE,None)
         to_date = request.args.get(Constants.KEY_TO_DATE,None)
         data = {}

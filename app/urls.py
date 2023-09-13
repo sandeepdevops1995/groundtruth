@@ -27,6 +27,7 @@ def register_controllers():
     api.add_resource(RakePlanDetails,Constants.RAKE_PLAN_ENDPOINT)
     api.add_resource(UpdateCGISurvey,Constants.CGI_SURVEY_ENDPOINT)
     api.add_resource(UpdateCGOSurvey,Constants.CGO_SURVEY_ENDPOINT)
+    api.add_resource(UpdateVGISurvey,Constants.VGI_SURVEY_ENDPOINT)
     api.add_resource(RakeInContainer,Constants.RAKE_INWARD_CONTAINER_ENDPOINT)
     
     

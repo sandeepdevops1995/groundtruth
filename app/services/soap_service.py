@@ -257,24 +257,41 @@ def get_express_pendancy_details(gateway_port_data,api_url="/pendency_containers
 #         result = []
 #         return result
 
-def update_outward_rake(rake_data,api_url="Outward Write"):
+def update_outward_rake(rake_data,api_url="EXIM Yard Outward Write"):
     try: 
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/RakeOutwardWriteOperation/rakeoutwardwrite_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="rakeoutwardwrite_client_ep",
                         port_name="RakeOutwardWrite_pt")
-        logger.debug('Update Outward Rake Details, soap service request with data : '+ str(rake_data))
+        logger.debug('Update EXIM Outward Rake Details, soap service request with data : '+ str(rake_data))
         start_time = datetime.now()
         result = soap.service.process(**rake_data)
         end_time = datetime.now()
         save_in_diagnostics(api_url,{"data":str(rake_data)},{"output":str(result)},start_time,end_time)
-        logger.debug('Update Outward Rake Details, soap service response : '+ str(result))
+        logger.debug('Update EXIM Outward Rake Details, soap service response : '+ str(result))
         return result
     except Exception as e:
-        logger.exception('Update Outward Rake Details, Exception : '+str(e))
+        logger.exception('Update EXIM Outward Rake Details, Exception : '+str(e))
         result = {}
+        return result          
+
+def update_domestic_inward_rake(rake_data,api_url="DOM Yard Outward Write"):
+    result = []
+    try:
+        wsdl_url = config.WSDL_URL+'/soa-infra/services/default/DTMSRakeWrite/dtmsrakewrite_client_ep?WSDL'
+        soap = zeep.Client(wsdl=wsdl_url, 
+                        service_name="dtmsrakewrite_client_ep",
+                        port_name="DTMSRakeWrite_pt")
+        logger.debug('Update DOM Outward Rake Details, soap service request with data : '+ str(rake_data))
+        start_time = datetime.now()
+        result = soap.service.process(**rake_data)
+        end_time = datetime.now()
+        save_in_diagnostics(api_url,{"data":str(rake_data)},{"output":str(result)},start_time,end_time)
+        logger.debug('Update DOM Outward Rake Details, soap service response : '+ str(result))
         return result
-            
+    except Exception as e:
+        logger.exception('Update DOM Domestic outward rake details, Exception : '+str(e))
+        return result
 
 def update_container_stack_location(data):
     try:

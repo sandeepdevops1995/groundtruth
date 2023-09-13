@@ -12,6 +12,7 @@ from app.services.rake.rake_inward_write import RakeInwardWriteService,WriteInCo
 from app.services.rake.rake_outward_write import RakeOutwardWriteService
 from app.services.rake.rake_inward_read import RakeInwardReadService
 from app.services.rake.dtms_rake_inward_read import DTMSRakeInwardReadService
+from app.services.rake.dtms_rake_inward_write import DTMSRakeInwardWriteService
 from app.services.rake.rake_outward_plan import RakeOutwardPlanService
 from app.services.rake.pendancy_containers import  PendancyService
 from datetime import date, datetime, timedelta
@@ -222,6 +223,16 @@ class UpdateCGOSurvey(View):
             return soap_API_response(response)
         return Response(json.dumps({"message":"please provide valid data"}),status=400,mimetype='application/json')
    
+class UpdateVGISurvey(View):
+    @custom_exceptions
+    @api_auth_required
+    def post(self):
+        data = request.get_json()
+        if data:
+            response = DTMSRakeInwardWriteService.update_VGI_survey(data)
+            return soap_API_response(response)
+        return Response(json.dumps({"message":"please provide valid data"}),status=400,mimetype='application/json')
+
 class WagonMaster(View):
     @custom_exceptions
     # @api_auth_required

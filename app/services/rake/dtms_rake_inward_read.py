@@ -37,7 +37,7 @@ class DTMSRakeInwardReadService:
                 rake_query = DomesticContainers.query.filter(cast(DomesticContainers.trans_date, DATE)>=start_date, cast(DomesticContainers.trans_date, DATE)<=end_date)
                 rake_query = rake_query.filter_by(**query_values)
             else:
-                rake_query = DomesticContainers.query.filter_by(**query_values)
+                rake_query = DomesticContainers.query.filter(DomesticContainers.container_number.distinct()).filter_by(**query_values)
             update_data = {}
             if track_number:
                 update_data['track_number'] = track_number

@@ -19,6 +19,7 @@ ISO_6346_CODE_ENDPOINT = "/map_ccls_iso_code"
 TRACK_DETAILS = '/track_details'
 CGI_SURVEY_ENDPOINT = '/cgi_survey'
 CGO_SURVEY_ENDPOINT = '/cgo_survey'
+VGI_SURVEY_ENDPOINT = '/vgi_survey'
 RAKE_INWARD_CONTAINER_ENDPOINT = "/rake_inward_container"
 WAGON_ENDPOINT = '/wagon'
 GATEWAY_PORT_ENDPOINT = '/gateway_port'

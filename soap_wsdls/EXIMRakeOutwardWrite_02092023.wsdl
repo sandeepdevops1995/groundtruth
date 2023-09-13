@@ -1,0 +1,45 @@
+<wsdl:definitions name="RakeOutwardWrite" targetNamespace="http://xmlns.oracle.com/CTMSAPI/RakeOutwardWriteOperation/RakeOutwardWrite" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/CTMSAPI/RakeOutwardWriteOperation/RakeOutwardWrite" xmlns:ns1="http://www.concor.com/cil/RakeWrite/1.0/" xmlns:ns2="http://www.concor.com/cil/RakeWrite/1.0/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+   <wsdl:documentation>
+      <abstractWSDL>http://10.1.100.102:8001/soa-infra/services/default/RakeOutwardWriteOperation!1.0/WSDLs/RakeOutwardWrite.wsdl</abstractWSDL>
+   </wsdl:documentation>
+   <plnk:partnerLinkType name="RakeOutwardWrite">
+      <plnk:role name="RakeOutwardWriteProvider" portType="client:RakeOutwardWrite"/>
+   </plnk:partnerLinkType>
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.concor.com/cil/RakeWrite/1.0/" schemaLocation="http://10.1.100.102:8001/soa-infra/services/default/RakeOutwardWriteOperation/rakeoutwardwrite_client_ep?XSD=../Schemas/Input.xsd"/>
+      </schema>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.concor.com/cil/RakeWrite/1.0/" schemaLocation="http://10.1.100.102:8001/soa-infra/services/default/RakeOutwardWriteOperation/rakeoutwardwrite_client_ep?XSD=../Schemas/Output.xsd"/>
+      </schema>
+   </wsdl:types>
+   <wsdl:message name="RakeOutwardWriteRequestMessage">
+      <wsdl:part name="payload" element="ns1:RakeWriteInput"/>
+   </wsdl:message>
+   <wsdl:message name="RakeOutwardWriteResponseMessage">
+      <wsdl:part name="payload" element="ns1:RakeWriteOutput"/>
+   </wsdl:message>
+   <wsdl:portType name="RakeOutwardWrite">
+      <wsdl:operation name="process">
+         <wsdl:input message="client:RakeOutwardWriteRequestMessage"/>
+         <wsdl:output message="client:RakeOutwardWriteResponseMessage"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="RakeOutwardWriteBinding" type="client:RakeOutwardWrite">
+      <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="process">
+         <soap:operation style="document" soapAction="process"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="rakeoutwardwrite_client_ep">
+      <wsdl:port name="RakeOutwardWrite_pt" binding="client:RakeOutwardWriteBinding">
+         <soap:address location="http://10.1.100.102:8001/soa-infra/services/default/RakeOutwardWriteOperation/rakeoutwardwrite_client_ep"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

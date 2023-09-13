@@ -1,0 +1,47 @@
+<xsd:schema targetNamespace="http://www.concor.com/cil/Trailer/1.0/" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.concor.com/cil/Trailer/1.0/" xmlns="http://www.concor.com/cil/Trailer/1.0/">
+   <xsd:element name="Trailer" type="TrailerType"/>
+   <xsd:complexType name="TrailerType">
+      <xsd:sequence>
+         <xsd:element name="davgpnumb" type="xsd:string"/>
+         <xsd:element name="davvhclnumb" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="dacinoutfalg" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="dadinouttimeIn" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="dadinouttimeOut" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="daccrgocntrflag" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="daccntrnumb" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="dancntrsize" type="xsd:int" minOccurs="0"/>
+         <xsd:element name="hazardiousStatus" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="daccntrtype" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="damageStatus" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="dacleflag" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="dacleflagVhcl" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="dadfactintime" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="dadfactouttime" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="dadfactreachtime" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="davuserid" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="dacresncode" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="attribute1" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="attribute2" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="attribute3" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="attribute4" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="attribute5" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="attribute6" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="attribute7" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="createdDate" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="createdBy" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="updatedDate" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="updatedBy" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="errorMsg" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="statusFlag" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="readFlag" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:element name="TrailerResponse" type="TrailerRespType"/>
+   <xsd:complexType name="TrailerRespType">
+      <xsd:sequence>
+         <xsd:element name="Result" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ErrorCode" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="Error" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:schema>

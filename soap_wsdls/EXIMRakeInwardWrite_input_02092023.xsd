@@ -1,0 +1,10 @@
+<xsd:schema targetNamespace="http://www.concor.com/cil/RakeRead/1.0/" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.concor.com/cil/RakeRead/1.0/" xmlns="http://www.concor.com/cil/RakeRead/1.0/">
+   <xsd:element name="RakeRead" type="RakeReadType"/>
+   <xsd:complexType name="RakeReadType">
+      <xsd:sequence>
+         <xsd:element name="TrainNumber" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="From" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="To" type="xsd:dateTime" minOccurs="0"/>
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:schema>

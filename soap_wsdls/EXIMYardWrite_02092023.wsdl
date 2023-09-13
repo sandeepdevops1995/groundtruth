@@ -1,0 +1,45 @@
+<wsdl:definitions name="YardWriteOperation" targetNamespace="http://xmlns.oracle.com/CTMSAPI/YardWriteOperation/YardWriteOperation" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/CTMSAPI/YardWriteOperation/YardWriteOperation" xmlns:ns1="http://www.concor.com/cil/YardWrite/1.0/" xmlns:ns2="http://www.concor.com/cil/RakeWrite/1.0/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+   <wsdl:documentation>
+      <abstractWSDL>http://10.1.100.101:8002/soa-infra/services/default/YardWriteOperation!1.0/WSDLs/YardWriteOperation.wsdl</abstractWSDL>
+   </wsdl:documentation>
+   <plnk:partnerLinkType name="YardWriteOperation">
+      <plnk:role name="YardWriteOperationProvider" portType="client:YardWriteOperation"/>
+   </plnk:partnerLinkType>
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.concor.com/cil/YardWrite/1.0/" schemaLocation="http://10.1.100.101:8002/soa-infra/services/default/YardWriteOperation/yardwriteoperation_client_ep?XSD=../Schemas/Input.xsd"/>
+      </schema>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.concor.com/cil/RakeWrite/1.0/" schemaLocation="http://10.1.100.101:8002/soa-infra/services/default/YardWriteOperation/yardwriteoperation_client_ep?XSD=../Schemas/Output.xsd"/>
+      </schema>
+   </wsdl:types>
+   <wsdl:message name="YardWriteOperationRequestMessage">
+      <wsdl:part name="payload" element="ns1:YardWriteInput"/>
+   </wsdl:message>
+   <wsdl:message name="YardWriteOperationResponseMessage">
+      <wsdl:part name="payload" element="ns2:RakeWriteOutput"/>
+   </wsdl:message>
+   <wsdl:portType name="YardWriteOperation">
+      <wsdl:operation name="process">
+         <wsdl:input message="client:YardWriteOperationRequestMessage"/>
+         <wsdl:output message="client:YardWriteOperationResponseMessage"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="YardWriteOperationBinding" type="client:YardWriteOperation">
+      <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="process">
+         <soap:operation style="document" soapAction="process"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="yardwriteoperation_client_ep">
+      <wsdl:port name="YardWriteOperation_pt" binding="client:YardWriteOperationBinding">
+         <soap:address location="http://10.1.100.101:8002/soa-infra/services/default/YardWriteOperation/yardwriteoperation_client_ep"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

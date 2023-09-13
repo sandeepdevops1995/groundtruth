@@ -1,0 +1,45 @@
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/CTMSAPICCLS/GateWithEmptyTrailer/EmptyTrailerBPEL" xmlns:ns1="http://www.concor.com/cil/EmptyTrailer/1.0/" xmlns:ns2="http://www.concor.com/cil/EmptyTrailerOutput/1.0/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="EmptyTrailerBPEL" targetNamespace="http://xmlns.oracle.com/CTMSAPICCLS/GateWithEmptyTrailer/EmptyTrailerBPEL">
+<wsdl:documentation>
+<abstractWSDL>http://10.1.100.101:8001/soa-infra/services/default/GateWithEmptyTrailer!1.1/WSDLs/EmptyTrailerBPEL.wsdl</abstractWSDL>
+</wsdl:documentation>
+<plnk:partnerLinkType name="EmptyTrailerBPEL">
+<plnk:role name="EmptyTrailerBPELProvider" portType="client:EmptyTrailerBPEL"/>
+</plnk:partnerLinkType>
+<wsdl:types>
+<schema xmlns="http://www.w3.org/2001/XMLSchema">
+<import namespace="http://www.concor.com/cil/EmptyTrailer/1.0/" schemaLocation="http://10.1.100.101:8001/soa-infra/services/default/GateWithEmptyTrailer/emptytrailerbpel_client_ep?XSD=../Schemas/EmptyTrailer.xsd"/>
+</schema>
+<schema xmlns="http://www.w3.org/2001/XMLSchema">
+<import namespace="http://www.concor.com/cil/EmptyTrailerOutput/1.0/" schemaLocation="http://10.1.100.101:8001/soa-infra/services/default/GateWithEmptyTrailer/emptytrailerbpel_client_ep?XSD=../Schemas/EmptyTrailerOutput.xsd"/>
+</schema>
+</wsdl:types>
+<wsdl:message name="EmptyTrailerBPELRequestMessage">
+<wsdl:part name="payload" element="ns1:EmptyTrailer"/>
+</wsdl:message>
+<wsdl:message name="EmptyTrailerBPELResponseMessage">
+<wsdl:part name="payload" element="ns2:EmptyTrailerOutput"/>
+</wsdl:message>
+<wsdl:portType name="EmptyTrailerBPEL">
+<wsdl:operation name="process">
+<wsdl:input message="client:EmptyTrailerBPELRequestMessage"/>
+<wsdl:output message="client:EmptyTrailerBPELResponseMessage"/>
+</wsdl:operation>
+</wsdl:portType>
+<wsdl:binding name="EmptyTrailerBPELBinding" type="client:EmptyTrailerBPEL">
+<soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+<wsdl:operation name="process">
+<soap:operation style="document" soapAction="process"/>
+<wsdl:input>
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:service name="emptytrailerbpel_client_ep">
+<wsdl:port name="EmptyTrailerBPEL_pt" binding="client:EmptyTrailerBPELBinding">
+<soap:address location="http://10.1.100.101:8001/soa-infra/services/default/GateWithEmptyTrailer/emptytrailerbpel_client_ep"/>
+</wsdl:port>
+</wsdl:service>
+</wsdl:definitions>

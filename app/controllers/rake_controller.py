@@ -1,4 +1,5 @@
 from flask_restful import Resource, reqparse
+from app.services.soap_service import get_exim_train_details,get_domestic_train_details
 import config
 import app.constants as Constants
 from flask import json, Response,request
@@ -520,3 +521,94 @@ class TrackMasterDetails(View):
             return Response(json.dumps(response),status=200,mimetype='application/json')
         else:   
             return Response(None,status=204,mimetype='application/json')
+        
+class CclsResponseData(View):
+    @custom_exceptions
+    # @api_auth_required
+    def get(self):
+        trans_type = request.args.get('trans_type',None)
+        train_no = request.args.get('train_no',None)
+        start_date_request = request.args.get('start_date',None)
+        end_date_request = request.args.get('end_date',None)
+        process_type = request.args.get('process_type','GT')
+
+        if not (start_date_request and end_date_request) and train_no:
+            if str(trans_type).upper() == 'EXIM':
+                data = RakeInwardReadService.get_ctms_train_no_details(train_no=train_no)
+            elif str(trans_type).upper() == 'DOM':
+                data = DTMSRakeInwardReadService.get_dtms_train_no_details(train_no=train_no)
+            else:
+                return Response(json.dumps({'message':"trans_type not given or invalid"}),status=400,mimetype='application/json')
+            if data:
+                return Response(data,status=200,mimetype='application/json')
+            return Response(status=204,mimetype='application/json')
+        try:
+            start_data = date.strftime(datetime.strptime(start_date_request, "%Y-%m-%d"), "%Y-%m-%d")
+            end_data = date.strftime(datetime.strptime(end_date_request, "%Y-%m-%d"), "%Y-%m-%d")
+        except:
+            return Response(json.dumps({'message':"start time or end time format is invalid"}),status=400,mimetype='application/json')
+        
+        if not str(process_type).upper() in ['GT','CONCOR']:
+            return Response(json.dumps({'message':"process_type invalid"}),status=400,mimetype='application/json')
+            
+        if str(process_type).upper() == 'GT':
+            if str(trans_type).upper() == 'EXIM':
+                data = RakeInwardReadService.ctms_details(start_date=start_data,end_date=end_data,train_no=train_no)
+            elif str(trans_type).upper() == 'DOM':
+                data = DTMSRakeInwardReadService.dtms_details(start_date=start_data,end_date=end_data,train_no=train_no)
+            else:
+                return Response(json.dumps({'message':"trans_type not given or invalid"}),status=400,mimetype='application/json')
+        else:
+            if str(trans_type).upper() == 'EXIM':
+                data = get_exim_train_details(train_number=train_no,from_date=start_data,to_date=end_data)
+            elif str(trans_type).upper() == 'DOM':
+                data = get_domestic_train_details(train_number=train_no,from_date=start_data,to_date=end_data)
+            else:
+                return Response(json.dumps({'message':"trans_type not given or invalid"}),status=400,mimetype='application/json')
+        if data:
+            return Response(data,status=200,mimetype='application/json')
+        return Response(status=204,mimetype='application/json')
+
+# class GtRangeData(View):
+#     @custom_exceptions
+#     # @api_auth_required
+#     def get(self):
+#         trans_type = request.args.get('trans_type',None)
+#         start_date_request = request.args.get('start_date',None)
+#         end_date_request = request.args.get('end_date',None)
+#         try:
+#             start_date_format = datetime.strptime(start_date_request, "%Y-%m-%d")
+#             start_data = date.strftime(start_date_format, "%Y-%m-%d")
+#             end_date_format = datetime.strptime(end_date_request, "%Y-%m-%d")
+#             end_data = date.strftime(end_date_format, "%Y-%m-%d")
+#         except:
+#             return Response(json.dumps({'message':"start time or end time format is invalid"}),status=400)
+#         if str(trans_type).upper() == 'EXIM':
+#             data = RakeInwardReadService.get_ctms_details(start_date=start_data,end_date=end_data)
+#         elif str(trans_type).upper() == 'DOM':
+#             data = DTMSRakeInwardReadService.get_dtms_details(start_date=start_data,end_date=end_data)
+#         else:
+#             return Response(json.dumps({'message':"trans_type not given or invalid"}),status=400)
+#         if data:
+#             return Response(data,status=200)
+#         return Response(status=204)
+    
+
+# class GtTrainData(View):
+#     @custom_exceptions
+#     # @api_auth_required
+#     def get(self):
+#         trans_type = request.args.get('trans_type',None)
+#         train_no = request.args.get('train_no',None)
+#         if train_no:
+#             if str(trans_type).upper() == 'EXIM':
+#                 data = RakeInwardReadService.get_ctms_train_no_details(train_no)
+#             elif str(trans_type).upper() == 'DOM':
+#                 data = DTMSRakeInwardReadService.get_dtms_train_no_details(train_no)
+#             else:
+#                 return Response(json.dumps({'message':"trans_type not given or invalid"}),status=400)
+#             if data:
+#                 return Response(data,status=200)
+#         else:
+#             return Response(json.dumps({'message':"train_no not given"}),status=400)
+#         return Response(status=204)

@@ -163,3 +163,57 @@ class RakeInwardReadService:
 
                 response[Constants.CONTAINER_LIST].append(container_record)
         return json.dumps(response)
+    
+
+    def format_cmts_data(data):
+        response = []
+        for i in range(len(data)):
+            container_record ={}
+            container_record[Constants.RAKE_ID] = data[i].rake_id
+            container_record[Constants.TRACK_NUMBER] = data[i].track_number
+            container_record[Constants.RAKE_NUMBER]  = data[i].rake_number
+            container_record[Constants.TRAIN_NUMBER]  = data[i].train_number
+            container_record[Constants.RAKE_TYPE] = data[i].rake_type
+            container_record[Constants.WAGON_LIST] = []
+            wagon_record = {Constants.WAGON_NUMBER :{ Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:data[i].wagon_sequence_number}}
+            container_record[Constants.WAGON_LIST].append(wagon_record)
+            container_record[Constants.CONTAINER_NUMBER] = {Constants.VALUE : data[i].container_number}
+            container_record[Constants.COMMIDITY]= data[i].attribute_2
+            container_record[Constants.LINER_SEAL] = {Constants.VALUE : data[i].attribute_3}
+            container_record[Constants.CUSTOM_SEAL] = {Constants.VALUE : data[i].seal_number}
+            container_record[Constants.POD] = data[i].container_destination_station
+            container_record[Constants.ISO_CODE] = {Constants.VALUE : data[i].iso_code if data[i].iso_code else str(data[i].container_size)+str(data[i].container_type) if data[i].container_size and data[i].container_type else None}
+            container_record[Constants.LDD_MT_FLAG] = {Constants.VALUE : data[i].ldd_mt_flg} 
+            container_record[Constants.KEY_SLINE_CODE] =  {Constants.VALUE : data[i].sline_code}
+            container_record[Constants.WAGON_NUMBER] = { Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:data[i].wagon_sequence_number}
+            container_record[Constants.CONTAINER_STAT] = "E"
+            container_record[Constants.CATEGORY] = "Import"
+
+            response.append(container_record)
+        return json.dumps(response)
+
+    # @query_debugger()
+    # def get_ctms_details(start_date,end_date):
+    #     rake_query = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)>=start_date, cast(CCLSRake.trans_date, DATE)<=end_date).all()
+    #     if rake_query:
+    #         return RakeInwardReadService.format_cmts_data(rake_query)
+    #     return rake_query
+    
+
+    @query_debugger()
+    def get_ctms_train_no_details(train_no):
+        rake_query = CCLSRake.query.filter_by(train_number=train_no).all()
+        if rake_query:
+            return RakeInwardReadService.format_cmts_data(rake_query)
+        return rake_query
+    
+    @query_debugger()
+    def ctms_details(start_date,end_date,train_no=None):
+        if train_no:
+            rake = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)>=start_date, cast(CCLSRake.trans_date, DATE)<=end_date)
+            rake_query = rake.filter_by(train_number=train_no).all()
+        else:
+            rake_query = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)>=start_date, cast(CCLSRake.trans_date, DATE)<=end_date).all()
+        if rake_query:
+            return RakeInwardReadService.format_cmts_data(rake_query)
+        return rake_query

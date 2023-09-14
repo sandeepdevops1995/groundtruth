@@ -1,0 +1,42 @@
+<wsdl:definitions name="GateWriteOperation" targetNamespace="http://xmlns.oracle.com/CTMSAPICCLS/GateWriteOperation/GateWriteOperation" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/CTMSAPICCLS/GateWriteOperation/GateWriteOperation" xmlns:ns1="http://www.concor.com/cil/Trailer/1.0/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+   <wsdl:documentation>
+      <abstractWSDL>http://10.1.100.101:8001/soa-infra/services/default/GateWriteOperation!1.0/WSDLs/GateWriteOperation.wsdl</abstractWSDL>
+   </wsdl:documentation>
+   <plnk:partnerLinkType name="GateWriteOperation">
+      <plnk:role name="GateWriteOperationProvider" portType="client:GateWriteOperation"/>
+   </plnk:partnerLinkType>
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.concor.com/cil/Trailer/1.0/" schemaLocation="http://10.1.100.101:8001/soa-infra/services/default/GateWriteOperation/gatewriteoperation_client_ep?XSD=../Schemas/GateInput.xsd"/>
+      </schema>
+   </wsdl:types>
+   <wsdl:message name="GateWriteOperationRequestMessage">
+      <wsdl:part name="payload" element="ns1:Trailer"/>
+   </wsdl:message>
+   <wsdl:message name="GateWriteOperationResponseMessage">
+      <wsdl:part name="payload" element="ns1:TrailerResponse"/>
+   </wsdl:message>
+   <wsdl:portType name="GateWriteOperation">
+      <wsdl:operation name="process">
+         <wsdl:input message="client:GateWriteOperationRequestMessage"/>
+         <wsdl:output message="client:GateWriteOperationResponseMessage"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="GateWriteOperationBinding" type="client:GateWriteOperation">
+      <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="process">
+         <soap:operation style="document" soapAction="process"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="gatewriteoperation_client_ep">
+      <wsdl:port name="GateWriteOperation_pt" binding="client:GateWriteOperationBinding">
+         <soap:address location="http://10.1.100.101:8001/soa-infra/services/default/GateWriteOperation/gatewriteoperation_client_ep"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

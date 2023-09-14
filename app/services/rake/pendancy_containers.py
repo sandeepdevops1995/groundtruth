@@ -83,7 +83,8 @@ class PendancyService():
                 data['container_life_number'] = data['container_life_number'].isoformat()
                 logger.warn("container_life_number data type:"+str(type(data['container_life_number'])))
             if data["hold_rels_flg"]:
-                data['hold_rels_flg'] = data['hold_rels_flg'].isoformat()
+                #data['hold_rels_flg'] = data['hold_rels_flg'].isoformat()
+                data['hold_rels_flg'] = datetime.now().replace(microsecond=0).isoformat()
                 logger.warn("hold rels flag data type:"+str(type(data['hold_rels_flg'])))
                 
             container_stat = CtrStat.query.filter_by(ctr_stat=each["ctrStat"]).all()

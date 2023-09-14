@@ -1,0 +1,45 @@
+<wsdl:definitions name="CCLSBlockpendencyBpel" targetNamespace="http://xmlns.oracle.com/CTMSAPI/CCLSRakeBlockPendncy/CCLSBlockpendencyBpel" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/CTMSAPI/CCLSRakeBlockPendncy/CCLSBlockpendencyBpel" xmlns:ns1="http://www.concor.com/cil/PendencyRead/1.0/" xmlns:ns2="http://www.concor.com/cil/PendencyWrite/1.0/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+   <wsdl:documentation>
+      <abstractWSDL>http://10.1.100.101:8002/soa-infra/services/default/CCLSRakeBlockPendncy!1.0/WSDLs/CCLSBlockpendencyBpel.wsdl</abstractWSDL>
+   </wsdl:documentation>
+   <plnk:partnerLinkType name="CCLSBlockpendencyBpel">
+      <plnk:role name="CCLSBlockpendencyBpelProvider" portType="client:CCLSBlockpendencyBpel"/>
+   </plnk:partnerLinkType>
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.concor.com/cil/PendencyRead/1.0/" schemaLocation="http://10.1.100.101:8002/soa-infra/services/default/CCLSRakeBlockPendncy/cclsblockpendencybpel_client_ep?XSD=../Schemas/Input.xsd"/>
+      </schema>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.concor.com/cil/PendencyWrite/1.0/" schemaLocation="http://10.1.100.101:8002/soa-infra/services/default/CCLSRakeBlockPendncy/cclsblockpendencybpel_client_ep?XSD=../Schemas/Output.xsd"/>
+      </schema>
+   </wsdl:types>
+   <wsdl:message name="CCLSBlockpendencyBpelRequestMessage">
+      <wsdl:part name="payload" element="ns1:PendencyRead"/>
+   </wsdl:message>
+   <wsdl:message name="CCLSBlockpendencyBpelResponseMessage">
+      <wsdl:part name="payload" element="ns2:PendencyWrite"/>
+   </wsdl:message>
+   <wsdl:portType name="CCLSBlockpendencyBpel">
+      <wsdl:operation name="process">
+         <wsdl:input message="client:CCLSBlockpendencyBpelRequestMessage"/>
+         <wsdl:output message="client:CCLSBlockpendencyBpelResponseMessage"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="CCLSBlockpendencyBpelBinding" type="client:CCLSBlockpendencyBpel">
+      <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="process">
+         <soap:operation style="document" soapAction="process"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="cclsblockpendencybpel_client_ep">
+      <wsdl:port name="CCLSBlockpendencyBpel_pt" binding="client:CCLSBlockpendencyBpelBinding">
+         <soap:address location="http://10.1.100.101:8002/soa-infra/services/default/CCLSRakeBlockPendncy/cclsblockpendencybpel_client_ep"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

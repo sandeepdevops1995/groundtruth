@@ -1,12 +1,14 @@
 from app.services.warehouse.database_service import WarehouseDB
 from app.enums import JobOrderType
 from app import postgres_db as db
-from app.models.warehouse.ctms_cargo_job import CTMSCargoJob, CTMSBillDetails
-from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingCargoDetails, StuffingCargoDetails, DeStuffingCargoDetails, DeliveryCargoDetails, CCLSCargoBillDetails
+from app.models.warehouse.ctms_cargo_job import CTMSCargoJob
+from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingCargoDetails, StuffingCargoDetails, DeStuffingCargoDetails, DeliveryCargoDetails
 from app.serializers.generate_tallysheet import CTMSCargoJobInsertSchema
 from app.serializers.update_tallysheet import CTMSCargoJobUpdateSchema
 from app.user_defined_exception import DataNotFoundException
 from datetime import datetime
+from app.logger import logger
+import app.logging_message as LM
 
 class WarehouseTallySheetView(object):
 
@@ -63,12 +65,27 @@ class WarehouseTallySheetView(object):
         query_object = query_object.order_by(MasterCargoDetails.updated_at.desc()).first()
         if query_object:
             job_order_id = query_object.id
-            # tally_sheet_data['truck_number'] = tally_sheet_data['cargo_details'][0].pop('truck_number')
-            master_job_request = CTMSCargoJobInsertSchema(context={'job_order_id': job_order_id,"job_type":job_type}).load(tally_sheet_data, session=db.session)
-            db.session.add(master_job_request)
-            db.session.commit()
+            is_exists = self.check_tallysheet_exist_or_not(tally_sheet_data,job_order_id,job_type)
+            if not is_exists:
+                master_job_request = CTMSCargoJobInsertSchema(context={'job_order_id': job_order_id,"job_type":job_type}).load(tally_sheet_data, session=db.session)
+                db.session.add(master_job_request)
+                db.session.commit()
+                logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GENERATE_TALLYSHEET,LM.KEY_GENERATE_TALLYSHEET_DATA_CREATED_SUCCESSFULLY,tally_sheet_data))
+            else:
+                logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GENERATE_TALLYSHEET,LM.KEY_GENERATE_TALLYSHEET_DATA_ALREADY_EXISTS,tally_sheet_data))
         else:
             raise DataNotFoundException("GTService: ccls data doesn't exists in database")
+        
+    def check_tallysheet_exist_or_not(self,tally_sheet_data,job_order_id,job_type):
+        qs = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.id==job_order_id))
+        if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value,JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
+            query_object = qs.filter(CTMSCargoJob.truck_number==tally_sheet_data.get('truck_number'))
+        elif job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value,JobOrderType.DE_STUFFING_FCL.value,JobOrderType.DE_STUFFING_LCL.value]:
+            query_object = qs.filter(CTMSCargoJob.container_number==tally_sheet_data.get('container_number'))
+        if query_object.first():
+            return True
+        return False
+        
         
     def get_destuffing_date_for_delivery(self,container_number):
         start_time=None

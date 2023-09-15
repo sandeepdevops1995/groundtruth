@@ -69,14 +69,27 @@ class TrainDetails(View):
     
 
     def get_inward_summary_containers(self,data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date):
-        result = []
+        result = {}
         if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE] :
             exim_containers = RakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
-            result += exim_containers
+            result = json.loads(exim_containers)
         if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
             dom_containers = DTMSRakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
-            result += dom_containers
-        return result
+            dom_containers = json.loads(dom_containers)
+            if result and dom_containers:
+                if Constants.WAGON_LIST in dom_containers:
+                    if Constants.WAGON_LIST in result:
+                        result[Constants.WAGON_LIST] += dom_containers[Constants.WAGON_LIST]
+                    else:
+                        result[Constants.WAGON_LIST] = dom_containers[Constants.WAGON_LIST]
+                if Constants.CONTAINER_LIST in dom_containers:
+                    if Constants.CONTAINER_LIST in result:
+                        result[Constants.CONTAINER_LIST] += dom_containers[Constants.CONTAINER_LIST]
+                    else:
+                        result[Constants.CONTAINER_LIST] = dom_containers[Constants.CONTAINER_LIST]
+            else:
+                result = dom_containers
+        return json.dumps(result)
 
     def request_soap_api(self,trans_delay,rake_tx_type,from_date=None,to_date=None):
         if not from_date:

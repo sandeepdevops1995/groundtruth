@@ -1,5 +1,5 @@
 from app.services.warehouse.database_service import WarehouseDB
-from app.enums import JobOrderType
+from app.enums import JobOrderType, JobStatus
 from app import postgres_db as db
 from app.models.warehouse.ctms_cargo_job import CTMSCargoJob
 from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingCargoDetails, StuffingCargoDetails, DeStuffingCargoDetails, DeliveryCargoDetails
@@ -25,7 +25,7 @@ class WarehouseTallySheetView(object):
         return result
     
     def get_ctms_job_obj(self,job_type,job_order,truck_number,container_number):
-        query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==job_type))
+        query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==job_type)).filter(CTMSCargoJob.status==JobStatus.TALLYSHEET_GENERATED.value)
         if job_type==JobOrderType.CARTING_FCL.value:
             query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.carting_details.has(CartingCargoDetails.crn_number==job_order)))
             if truck_number:
@@ -114,19 +114,33 @@ class WarehouseTallySheetView(object):
             query_object = self.get_ctms_job_obj(job_type,crn_number,None,None)
         else:
             query_object = self.get_ctms_job_obj(job_type,job_order,None,None)
-        result = WarehouseDB().print_tallysheet_details(query_object.all(),job_order,job_type)
         tallysheet_data = {}
         cargo_details = []
-        for each_item in result:
-            if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value,JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL,JobOrderType.DIRECT_DELIVERY.value]:
-                if each_item['cargo_details'][0]['truck_number'] == truck_number:
-                    tallysheet_data = each_item
-            elif job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value]:
-                if each_item['crn_number'] == crn_number:
-                    tallysheet_data = each_item
-            else:
-                tallysheet_data = each_item
-            cargo_details+=each_item.pop('cargo_details')
+        if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value,JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value,JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value]:
+            result = WarehouseDB().print_tallysheet_details(query_object.all(),job_order,job_type)
+            for each_item in result:
+                if job_type in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
+                    if each_item['gpm_number'] == job_order:
+                        tallysheet_data = each_item
+                        cargo_details+=each_item.pop('cargo_details')
+                elif job_type in [JobOrderType.CARTING_FCL.value]:
+                    if each_item['crn_number'] == job_order:
+                        tallysheet_data = each_item
+                        cargo_details+=each_item.pop('cargo_details')
+                elif job_type in [JobOrderType.CARTING_LCL.value]:
+                    if each_item['cargo_carting_number'] == job_order:
+                        tallysheet_data = each_item
+                        cargo_details+=each_item.pop('cargo_details')
+                else:
+                    if each_item['crn_number'] == crn_number:
+                        tallysheet_data = each_item
+                        cargo_details+=each_item.pop('cargo_details')
+
+        else:
+            result = WarehouseDB().print_tallysheet_details(query_object.first(),job_order,job_type)
+            tallysheet_data = result
+            cargo_details=result.pop('cargo_details')
+                    
         tallysheet_data['cargo_details'] = cargo_details
         self.update_start_and_end_time(tallysheet_data)
         return tallysheet_data

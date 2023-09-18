@@ -29,7 +29,7 @@ def update_env_ip_in_wsdl(client,event):
     split_ip_port = ip.split(':')
     ip,port = split_ip_port[0],split_ip_port[1]
     ip = config.CCLS_WSDL_URL
-    client.service._binding_options["address"] = ip+':'+port+'/'+path
+    client.service._binding_options["address"] = ip+'/'+path
     logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,event,LM.KEY_AFTER_UPDATE_CCLS_IP_IN_WSDL,client.service._binding_options["address"]))
 
 def get_revenue_details(from_date,to_date,service_type,service_name,port_name):
@@ -76,6 +76,7 @@ def get_revenue_amount(request_data,request_type,service_type,service_name,port_
             raise ConnectionError('GTService: getting connection error while calling to ccls service').with_traceback(e.__traceback__)
     except Exception as e:
         logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GET_JOB_ORDER_DATA,LM.KEY_RESPONSE_FROM_CCLS_OF_JOB_ORDER_DATA,request_data,request_type,e))
+        result={}
         if config.IS_REVENUE_MOCK_ENABLED:
             amount = get_random_number(100,10000)
             result = {"amount":amount}

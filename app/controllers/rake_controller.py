@@ -565,6 +565,8 @@ class CclsResponseData(View):
                 data = get_domestic_train_details(train_number=train_no,from_date=start_data,to_date=end_data)
             else:
                 return Response(json.dumps({'message':"trans_type not given or invalid"}),status=400,mimetype='application/json')
+            if data:
+                data = json.dumps(data)
         if data:
             return Response(data,status=200,mimetype='application/json')
         return Response(status=204,mimetype='application/json')

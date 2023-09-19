@@ -15,6 +15,7 @@ from app.services.rake.dtms_rake_inward_read import DTMSRakeInwardReadService
 from app.services.rake.dtms_rake_inward_write import DTMSRakeInwardWriteService
 from app.services.rake.rake_outward_plan import RakeOutwardPlanService
 from app.services.rake.pendancy_containers import  PendancyService
+from app.services.rake.dtms_rake_outward_read import DTMSRakeOutwardReadService
 from datetime import date, datetime, timedelta
 from app.controllers.utils import View, soap_API_response
 import json
@@ -171,6 +172,17 @@ class PendancyList(View):
             final_output.append(port_data)
         return json.dumps(final_output)
             
+
+class DomesticPendancyList(View):
+    @custom_exceptions
+    # @api_auth_required
+    def get(self):
+        # process = request.args.get("process",None)
+        data = {"Process" : None}
+        logger.info("GT, Domestic pendacy list for pendency types: ")
+        response = DTMSRakeOutwardReadService.get_outward_domestic_containers(data)
+        return Response(response, status=200, mimetype='application/json')
+        
 class RakeInContainer(View):
     @custom_exceptions
     @api_auth_required

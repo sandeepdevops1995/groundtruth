@@ -366,7 +366,7 @@ def update_outward_rake(rake_data,api_url="EXIM Yard Outward Write"):
         wsdl_url = config.WSDL_URL+'/soa-infra/services/default/RakeOutwardWriteOperation/rakeoutwardwrite_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="rakeoutwardwrite_client_ep",
-                        port_name="RakeOutwardWrite_pt")
+                        port_name="RakeOutwardWrite_pt",transport=transport)
         logger.debug('Update EXIM Outward Rake Details, soap service request with data : '+ str(rake_data))
         start_time = datetime.now()
         result = soap.service.process(**rake_data)

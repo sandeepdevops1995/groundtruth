@@ -47,7 +47,7 @@ class RakeInwardReadService:
             commit()
             data = rake_query.order_by(desc('trans_date')).all()
             if 'rake_id' in query_values:
-                missed_containers = MissedInwardContainers.query.filter_by(rake_id=query_values['rake_id']).all()
+                missed_containers = MissedInwardContainers.query.filter_by(rake_id=query_values['rake_id'],trans_type=Constants.EXIM_RAKE).all()
                 data = data + missed_containers
             if not data and "train_number" in query_values:
                 logger.info("fetch train details from soap service for train number "+query_values['train_number'])
@@ -133,7 +133,7 @@ class RakeInwardReadService:
         
         return final_data
 
-    def format_rake_data(data):
+    def format_rake_data(data,category="Import"):
         response = {}
         if len(data)>0:
             response[Constants.RAKE_ID] = data[0].rake_id
@@ -159,7 +159,7 @@ class RakeInwardReadService:
                 # container_record[Constants.CONTAINER_STAT] = "L" if "container_gross_weight" in data[i] and data[i].container_gross_weight else "E"
                 container_record[Constants.CONTAINER_STAT] = "E"
                 # category: "Import/Export/Domestic/Transhipment"
-                container_record[Constants.CATEGORY] = "Import"
+                container_record[Constants.CATEGORY] = category
 
                 response[Constants.CONTAINER_LIST].append(container_record)
         return json.dumps(response)

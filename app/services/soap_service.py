@@ -58,14 +58,14 @@ def get_permit_details(permit_number):
         logger.debug('Get Permit, soap service response ( EXIM ) : '+str(result))
     except Exception as e:
         logger.exception('Get Permit, Exception ( EXIM ) : '+str(e))
-        failed_data = {
-            "method_name":"get_permit_details",
-            "request_data":{
-                "permit_number":permit_number
-            }
-        }
-        failed_data=json.dumps(failed_data, default=str)
-        cache.rpush("ground_truth_queue",failed_data)
+        # failed_data = {
+        #     "method_name":"get_permit_details",
+        #     "request_data":{
+        #         "permit_number":permit_number
+        #     }
+        # }
+        # failed_data=json.dumps(failed_data, default=str)
+        # cache.rpush("ground_truth_queue",failed_data)
         result = {}
     return result
 
@@ -83,14 +83,14 @@ def get_domestic_permit_details(permit_number):
         logger.debug('Get Permit, soap service response ( DOM ) : '+str(result))
     except Exception as e:
         logger.exception('Get Permit, Exception ( DOM ) : '+str(e))
-        failed_data = {
-            "method_name":"get_domestic_permit_details",
-            "request_data":{
-                "permit_number":permit_number
-            }
-        }
-        failed_data=json.dumps(failed_data, default=str)
-        cache.rpush("ground_truth_queue",failed_data)
+        # failed_data = {
+        #     "method_name":"get_domestic_permit_details",
+        #     "request_data":{
+        #         "permit_number":permit_number
+        #     }
+        # }
+        # failed_data=json.dumps(failed_data, default=str)
+        # cache.rpush("ground_truth_queue",failed_data)
         result = {}
     return result
 
@@ -164,16 +164,16 @@ def get_exim_train_details(train_number='',from_date='', to_date = ''):
         return result
     except Exception as e:
         logger.exception('Get EXIM Train Details, Exception : '+str(e))
-        failed_data = {
-            "method_name":"get_exim_train_details",
-            "request_data":{
-                "train_number":train_number,
-                "from_date":from_date,
-                "to_date":to_date
-            }
-        }
-        failed_data=json.dumps(failed_data, default=str)
-        cache.rpush("ground_truth_queue",failed_data)
+        # failed_data = {
+        #     "method_name":"get_exim_train_details",
+        #     "request_data":{
+        #         "train_number":train_number,
+        #         "from_date":from_date,
+        #         "to_date":to_date
+        #     }
+        # }
+        # failed_data=json.dumps(failed_data, default=str)
+        # cache.rpush("ground_truth_queue",failed_data)
         result = []
         return result
     
@@ -193,16 +193,16 @@ def get_domestic_train_details(train_number='',from_date='', to_date = ''):
         return result
     except Exception as e:
         logger.exception('Get Domestic Train Details, Exception : '+str(e))
-        failed_data = {
-            "method_name":"get_domestic_train_details",
-            "request_data":{
-                "train_number":train_number,
-                "from_date":from_date,
-                "to_date":to_date
-            }
-        }
-        failed_data=json.dumps(failed_data, default=str)
-        cache.rpush("ground_truth_queue",failed_data)
+        # failed_data = {
+        #     "method_name":"get_domestic_train_details",
+        #     "request_data":{
+        #         "train_number":train_number,
+        #         "from_date":from_date,
+        #         "to_date":to_date
+        #     }
+        # }
+        # failed_data=json.dumps(failed_data, default=str)
+        # cache.rpush("ground_truth_queue",failed_data)
         result = []
         return result
     
@@ -248,14 +248,14 @@ def get_pendancy_details(gateway_port_data,api_url="/pendency_containers"):
         return result
     except Exception as e:
         logger.exception('Get LOADED pendancy container details, Exception : '+str(e))
-        failed_data = {
-            "method_name":"get_pendancy_details",
-            "request_data":{
-                "gateway_port_data":gateway_port_data
-            }
-        }
-        failed_data=json.dumps(failed_data, default=str)
-        cache.rpush("ground_truth_queue",failed_data)
+        # failed_data = {
+        #     "method_name":"get_pendancy_details",
+        #     "request_data":{
+        #         "gateway_port_data":gateway_port_data
+        #     }
+        # }
+        # failed_data=json.dumps(failed_data, default=str)
+        # cache.rpush("ground_truth_queue",failed_data)
         result = []
         return result
 
@@ -273,14 +273,14 @@ def get_empty_pendancy_details(gateway_port_data,api_url="/pendency_containers")
         return result
     except Exception as e:
         logger.exception('Get EMPTY pendancy container details, Exception : '+str(e))
-        failed_data = {
-            "method_name":"get_empty_pendancy_details",
-            "request_data":{
-                "gateway_port_data":gateway_port_data
-            }
-        }
-        failed_data=json.dumps(failed_data, default=str)
-        cache.rpush("ground_truth_queue",failed_data)
+        # failed_data = {
+        #     "method_name":"get_empty_pendancy_details",
+        #     "request_data":{
+        #         "gateway_port_data":gateway_port_data
+        #     }
+        # }
+        # failed_data=json.dumps(failed_data, default=str)
+        # cache.rpush("ground_truth_queue",failed_data)
         result = []
         return result
 
@@ -298,14 +298,14 @@ def get_block_pendancy_details(gateway_port_data,api_url="/pendency_containers")
         return result
     except Exception as e:
         logger.exception('Get BLOCK pendancy container details, Exception : '+str(e))
-        failed_data = {
-            "method_name":"get_block_pendancy_details",
-            "request_data":{
-                "gateway_port_data":gateway_port_data
-            }
-        }
-        failed_data=json.dumps(failed_data, default=str)
-        cache.rpush("ground_truth_queue",failed_data)
+        # failed_data = {
+        #     "method_name":"get_block_pendancy_details",
+        #     "request_data":{
+        #         "gateway_port_data":gateway_port_data
+        #     }
+        # }
+        # failed_data=json.dumps(failed_data, default=str)
+        # cache.rpush("ground_truth_queue",failed_data)
         result = []
         return result
 
@@ -323,14 +323,14 @@ def get_express_pendancy_details(gateway_port_data,api_url="/pendency_containers
         return result
     except Exception as e:
         logger.exception('Get EXPRESS pendancy container details, Exception : '+str(e))
-        failed_data = {
-            "method_name":"get_block_pendancy_details",
-            "request_data":{
-                "gateway_port_data":gateway_port_data
-            }
-        }
-        failed_data=json.dumps(failed_data, default=str)
-        cache.rpush("ground_truth_queue",failed_data)
+        # failed_data = {
+        #     "method_name":"get_express_pendancy_details",
+        #     "request_data":{
+        #         "gateway_port_data":gateway_port_data
+        #     }
+        # }
+        # failed_data=json.dumps(failed_data, default=str)
+        # cache.rpush("ground_truth_queue",failed_data)
         result = []
         return result
  
@@ -350,14 +350,14 @@ def get_domestic_outward_train_details(rake_data,api_url="/pendency_containers(D
         return result
     except Exception as e:
         logger.exception('Get DOM Outward Rake  train details, Exception : '+str(e))
-        failed_data = {
-            "method_name":"get_domestic_outward_train_details",
-            "request_data":{
-                "rake_data":rake_data
-            }
-        }
-        failed_data=json.dumps(failed_data, default=str)
-        cache.rpush("ground_truth_queue",failed_data)
+        # failed_data = {
+        #     "method_name":"get_domestic_outward_train_details",
+        #     "request_data":{
+        #         "rake_data":rake_data
+        #     }
+        # }
+        # failed_data=json.dumps(failed_data, default=str)
+        # cache.rpush("ground_truth_queue",failed_data)
         return result
 
 
@@ -403,6 +403,14 @@ def update_domestic_inward_rake(rake_data,api_url="DOM Yard Outward Write"):
         return result
     except Exception as e:
         logger.exception('Update DOM Domestic outward rake details, Exception : '+str(e))
+        failed_data = {
+            "method_name":"update_domestic_inward_rake",
+            "request_data":{
+                "rake_data":rake_data
+            }
+        }
+        failed_data=json.dumps(failed_data, default=str)
+        cache.rpush("ground_truth_queue",failed_data)
         return result
 
 def update_container_stack_location(stack_data):

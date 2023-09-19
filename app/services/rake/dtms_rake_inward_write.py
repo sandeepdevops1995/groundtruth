@@ -26,11 +26,11 @@ class DTMSRakeInwardWriteService:
         if Constants.KEY_SLINE_CODE in data:
             rake_data["slineCode"] = data[Constants.KEY_SLINE_CODE]
         if Constants.KEY_CONTAINER_SIZE in data:
-            rake_data["containerSize"] = data[Constants.KEY_CONTAINER_SIZE]
+            rake_data["containerSize"] = float(data[Constants.KEY_CONTAINER_SIZE])
         if Constants.KEY_CONTAINER_TYPE in data:
             rake_data["containerType"] = data[Constants.KEY_CONTAINER_TYPE]
         if Constants.KEY_WAGON_NUMBER in data:
-            rake_data["wagonNumber"] = data[Constants.KEY_WAGON_NUMBER]
+            rake_data["wagonNumber"] = float(data[Constants.KEY_WAGON_NUMBER])
         if Constants.KEY_SEAL_NUMBER in data:
             rake_data["sealNumber"] = data[Constants.KEY_SEAL_NUMBER]
         if Constants.KEY_CONTAINER_STAT in data:

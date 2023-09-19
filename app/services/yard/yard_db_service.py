@@ -1,6 +1,7 @@
 from app.services.decorator_service import query_debugger
 from app.services.soap_service import *
 from app.services.gate.database_service import GateDbService
+from app.services.yard.yard_write import YardWriteService
 from app.models import KyclContainerLocation
 from app.logger import logger
 from app.constants import GroundTruthType
@@ -44,7 +45,15 @@ class YardDbService:
                     data["from_location"] = YardDbService.get_stack_location(data["from_location"])
                 if "to_location" in data and data["to_location"]:
                     data["to_location"] = YardDbService.get_stack_location(data["to_location"])
-                result =  update_container_stack_location(data)
+                if "equipment_id" in data and data["equipment_id"]:
+                    data["attribute1"] = EquipmentNames[data["equipment_id"]].value if EquipmentNames[data["equipment_id"]].value else "CHE"
+                trans_type = data.pop("trans_type","EXIM")
+                if trans_type == "DOM":
+                    dtms_data = YardWriteService.dtms_yard_write_format(data) 
+                    result =  update_domestic_container_stack_location(dtms_data)
+                else:
+                    ccls_data = YardWriteService.exim_yard_write_format(data)
+                    result =  update_container_stack_location(ccls_data)
                 if result:
                     return result
             container_location = KyclContainerLocation(container_no = data["container_number"] ,to_loc = data["stack_location"] )

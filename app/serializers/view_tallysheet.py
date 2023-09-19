@@ -16,6 +16,7 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
         if not data.get('cha_name'):
             data['cha_name'] = self.context.get('cha_name')
         data['truck_number'] = self.context.get('truck_number_'+str(data['ctms_cargo_job_id']))
+        data['container_number'] = self.context.get('container_number_'+str(data['ctms_cargo_job_id']))
         truck_query = db.session.query(TruckDetails).filter(TruckDetails.truck_number==data['truck_number']).order_by(TruckDetails.created_at.desc()).first()
         if truck_query:
             data['truck_arrival_date'] = truck_query.truck_arrival_date
@@ -96,6 +97,7 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
         self.context['cha_code'] = data.ctms_job_order.carting_details.cha_code if data.ctms_job_order.carting_details else data.ctms_job_order.delivery_details.cha_code if data.ctms_job_order.delivery_details else None
         self.context['exporter_name'] =  data.ctms_job_order.carting_details.exporter_name if data.ctms_job_order.carting_details else None
         self.context['truck_number_'+str(data.id)] = data.truck_number
+        self.context['container_number_'+str(data.id)] = data.container_number
         return data
     
     @post_dump()

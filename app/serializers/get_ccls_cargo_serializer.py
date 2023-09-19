@@ -10,6 +10,8 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
     def get_data_from_context(self, data, **kwargs):
         if not data.get('cha_code'):
             data['cha_code'] = self.context.get('cha_code')
+        if not data.get('exporter_name'):
+            data['exporter_name'] = self.context.get('exporter_name')
         return data
 
     shipping_bill_number = fields.String(data_key='shipping_bill')
@@ -28,7 +30,7 @@ class CCLSCargoDetailsSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CCLSCargoBillDetails
-        fields = ("shipping_bill_number", "bill_of_entry","bill_of_lading","bill_date","bol_date","commodity_details","cha_code")
+        fields = ("shipping_bill_number", "bill_of_entry","bill_of_lading","bill_date","bol_date","commodity_details","cha_code","exporter_name")
 
 
 
@@ -37,6 +39,7 @@ class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
     @pre_dump()
     def add_data_to_context(self, data, **kwargs):
         self.context['cha_code'] = data.carting_details.cha_code if data.carting_details else data.delivery_details.cha_code if data.delivery_details else None
+        self.context['exporter_name'] = data.carting_details.exporter_name if data.carting_details else None
         return data
     
     @post_dump()
@@ -49,6 +52,7 @@ class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
     gpm_number = fields.Method("get_gpm_number")
     fcl_or_lcl = fields.Integer(data_key='container_flag')
     container_number = fields.Method("get_container_number")
+    container_size = fields.Method("get_container_size")
     is_cargo_card_generated = fields.Method("get_is_cargo_card_generated")
     stuffing_job_order = fields.Method("get_stuffing_job_order")
     destuffing_job_order = fields.Method("get_destuffing_job_order")
@@ -64,6 +68,9 @@ class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
     
     def get_container_number(self,obj):
         return obj.container_info.container_number  if obj.container_info else None
+    
+    def get_container_size(self,obj):
+        return obj.container_info.container_size  if obj.container_info else None
     
     def get_crn_number(self, obj):
         return obj.carting_details.crn_number if obj.carting_details else obj.stuffing_details.crn_number if obj.stuffing_details else None
@@ -94,5 +101,5 @@ class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = MasterCargoDetails
-        fields = ("cargo_carting_number", "container_flag", "container_number","crn_number","gpm_number","truck_details","bill_details","is_cargo_card_generated","sline_code","stuffing_job_order","destuffing_job_order","crn_date","con_date","gpm_valid_date","seal_number")
+        fields = ("cargo_carting_number", "container_flag", "container_number","container_size","crn_number","gpm_number","truck_details","bill_details","is_cargo_card_generated","sline_code","stuffing_job_order","destuffing_job_order","crn_date","con_date","gpm_valid_date","seal_number")
         include_relationships = True

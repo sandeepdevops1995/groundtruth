@@ -1,0 +1,20 @@
+<xsd:schema targetNamespace="http://www.concor.com/cil/EmptyTrailerOutput/1.0/" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.concor.com/cil/EmptyTrailerOutput/1.0/" xmlns="http://www.concor.com/cil/EmptyTrailerOutput/1.0/">
+   <xsd:element name="EmptyTrailerOutput" type="EmptyTrailerOutputType"/>
+   <xsd:complexType name="EmptyTrailerOutputType">
+      <xsd:sequence>
+         <xsd:element name="PermitNumber" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ContainerNumber" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ContainerSize" type="xsd:integer" minOccurs="0"/>
+         <xsd:element name="ContainerType" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ContainerStatus" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="IsPermitValid" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="PermitDateTime" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="VechileNumber" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="SlineCode" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="CtrLifeNumber" type="xsd:date" minOccurs="0"/>
+         <xsd:element name="DamageStatus" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="SealNumber" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="VehicleGateInDateTime" type="xsd:dateTime" minOccurs="0"/>
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:schema>

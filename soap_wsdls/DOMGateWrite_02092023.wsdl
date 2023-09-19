@@ -1,0 +1,42 @@
+<wsdl:definitions name="DTMSWriteBPEL" targetNamespace="http://xmlns.oracle.com/CTMSAPI/DTMSGateWriteProcess/DTMSWriteBPEL" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/CTMSAPI/DTMSGateWriteProcess/DTMSWriteBPEL" xmlns:ns1="http://www.concor.com/cil/Trailer/1.0/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+   <wsdl:documentation>
+      <abstractWSDL>http://10.1.100.102:8001/soa-infra/services/default/DTMSGateWriteProcess!1.0/WSDLs/DTMSWriteBPEL.wsdl</abstractWSDL>
+   </wsdl:documentation>
+   <plnk:partnerLinkType name="DTMSWriteBPEL">
+      <plnk:role name="DTMSWriteBPELProvider" portType="client:DTMSWriteBPEL"/>
+   </plnk:partnerLinkType>
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.concor.com/cil/Trailer/1.0/" schemaLocation="http://10.1.100.102:8001/soa-infra/services/default/DTMSGateWriteProcess/dtmswritebpel_client_ep?XSD=../Schemas/GateInput.xsd"/>
+      </schema>
+   </wsdl:types>
+   <wsdl:message name="DTMSWriteBPELRequestMessage">
+      <wsdl:part name="payload" element="ns1:Trailer"/>
+   </wsdl:message>
+   <wsdl:message name="DTMSWriteBPELResponseMessage">
+      <wsdl:part name="payload" element="ns1:TrailerResponse"/>
+   </wsdl:message>
+   <wsdl:portType name="DTMSWriteBPEL">
+      <wsdl:operation name="process">
+         <wsdl:input message="client:DTMSWriteBPELRequestMessage"/>
+         <wsdl:output message="client:DTMSWriteBPELResponseMessage"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="DTMSWriteBPELBinding" type="client:DTMSWriteBPEL">
+      <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="process">
+         <soap:operation style="document" soapAction="process"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="dtmswritebpel_client_ep">
+      <wsdl:port name="DTMSWriteBPEL_pt" binding="client:DTMSWriteBPELBinding">
+         <soap:address location="http://10.1.100.102:8001/soa-infra/services/default/DTMSGateWriteProcess/dtmswritebpel_client_ep"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

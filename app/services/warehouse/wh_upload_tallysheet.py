@@ -19,7 +19,11 @@ class WarehouseUploadTallySheetView(object):
         job_type = request_data.get('job_type')
         request_parameter = request_data.get('request_parameter')
         truck_number = request_data.get('truck_number')
-        query_object = WarehouseTallySheetView().get_ctms_job_obj(job_type,request_parameter,truck_number)
+        crn_number = request_data.get('crn_number')
+        if job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value]:
+            query_object = WarehouseTallySheetView().get_ctms_job_obj(job_type,crn_number,truck_number,request_parameter)
+        else:
+            query_object = WarehouseTallySheetView().get_ctms_job_obj(job_type,request_parameter,truck_number,None)
         data = WarehouseDB().get_tallysheet_details(query_object.first(),request_parameter,job_type)
         result = self.process_data(data)
         user_id = request_data.get('user_id')
@@ -34,7 +38,7 @@ class WarehouseUploadTallySheetView(object):
            self.send_destuffing_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
         elif job_type in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
            self.send_delivery_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
-        self.update_tallysheet_status(data.get('id'),request_parameter,job_type)
+        self.update_tallysheet_status(data.get('id'),request_parameter,job_type,trans_date_time)
 
    def send_carting_data_to_ccls(self,result,user_id,trans_date_time,request_parameter,job_type):
       for each_job in result:
@@ -69,7 +73,7 @@ class WarehouseUploadTallySheetView(object):
          result.append(each_item)
       return result
    
-   def update_tallysheet_status(self,ctms_job_order_id,request_parameter,job_type):
-      db.session.query(CTMSCargoJob).filter(CTMSCargoJob.id==ctms_job_order_id).update({"status":JobStatus.TALLYSHEET_UPLOADED.value})
+   def update_tallysheet_status(self,ctms_job_order_id,request_parameter,job_type,trans_date_time):
+      db.session.query(CTMSCargoJob).filter(CTMSCargoJob.id==ctms_job_order_id).update({"status":JobStatus.TALLYSHEET_UPLOADED.value,"trans_date_time":trans_date_time})
       db_response = db.session.commit()
       logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_UPDATE_STATUS_AFTER_UPLOAD_TALLYSHEET,'JT_'+str(job_type),request_parameter,db_response))

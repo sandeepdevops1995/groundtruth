@@ -1,0 +1,8 @@
+<xsd:schema targetNamespace="http://www.concor.com/cil/EmptyTrailer/1.0/" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.concor.com/cil/EmptyTrailer/1.0/" xmlns="http://www.concor.com/cil/EmptyTrailer/1.0/">
+   <xsd:element name="EmptyTrailer" type="EmptyTrailerType"/>
+   <xsd:complexType name="EmptyTrailerType">
+      <xsd:sequence>
+         <xsd:element name="PermitNumber" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:schema>

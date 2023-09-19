@@ -1,0 +1,70 @@
+<xsd:schema targetNamespace="http://www.concor.com/cil/Trailer/1.0/" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.concor.com/cil/Trailer/1.0/" xmlns="http://www.concor.com/cil/Trailer/1.0/">
+   <xsd:element name="Trailer" type="TrailerType"/>
+   <xsd:complexType name="TrailerType">
+      <xsd:sequence>
+         <xsd:element name="VEH_NO" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="DT_VEH_ARR" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="VEH_TYPE" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="DT_VEH_DEP" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="GT_DOC_NO" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="DT_GT_DOC" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="DT_GT_DOC_VLD" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="TO_LOC" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="SEAL_STAT" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="SEAL_NO" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="FAC_IN_TM" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="FAC_OUT_TM" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="DMG_FLG" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="DMG_CODE" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="CTR_NO" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="CTR_SIZE" type="xsd:integer" minOccurs="0"/>
+         <xsd:element name="CTR_TYPE" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="CTR_STAT" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="USER_ID" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="SLINE_CD" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ARR_PMT_NO" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="DEP_PMT_NO" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="DOC_NO" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="XPMT_NO" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="DT_XPMT_NO" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="GATE_NO" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="CTR_LIFE_NO" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="DT_SEAL" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="DT_ACTY" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="ACTY_CD" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="HAZ_FLG" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="STK_LOC" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="DT_ARR" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="DT_DEP" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="MODE_DEP" type="xsd:dateTime" minOccurs="0"/>
+         <xsd:element name="MODE_ARR" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="attribute1" type="xsd:string" minOccurs="0" nillable="true"/>
+         <xsd:element name="attribute2" type="xsd:string" minOccurs="0" nillable="true"/>
+         <xsd:element name="attribute3" type="xsd:string" minOccurs="0" nillable="true"/>
+         <xsd:element name="attribute4" type="xsd:string" minOccurs="0" nillable="true"/>
+         <xsd:element name="attribute5" type="xsd:string" minOccurs="0" nillable="true"/>
+         <xsd:element name="attribute6" type="xsd:dateTime" minOccurs="0" nillable="true"/>
+         <xsd:element name="attribute7" type="xsd:dateTime" minOccurs="0" nillable="true"/>
+         <xsd:element name="attribute8" type="xsd:dateTime" minOccurs="0" nillable="true"/>
+         <xsd:element name="attribute9" type="xsd:dateTime" minOccurs="0" nillable="true"/>
+         <xsd:element name="attribute10" type="xsd:dateTime" minOccurs="0" nillable="true"/>
+         <xsd:element name="createdDate" type="xsd:dateTime" minOccurs="0" nillable="true"/>
+         <xsd:element name="createdBy" type="xsd:string" minOccurs="0" nillable="true"/>
+         <xsd:element name="UPDATED_DATE" type="xsd:dateTime" minOccurs="0" nillable="true"/>
+         <xsd:element name="UPDATED_BY" type="xsd:string" minOccurs="0" nillable="true"/>
+         <xsd:element name="ERROR_MSG" type="xsd:string" minOccurs="0" nillable="true"/>
+         <xsd:element name="STATUS_FLAG" type="xsd:string" minOccurs="0" nillable="true"/>
+         <xsd:element name="IN_OUT_FLAG" type="xsd:string" minOccurs="0" nillable="true"/>
+         <xsd:element name="EXCEPTION_FLAG" type="xsd:string" minOccurs="0" nillable="true"/>
+         <xsd:element name="EXCEPTION_ERROR" type="xsd:string" minOccurs="0" nillable="true"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:element name="TrailerResponse" type="TrailerRespType"/>
+   <xsd:complexType name="TrailerRespType">
+      <xsd:sequence>
+         <xsd:element name="Result" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ErrorCode" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="Error" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:schema>

@@ -1,8 +1,9 @@
 from flask_restful import Resource, reqparse
-from flask import json, Response,request
+from flask import json, Response
 parser = reqparse.RequestParser()
 from datetime import datetime
 import pytz
+import random
 
 def soap_API_response(result):
     if result:
@@ -40,3 +41,7 @@ def datetime_handler(x):
         return convert_ccls_date_to_timestamp(x)
     else:
         return x
+    
+def get_random_number(x,y):
+    random_number = random.randint(x, y)
+    return random_number

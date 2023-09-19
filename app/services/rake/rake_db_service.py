@@ -81,17 +81,18 @@ class RakeDbService:
     def get_container_data(rake_id,container_number, rake_tx_type=Constants.EXIM_RAKE ):
         data = {}
         if config.GROUND_TRUTH == GroundTruthType.SOAP.value:
-            rake_tx_type = Constants.DOMESTIC_RAKE if container_number and container_number.startswith('CXNU') else Constants.EXIM_RAKE
-            if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
-                data = DomesticContainers.query.filter_by(rake_id=rake_id,container_number=container_number).all()
-                if data:
-                    return DTMSRakeInwardReadService.format_rake_data(data)
-            if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE]:
-                data = CCLSRake.query.filter_by(rake_id=rake_id,container_number=container_number).all()
+            # rake_tx_type = Constants.DOMESTIC_RAKE if container_number and container_number.startswith('CXNU') else Constants.EXIM_RAKE
+            
+            # if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE]:
+            data = CCLSRake.query.filter_by(rake_id=rake_id,container_number=container_number).all()
             if not data:
                 data = MissedInwardContainers.query.filter_by(rake_id=rake_id,container_number=container_number).all()
             if data:
                 return RakeInwardReadService.format_rake_data(data)
+            # if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
+            data = DomesticContainers.query.filter_by(rake_id=rake_id,container_number=container_number).all()
+            if data:
+                return DTMSRakeInwardReadService.format_rake_data(data)
             return data
         
 

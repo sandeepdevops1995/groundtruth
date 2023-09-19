@@ -124,6 +124,19 @@ class WarehouseRevenue(View):
             return Response(None, status=204, mimetype='application/json')
         logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_WAREHOUSE_REVENUE,LM.KEY_FETCH_WAREHOUSE_REVENUE_DATA,from_date,to_date,type))
         return Response(json.dumps(result), status=200, mimetype='application/json')
+    
+
+class GetRevenueInfo(View):
+
+    @custom_exceptions(LM.KEY_WAREHOUSE_REVENUE)
+    def get(self):
+        logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_WAREHOUSE_REVENUE,LM.KEY_GET_REQUEST_FROM_CTMS_FOR_WAREHOUSE_REVENUE,request))
+        result = RevenueView().get_revenue_amount(request)
+        if not result:
+            logger.exception("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_WAREHOUSE_REVENUE,LM.KEY_WAREHOUSE_REVENUE_DOES_NOT_EXISTS,request))
+            return Response(None, status=204, mimetype='application/json')
+        logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_WAREHOUSE_REVENUE,LM.KEY_FETCH_WAREHOUSE_REVENUE_DATA,request))
+        return Response(json.dumps(result), status=200, mimetype='application/json')
 
 
 

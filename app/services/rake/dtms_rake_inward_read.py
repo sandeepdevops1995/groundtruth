@@ -47,6 +47,7 @@ class DTMSRakeInwardReadService:
             rake_query.update(dict(update_data))
             commit()
             data = rake_query.order_by(desc('trans_date')).all()
+            missed_container_data = []
             if 'rake_id' in query_values:
                 missed_containers = MissedInwardContainers.query.filter_by(rake_id=query_values['rake_id'],trans_type=Constants.DOMESTIC_RAKE).all()
                 if missed_containers:

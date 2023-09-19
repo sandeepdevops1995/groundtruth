@@ -1,4 +1,5 @@
 from app.services.decorator_service import query_debugger
+from app.services.rake.rake_inward_read import RakeInwardReadService
 from app.models import  WgnMst, MissedInwardContainers, DomesticContainers
 from app import db
 from app.constants import GroundTruthType
@@ -46,16 +47,26 @@ class DTMSRakeInwardReadService:
             rake_query.update(dict(update_data))
             commit()
             data = rake_query.order_by(desc('trans_date')).all()
-            # if 'rake_id' in query_values:
-            #     missed_containers = MissedInwardContainers.query.filter_by(rake_id=query_values['rake_id']).all()
-            #     data = data + missed_containers
+            if 'rake_id' in query_values:
+                missed_containers = MissedInwardContainers.query.filter_by(rake_id=query_values['rake_id'],trans_type=Constants.DOMESTIC_RAKE).all()
+                if missed_containers:
+                    missed_container_data = json.loads(RakeInwardReadService.format_rake_data(missed_containers))
             if not data and "train_number" in query_values:
                 logger.info("fetch train details from soap service for train number "+query_values['train_number'])
                 result = soap_service.get_domestic_train_details(train_number=query_values['train_number'])
                 if result:
                     logger.info("Data exists in Soap Servcie for given train number "+query_values['train_number'])
                     data = DTMSRakeInwardReadService.save_in_db(result)
-            return DTMSRakeInwardReadService.format_rake_data(data)
+            domestic_containers = json.loads(DTMSRakeInwardReadService.format_rake_data(data))
+            if missed_container_data:
+                if domestic_containers:
+                    domestic_containers[Constants.WAGON_LIST] += missed_container_data[Constants.WAGON_LIST]
+                    domestic_containers[Constants.CONTAINER_LIST] += missed_container_data[Constants.CONTAINER_LIST]
+                    return json.dumps(domestic_containers)
+                else:
+                    return json.dumps(missed_container_data)
+            else:
+                return json.dumps(domestic_containers)
             
         except Exception as e:
             logger.exception(str(e))

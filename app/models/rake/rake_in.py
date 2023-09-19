@@ -137,3 +137,4 @@ class MissedInwardContainers(db.Model):
     ldd_mt_flg = db.Column(db.String(2), nullable=True)
     imp_exp_flg = db.Column(db.String(1), nullable=True)
     track_number = db.Column(db.String(10), nullable=True)
+    trans_type = db.Column(db.String(10), nullable=True)

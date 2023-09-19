@@ -17,25 +17,26 @@ class DTMSRakeOutwardReadService:
             data = {}
             data["container_number"] = each["DACCNTRNUMB"]
             data["container_type"] = each["DACCNTRTYPE"]
-            data["container_weight"] = each["D_DANWGHT"]
+            data["container_weight"] = float(each["D_DANWGHT"])
             data["stack_loc"] = each["DACSTCKLOCN"]
             data["seal_number"] = each["DAVSEALNUMB"]
-            data["seal_date"] = each["DADCNFRMSEALTIME"]
+            data["seal_date"] = each["DADCNFRMSEALTIME"].strftime("%Y-%m-%dT%H:%M:%S")
             data["station_from"] = each["DAVSTTNFROM"]
             data["station_to"] = each["DAVSTTNTO"]
             data["ldd_mt_flg"] = each["DACLEFLAG"]
             data["commodity_code"] = each["DAVCMDTCODE"]
-            data["container_tare_weight"] = each["MANTARE"]
+            data["container_tare_weight"] = float(each["MANTARE"])
             # data[""] = each["DACSRVCMODE"]
             # data[""] = each["DAVCNSRCODE"]
             # data[""] = each["DAVCNSECODE"]
             # data[""] = each["DACCRNTSTTS"]
-            # data[""] = each["DANWGHT"]
+            # data[""] = float(each["DANWGHT"])
             pendency_containers.append(data)
         return json.dumps(pendency_containers)
     
     def get_outward_domestic_containers(data):
-        return soap_service.get_domestic_outward_train_details(data)
+        ccls_data = soap_service.get_domestic_outward_train_details(data)
+        return DTMSRakeOutwardReadService.format_data_from_ccls(ccls_data)
 
 
 

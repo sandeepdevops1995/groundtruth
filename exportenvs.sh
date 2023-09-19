@@ -235,5 +235,12 @@ else
     export REVENUE_WSDL_URL=$env_revenue_wsdl_url
 fi
 
+if ( [ $COMPOSE_CCLS_WSDL_URL ] ) then 
+    echo "ccls wsdl url",${CCLS_WSDL_URL}
+else 
+    env_ccls_wsdl_url="$(sed -n -e 's/^.*CCLS_WSDL_URL.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+    export CCLS_WSDL_URL=$env_ccls_wsdl_url
+fi
+
 }
 _env_init

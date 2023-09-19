@@ -133,7 +133,7 @@ class RakeInwardReadService:
         
         return final_data
 
-    def format_rake_data(data):
+    def format_rake_data(data,category="Import"):
         response = {}
         if len(data)>0:
             response[Constants.RAKE_ID] = data[0].rake_id
@@ -159,7 +159,7 @@ class RakeInwardReadService:
                 # container_record[Constants.CONTAINER_STAT] = "L" if "container_gross_weight" in data[i] and data[i].container_gross_weight else "E"
                 container_record[Constants.CONTAINER_STAT] = "E"
                 # category: "Import/Export/Domestic/Transhipment"
-                container_record[Constants.CATEGORY] = "Import"
+                container_record[Constants.CATEGORY] = category
 
                 response[Constants.CONTAINER_LIST].append(container_record)
         return json.dumps(response)

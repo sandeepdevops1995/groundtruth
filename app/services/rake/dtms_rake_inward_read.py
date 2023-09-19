@@ -50,7 +50,7 @@ class DTMSRakeInwardReadService:
             if 'rake_id' in query_values:
                 missed_containers = MissedInwardContainers.query.filter_by(rake_id=query_values['rake_id'],trans_type=Constants.DOMESTIC_RAKE).all()
                 if missed_containers:
-                    missed_container_data = json.loads(RakeInwardReadService.format_rake_data(missed_containers))
+                    missed_container_data = json.loads(RakeInwardReadService.format_rake_data(missed_containers,category="Domestic"))
             if not data and "train_number" in query_values:
                 logger.info("fetch train details from soap service for train number "+query_values['train_number'])
                 result = soap_service.get_domestic_train_details(train_number=query_values['train_number'])

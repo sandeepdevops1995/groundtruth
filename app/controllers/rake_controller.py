@@ -563,14 +563,14 @@ class CclsResponseData(View):
                 soap_data = get_exim_train_details(train_number=train_no,from_date=start_data,to_date=end_data)
                 soap_data = soap_data if soap_data else []
                 data = RakeInwardReadService.save_in_db(soap_data)
+                data =  RakeInwardReadService.format_cmts_data(data)
             elif str(trans_type).upper() == 'DOM':
                 soap_data = get_domestic_train_details(train_number=train_no,from_date=start_data,to_date=end_data)
                 soap_data = soap_data if soap_data else []
                 data = DTMSRakeInwardReadService.save_in_db(soap_data)
+                data = DTMSRakeInwardReadService.format_dtms_data(data)
             else:
                 return Response(json.dumps({'message':"trans_type not given or invalid"}),status=400,mimetype='application/json')
-            if data:
-                data = json.dumps(data)
         if data:
             return Response(data,status=200,mimetype='application/json')
         return Response(status=204,mimetype='application/json')

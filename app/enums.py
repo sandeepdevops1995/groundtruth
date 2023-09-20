@@ -39,9 +39,8 @@ class SerialNumberType(enum.Enum):
 class PendencyType(enum.Enum):
     LOADED = 1
     EMPTY = 2
-    LCL = 3
+    EXPRESS_LCL = 3
     BLOCK = 4
-    EXPRESS = 5
 
 class EquipmentNames(enum.Enum):
     RMGTRCK = "RMG2"

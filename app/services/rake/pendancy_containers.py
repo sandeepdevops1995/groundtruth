@@ -159,23 +159,23 @@ class PendancyService():
                             if data:
                                 final_data += PendancyService.format_data_from_ccls(data,PendencyType.BLOCK.value,True)
 
-                    elif PendencyType.EXPRESS.value == pendency_type:
+                    elif PendencyType.EXPRESS_LCL.value == pendency_type:
                         logger.info("fetching EXPRESS pendancy containers"+str(gateway_ports))
                         for port in gateway_ports:
                             request_params = {'GW_PORT_CODE': port}
                             data = soap_service.get_express_pendancy_details(request_params)
                             if data:
-                                final_data += PendancyService.format_data_from_ccls(data,PendencyType.EXPRESS.value,True)
+                                final_data += PendancyService.format_data_from_ccls(data,PendencyType.EXPRESS_LCL.value,True)
 
-                    elif PendencyType.LCL.value == pendency_type:
-                        logger.info("fetching LCL pendancy containers"+str(gateway_ports))
-                        pass
-                        # logger.info("fetching LCL peendancy containers")
-                        # for port in gateway_ports:
-                        #     request_params = {'GW_PORT_CODE': port}
-                        #     data = soap_service.get_lcl_pendancy_details(request_params)
-                        #     if data:
-                        #         final_data += PendancyService.format_data_from_ccls(data,PendencyType.EXPRESS.value,True)
+                    # elif PendencyType.LCL.value == pendency_type:
+                    #     logger.info("fetching LCL pendancy containers"+str(gateway_ports))
+                    #     pass
+                    #     logger.info("fetching LCL peendancy containers")
+                    #     for port in gateway_ports:
+                    #         request_params = {'GW_PORT_CODE': port}
+                    #         data = soap_service.get_lcl_pendancy_details(request_params)
+                    #         if data:
+                    #             final_data += PendancyService.format_data_from_ccls(data,PendencyType.EXPRESS_LCL.value,True)
 
                 if final_data:
                     # data = PendancyService.format_data_from_ccls(final_data,True)

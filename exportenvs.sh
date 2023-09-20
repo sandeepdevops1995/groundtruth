@@ -25,6 +25,8 @@ COMPOSE_IS_STUFFING_MOCK_ENABLED=${IS_STUFFING_MOCK_ENABLED}
 COMPOSE_NO_OF_PROCESSES=${NO_OF_PROCESSES}
 COMPOSE_IS_PREFIX_REQUIRED=${IS_PREFIX_REQUIRED}
 COMPOSE_IS_TRIM_GRID_NO_REQUIRED=${IS_TRIM_GRID_NO_REQUIRED}
+COMPOSE_IS_REVENUE_MOCK_ENABLED=${IS_REVENUE_MOCK_ENABLED}
+COMPOSE_REVENUE_WSDL_URL=${REVENUE_WSDL_URL}
 
 #read .env file in env folder
 env_file_path="./env/.env"
@@ -217,6 +219,27 @@ if ( [ $COMPOSE_IS_TRIM_GRID_NO_REQUIRED ] ) then
 else 
     env_is_trim_grid_no_required="$(sed -n -e 's/^.*IS_TRIM_GRID_NO_REQUIRED.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
     export IS_TRIM_GRID_NO_REQUIRED=$env_is_trim_grid_no_required
+fi
+
+if ( [ $COMPOSE_IS_REVENUE_MOCK_ENABLED ] ) then 
+    echo "is revenue mock enabled",${IS_REVENUE_MOCK_ENABLED}
+else 
+    env_is_revenue_mock_enabled="$(sed -n -e 's/^.*IS_REVENUE_MOCK_ENABLED.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+    export IS_REVENUE_MOCK_ENABLED=$env_is_revenue_mock_enabled
+fi
+
+if ( [ $COMPOSE_REVENUE_WSDL_URL ] ) then 
+    echo "revenue wsdl url",${REVENUE_WSDL_URL}
+else 
+    env_revenue_wsdl_url="$(sed -n -e 's/^.*REVENUE_WSDL_URL.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+    export REVENUE_WSDL_URL=$env_revenue_wsdl_url
+fi
+
+if ( [ $COMPOSE_CCLS_WSDL_URL ] ) then 
+    echo "ccls wsdl url",${CCLS_WSDL_URL}
+else 
+    env_ccls_wsdl_url="$(sed -n -e 's/^.*CCLS_WSDL_URL.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+    export CCLS_WSDL_URL=$env_ccls_wsdl_url
 fi
 
 }

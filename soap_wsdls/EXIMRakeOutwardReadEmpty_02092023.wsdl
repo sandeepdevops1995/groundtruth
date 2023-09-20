@@ -1,0 +1,45 @@
+<wsdl:definitions name="CCLSRakeEmptyPendencyBPEL" targetNamespace="http://xmlns.oracle.com/CTMSAPI/CCLSRakeEmptyPendency/CCLSRakeEmptyPendencyBPEL" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/CTMSAPI/CCLSRakeEmptyPendency/CCLSRakeEmptyPendencyBPEL" xmlns:ns1="http://www.concor.com/cil/PendencyRead/1.0/" xmlns:ns2="http://www.concor.com/cil/PendencyWrite/1.0/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+   <wsdl:documentation>
+      <abstractWSDL>http://10.1.100.101:8002/soa-infra/services/default/CCLSRakeEmptyPendency!1.0/WSDLs/CCLSRakeEmptyPendencyBPEL.wsdl</abstractWSDL>
+   </wsdl:documentation>
+   <plnk:partnerLinkType name="CCLSRakeEmptyPendencyBPEL">
+      <plnk:role name="CCLSRakeEmptyPendencyBPELProvider" portType="client:CCLSRakeEmptyPendencyBPEL"/>
+   </plnk:partnerLinkType>
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.concor.com/cil/PendencyRead/1.0/" schemaLocation="http://10.1.100.101:8002/soa-infra/services/default/CCLSRakeEmptyPendency/cclsrakeemptypendencybpel_client_ep?XSD=../Schemas/Input.xsd"/>
+      </schema>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.concor.com/cil/PendencyWrite/1.0/" schemaLocation="http://10.1.100.101:8002/soa-infra/services/default/CCLSRakeEmptyPendency/cclsrakeemptypendencybpel_client_ep?XSD=../Schemas/Output.xsd"/>
+      </schema>
+   </wsdl:types>
+   <wsdl:message name="CCLSRakeEmptyPendencyBPELRequestMessage">
+      <wsdl:part name="payload" element="ns1:PendencyRead"/>
+   </wsdl:message>
+   <wsdl:message name="CCLSRakeEmptyPendencyBPELResponseMessage">
+      <wsdl:part name="payload" element="ns2:PendencyWrite"/>
+   </wsdl:message>
+   <wsdl:portType name="CCLSRakeEmptyPendencyBPEL">
+      <wsdl:operation name="process">
+         <wsdl:input message="client:CCLSRakeEmptyPendencyBPELRequestMessage"/>
+         <wsdl:output message="client:CCLSRakeEmptyPendencyBPELResponseMessage"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="CCLSRakeEmptyPendencyBPELBinding" type="client:CCLSRakeEmptyPendencyBPEL">
+      <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="process">
+         <soap:operation style="document" soapAction="process"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="cclsrakeemptypendencybpel_client_ep">
+      <wsdl:port name="CCLSRakeEmptyPendencyBPEL_pt" binding="client:CCLSRakeEmptyPendencyBPELBinding">
+         <soap:address location="http://10.1.100.101:8002/soa-infra/services/default/CCLSRakeEmptyPendency/cclsrakeemptypendencybpel_client_ep"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

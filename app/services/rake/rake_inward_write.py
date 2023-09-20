@@ -10,14 +10,16 @@ from app import db
 import config
 import time
 from datetime import datetime
+from app.enums import EquipmentNames
 
 
 
 class RakeInwardWriteService():
     def format_data_to_ccls_format(data):
         rake_data = {}
+        rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = "TEST"
         if  Constants.KEY_TRAIN_NUMBER in data :
-            rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = data[Constants.KEY_TRAIN_NUMBER]
+            rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = data[Constants.KEY_TRAIN_NUMBER] if data[Constants.KEY_TRAIN_NUMBER] else "TEST"
         if Constants.KEY_DT_ACTUAL_DEPART in data:
             rake_data[Constants.KEY_SOAP_DT_ACTUAL_DEPART] = datetime.strptime(data[Constants.KEY_DT_ACTUAL_DEPART], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_IMP_EXP_FLG in data:
@@ -59,7 +61,7 @@ class RakeInwardWriteService():
         if Constants.KEY_WAGON_NUMBER in data:
             rake_data[Constants.KEY_SOAP_WAGON_NUMBER] = data[Constants.KEY_WAGON_NUMBER]
         if Constants.KEY_WAGON_LIFE_NUMBER in data:
-            rake_data[Constants.KEY_SOAP_WAGON_LIFE_NUMBER] = datetime.strptime(data[Constants.KEY_WAGON_LIFE_NUMBER], '%Y-%m-%d %H:%M:%S')
+            rake_data[Constants.KEY_SOAP_WAGON_LIFE_NUMBER] = datetime.strptime(data[Constants.KEY_WAGON_LIFE_NUMBER].split('.')[0], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_WAGON_TYPE in data:
             rake_data[Constants.KEY_SOAP_WAGON_TYPE] = data[Constants.KEY_WAGON_TYPE]
         if Constants.KEY_DAMAGE_FLAG in data:
@@ -83,7 +85,7 @@ class RakeInwardWriteService():
         if Constants.KEY_DT_PLACEMENT in data:
             rake_data[Constants.KEY_SOAP_DT_PLACEMENT] = datetime.strptime(data[Constants.KEY_DT_PLACEMENT], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_EQUIPMENT_ID in data:
-            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = data[Constants.KEY_EQUIPMENT_ID]
+            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data[Constants.KEY_EQUIPMENT_ID]].value if data[Constants.KEY_EQUIPMENT_ID] else "CHE"
         if Constants.KEY_ATTRIBUTE1 in data:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE1] = data[Constants.KEY_ATTRIBUTE1]
         if Constants.KEY_ATTRIBUTE2 in data:
@@ -113,7 +115,7 @@ class RakeInwardWriteService():
         if Constants.KEY_READ_FLG in data:
             rake_data[Constants.KEY_SOAP_READ_FLG] = data[Constants.KEY_READ_FLG]
         if "equipment_name" in data:
-            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = data["equipment_name"]
+            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data["equipment_name"]].value if data["equipment_name"] else "CHE"
         return rake_data
         
         

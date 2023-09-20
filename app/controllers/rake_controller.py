@@ -11,10 +11,14 @@ from app.services.master_db_service import MasterData as master_db
 from app.services.rake.rake_inward_write import RakeInwardWriteService,WriteInContainer
 from app.services.rake.rake_outward_write import RakeOutwardWriteService
 from app.services.rake.rake_inward_read import RakeInwardReadService
+from app.services.rake.dtms_rake_inward_read import DTMSRakeInwardReadService
+from app.services.rake.dtms_rake_inward_write import DTMSRakeInwardWriteService
 from app.services.rake.rake_outward_plan import RakeOutwardPlanService
 from app.services.rake.pendancy_containers import  PendancyService
+from app.services.rake.dtms_rake_outward_read import DTMSRakeOutwardReadService
 from datetime import date, datetime, timedelta
 from app.controllers.utils import View, soap_API_response
+import json
 
 
 class TrainDetails(View):   
@@ -25,10 +29,12 @@ class TrainDetails(View):
         track_number = request.args.get(Constants.TRACK_NUMBER,None)
         rake_id = request.args.get(Constants.RAKE_ID,None)
         rake_type = request.args.get(Constants.RAKE_TYPE,"AR")
+        rake_tx_type = request.args.get(Constants.RAKE_TX_TYPE,Constants.EXIM_RAKE)
         wagon_number = request.args.get(Constants.WAGON_NUMBER,None)
         container_number = request.args.get(Constants.KEY_CN_NUMBER,None)
         container_life_number = request.args.get(Constants.KEY_CN_LIFE_NUMBER,None)
         trans_date = request.args.get(Constants.KEY_TRANS_DATE,None)
+        trans_delay = int(request.args.get(Constants.KEY_TRANS_DELAY,2))
         from_date = request.args.get(Constants.KEY_FROM_DATE,None)
         to_date = request.args.get(Constants.KEY_TO_DATE,None)
         data = {}
@@ -49,18 +55,54 @@ class TrainDetails(View):
         logger.info('GT,Get request from the Rake service : {}'.format(train_number))
         result = {}
         if rake_type == "AR":
-            result = RakeInwardReadService.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
+            if from_date and to_date:
+                self.request_soap_api(trans_delay,rake_tx_type,from_date,to_date)
+                return Response({"message":"requested soap API"}, status=200, mimetype='application/json')
+            result = self.get_inward_summary_containers(data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date)
             if not result:
-                from_date = (datetime.now()-timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
-                to_date = (datetime.now()+timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
-                RakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
-                result = RakeInwardReadService.get_train_details(data,rake_id,track_number,from_date=from_date,to_date=to_date)
+                self.request_soap_api(trans_delay,rake_tx_type)
+                result = self.get_inward_summary_containers(data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date)
         elif rake_type == "DE":
             result = RakeOutwardPlanService.get_rake_plan(rake_id,train_number,track_number)
         else:
             return Response({"mesaage":"unknown rake type"}, status=400, mimetype='application/json')
         logger.info('Conainer details response')
         return Response(result, status=200, mimetype='application/json')
+    
+
+    def get_inward_summary_containers(self,data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date):
+        result = {}
+        if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE] :
+            exim_containers = RakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
+            result = json.loads(exim_containers)
+        if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
+            dom_containers = DTMSRakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
+            dom_containers = json.loads(dom_containers)
+            if result and dom_containers:
+                if Constants.WAGON_LIST in dom_containers:
+                    if Constants.WAGON_LIST in result:
+                        result[Constants.WAGON_LIST] += dom_containers[Constants.WAGON_LIST]
+                    else:
+                        result[Constants.WAGON_LIST] = dom_containers[Constants.WAGON_LIST]
+                if Constants.CONTAINER_LIST in dom_containers:
+                    if Constants.CONTAINER_LIST in result:
+                        result[Constants.CONTAINER_LIST] += dom_containers[Constants.CONTAINER_LIST]
+                    else:
+                        result[Constants.CONTAINER_LIST] = dom_containers[Constants.CONTAINER_LIST]
+            else:
+                result = dom_containers
+        return json.dumps(result)
+
+    def request_soap_api(self,trans_delay,rake_tx_type,from_date=None,to_date=None):
+        if not from_date:
+            from_date = (datetime.now()-timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
+        if not to_date:
+            to_date = (datetime.now()+timedelta(days = trans_delay)).strftime("%Y-%m-%dT%H:%M:%S")
+        if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE] :
+            RakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
+        if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
+            DTMSRakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
+
 
 
 class RakeData(View):
@@ -97,6 +139,8 @@ class RakeData(View):
             return Response(json.dumps({"message":message}), status=204,mimetype='application/json')
         logger.info('GT,Get request from the Rake service : {} {} {}'.format(rake_id,rake_number,track_number))
         result = RakeInwardReadService.get_train_details(data)
+        if not json.loads(result):
+            result = DTMSRakeInwardReadService.get_train_details(data)
         logger.info('Conainer details response')
         return Response(result, status=200, mimetype='application/json')
 
@@ -104,17 +148,14 @@ class PendancyList(View):
     @custom_exceptions
     # @api_auth_required
     def get(self):
-        gateway_port = request.args.get(Constants.KEY_GATEWAY_PORT,None)
-        pendency_type = request.args.get(Constants.KEY_PENDENCY_TYPE,None)
-        if gateway_port and pendency_type:
-            gateway_ports= gateway_port.split(",")
-            pendency_types = pendency_type.split(",")
-            logger.info("GT, pendacy list for ports: "+str(gateway_ports)+" and pendency types: "+str(pendency_types))
-            response = PendancyService.get_pendancy_list(pendency_types,gateway_ports)
+        pendency_types = request.args.get(Constants.KEY_PENDENCY_TYPE,None)
+        if pendency_types:
+            logger.info("GT, pendacy list for pendency types: "+pendency_types)
+            response = PendancyService.get_pendancy_list(json.loads(pendency_types))
             # response = self.format_data(response,gateway_ports)
             return Response(response, status=200, mimetype='application/json')
         else:
-            return Response(json.dumps({"message":"please provide gateway port and pendancy type"}), status=400, mimetype='application/json')
+            return Response(json.dumps({"message":"please provide pendancy types"}), status=400, mimetype='application/json')
     
     
     def format_data(self,response,gateway_ports):
@@ -131,6 +172,17 @@ class PendancyList(View):
             final_output.append(port_data)
         return json.dumps(final_output)
             
+
+class DomesticPendancyList(View):
+    @custom_exceptions
+    # @api_auth_required
+    def get(self):
+        # process = request.args.get("process",None)
+        data = {"Process" : None}
+        logger.info("GT, Domestic pendacy list for pendency types: ")
+        response = DTMSRakeOutwardReadService.get_outward_domestic_containers(data)
+        return Response(response, status=200, mimetype='application/json')
+        
 class RakeInContainer(View):
     @custom_exceptions
     @api_auth_required
@@ -196,6 +248,16 @@ class UpdateCGOSurvey(View):
             return soap_API_response(response)
         return Response(json.dumps({"message":"please provide valid data"}),status=400,mimetype='application/json')
    
+class UpdateVGISurvey(View):
+    @custom_exceptions
+    @api_auth_required
+    def post(self):
+        data = request.get_json()
+        if data:
+            response = DTMSRakeInwardWriteService.update_VGI_survey(data)
+            return soap_API_response(response)
+        return Response(json.dumps({"message":"please provide valid data"}),status=400,mimetype='application/json')
+
 class WagonMaster(View):
     @custom_exceptions
     # @api_auth_required
@@ -283,8 +345,9 @@ class GroundTruthData(View):
     def get(self):
         train_number = request.args.get(Constants.TRAIN_NUMBER,None)
         trans_date = request.args.get(Constants.KEY_TRANS_DATE,None)
+        trans_type = request.args.get(Constants.RAKE_TX_TYPE,"EXIM")
         if train_number and trans_date:
-            response =  db_service.get_ground_truth_details(train_number,trans_date)
+            response =  db_service.get_ground_truth_details(train_number,trans_date,trans_type)
             if response:
                 # logger.info('Ground truth found for given train_number ',train_number, 'for trans_date ',trans_date)
                 return Response(response, status=200, mimetype='application/json')

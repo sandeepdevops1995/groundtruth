@@ -16,24 +16,24 @@ import time
 class RakeInwardReadService:
 
     @query_debugger()
-    def get_train_details(query_values,rake_id=None,track_number=None,from_date=None,to_date=None,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+    def get_train_details(query_values,rake_id=None,track_number=None,trans_delay=2,from_date=None,to_date=None,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
         try:
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 result = {}
                 if from_date and to_date:
-                    result = soap_service.get_train_data(from_date=from_date,to_date=to_date)
+                    result = soap_service.get_exim_train_details(from_date=from_date,to_date=to_date)
                     if result:
                         data = RakeInwardReadService.save_in_db(result)
                         return RakeInwardReadService.format_rake_data(data)                        
                     return []
                 # elif "train_number" in query_values["train_number"]:
-                #     result = soap_service.get_train_data(query_values["train_number"])
+                #     result = soap_service.get_exim_train_details(query_values["train_number"])
             if "trans_date" in query_values:
                 trans_date = query_values.pop('trans_date')
-                start_date = trans_date - timedelta(days = 5)
-                end_date =  trans_date + timedelta(days = 5)
+                start_date = trans_date - timedelta(days = trans_delay)
+                end_date =  trans_date + timedelta(days = trans_delay)
                 rake_query = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)>=start_date, cast(CCLSRake.trans_date, DATE)<=end_date)
                 rake_query = rake_query.filter_by(**query_values)
             else:
@@ -47,11 +47,11 @@ class RakeInwardReadService:
             commit()
             data = rake_query.order_by(desc('trans_date')).all()
             if 'rake_id' in query_values:
-                missed_containers = MissedInwardContainers.query.filter_by(rake_id=query_values['rake_id']).all()
+                missed_containers = MissedInwardContainers.query.filter_by(rake_id=query_values['rake_id'],trans_type=Constants.EXIM_RAKE).all()
                 data = data + missed_containers
             if not data and "train_number" in query_values:
                 logger.info("fetch train details from soap service for train number "+query_values['train_number'])
-                result = soap_service.get_train_data(train_number=query_values['train_number'])
+                result = soap_service.get_exim_train_details(train_number=query_values['train_number'])
                 if result:
                     logger.info("Data exists in Soap Servcie for given train number "+query_values['train_number'])
                     data = RakeInwardReadService.save_in_db(result)
@@ -62,7 +62,7 @@ class RakeInwardReadService:
             if isRetry and count >= 0 :
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
-                RakeInwardReadService.get_train_details(query_values,rake_id,track_number,from_date,to_date,count,isRetry)
+                RakeInwardReadService.get_train_details(query_values,rake_id,track_number,trans_delay,from_date,to_date,count,isRetry)
 
     def save_in_db(data_list):
         final_data = []
@@ -133,7 +133,7 @@ class RakeInwardReadService:
         
         return final_data
 
-    def format_rake_data(data):
+    def format_rake_data(data,category="Import"):
         response = {}
         if len(data)>0:
             response[Constants.RAKE_ID] = data[0].rake_id
@@ -158,5 +158,8 @@ class RakeInwardReadService:
                 container_record[Constants.WAGON_NUMBER] = { Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:data[i].wagon_sequence_number}
                 # container_record[Constants.CONTAINER_STAT] = "L" if "container_gross_weight" in data[i] and data[i].container_gross_weight else "E"
                 container_record[Constants.CONTAINER_STAT] = "E"
+                # category: "Import/Export/Domestic/Transhipment"
+                container_record[Constants.CATEGORY] = category
+
                 response[Constants.CONTAINER_LIST].append(container_record)
         return json.dumps(response)

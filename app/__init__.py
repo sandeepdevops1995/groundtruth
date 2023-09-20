@@ -84,8 +84,30 @@ def scheduleTask():
         from app.logger import logger
         from_date = (datetime.now()-timedelta(days = 1)).strftime("%Y-%m-%dT%H:%M:%S")
         to_date = (datetime.now()+timedelta(days = 2)).strftime("%Y-%m-%dT%H:%M:%S")
+        
+        #Exim train details
         result = RakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
+        
+        #Domestic train details
+        from app.services.rake.dtms_rake_inward_read import DTMSRakeInwardReadService
+        result = DTMSRakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
         logger.info("Task Scheduled from_date: "+from_date+" to_date: "+to_date)
  
 register_controllers()
 RakeDataEvents()
+
+@scheduler.task('interval',id="redis_scheduled_task",minutes=config.REDIS_SCHEDULE_TASK_TIME,misfire_grace_time=900)
+def redis_scheduleTask():
+    from app.services.soap_service import get_pendancy_details,get_domestic_permit_details,update_exim_container_details,update_domestic_container_details,get_exim_train_details,get_domestic_train_details,update_inward_rake,get_pendancy_details,get_empty_pendancy_details,get_block_pendancy_details,get_express_pendancy_details,update_outward_rake,update_container_stack_location,get_domestic_outward_train_details,update_domestic_inward_rake,update_domestic_container_stack_location
+    with scheduler.app.app_context():
+        from app.redis_config import cache
+        import json
+        failed_data_list = cache.lrange("ground_truth_queue",0,-1)
+        if failed_data_list:
+            cache.ltrim("ground_truth_queue", -1, 0)
+            failed_data_list.reverse()
+            for failed_data in failed_data_list:
+                failed_data = json.loads(failed_data)
+                method = eval(failed_data['method_name'])
+                request_data = failed_data['request_data']
+                method(**request_data)

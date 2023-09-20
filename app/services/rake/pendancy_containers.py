@@ -17,7 +17,7 @@ import time
 
 class PendancyService():
 
-    def format_data_from_ccls(ccls_data,save_data=False):
+    def format_data_from_ccls(ccls_data,pendency_type,save_data=False):
         pendancy_list = []
         for each in ccls_data:
             data = {}
@@ -44,6 +44,7 @@ class PendancyService():
             data["hold_rels_flg"] = each["holdRelsFlg"]
             data["hold_rels_flg_next"] = None
             data["q_no"] = None
+            data["pendency_type"] = int(pendency_type)
 
             if save_data:
                 PendancyService.save_in_db(data)
@@ -51,15 +52,40 @@ class PendancyService():
             if data["container_weight"]:
                 data["container_weight"] = float(data["container_weight"])
             if data["seal_date"]:
-                data["seal_date"] = data["seal_date"].strftime("%Y-%m-%dT%H:%M:%S")
-            if data["arrival_date"] and isinstance(data['arrival_date'], datetime):
+                data["seal_date"] = each["dtSeal"]
+            if data["seal_date"]:
+                #data["seal_date"] = data["seal_date"].strftime("%Y-%m-%dT%H:%M:%S")
+                #data['seal_date'] = datetime.strptime(data['seal_date'], '%Y-%m-%d %H:%M:%S').isoformat()
+                data['seal_date'] = data['seal_date'].isoformat()
+                logger.warn("seal_date type:"+str(type(data['seal_date'])))
+            """
+            if data["seal_datetime"]:
+                #data["seal_datetime"] = data["seal_datetime"].strftime("%Y-%m-%dT%H:%M:%S")
+                data['seal_datetime'] = datetime.strptime(data['seal_datetime'], '%Y-%m-%d %H:%M:%S').isoformat()
+                logger.warn("seal_datetime type:"+str(type(data['seal_datetime'])))
+            """
+            if isinstance(data['arrival_date'], datetime) and data["arrival_date"]:
                 data["arrival_date"] = data["arrival_date"].strftime("%Y-%m-%dT%H:%M:%S")
             else:
                 logger.warn("arrival_date is not datetime format: "+str(data['arrival_date']))
-                data['arrival_date'] = None
-
+                ##data['arrival_date'] = None
+                data['arrival_date'] = datetime.now().replace(microsecond=0).isoformat()
+                ##data['arrival_date'] = datetime.now()
+                ##data['arrival_date'] = datetime.strptime(data['arrival_date'], '%Y-%m-%d %H:%M:%S').isoformat()
+                #data['arrival_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+                ###datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S').isoformat() if data["permit_date"]
+                #data['arrival_date'] = datetime.now()
+                logger.warn("arrival_date type:"+str(type(data['arrival_date'])))
+                ##logger.warn("arrival_date value: "+data['arrival_date'])
             if data["container_life_number"]:
-                data["container_life_number"] = data["container_life_number"].strftime("%Y-%m-%dT%H:%M:%S")
+                ##data["container_life_number"] = data["container_life_number"].strftime("%Y-%m-%dT%H:%M:%S")
+                #data['container_life_number'] = datetime.strptime(data['container_life_number'], '%Y-%m-%d %H:%M:%S').isoformat()
+                data['container_life_number'] = data['container_life_number'].isoformat()
+                logger.warn("container_life_number data type:"+str(type(data['container_life_number'])))
+            if data["hold_rels_flg"]:
+                #data['hold_rels_flg'] = data['hold_rels_flg'].isoformat()
+                data['hold_rels_flg'] = datetime.now().replace(microsecond=0).isoformat()
+                logger.warn("hold rels flag data type:"+str(type(data['hold_rels_flg'])))
                 
             container_stat = CtrStat.query.filter_by(ctr_stat=each["ctrStat"]).all()
             data["imp_exp_flg"] = container_stat[0].imp_exp_flg if container_stat else None
@@ -90,26 +116,26 @@ class PendancyService():
             logger.exception(str(e))
 
     @query_debugger()
-    def get_pendancy_list(pendency_types,gateway_ports,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+    def get_pendancy_list(pendency_types,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
         try:
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
                 pass
             elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
                 final_data = []
-                logger.info("pendency types = ",str(pendency_types), type(pendency_types))
-                for pendency_type in pendency_types:
-                    pendency_type = int(pendency_type)
+                for each in pendency_types:
+                    pendency_type = int(each['pendency_type'])
+                    gateway_ports = each['gateway_port']
                     if PendencyType.LOADED.value == pendency_type:
-                        logger.info("fetching LOADED pendancy containers")
+                        logger.info("fetching LOADED pendancy containers"+str(gateway_ports))
                         for port in gateway_ports:
                             request_params = {'GW_PORT_CODE': port,
                                             # 'P_STUFF_AT': 'FAC',
                                             'P_CUTOFF_DATE': ''}
                             data = soap_service.get_pendancy_details(request_params)
                             if data:
-                                final_data += data
+                                final_data +=PendancyService.format_data_from_ccls(data,PendencyType.LOADED.value,True)
                     elif PendencyType.EMPTY.value == pendency_type:
-                        logger.info("fetching EMPTY pendancy containers")
+                        logger.info("fetching EMPTY pendancy containers"+str(gateway_ports))
                         for port in gateway_ports:
                             request_params = {'GW_PORT_CODE': port}
                             data = soap_service.get_empty_pendancy_details(request_params)
@@ -123,42 +149,44 @@ class PendancyService():
                                     obj['sealNo'] = 'N/A'
                                     obj['odcFlg'] = 'N/A'
                                     obj['wt'] = 0
-                                final_data += data
+                                final_data += PendancyService.format_data_from_ccls(data,PendencyType.EMPTY.value,True)
 
                     elif PendencyType.BLOCK.value == pendency_type:
-                        logger.info("fetching BLOCK pendancy containers")
+                        logger.info("fetching BLOCK pendancy containers"+str(gateway_ports))
                         for port in gateway_ports:
                             request_params = {'GW_PORT_CODE': port}
                             data = soap_service.get_block_pendancy_details(request_params)
                             if data:
-                                final_data += data
+                                final_data += PendancyService.format_data_from_ccls(data,PendencyType.BLOCK.value,True)
 
-                    elif PendencyType.EXPRESS.value == pendency_type:
-                        logger.info("fetching EXPRESS pendancy containers")
+                    elif PendencyType.EXPRESS_LCL.value == pendency_type:
+                        logger.info("fetching EXPRESS pendancy containers"+str(gateway_ports))
                         for port in gateway_ports:
                             request_params = {'GW_PORT_CODE': port}
                             data = soap_service.get_express_pendancy_details(request_params)
                             if data:
-                                final_data += data
+                                final_data += PendancyService.format_data_from_ccls(data,PendencyType.EXPRESS_LCL.value,True)
 
-                    elif PendencyType.LCL.value == pendency_type:
-                        logger.info("fetching LCL pendancy containers")
-                        pass
-                        # logger.info("fetching LCL peendancy containers")
-                        # for port in gateway_ports:
-                        #     request_params = {'GW_PORT_CODE': port}
-                        #     data = soap_service.get_lcl_pendancy_details(request_params)
-                        #     if data:
-                        #         final_data += data
+                    # elif PendencyType.LCL.value == pendency_type:
+                    #     logger.info("fetching LCL pendancy containers"+str(gateway_ports))
+                    #     pass
+                    #     logger.info("fetching LCL peendancy containers")
+                    #     for port in gateway_ports:
+                    #         request_params = {'GW_PORT_CODE': port}
+                    #         data = soap_service.get_lcl_pendancy_details(request_params)
+                    #         if data:
+                    #             final_data += PendancyService.format_data_from_ccls(data,PendencyType.EXPRESS_LCL.value,True)
 
                 if final_data:
-                    data = PendancyService.format_data_from_ccls(final_data,True)
-                    logger.info("data fetched from CCLS service")
-                    return json.dumps(data)
-                
-            data = PendancyContainer.query.filter(PendancyContainer.gateway_port_code.in_(gateway_ports)).order_by(PendancyContainer.gateway_port_code).all()
+                    # data = PendancyService.format_data_from_ccls(final_data,True)
+                    #logger.info("data fetched from CCLS service: "+str(data))
+                    return json.dumps(final_data)
             logger.info("data fetched from local db")
-            return db_functions(data).as_json()
+            data = []
+            for each in pendency_types:
+                data += PendancyContainer.query.filter(PendancyContainer.gateway_port_code.in_(each['gateway_port']),PendancyContainer.pendency_type == int(each["pendency_type"])).all()
+            data = db_functions(data).as_json()
+            return data
         except Exception as e:
             logger.exception(str(e))
             if isRetry and count >= 0 :

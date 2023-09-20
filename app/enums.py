@@ -39,12 +39,12 @@ class SerialNumberType(enum.Enum):
 class PendencyType(enum.Enum):
     LOADED = 1
     EMPTY = 2
-    LCL = 3
+    EXPRESS_LCL = 3
     BLOCK = 4
-    EXPRESS = 5
 
 class EquipmentNames(enum.Enum):
     RMGTRCK = "RMG2"
+    RMGTRCK02 = "RMG2"
     RST03 = "RH03"
     RST04 = "RH04"
     RST05 = "RH05"
@@ -65,3 +65,9 @@ class EquipmentNames(enum.Enum):
     SANY01 = "R-S1"
     SANY02 = "R-S2"
     SANY03 = "R-S3"
+
+class RevenueType(enum.Enum):
+    EXPORT_FCL_REVENUE=1
+    EXPORT_LCL_REVENUE=2
+    IMPORT_FCL_REVENUE=3
+    IMPORT_LCL_REVENUE=4

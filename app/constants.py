@@ -5,6 +5,7 @@ CCLS_DATA_ENDPOINT ="/ccls_data"
 UPDATE_CONTAINER_DETAILS_ENDPOINT = "/updateContainerInfo"
 TRAIN_DETAILS_ENDPOINT = "/train_details"
 PENDANCY_CONTAINERS_ENDPOINT = "/pendency_containers"
+DOMESTIC_PENDENCY_CONTAINERS_ENDPOINT = "/domestic_pendency_containers"
 RAKE_PLAN_ENDPOINT = "/rake_plan"
 RAKE_UPLOAD_DATA_ENDPOINT = "/rake_data"
 CONTAINER_DETAILS_ENDPOINT = "/container_details"
@@ -19,12 +20,37 @@ ISO_6346_CODE_ENDPOINT = "/map_ccls_iso_code"
 TRACK_DETAILS = '/track_details'
 CGI_SURVEY_ENDPOINT = '/cgi_survey'
 CGO_SURVEY_ENDPOINT = '/cgo_survey'
+VGI_SURVEY_ENDPOINT = '/vgi_survey'
 RAKE_INWARD_CONTAINER_ENDPOINT = "/rake_inward_container"
 WAGON_ENDPOINT = '/wagon'
 GATEWAY_PORT_ENDPOINT = '/gateway_port'
 UPDATE_RAKE_CONTAINER_ENDPOINT = '/update_rake_container'
 CONTAINER_STAT_ENDPOINT = "/container_stat"
 TRACK_MASTER_DATA_ENDPOINT = '/track_mstr_data'
+
+#WSDL files
+#GATE
+
+EXIM_GATE_READ_WSDL =  "GateWithEmptyTrailer.wsdl"
+EXIM_GATE_WRITE_WSDL = "EXIMGateWrite_02092023.wsdl"
+# EXIM_GATE_READ_WSDL = "EXIMGateRead_01092023.wsdl"
+# EXIM_GATE_READ_WSDL ="EXIMGateRead_02092023.wsdl"
+DOM_GATE_READ_WSDL = "DOMGateRead_02092023.wsdl"
+DOM_GATE_WRITE_WSDL = "DOMGateWrite_02092023.wsdl"
+
+
+#RAKE
+EXIM_RAKE_INWARD_READ_WSDL = "EXIMRakeInwardRead_02092023.wsdl"
+EXIM_RAKE_INWARD_WRITE_WSDL = "EXIMRakeInwardWrite_02092023.wsdl"
+EXIM_RAKE_OUTARD_WRITE_WSDL = "EXIMRakeOutwardWrite_02092023.wsdl"
+
+#YARD
+EXIM_YARD_WRITE_WSDL = "EXIMYardWrite_02092023.wsdl"
+EXIM_LOADED_PENDANCY_WSDL = "EXIMRakeOutwardReadLoaded_02092023.wsdl"
+EXIM_BLOCK_PENDANCY_WSDL = "EXIMRakeOutwardReadBlock_02092023.wsdl"
+EXIM_EMPTY_PENDANCY_WSDL = "EXIMRakeOutwardReadEmpty_02092023.wsdl"
+EXIM_EXPRESS_PENDANCY_WSDL = "EXIMRakeOutwardReadExpress_02092023.wsdl"
+
 
 #time format in db:
 TIME_FORMAT ="%Y-%m-%d %H:%M:%S"
@@ -33,6 +59,7 @@ KEY_NUMBER = "number"
 KEY_CN_NUMBER= "container_number"
 KEY_CN_LIFE_NUMBER = "container_life_number"
 KEY_TRANS_DATE = "trans_date"
+KEY_TRANS_DELAY = "trans_delay"
 KEY_PERMIT_NUMBER ="permit_number"
 KEY_LANE_TYPE = "lane_type"
 KEY_CRN_NUMBER= "crn_number"
@@ -50,6 +77,10 @@ KEY_PENDENCY_TYPE = "pendency_type"
 
 # RAKE 
 KEY_RAKE_ID = "rake_id"
+RAKE_TX_TYPE = "trans_type" # EXIM/DOM
+EXIM_RAKE    = "EXIM"
+DOMESTIC_RAKE  = "DOM"
+HYBRID_RAKE = "HYBRID"
 KEY_TRAIN_NUMBER = 'train_number'
 KEY_TRACK_NUMBER = "track_number"
 KEY_RAKE_NUMBER = "rake_number"
@@ -168,6 +199,11 @@ KEY_SOAP_DT_WTR = "dtWtr"
 KEY_SOAP_FIRST_POD = "firPod"
 KEY_SOAP_ORIGIN_STATION = "orgStn"
 KEY_SOAP_DEST_STATION = "destStn"
+KEY_SOAP_TRAILER_NUMBER = "trlNo"
+KEY_SOAP_ICD_LOC_CODE = "icdLocCd"
+KEY_SOAP_STACK_LOC = "stkLoc"
+KEY_SOAP_SEAL_DATE = "dtSeal"
+KEY_SOAP_OPERATION_TIME = "tmOpn"
 
 
 #GATE SOAP KEYS:
@@ -226,6 +262,27 @@ KEY_SOAP_G_ATTRIBUTE7 = "attribute7"
 KEY_SOAP_G_ATTRIBUTE8 = "attribute8"
 KEY_SOAP_G_ATTRIBUTE9 = "attribute9"
 KEY_SOAP_G_ATTRIBUTE10 = "attribute10"
+# Domestic Gate
+KEY_SOAP_G_DTMS_GATEPASS_NUMER = 'davgpnumb'
+KEY_SOAP_G_DTMS_VEH_NUMBER = 'davvhclnumb'
+KEY_SOAP_G_DTMS_CTR_IN_OUT_FLAG = 'dacinoutfalg'
+KEY_SOAP_G_DTMS_IN_OUT_TIMEIN = 'dadinouttimeIn'
+KEY_SOAP_G_DTMS_IN_OUT_TIMEOUT = 'dadinouttimeOut'
+KEY_SOAP_G_DTMS_CARGO_CONTAINER_FLAG = 'daccrgocntrflag'
+KEY_SOAP_G_DTMS_CTR_NUMBER = 'daccntrnumb'
+KEY_SOAP_G_DTMS_CTR_SIZE = 'dancntrsize'
+KEY_SOAP_G_DTMS_HAZARD_STATUS = 'hazardiousStatus'
+KEY_SOAP_G_DTMS_CTR_TYPE = 'daccntrtype'
+KEY_SOAP_G_DTMS_DAMAGE_STATUS = 'damageStatus'
+KEY_SOAP_G_DTMS_CTR_LDD_EMPTY_FLAG = 'dacleflag'
+KEY_SOAP_G_DTMS_CARGO_LDD_EMPTY_FLAG_VEH = 'dacleflagVhcl'
+KEY_SOAP_G_DTMS_FACTORY_IN_TIME = 'dadfactintime'
+KEY_SOAP_G_DTMS_FACTORY_OUT_TIME = 'dadfactouttime'
+KEY_SOAP_G_DTMS_FACTORY_REACH_TIME = 'dadfactreachtime'
+KEY_SOAP_G_DTMS_USER_ID = 'davuserid'
+KEY_SOAP_G_DTMS_REASON_CODE = 'dacresncode'
+
+
 
 
 #RABBIT_MQ QUEUES
@@ -286,6 +343,7 @@ CONTAINER_TYPE      = "container_type"
 CONTAINER_HEIGHT    = "container_height"
 CONTAINER_STAT      = "container_stat"
 CONTAINER_LIFE_NO   = "container_life_no"
+CATEGORY            = "category"
 HAZARD_STATUS       = "hazard_status"
 DAMAGE_STATUS       = "damage_status"
 HEALTH              = "health"

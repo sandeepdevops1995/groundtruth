@@ -8,6 +8,7 @@ env = Env()
 
 BASE_DIR = os.path.dirname(__file__)
 SQL_DIR =(os.path.join(BASE_DIR,'app','sql'))
+WSDL_DIR = os.path.join(BASE_DIR,'soap_wsdls')
 WSDL_FILE = os.path.join(BASE_DIR,'GateWithEmptyTrailer.wsdl')
 
 # Server config
@@ -45,9 +46,12 @@ RAKE_DATA_DIRECTORY = 'rake_data'
 GROUND_TRUTH = GroundTruthType.SOAP.value
 # WSDL_URL = "http://172.16.30.114:8007"
 WSDL_URL = env('WSDL_URL')
+REVENUE_WSDL_URL = env('REVENUE_WSDL_URL')
+CCLS_WSDL_URL = env('CCLS_WSDL_URL')
 
 #mock service
 IS_MOCK_ENABLED=env.bool('IS_MOCK_ENABLED')
+IS_REVENUE_MOCK_ENABLED=env.bool('IS_REVENUE_MOCK_ENABLED')
 
 #logstash config
 LOGSTASH_IP = env('LOGSTASH_IP')
@@ -113,3 +117,10 @@ VALIDATE_AUTH_END_POINT='/apiKey/'
 TS_SERIAL_NUMBER='1000'
 IS_PREFIX_REQUIRED = env.bool('IS_PREFIX_REQUIRED')
 IS_TRIM_GRID_NO_REQUIRED=env.bool('IS_TRIM_GRID_NO_REQUIRED')
+
+# redis
+REDIS_HOST = env('REDIS_HOST')
+REDIS_PORT = env('REDIS_PORT')
+REDIS_DB = env('REDIS_DB')
+
+REDIS_SCHEDULE_TASK_TIME = 30 #in minutes

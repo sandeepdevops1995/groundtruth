@@ -1,0 +1,45 @@
+<wsdl:definitions name="ExpressBpel" targetNamespace="http://xmlns.oracle.com/CTMSAPI/CCLSRakeExpressPendency/ExpressBpel" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:client="http://xmlns.oracle.com/CTMSAPI/CCLSRakeExpressPendency/ExpressBpel" xmlns:ns1="http://www.concor.com/cil/PendencyRead/1.0/" xmlns:ns2="http://www.concor.com/cil/PendencyWrite/1.0/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+   <wsdl:documentation>
+      <abstractWSDL>http://10.1.100.101:8002/soa-infra/services/default/CCLSRakeExpressPendency!1.1/WSDLs/ExpressBpel.wsdl</abstractWSDL>
+   </wsdl:documentation>
+   <plnk:partnerLinkType name="ExpressBpel">
+      <plnk:role name="ExpressBpelProvider" portType="client:ExpressBpel"/>
+   </plnk:partnerLinkType>
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.concor.com/cil/PendencyRead/1.0/" schemaLocation="http://10.1.100.101:8002/soa-infra/services/default/CCLSRakeExpressPendency/expressbpel_client_ep?XSD=../Schemas/Input.xsd"/>
+      </schema>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.concor.com/cil/PendencyWrite/1.0/" schemaLocation="http://10.1.100.101:8002/soa-infra/services/default/CCLSRakeExpressPendency/expressbpel_client_ep?XSD=../Schemas/Output.xsd"/>
+      </schema>
+   </wsdl:types>
+   <wsdl:message name="ExpressBpelRequestMessage">
+      <wsdl:part name="payload" element="ns1:PendencyRead"/>
+   </wsdl:message>
+   <wsdl:message name="ExpressBpelResponseMessage">
+      <wsdl:part name="payload" element="ns2:PendencyWrite"/>
+   </wsdl:message>
+   <wsdl:portType name="ExpressBpel">
+      <wsdl:operation name="process">
+         <wsdl:input message="client:ExpressBpelRequestMessage"/>
+         <wsdl:output message="client:ExpressBpelResponseMessage"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="ExpressBpelBinding" type="client:ExpressBpel">
+      <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="process">
+         <soap:operation style="document" soapAction="process"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="expressbpel_client_ep">
+      <wsdl:port name="ExpressBpel_pt" binding="client:ExpressBpelBinding">
+         <soap:address location="http://10.1.100.101:8002/soa-infra/services/default/CCLSRakeExpressPendency/expressbpel_client_ep"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

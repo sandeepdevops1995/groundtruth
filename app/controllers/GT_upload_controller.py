@@ -1,6 +1,7 @@
 from app.controllers.utils import View
 from app.services.decorator_service import custom_exceptions, api_auth_required
 from app.services.rake.gt_upload_service import upload_ccls_rake_date, upload_pendancy_data
+from app.enums import PendencyType
 
 import xmltodict
 import json
@@ -68,33 +69,34 @@ class PendancySummary(View):
     @custom_exceptions
     # @api_auth_required
     def post(self):
+        # LOADED = 1    EMPTY = 2    EXPRESS_LCL = 3    BLOCK = 4
         data = get_xml_file_data_to_dict()
         if "RR_EXP_LDD_LST" in data:
-            container_list = self.process_pendancy_summary(data['RR_EXP_LDD_LST'])
+            container_list = self.process_pendancy_summary(data['RR_EXP_LDD_LST'],PendencyType.LOADED.value)
         elif "RR_EXP_LDD_BLK" in data:
-            container_list = self.process_pendancy_summary(data['RR_EXP_LDD_BLK'])
+            container_list = self.process_pendancy_summary(data['RR_EXP_LDD_BLK'],PendencyType.BLOCK.value)
         elif "RR_EXP_MT_LST_LIVE" in data:
-            container_list = self.process_pendancy_summary(data['RR_EXP_MT_LST_LIVE'])
+            container_list = self.process_pendancy_summary(data['RR_EXP_MT_LST_LIVE'],PendencyType.EMPTY.value)
         elif  "RR_EXP_LDD_LST_JNPTMIX" in data:
-            container_list = self.process_each_gateway_port(data["RR_EXP_LDD_LST_JNPTMIX"]["LIST_G_CTR_NO"]["G_CTR_NO"],None)
+            container_list = self.process_each_gateway_port(data["RR_EXP_LDD_LST_JNPTMIX"]["LIST_G_CTR_NO"]["G_CTR_NO"],None,PendencyType.LOADED.value)
         else:
             return Response(json.dumps({"message":"unknown file format"}),status=400,mimetype='application/json')
         if upload_pendancy_data(container_list):
             return Response(json.dumps({"message":"success"}),status=201,mimetype='application/json')
         
-    def process_pendancy_summary(self,data):
+    def process_pendancy_summary(self,data,pendency_type):
         final_container_list = []
         gateway_port_list = data['LIST_G_GW_PORT_CD']['G_GW_PORT_CD']
         if isinstance(gateway_port_list,dict):
             gateway_port_list = [gateway_port_list]
         for port in gateway_port_list:
             gateway_port_code =  port["GW_PORT_CD"] if "GW_PORT_CD" in port else None
-            data = self.process_each_gateway_port(port["LIST_G_CTR_NO"]["G_CTR_NO"],gateway_port_code)
+            data = self.process_each_gateway_port(port["LIST_G_CTR_NO"]["G_CTR_NO"],gateway_port_code,pendency_type)
             final_container_list+=data
         return final_container_list
     
     
-    def process_each_gateway_port(self,data,port_code):
+    def process_each_gateway_port(self,data,port_code,pendency_type):
         container_list = []
         if isinstance(data,dict):
             data = [data]
@@ -103,6 +105,7 @@ class PendancySummary(View):
             container["sline_code"] = "OOCL"
             container["container_weight"] = 10
             container["container_type"] = "GL"
+            container["pendency_type"] = pendency_type
             if port_code:
                 container["gateway_port_code"] = port_code
             if "CTR_NO" in pendancy_container:

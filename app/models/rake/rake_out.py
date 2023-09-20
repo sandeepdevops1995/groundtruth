@@ -3,6 +3,7 @@ from datetime import datetime
 
 class PendancyContainer(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
+    pendency_type = db.Column(db.Integer())
     container_number = db.Column(db.String(11))
     container_life_number = db.Column(db.DateTime())
     container_stat = db.Column(db.String(2))

@@ -87,8 +87,10 @@ class RakeDbService:
             data = CCLSRake.query.filter_by(rake_id=rake_id,container_number=container_number).all()
             if not data:
                 data = MissedInwardContainers.query.filter_by(rake_id=rake_id,container_number=container_number).all()
+                if data:
+                    return RakeInwardReadService.format_rake_data(data,"Domestic" if  data[0].trans_type == "DOM" else "Import")
             if data:
-                return RakeInwardReadService.format_rake_data(data,"Domestic" if  data[0].trans_type == "DOM" else "Import")
+                RakeInwardReadService.format_rake_data(data)
             # if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
             data = DomesticContainers.query.filter_by(rake_id=rake_id,container_number=container_number).all()
             if data:

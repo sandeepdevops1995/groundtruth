@@ -560,9 +560,13 @@ class CclsResponseData(View):
                 return Response(json.dumps({'message':"trans_type not given or invalid"}),status=400,mimetype='application/json')
         else:
             if str(trans_type).upper() == 'EXIM':
-                data = get_exim_train_details(train_number=train_no,from_date=start_data,to_date=end_data)
+                soap_data = get_exim_train_details(train_number=train_no,from_date=start_data,to_date=end_data)
+                soap_data = soap_data if soap_data else []
+                data = RakeInwardReadService.save_in_db(soap_data)
             elif str(trans_type).upper() == 'DOM':
-                data = get_domestic_train_details(train_number=train_no,from_date=start_data,to_date=end_data)
+                soap_data = get_domestic_train_details(train_number=train_no,from_date=start_data,to_date=end_data)
+                soap_data = soap_data if soap_data else []
+                data = DTMSRakeInwardReadService.save_in_db(soap_data)
             else:
                 return Response(json.dumps({'message':"trans_type not given or invalid"}),status=400,mimetype='application/json')
             if data:

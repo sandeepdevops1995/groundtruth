@@ -58,6 +58,8 @@ class PendancyService():
                 #data['seal_date'] = datetime.strptime(data['seal_date'], '%Y-%m-%d %H:%M:%S').isoformat()
                 data['seal_date'] = data['seal_date'].isoformat()
                 logger.warn("seal_date type:"+str(type(data['seal_date'])))
+            else:
+                data['seal_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
             """
             if data["seal_datetime"]:
                 #data["seal_datetime"] = data["seal_datetime"].strftime("%Y-%m-%dT%H:%M:%S")

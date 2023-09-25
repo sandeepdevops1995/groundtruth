@@ -66,6 +66,7 @@ def get_permit_details(permit_number):
         # }
         # failed_data=json.dumps(failed_data, default=str)
         # cache.rpush("ground_truth_queue",failed_data)
+        # logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = {}
     return result
 
@@ -91,6 +92,7 @@ def get_domestic_permit_details(permit_number):
         # }
         # failed_data=json.dumps(failed_data, default=str)
         # cache.rpush("ground_truth_queue",failed_data)
+        # logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = {}
     return result
 
@@ -118,6 +120,7 @@ def update_exim_container_details(update_data):
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
+        logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = {}
     return result
 
@@ -145,6 +148,7 @@ def update_domestic_container_details(update_data):
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
+        logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = {}
     return result
 
@@ -174,6 +178,7 @@ def get_exim_train_details(train_number='',from_date='', to_date = ''):
         # }
         # failed_data=json.dumps(failed_data, default=str)
         # cache.rpush("ground_truth_queue",failed_data)
+        # logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = []
         return result
     
@@ -203,6 +208,7 @@ def get_domestic_train_details(train_number='',from_date='', to_date = ''):
         # }
         # failed_data=json.dumps(failed_data, default=str)
         # cache.rpush("ground_truth_queue",failed_data)
+        # logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = []
         return result
     
@@ -230,6 +236,7 @@ def update_inward_rake(rake_data,api_url="Inward Write"):
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
+        logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = {}
         return result
     
@@ -256,6 +263,7 @@ def get_pendancy_details(gateway_port_data,api_url="/pendency_containers"):
         # }
         # failed_data=json.dumps(failed_data, default=str)
         # cache.rpush("ground_truth_queue",failed_data)
+        # logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = []
         return result
 
@@ -281,6 +289,7 @@ def get_empty_pendancy_details(gateway_port_data,api_url="/pendency_containers")
         # }
         # failed_data=json.dumps(failed_data, default=str)
         # cache.rpush("ground_truth_queue",failed_data)
+        # logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = []
         return result
 
@@ -306,6 +315,7 @@ def get_block_pendancy_details(gateway_port_data,api_url="/pendency_containers")
         # }
         # failed_data=json.dumps(failed_data, default=str)
         # cache.rpush("ground_truth_queue",failed_data)
+        # logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = []
         return result
 
@@ -331,6 +341,7 @@ def get_express_pendancy_details(gateway_port_data,api_url="/pendency_containers
         # }
         # failed_data=json.dumps(failed_data, default=str)
         # cache.rpush("ground_truth_queue",failed_data)
+        # logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = []
         return result
  
@@ -358,6 +369,7 @@ def get_domestic_outward_train_details(rake_data,api_url="/pendency_containers(D
         # }
         # failed_data=json.dumps(failed_data, default=str)
         # cache.rpush("ground_truth_queue",failed_data)
+        # logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         return result
 
 
@@ -384,6 +396,7 @@ def update_outward_rake(rake_data,api_url="EXIM Yard Outward Write"):
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
+        logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = {}
         return result          
 
@@ -411,6 +424,7 @@ def update_domestic_inward_rake(rake_data,api_url="DOM Yard Outward Write"):
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
+        logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         return result
 
 def update_container_stack_location(stack_data):
@@ -436,6 +450,7 @@ def update_container_stack_location(stack_data):
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
+        logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = {}
         return result 
 
@@ -463,4 +478,5 @@ def update_domestic_container_stack_location(stack_data):
         }
         failed_data=json.dumps(failed_data, default=str)
         cache.rpush("ground_truth_queue",failed_data)
+        logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         return result

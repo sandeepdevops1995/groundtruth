@@ -476,13 +476,13 @@ class GateDbService:
             post_data[Constants.KEY_SOAP_G_DT_VEH_ARR] = datetime.strptime(data["gate_in_time"], '%Y-%m-%d %H:%M:%S') if "gate_in_time" in data and data["gate_in_time"] else None
             post_data[Constants.KEY_SOAP_G_VEH_TYPE] = data["vehicle_type"].upper() if "vehicle_type" in data and data["vehicle_type"] else None
             post_data[Constants.KEY_SOAP_G_GT_DOC_NO] = data["permit_no"]
+            post_data[Constants.KEY_SOAP_G_XPMT_NO] = data["permit_no"]
             if str(data["permit_no"]).startswith('GPM') and "xpmt_no" in data:
                 post_data[Constants.KEY_SOAP_G_XPMT_NO] = data["xpmt_no"]
             post_data[Constants.KEY_SOAP_G_DT_GT_DOC] = datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S') if data["permit_date"] else None
             post_data[Constants.KEY_SOAP_G_DT_GT_DOC_VLD] =  datetime.strptime(data["permit_expiry_date"], '%Y-%m-%d %H:%M:%S')
             post_data[Constants.KEY_SOAP_G_USER_ID] = data["user_id"]
             post_data[Constants.KEY_SOAP_G_SLINE_CD] = data["sline_code"]
-            post_data[Constants.KEY_SOAP_G_XPMT_NO] = data["permit_no"]
             post_data[Constants.KEY_SOAP_G_DT_XPMT_NO] = datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S').isoformat() if data["permit_date"] else None
             post_data[Constants.KEY_SOAP_G_GATE_NO] = data["gate_no"] 
             post_data[Constants.KEY_SOAP_G_STK_LOC] = data["stk_loc"] 

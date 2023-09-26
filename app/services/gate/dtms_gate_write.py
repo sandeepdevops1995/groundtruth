@@ -64,8 +64,8 @@ class DTMSGateWriteService:
                 soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEIN] = datetime.strptime(data['gate_in_time'], '%Y-%m-%d %H:%M:%S').isoformat() if data['gate_in_time'] else None
             if "gate_out_time" in data:
                 soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEOUT] = datetime.strptime(data['gate_out_time'], '%Y-%m-%d %H:%M:%S').isoformat() if data['gate_out_time'] else None
-            soap_data[Constants.KEY_SOAP_G_DTMS_CARGO_CONTAINER_FLAG] = 'cargo'
-            soap_data[Constants.KEY_SOAP_G_DTMS_CARGO_LDD_EMPTY_FLAG_VEH] = "L" if data["is_empty_or_laden"]=="Laden" else "E"
+            soap_data[Constants.KEY_SOAP_G_DTMS_CARGO_CONTAINER_FLAG] = 'T'
+            # soap_data[Constants.KEY_SOAP_G_DTMS_CARGO_LDD_EMPTY_FLAG_VEH] = "L" if data["is_empty_or_laden"]=="Laden" else "E"
             DTMSGateWriteService.format_data_to_ccls_format(data,soap_data)
             return soap_data
         except Exception as e:

@@ -74,6 +74,7 @@ class DeStuffingCargoDetails(db.Model):
     destuffing_plan_date = db.Column(db.BigInteger(), nullable=True)
     handling_code = db.Column(db.String(20), nullable=True)
     hld_rls_flag = db.Column(db.String(1), nullable=True)
+    forwarder = db.Column(db.String(100), nullable=True)
     destuffing_job = db.relationship("MasterCargoDetails", back_populates="destuffing_details", lazy='joined')
 
     __tablename__ = 'ccls_destuffing_cargo_details'

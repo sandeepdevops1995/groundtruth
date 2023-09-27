@@ -28,7 +28,7 @@ class RevenueView(object):
             request_data = {"LV_CTR_NO":request.args.get('container_number'),"P_DATE":to_date}
             revenue_details = get_revenue_amount(request_data,request_type,constants.KEY_EXPORT_FCL_ESTIMATED_REVENUE_SERVICE_TYPE,constants.KEY_EXPORT_FCL_ESTIMATED_REVENUE_SERVICE_NAME,constants.KEY_EXPORT_FCL_ESTIMATED_REVENUE_PORT_NAME)
             if revenue_details:
-                amount = revenue_details[0]['CALC_WHF_EXP_FCL_CTMS']
+                amount = revenue_details['CALC_WHF_EXP_FCL_CTMS']
                 revenue_details={'amount':amount}
         elif request_type==RevenueType.EXPORT_LCL_REVENUE:
             to_date = request.args.get('to_date')
@@ -36,19 +36,19 @@ class RevenueView(object):
             request_data = {"LV_SBILL_NO":request.args.get('shipping_bill'),"P_DATE":to_date,'LD_SBILL_DT':None}
             revenue_details = get_revenue_amount(request_data,request_type,constants.KEY_EXPORT_LCL_ESTIMATED_REVENUE_SERVICE_TYPE,constants.KEY_EXPORT_LCL_ESTIMATED_REVENUE_SERVICE_NAME,constants.KEY_EXPORT_LCL_ESTIMATED_REVENUE_PORT_NAME)
             if revenue_details:
-                amount = revenue_details[0]['CALC_WHF_EXP_LCL_CTMS']
+                amount = revenue_details['CALC_WHF_EXP_LCL_CTMS']
                 revenue_details={'amount':amount}
         elif request_type==RevenueType.IMPORT_FCL_REVENUE:
             request_data = {"LV_CTR_NO":request.args.get('container_number'),"P_DATE":to_date}
             revenue_details = get_revenue_amount(request_data,request_type,constants.KEY_IMPORT_FCL_ESTIMATED_REVENUE_SERVICE_TYPE,constants.KEY_IMPORT_FCL_ESTIMATED_REVENUE_SERVICE_NAME,constants.KEY_IMPORT_FCL_ESTIMATED_REVENUE_PORT_NAME)
             if revenue_details:
-                amount = revenue_details[0]['CALC_WHF_CTMS_DATE']
+                amount = revenue_details['CALC_WHF_CTMS_DATE']
                 revenue_details={'amount':amount}
         else:
             request_data = {"LV_CTR_NO":request.args.get('container_number'),"P_DATE":to_date,"P_BOE_NO":request.args.get('bill_number')}
             revenue_details = get_revenue_amount(request_data,request_type,constants.KEY_IMPORT_LCL_ESTIMATED_REVENUE_SERVICE_TYPE,constants.KEY_IMPORT_LCL_ESTIMATED_REVENUE_SERVICE_NAME,constants.KEY_IMPORT_LCL_ESTIMATED_REVENUE_PORT_NAME)
             if revenue_details:
-                amount = revenue_details[0]['CALC_WHF_IMP_BLWISE_CTMS']
+                amount = revenue_details['CALC_WHF_IMP_BLWISE_CTMS']
                 revenue_details={'amount':amount}
         if revenue_details:
             return revenue_details

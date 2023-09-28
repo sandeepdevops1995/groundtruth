@@ -60,10 +60,12 @@ class DTMSGateWriteService:
             soap_data = {}
             soap_data[Constants.KEY_SOAP_G_DTMS_GATEPASS_NUMER] = data['permit_no']
             soap_data[Constants.KEY_SOAP_G_DTMS_VEH_NUMBER] = data['vehicle_no']
-            if "gate_in_time" in data:
-                soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEIN] = datetime.strptime(data['gate_in_time'], '%Y-%m-%d %H:%M:%S').isoformat() if data['gate_in_time'] else None
             if "gate_out_time" in data:
                 soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEOUT] = datetime.strptime(data['gate_out_time'], '%Y-%m-%d %H:%M:%S').isoformat() if data['gate_out_time'] else None
+                soap_data[Constants.KEY_SOAP_G_DTMS_CTR_IN_OUT_FLAG] = 'O'
+            elif "gate_in_time" in data:
+                soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEIN] = datetime.strptime(data['gate_in_time'], '%Y-%m-%d %H:%M:%S').isoformat() if data['gate_in_time'] else None
+                soap_data[Constants.KEY_SOAP_G_DTMS_CTR_IN_OUT_FLAG] = 'I'
             soap_data[Constants.KEY_SOAP_G_DTMS_CARGO_CONTAINER_FLAG] = 'T'
             # soap_data[Constants.KEY_SOAP_G_DTMS_CARGO_LDD_EMPTY_FLAG_VEH] = "L" if data["is_empty_or_laden"]=="Laden" else "E"
             DTMSGateWriteService.format_data_to_ccls_format(data,soap_data)
@@ -82,14 +84,14 @@ class DTMSGateWriteService:
             soap_data[Constants.KEY_SOAP_G_DTMS_CTR_SIZE] = data['container_size']
             # soap_data[Constants.KEY_SOAP_G_DTMS_HAZARD_STATUS] = data['hazard_status']
             soap_data[Constants.KEY_SOAP_G_DTMS_HAZARD_STATUS] = "N"
-            soap_data[Constants.KEY_SOAP_G_DTMS_CTR_TYPE] = data['container_type']
+            soap_data[Constants.KEY_SOAP_G_DTMS_CTR_TYPE] = str(data['container_size']) + data['container_type']
             soap_data[Constants.KEY_SOAP_G_DTMS_DAMAGE_STATUS] = "Y" if "damage_status" in data  and data["damage_status"] else "N"        
-            if "gate_in_time" in data:
-                soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEIN] = datetime.strptime(data['gate_in_time'], '%Y-%m-%d %H:%M:%S').isoformat() if data['gate_in_time'] else None
-                soap_data[Constants.KEY_SOAP_G_DTMS_CTR_IN_OUT_FLAG] = 'I' 
             if "gate_out_time" in data:
                 soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEOUT] = datetime.strptime(data['gate_out_time'], '%Y-%m-%d %H:%M:%S').isoformat() if data['gate_out_time'] else None
                 soap_data[Constants.KEY_SOAP_G_DTMS_CTR_IN_OUT_FLAG] = 'O'
+            elif "gate_in_time" in data:
+                soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEIN] = datetime.strptime(data['gate_in_time'], '%Y-%m-%d %H:%M:%S').isoformat() if data['gate_in_time'] else None
+                soap_data[Constants.KEY_SOAP_G_DTMS_CTR_IN_OUT_FLAG] = 'I' 
             soap_data[Constants.KEY_SOAP_G_DTMS_CARGO_CONTAINER_FLAG] = 'C'
             soap_data[Constants.KEY_SOAP_G_DTMS_CTR_LDD_EMPTY_FLAG] = "L" if data["is_empty_or_laden"]=="Laden" else "E"
             DTMSGateWriteService.format_data_to_ccls_format(data,soap_data)

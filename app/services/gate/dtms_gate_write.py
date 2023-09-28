@@ -84,7 +84,8 @@ class DTMSGateWriteService:
             soap_data[Constants.KEY_SOAP_G_DTMS_CTR_SIZE] = data['container_size']
             # soap_data[Constants.KEY_SOAP_G_DTMS_HAZARD_STATUS] = data['hazard_status']
             soap_data[Constants.KEY_SOAP_G_DTMS_HAZARD_STATUS] = "N"
-            soap_data[Constants.KEY_SOAP_G_DTMS_CTR_TYPE] = str(data['container_size']) + data['container_type']
+            ctr_type = str(data['container_size']) + data['container_type']
+            soap_data[Constants.KEY_SOAP_G_DTMS_CTR_TYPE] = ctr_type if len(ctr_type) <= 4 else data['container_type']
             soap_data[Constants.KEY_SOAP_G_DTMS_DAMAGE_STATUS] = "Y" if "damage_status" in data  and data["damage_status"] else "N"        
             if "gate_out_time" in data:
                 soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEOUT] = datetime.strptime(data['gate_out_time'], '%Y-%m-%d %H:%M:%S').isoformat() if data['gate_out_time'] else None

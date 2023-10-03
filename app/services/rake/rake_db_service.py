@@ -155,7 +155,7 @@ class RakeDbService:
                         each.pop("container_life_number")
                     if "wagon_life_number" in each:
                         each.pop("wagon_life_number")
-                    result = DomesticContainers.query.filter_by(train_number = each['train_number'],wagon_number= each['wagon_number'],container_number= each['container_number'] ).all()
+                    result = DomesticContainers.query.filter_by(train_number = each['train_number'],wagon_number= str(each['wagon_number']),container_number= each['container_number'] ).all()
                     if not result:
                         wagon = DomesticContainers(**each)
                         db.session.add(wagon)

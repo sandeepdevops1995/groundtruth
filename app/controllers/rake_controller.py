@@ -90,6 +90,8 @@ class TrainDetails(View):
                         result[Constants.CONTAINER_LIST] += dom_containers[Constants.CONTAINER_LIST]
                     else:
                         result[Constants.CONTAINER_LIST] = dom_containers[Constants.CONTAINER_LIST]
+            elif result:
+                result = result
             else:
                 result = dom_containers
         return json.dumps(result)

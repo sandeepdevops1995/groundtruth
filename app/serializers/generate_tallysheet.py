@@ -9,6 +9,7 @@ from app.logger import logger
 import app.logging_message as LM
 import config
 from app.models.warehouse.ccls_cargo_details import MasterCargoDetails
+from app.enums import JobOrderType
 
 class CTMSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
 
@@ -41,6 +42,8 @@ class CTMSCargoJobInsertSchema(ma.SQLAlchemyAutoSchema):
     @pre_load()
     def change_data(self, data, **kwargs):
         job_type = self.context.get('job_type')
+        if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value]:
+            data['container_number'] = None
         db_obj = db.session.query(CTMSCargoJob).join(MasterCargoDetails).filter(MasterCargoDetails.job_type==job_type).order_by(CTMSCargoJob.id.desc()).first()
         if db_obj:
                 serial_number = int(db_obj.serial_number) if db_obj.serial_number else int(config.TS_SERIAL_NUMBER)

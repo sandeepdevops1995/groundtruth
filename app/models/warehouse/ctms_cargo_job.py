@@ -29,8 +29,8 @@ class CTMSCargoJob(db.Model):
     ctms_job_order = db.relationship("MasterCargoDetails", back_populates='ccls_cargo_master', lazy='joined')
     cargo_details = db.relationship('CTMSBillDetails', back_populates='ctms_job_order_bill_details', lazy='joined')
     status = db.Column(db.Integer(), default=JobStatus.TALLYSHEET_GENERATED.value)
-    created_at = db.Column(db.DateTime(), default=datetime.utcnow())
-    updated_at = db.Column(db.DateTime(), default=datetime.utcnow())
+    created_at = db.Column(db.DateTime(), default=datetime.now())
+    updated_at = db.Column(db.DateTime(), default=datetime.now())
     created_by = db.Column(db.String(100), nullable=True)
     updated_by = db.Column(db.String(100), nullable=True)
 
@@ -60,6 +60,6 @@ class CTMSBillDetails(db.Model):
     ctms_job_order_bill_details = db.relationship("CTMSCargoJob", back_populates="cargo_details", lazy='joined')
     ccls_bill_id = db.Column(db.Integer, db.ForeignKey('ccls_cargo_bill_details.id'))
     ccls_bill = db.relationship('CCLSCargoBillDetails', back_populates='ctms_cargo_details', lazy='joined')
-    created_at = db.Column(db.DateTime(), default=datetime.utcnow())
+    created_at = db.Column(db.DateTime(), default=datetime.now())
     
     __tablename__ = 'ctms_cargo_job_bill_details'

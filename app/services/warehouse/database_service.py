@@ -18,6 +18,13 @@ class WarehouseDB(object):
         logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_VIEW_TALLYSHEET,LM.KEY_FETCH_TALLYSHEET_DATA_FROM_DATABASE,'JT_'+str(job_type),request_parameter,result))
         return result
     
+    def upload_tallysheet_details(self,query_object,request_parameter,job_type):
+        result = {}
+        if query_object:
+            result = ViewTallySheetOrderSchema().dump(query_object,many=True)
+        logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_VIEW_TALLYSHEET,LM.KEY_FETCH_TALLYSHEET_DATA_FROM_DATABASE,'JT_'+str(job_type),request_parameter,result))
+        return result
+    
     def print_tallysheet_details(self,query_object,request_parameter,job_type):
         result = []
         if query_object:

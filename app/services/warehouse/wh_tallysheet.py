@@ -2,13 +2,14 @@ from app.services.warehouse.database_service import WarehouseDB
 from app.enums import JobOrderType, JobStatus
 from app import postgres_db as db
 from app.models.warehouse.ctms_cargo_job import CTMSCargoJob
-from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingCargoDetails, StuffingCargoDetails, DeStuffingCargoDetails, DeliveryCargoDetails
+from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingCargoDetails, StuffingCargoDetails, DeStuffingCargoDetails, DeliveryCargoDetails, CCLSCargoBillDetails
 from app.serializers.generate_tallysheet import CTMSCargoJobInsertSchema
 from app.serializers.update_tallysheet import CTMSCargoJobUpdateSchema
 from app.user_defined_exception import DataNotFoundException
 from datetime import datetime
 from app.logger import logger
 import app.logging_message as LM
+import json
 
 class WarehouseTallySheetView(object):
 
@@ -17,34 +18,69 @@ class WarehouseTallySheetView(object):
         job_order = request.args.get('request_parameter')
         truck_number = request.args.get('truck_number')
         crn_number = request.args.get('crn_number')
+        date_key_name = self.get_date_key_name(job_type)
+        filter_date = request.args.get(date_key_name)
+        bills = json.loads(request.args.get('bills'))
         if job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value]:
-            query_object = self.get_ctms_job_obj(job_type,crn_number,truck_number,job_order)
+            query_object = self.get_ctms_job_obj(job_type,crn_number,truck_number,job_order,bills,filter_date)
         else:
-            query_object = self.get_ctms_job_obj(job_type,job_order,truck_number,None)
+            query_object = self.get_ctms_job_obj(job_type,job_order,truck_number,None,bills,filter_date)
+        query_object = self.filter_with_bill_details(query_object,bills,job_type)
         result = WarehouseDB().get_tallysheet_details(query_object.first(),job_order,job_type)
         return result
     
-    def get_ctms_job_obj(self,job_type,job_order,truck_number,container_number):
-        query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==job_type)).filter(CTMSCargoJob.status==JobStatus.TALLYSHEET_GENERATED.value)
+    def get_date_key_name(self,job_type):
+        if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.STUFFING_FCL.value,JobOrderType.DIRECT_STUFFING.value]:
+            date_key_name = 'crn_date'
+        elif job_type in [JobOrderType.CARTING_LCL.value,JobOrderType.STUFFING_LCL.value]:
+            date_key_name = 'con_date'
+        elif job_type in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
+            date_key_name = 'gpm_created_date'
+        else:
+            date_key_name = 'None'
+        return date_key_name
+    
+    def get_ctms_job_obj(self,job_type,job_order,truck_number,container_number,bills,filter_date):
+        query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==job_type))
+        # .filter(CTMSCargoJob.status==JobStatus.TALLYSHEET_GENERATED.value)
         if job_type==JobOrderType.CARTING_FCL.value:
             query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.carting_details.has(CartingCargoDetails.crn_number==job_order)))
+            if filter_date:
+                query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.carting_details.has(CartingCargoDetails.crn_date==filter_date)))
             if truck_number:
                 query_object = query_object.filter(CTMSCargoJob.truck_number==truck_number)
         elif job_type==JobOrderType.CARTING_LCL.value:
             query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.carting_details.has(CartingCargoDetails.carting_order_number==job_order)))
+            if filter_date:
+                query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.carting_details.has(CartingCargoDetails.con_date==filter_date)))
             if truck_number:
                 query_object = query_object.filter(CTMSCargoJob.truck_number==truck_number)
         elif job_type==JobOrderType.STUFFING_FCL.value or job_type==JobOrderType.STUFFING_LCL.value or job_type==JobOrderType.DIRECT_STUFFING.value:
             query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.crn_number==job_order)))
+            if filter_date:
+                query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.crn_date==filter_date)))
             if container_number:
                 query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.container_number==container_number)))
         elif job_type==JobOrderType.DE_STUFFING_FCL.value or job_type==JobOrderType.DE_STUFFING_LCL.value:
             query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.destuffing_details.has(DeStuffingCargoDetails.container_number==job_order)))
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
             query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.delivery_details.has(DeliveryCargoDetails.gpm_number==job_order)))
+            if filter_date:
+                print("filter_date----------",filter_date)
+                query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.delivery_details.has(DeliveryCargoDetails.gpm_created_date==filter_date)))
             if truck_number:
                 query_object = query_object.filter(CTMSCargoJob.truck_number==truck_number)
         query_object = query_object.order_by(CTMSCargoJob.updated_at.desc())
+        return query_object
+    
+    def filter_with_bill_details(self,query_object,bills,job_type):
+        for each_bill in bills:
+            if job_type in [JobOrderType.CARTING_FCL.value, JobOrderType.CARTING_LCL.value, JobOrderType.STUFFING_FCL.value, JobOrderType.STUFFING_LCL.value, JobOrderType.DIRECT_STUFFING.value]:
+                query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.shipping_bill_number==each_bill['bill_number']))).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bill_date==each_bill['bill_date'])))
+            elif job_type in [JobOrderType.DE_STUFFING_FCL.value, JobOrderType.DELIVERY_FCL.value, JobOrderType.DELIVERY_LCL.value, JobOrderType.DIRECT_DELIVERY.value]:
+                query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bill_of_entry==each_bill['bill_number']))).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bill_date==each_bill['bill_date'])))
+            else:
+                query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bill_of_lading==each_bill['bill_number']))).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bol_date==each_bill['bill_date'])))
         return query_object
     
     def generate_tally_sheet_info(self,tally_sheet_data):
@@ -96,9 +132,12 @@ class WarehouseTallySheetView(object):
         return start_time
 
     def update_tally_sheet_info(self,tally_sheet_data):
+        job_type = tally_sheet_data['job_type']
+        if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value,JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
+            tally_sheet_data['truck_number'] = tally_sheet_data['cargo_details'][0]['truck_number'] if tally_sheet_data['cargo_details'] else None
         query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.id==tally_sheet_data.get('id')).first()
         if query_object:
-            tally_sheet_data['updated_at'] = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")
+            tally_sheet_data['updated_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
             master_job_request = CTMSCargoJobUpdateSchema().load(tally_sheet_data, instance=query_object, session=db.session)
             db.session.add(master_job_request)
             db.session.commit()
@@ -110,10 +149,13 @@ class WarehouseTallySheetView(object):
         job_order = request.args.get('request_parameter')
         truck_number = request.args.get('truck_number')
         crn_number = request.args.get('crn_number')
+        bills = json.loads(request.args.get('bills'))
+        date_key_name = self.get_date_key_name(job_type)
+        filter_date = request.args.get(date_key_name)
         if job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value]:
-            query_object = self.get_ctms_job_obj(job_type,crn_number,None,None)
+            query_object = self.get_ctms_job_obj(job_type,crn_number,None,None,bills,filter_date)
         else:
-            query_object = self.get_ctms_job_obj(job_type,job_order,None,None)
+            query_object = self.get_ctms_job_obj(job_type,job_order,None,None,bills,filter_date)
         tallysheet_data = {}
         cargo_details = []
         if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value,JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value,JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value]:

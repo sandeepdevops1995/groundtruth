@@ -50,6 +50,7 @@ class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
     cargo_carting_number = fields.Method("get_con_number")
     crn_number = fields.Method("get_crn_number")
     gpm_number = fields.Method("get_gpm_number")
+    gpm_created_date = fields.Method("get_gpm_created_date")
     fcl_or_lcl = fields.Integer(data_key='container_flag')
     container_number = fields.Method("get_container_number")
     container_size = fields.Method("get_container_size")
@@ -67,6 +68,13 @@ class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
         return obj.carting_details.carting_order_number if obj.carting_details else None
     
     def get_container_number(self,obj):
+        if obj.carting_details:
+            container_number = []
+            container_details = obj.carting_details.container_details
+            if container_details:
+                for each_container in container_details:
+                    container_number.append(each_container['container_number'])
+            return container_number
         return obj.container_info.container_number  if obj.container_info else None
     
     def get_container_size(self,obj):
@@ -77,6 +85,9 @@ class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
     
     def get_gpm_number(self, obj):
         return obj.delivery_details.gpm_number if obj.delivery_details else None
+    
+    def get_gpm_created_date(self, obj):
+        return obj.delivery_details.gpm_created_date if obj.delivery_details else None
     
     def get_is_cargo_card_generated(self,obj):
         return obj.carting_details.is_cargo_card_generated if obj.carting_details else None
@@ -91,15 +102,15 @@ class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
         return obj.destuffing_details.destuffing_job_order if obj.destuffing_details else None
     
     def get_crn_date(self,obj):
-        return obj.carting_details.crn_date if obj.carting_details else None
+        return obj.carting_details.crn_date if obj.carting_details else obj.stuffing_details.crn_date if obj.stuffing_details else None
     
     def get_con_date(self,obj):
-        return obj.carting_details.con_date if obj.carting_details else None
+        return obj.carting_details.con_date if obj.carting_details else obj.stuffing_details.crn_date if obj.stuffing_details else None
     
     def get_gpm_valid_date(self,obj):
         return obj.delivery_details.gpm_valid_date if obj.delivery_details else None
 
     class Meta:
         model = MasterCargoDetails
-        fields = ("cargo_carting_number", "container_flag", "container_number","container_size","crn_number","gpm_number","truck_details","bill_details","is_cargo_card_generated","sline_code","stuffing_job_order","destuffing_job_order","crn_date","con_date","gpm_valid_date","seal_number")
+        fields = ("cargo_carting_number", "container_flag", "container_number","container_size","crn_number","gpm_number","gpm_created_date","truck_details","bill_details","is_cargo_card_generated","sline_code","stuffing_job_order","destuffing_job_order","crn_date","con_date","gpm_valid_date","seal_number")
         include_relationships = True

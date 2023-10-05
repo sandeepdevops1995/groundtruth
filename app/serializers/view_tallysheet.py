@@ -158,6 +158,13 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
         return obj.ctms_job_order.fcl_or_lcl
     
     def get_container_number(self,obj):
+        if obj.ctms_job_order.carting_details:
+            container_number = []
+            container_details = obj.ctms_job_order.carting_details.container_details
+            if container_details:
+                for each_container in container_details:
+                    container_number.append(each_container['container_number'])
+            return container_number
         return obj.ctms_job_order.container_info.container_number  if obj.ctms_job_order.container_info else None
     
     def get_shipping_liner_code(self,obj):

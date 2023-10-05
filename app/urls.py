@@ -29,7 +29,10 @@ def register_controllers():
     api.add_resource(UpdateCGOSurvey,Constants.CGO_SURVEY_ENDPOINT)
     api.add_resource(UpdateVGISurvey,Constants.VGI_SURVEY_ENDPOINT)
     api.add_resource(RakeInContainer,Constants.RAKE_INWARD_CONTAINER_ENDPOINT)
-    
+    api.add_resource(CclsResponseData,'/ccls_response_data')
+    # api.add_resource(GtRangeData,'/gt_range_data')
+    # api.add_resource(GtTrainData,'/gt_train_data')
+
     
     # To upload Ground Truth
     api.add_resource(TrainSummary,'/upload_train_summary')      # input: CCLS XML file

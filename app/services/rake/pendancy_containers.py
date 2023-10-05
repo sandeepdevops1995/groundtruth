@@ -9,6 +9,7 @@ from app.logger import logger
 from app.services.rake.gt_upload_service import commit
 from sqlalchemy import cast, DATE
 from datetime import datetime,timedelta
+from dateutil import tz
 from app.models.utils import db_format,db_functions
 import config
 import json
@@ -51,15 +52,15 @@ class PendancyService():
                 
             if data["container_weight"]:
                 data["container_weight"] = float(data["container_weight"])
-            if data["seal_date"]:
-                data["seal_date"] = each["dtSeal"]
+            # if data["seal_date"]:
+            #     data["seal_date"] = each["dtSeal"]
             if data["seal_date"]:
                 #data["seal_date"] = data["seal_date"].strftime("%Y-%m-%dT%H:%M:%S")
                 #data['seal_date'] = datetime.strptime(data['seal_date'], '%Y-%m-%d %H:%M:%S').isoformat()
                 data['seal_date'] = data['seal_date'].isoformat()
                 logger.warn("seal_date type:"+str(type(data['seal_date'])))
             else:
-                data['seal_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+                data['seal_date'] = datetime.now(tz.tzlocal()).replace(microsecond=0).isoformat()
             """
             if data["seal_datetime"]:
                 #data["seal_datetime"] = data["seal_datetime"].strftime("%Y-%m-%dT%H:%M:%S")

@@ -89,7 +89,7 @@ class TrainDetails(View):
                         result[Constants.CONTAINER_LIST] += dom_containers[Constants.CONTAINER_LIST]
                     else:
                         result[Constants.CONTAINER_LIST] = dom_containers[Constants.CONTAINER_LIST]
-            else:
+            elif dom_containers:
                 result = dom_containers
         return json.dumps(result)
 
@@ -153,6 +153,7 @@ class PendancyList(View):
             logger.info("GT, pendacy list for pendency types: "+pendency_types)
             response = PendancyService.get_pendancy_list(json.loads(pendency_types))
             # response = self.format_data(response,gateway_ports)
+            response = response if response else json.dumps([])
             return Response(response, status=200, mimetype='application/json')
         else:
             return Response(json.dumps({"message":"please provide pendancy types"}), status=400, mimetype='application/json')

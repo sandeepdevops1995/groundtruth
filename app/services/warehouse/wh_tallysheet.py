@@ -179,6 +179,7 @@ class WarehouseTallySheetView(object):
                         cargo_details+=each_item.pop('cargo_details')
 
         else:
+            query_object = self.filter_with_bill_details(query_object,bills,job_type)
             result = WarehouseDB().print_tallysheet_details(query_object.first(),job_order,job_type)
             tallysheet_data = result
             cargo_details=result.pop('cargo_details')

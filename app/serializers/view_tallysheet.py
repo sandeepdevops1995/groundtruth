@@ -162,8 +162,11 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
             container_number = []
             container_details = obj.ctms_job_order.carting_details.container_details
             if container_details:
-                for each_container in container_details:
-                    container_number.append(each_container['container_number'])
+                if isinstance(container_details,list):
+                    for each_container in container_details:
+                        container_number.append(each_container['container_number'])
+                else:
+                    container_number.append(container_details['container_number'])
             return container_number
         return obj.ctms_job_order.container_info.container_number  if obj.ctms_job_order.container_info else None
     

@@ -78,7 +78,8 @@ class TrainDetails(View):
             result = json.loads(exim_containers)
         if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
             dom_containers = DTMSRakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
-            dom_containers = json.loads(dom_containers)
+            if dom_containers:
+                dom_containers = json.loads(dom_containers)
             if result and dom_containers:
                 if Constants.WAGON_LIST in dom_containers:
                     if Constants.WAGON_LIST in result:

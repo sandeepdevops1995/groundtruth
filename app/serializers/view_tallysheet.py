@@ -184,6 +184,16 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
         return obj.ctms_job_order.container_info.container_type  if obj.ctms_job_order.container_info else None
     
     def get_container_size(self,obj):
+        if obj.ctms_job_order.carting_details:
+            container_size = []
+            container_details = obj.ctms_job_order.carting_details.container_details
+            if container_details:
+                if isinstance(container_details,list):
+                    for each_container in container_details:
+                        container_size.append(each_container['container_size'])
+                else:
+                    container_size.append(container_details['container_size'])
+            return container_size
         return obj.ctms_job_order.container_info.container_size  if obj.ctms_job_order.container_info else None
     
     def get_container_iso_code(self,obj):

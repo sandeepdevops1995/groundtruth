@@ -23,17 +23,10 @@ class WarehouseUploadTallySheetView(object):
         bills = request_data.get('bills')
         date_key_name = WarehouseTallySheetView().get_date_key_name(job_type)
         filter_date = request_data.get(date_key_name)
-        is_upload_tallysheet_for_all = request_data.get('is_upload_tallysheet_for_all')
-        if is_upload_tallysheet_for_all:
-            if job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value]:
-               query_object = WarehouseTallySheetView().get_ctms_job_obj(job_type,crn_number,truck_number,None,bills,filter_date)
-            else:
-               query_object = WarehouseTallySheetView().get_ctms_job_obj(job_type,request_parameter,None,None,bills,filter_date)
+        if job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value]:
+            query_object = WarehouseTallySheetView().get_ctms_job_obj(job_type,crn_number,None,None,bills,filter_date)
         else:
-            if job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value]:
-               query_object = WarehouseTallySheetView().get_ctms_job_obj(job_type,crn_number,truck_number,request_parameter,bills,filter_date)
-            else:
-               query_object = WarehouseTallySheetView().get_ctms_job_obj(job_type,request_parameter,truck_number,None,bills,filter_date)
+            query_object = WarehouseTallySheetView().get_ctms_job_obj(job_type,request_parameter,None,None,bills,filter_date)
         if job_type in [JobOrderType.DE_STUFFING_FCL.value,JobOrderType.DE_STUFFING_LCL.value]:
            query_object = WarehouseTallySheetView().filter_with_bill_details(query_object,bills,job_type)
         status = self.is_tallysheet_already_uploaded(query_object)

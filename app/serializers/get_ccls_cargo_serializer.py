@@ -81,6 +81,16 @@ class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
         return obj.container_info.container_number  if obj.container_info else None
     
     def get_container_size(self,obj):
+        if obj.carting_details:
+            container_size = []
+            container_details = obj.carting_details.container_details
+            if container_details:
+                if isinstance(container_details,list):
+                    for each_container in container_details:
+                        container_size.append(each_container['container_size'])
+                else:
+                    container_size.append(container_details['container_size'])
+            return container_size
         return obj.container_info.container_size  if obj.container_info else None
     
     def get_crn_number(self, obj):

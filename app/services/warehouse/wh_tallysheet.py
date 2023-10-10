@@ -10,6 +10,7 @@ from datetime import datetime
 from app.logger import logger
 import app.logging_message as LM
 import json
+import pandas as pd
 
 class WarehouseTallySheetView(object):
 
@@ -76,11 +77,14 @@ class WarehouseTallySheetView(object):
     def filter_with_bill_details(self,query_object,bills,job_type):
         for each_bill in bills:
             if job_type in [JobOrderType.CARTING_FCL.value, JobOrderType.CARTING_LCL.value, JobOrderType.STUFFING_FCL.value, JobOrderType.STUFFING_LCL.value, JobOrderType.DIRECT_STUFFING.value]:
-                query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.shipping_bill_number==each_bill['bill_number']))).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bill_date==each_bill['bill_date'])))
+                query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.shipping_bill_number==each_bill['bill_number'])))
+                # .filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bill_date==each_bill['bill_date'])))
             elif job_type in [JobOrderType.DE_STUFFING_FCL.value, JobOrderType.DELIVERY_FCL.value, JobOrderType.DELIVERY_LCL.value, JobOrderType.DIRECT_DELIVERY.value]:
-                query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bill_of_entry==each_bill['bill_number']))).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bill_date==each_bill['bill_date'])))
+                query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bill_of_entry==each_bill['bill_number'])))
+                # .filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bill_date==each_bill['bill_date'])))
             else:
-                query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bill_of_lading==each_bill['bill_number']))).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bol_date==each_bill['bill_date'])))
+                query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bill_of_lading==each_bill['bill_number'])))
+                # .filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bol_date==each_bill['bill_date'])))
         return query_object
     
     def generate_tally_sheet_info(self,tally_sheet_data):
@@ -101,14 +105,18 @@ class WarehouseTallySheetView(object):
         query_object = query_object.order_by(MasterCargoDetails.updated_at.desc()).first()
         if query_object:
             job_order_id = query_object.id
-            is_exists = self.check_tallysheet_exist_or_not(tally_sheet_data,job_order_id,job_type)
+            is_exists,ctms_query_object = self.check_tallysheet_exist_or_not(tally_sheet_data,job_order_id,job_type)
             if not is_exists:
                 master_job_request = CTMSCargoJobInsertSchema(context={'job_order_id': job_order_id,"job_type":job_type}).load(tally_sheet_data, session=db.session)
                 db.session.add(master_job_request)
                 db.session.commit()
                 logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GENERATE_TALLYSHEET,LM.KEY_GENERATE_TALLYSHEET_DATA_CREATED_SUCCESSFULLY,tally_sheet_data))
             else:
+                tally_sheet_data['id'] = ctms_query_object.id
+                master_job_request = CTMSCargoJobUpdateSchema().load(tally_sheet_data, instance=ctms_query_object, session=db.session)
                 logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GENERATE_TALLYSHEET,LM.KEY_GENERATE_TALLYSHEET_DATA_ALREADY_EXISTS,tally_sheet_data))
+            db.session.add(master_job_request)
+            db.session.commit()
         else:
             raise DataNotFoundException("GTService: ccls data doesn't exists in database")
         
@@ -118,9 +126,10 @@ class WarehouseTallySheetView(object):
             query_object = qs.filter(CTMSCargoJob.truck_number==tally_sheet_data.get('truck_number'))
         elif job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value,JobOrderType.DE_STUFFING_FCL.value,JobOrderType.DE_STUFFING_LCL.value]:
             query_object = qs.filter(CTMSCargoJob.container_number==tally_sheet_data.get('container_number'))
-        if query_object.first():
-            return True
-        return False
+        query_object = query_object.order_by(CTMSCargoJob.updated_at.desc()).first()
+        if query_object:
+            return True,query_object
+        return False,None
         
         
     def get_destuffing_date_for_delivery(self,container_number):
@@ -177,15 +186,16 @@ class WarehouseTallySheetView(object):
                     if each_item['crn_number'] == crn_number:
                         tallysheet_data = each_item
                         cargo_details+=each_item.pop('cargo_details')
-
+            tallysheet_data['cargo_details'] = cargo_details
+            self.merge_bills_data(tallysheet_data,job_type)
         else:
             query_object = self.filter_with_bill_details(query_object,bills,job_type)
             result = WarehouseDB().print_tallysheet_details(query_object.first(),job_order,job_type)
             tallysheet_data = result
             cargo_details=result.pop('cargo_details')
-                    
-        tallysheet_data['cargo_details'] = cargo_details
+            tallysheet_data['cargo_details'] = cargo_details
         self.update_start_and_end_time(tallysheet_data)
+        
         return tallysheet_data
     
     def update_start_and_end_time(self,tallysheet_data):
@@ -193,3 +203,40 @@ class WarehouseTallySheetView(object):
         max_end_time = max(tallysheet_data['cargo_details'], key=lambda x:x['end_time'])['end_time'] if tallysheet_data['cargo_details'] else None
         tallysheet_data['start_time'] = min_start_time
         tallysheet_data['end_time'] = max_end_time
+
+    def merge_bills_data(self,tallysheet_data,job_type):
+        bills = []
+        if job_type in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
+            bill_key_name = 'bill_of_entry'
+        else:
+            bill_key_name = 'shipping_bill'
+        cargo_details = tallysheet_data['cargo_details']
+        for each_cargo in cargo_details:
+            bill_no = each_cargo[bill_key_name]
+            bills.append(bill_no)
+        df = pd.DataFrame(cargo_details)
+        aggregation_functions = self.build_aggregate_function(cargo_details)
+        group_by_key = 'truck_number'
+        if job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value]:
+            group_by_key = 'container_number'
+        df = df.groupby(df[group_by_key]).aggregate(aggregation_functions)
+        result = json.loads(df.to_json(orient="records"))
+        tallysheet_data['cargo_details'] = result
+        bills = list(set(bills)) 
+        tallysheet_data['bills'] = bills
+
+    def build_aggregate_function(self,cargo_details):
+        cargo_details = cargo_details[0]
+        agg_func = {}
+        for key in cargo_details.keys():
+            if key == 'package_count':
+                agg_func.update({key:'sum'})
+            elif key == 'packages_weight':
+                agg_func.update({key:'sum'})
+            elif key == 'area_of_cargo':
+                agg_func.update({key:'sum'})
+            elif key == 'grid_locations':
+                agg_func.update({key:lambda x: [e for l in x for e in l]})
+            else:
+                agg_func.update({key:'first'})
+        return agg_func

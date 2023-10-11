@@ -18,7 +18,7 @@ class CCLSRake(db.Model):
     container_life_number = db.Column(db.DateTime()) 
     container_size = db.Column(db.Integer())
     container_type = db.Column(db.String(2))
-    container_stat = db.Column(db.String(2))
+    container_stat = db.Column(db.String(20))
     container_gross_weight = db.Column(db.Float())
     container_origin_station = db.Column(db.String(25))
     container_destination_station = db.Column(db.String(25))
@@ -40,7 +40,7 @@ class CCLSRake(db.Model):
     port_name = db.Column(db.String(25))
     train_dept = db.Column(db.DateTime())
     seal_number = db.Column(db.String(10))
-    hazardious_status = db.Column(db.String(2))
+    hazardious_status = db.Column(db.String(20))
     sline_code = db.Column(db.String(6))
     attribute_1 = db.Column(db.String(25))
     attribute_2 = db.Column(db.String(25))
@@ -60,6 +60,12 @@ class CCLSRake(db.Model):
     error_msg = db.Column(db.String(100))
     status_flg = db.Column(db.String(1), nullable=True)
     track_number = db.Column(db.String(10), nullable=True)
+    comm_desc = db.Column(db.String(25))
+    comm_type = db.Column(db.String(25))
+    final_destination =  db.Column(db.String(25))
+    importer_name =  db.Column(db.String())
+    location =  db.Column(db.String(25))
+    rec_no = db.Column(db.String(25))
     
     __tablename__ = 'xxccls_rake_trnsdtls_tbl'
 

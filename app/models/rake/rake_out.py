@@ -11,6 +11,7 @@ class PendancyContainer(db.Model):
     container_type = db.Column(db.String(5))
     container_weight = db.Column(db.Float())
     container_acty_code = db.Column(db.String(10))
+    cargo_flag = db.Column(db.String(10))
     icd_loc_code = db.Column(db.String(10))
     stuffed_at = db.Column(db.String(10))
     stack_loc = db.Column(db.String(10))

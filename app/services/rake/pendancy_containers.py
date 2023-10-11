@@ -37,8 +37,9 @@ class PendancyService():
             data["arrival_date"] = each["arrDate"]
             data["seal_number"] = each["sealNo"]
             data["seal_date"] = each["sealDate"]
-            data["sbill_number"] = None
-            data["sbill_date"] = None
+            data["sbill_number"] = each["sbillNo"] if "sbillNo" in each else None
+            data["sbill_date"] = each["sbillDt"] if "sbillDt" in each else None
+            data["cargo_type"] = each["crgType"] if "crgType" in each else None
             data["pid_number"] = None
             data["odc_flag"] = each["odcFlg"]
             data["hold_flg"] = None

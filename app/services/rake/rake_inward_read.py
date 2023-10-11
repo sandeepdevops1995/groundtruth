@@ -95,6 +95,15 @@ class RakeInwardReadService:
             wagon["container_gross_weight"] = each["ctrWt"][0]
             wagon["port_name"] = each["portNam"][0]
             wagon["train_dept"] = each["trnDep"][0]
+            wagon["comm_desc"] = each["COMM_DESC"][0] if "COMM_DESC" in each else None
+            wagon["comm_type"] = each["COMM_TYPE"][0] if "COMM_TYPE" in each else None
+            wagon["final_destination"] = each["FIN_DSTN"][0] if "FIN_DSTN" in each else None
+            wagon["importer name"] = each["IMP_NAM"][0] if "IMP_NAM" in each else None
+            wagon["location"] = each["LOC"][0] if "LOC" in each else None
+            wagon["rec_no"] = each["REC_NO"][0] if "REC_NO" in each else None
+            wagon["container_stat"] = each["CTR_STAT"][0] if "CTR_STAT" in each else None
+            wagon["hazardious_status"] = each["HAZ_FLAG"][0] if "HAZ_FLAG" in each else None
+    
             if "SEAL_NO" in each:
                 wagon["seal_number"] = each["SEAL_NO"][0 ]
             
@@ -160,6 +169,12 @@ class RakeInwardReadService:
                 container_record[Constants.CONTAINER_STAT] = "E"
                 # category: "Import/Export/Domestic/Transhipment"
                 container_record[Constants.CATEGORY] = category
+                if data[i].container_stat.strip() == Constants.KEY_TRANSHIPMENT:
+                    container_record[Constants.CATEGORY] = "Transhipment"
+                if data[i].hazardious_status.strip() == Constants.KEY_NORMAL:
+                    container_record[Constants.KEY_HAZARD] = Constants.KEY_CTMS_NORMAL
+                else:
+                    container_record[Constants.KEY_HAZARD] = Constants.KEY_CTMS_HAZARDOUS
 
                 response[Constants.CONTAINER_LIST].append(container_record)
         return json.dumps(response)

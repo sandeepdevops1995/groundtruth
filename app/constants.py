@@ -141,6 +141,11 @@ KEY_ORIGIN_STATION = "origin_station"
 KEY_DEST_STATION = "dest_station"
 KEY_TRACK_ID = "track_id"
 KEY_TRACK_NO = "track_no"
+KEY_HAZARD = "hazard"
+KEY_TRANSHIPMENT = "TRANSHIPMENT"
+KEY_NORMAL = "NORMAL"
+KEY_CTMS_NORMAL = "Normal"
+KEY_CTMS_HAZARDOUS = "Hazardous"
 
 # RAKE SOAP KEYS
 KEY_SOAP_TRAIN_NUMBER = 'trnNo'

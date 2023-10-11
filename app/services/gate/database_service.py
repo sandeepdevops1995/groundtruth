@@ -209,8 +209,12 @@ class GateDbService:
                                 "hazard":[],
                                 "un_number":[]
                             }
-                if result['ContainerStatus']:
+                if "LDD_MT_Flg" in result and result["LDD_MT_Flg"]:
+                    final_data['is_empty_or_laden']= "Empty" if result["LDD_MT_Flg"] == "E" else "Laden"
+                    logger.info("Empty or Laden flag from soap LDD_MT_Flg")
+                elif result['ContainerStatus']:
                     final_data['is_empty_or_laden']= "Empty" if "E" in result['ContainerStatus'] else "Laden"
+                    logger.info("Empty or Laden flag from soap ContainerStatus")
                 if final_data:
                     return json.dumps(final_data)
           

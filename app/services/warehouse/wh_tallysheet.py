@@ -11,6 +11,7 @@ from app.logger import logger
 import app.logging_message as LM
 import json
 import pandas as pd
+from app.serializers.get_ccls_cargo_serializer import CCLSCargoDetailsSchema
 
 class WarehouseTallySheetView(object):
 
@@ -108,8 +109,6 @@ class WarehouseTallySheetView(object):
             is_exists,ctms_query_object = self.check_tallysheet_exist_or_not(tally_sheet_data,job_order_id,job_type)
             if not is_exists:
                 master_job_request = CTMSCargoJobInsertSchema(context={'job_order_id': job_order_id,"job_type":job_type}).load(tally_sheet_data, session=db.session)
-                db.session.add(master_job_request)
-                db.session.commit()
                 logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GENERATE_TALLYSHEET,LM.KEY_GENERATE_TALLYSHEET_DATA_CREATED_SUCCESSFULLY,tally_sheet_data))
             else:
                 tally_sheet_data['id'] = ctms_query_object.id
@@ -205,15 +204,8 @@ class WarehouseTallySheetView(object):
         tallysheet_data['end_time'] = max_end_time
 
     def merge_bills_data(self,tallysheet_data,job_type):
-        bills = []
-        if job_type in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
-            bill_key_name = 'bill_of_entry'
-        else:
-            bill_key_name = 'shipping_bill'
+        self.get_bills_and_total_declared_count(tallysheet_data,job_type)
         cargo_details = tallysheet_data['cargo_details']
-        for each_cargo in cargo_details:
-            bill_no = each_cargo[bill_key_name]
-            bills.append(bill_no)
         df = pd.DataFrame(cargo_details)
         aggregation_functions = self.build_aggregate_function(cargo_details)
         group_by_key = 'truck_number'
@@ -222,9 +214,35 @@ class WarehouseTallySheetView(object):
         df = df.groupby(df[group_by_key]).aggregate(aggregation_functions)
         result = json.loads(df.to_json(orient="records"))
         tallysheet_data['cargo_details'] = result
+
+    def get_bills_and_total_declared_count(self,tallysheet_data,job_type):
+        bills = []
+        if job_type in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
+            cargo_details = tallysheet_data['cargo_details']
+            for each_cargo in cargo_details:
+                bill_no = each_cargo['bill_of_entry']
+                bills.append(bill_no)
+        else:
+            if job_type == JobOrderType.CARTING_FCL.value:
+                crn_number = tallysheet_data['crn_number']
+                query_object = db.session.query(CCLSCargoBillDetails).filter(CCLSCargoBillDetails.master_job_order_bill_details.has(MasterCargoDetails.carting_details.has(CartingCargoDetails.crn_number==crn_number))).all()
+            elif job_type == JobOrderType.CARTING_LCL.value:
+                con_number = tallysheet_data['cargo_carting_number']
+                query_object = db.session.query(CCLSCargoBillDetails).filter(CCLSCargoBillDetails.master_job_order_bill_details.has(MasterCargoDetails.carting_details.has(CartingCargoDetails.carting_order_number==con_number))).all()
+            else:
+                crn_number = tallysheet_data['crn_number']
+                query_object = db.session.query(CCLSCargoBillDetails).filter(CCLSCargoBillDetails.master_job_order_bill_details.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.crn_number==crn_number))).all()
+            result = CCLSCargoDetailsSchema().dump(query_object,many=True)
+            total_package_count = 0
+            for each_bill in result:
+                package_count = each_bill['commodity_details'][0]['package_count'] if each_bill['commodity_details'] else 0
+                total_package_count+=package_count
+                shipping_bill = each_bill['shipping_bill']
+                bills.append(shipping_bill)
+            tallysheet_data['total_package_count'] = total_package_count
         bills = list(set(bills)) 
         tallysheet_data['bills'] = bills
-
+        
     def build_aggregate_function(self,cargo_details):
         cargo_details = cargo_details[0]
         agg_func = {}

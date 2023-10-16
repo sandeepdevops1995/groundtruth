@@ -60,9 +60,6 @@ class TrainDetails(View):
                 self.request_soap_api(trans_delay,rake_tx_type,from_date,to_date)
                 return Response({"message":"requested soap API"}, status=200, mimetype='application/json')
             result = self.get_inward_summary_containers(data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date)
-            if (not result) or (not json.loads(result)):
-                self.request_soap_api(trans_delay,rake_tx_type)
-                result = self.get_inward_summary_containers(data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date)
         elif rake_type == "DE":
             result = RakeOutwardPlanService.get_rake_plan(rake_id,train_number,track_number)
         else:
@@ -75,11 +72,11 @@ class TrainDetails(View):
         result = {}
         if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE] :
             exim_containers = RakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
-            result = json.loads(exim_containers)
+            result = json.loads(exim_containers) if exim_containers else {}
         if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
             dom_containers = DTMSRakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
             if dom_containers:
-                dom_containers = json.loads(dom_containers)
+                dom_containers = json.loads(dom_containers) if dom_containers else {}
             if result and dom_containers:
                 if Constants.WAGON_LIST in dom_containers:
                     if Constants.WAGON_LIST in result:
@@ -105,6 +102,61 @@ class TrainDetails(View):
         if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
             DTMSRakeInwardReadService.get_train_details({},from_date=from_date,to_date=to_date)
 
+
+class TrainNumberDetails(View):
+    @custom_exceptions
+    @api_auth_required
+    def get(self):
+        rake_type = request.args.get(Constants.RAKE_TYPE,"AR")
+        rake_tx_type = request.args.get(Constants.RAKE_TX_TYPE,Constants.EXIM_RAKE)
+        wagon_list = request.args.get(Constants.WAGON_LIST,None)
+        container_list = request.args.get(Constants.CONTAINER_LIST,None)
+        trans_date = request.args.get(Constants.KEY_TRANS_DATE,None)
+        trans_delay = int(request.args.get(Constants.KEY_TRANS_DELAY,2))
+        if wagon_list:
+            wagon_list = json.loads(wagon_list)
+        if container_list:
+            container_list = json.loads(container_list)
+        if trans_date:
+            trans_date = datetime.strptime(trans_date, '%Y-%m-%d %H:%M:%S').date()
+        exim_train_number = dom_train_number = None 
+        if rake_tx_type in [Constants.EXIM_RAKE,Constants.HYBRID_RAKE]:
+            exim_train_number = RakeInwardReadService.get_train_number(container_list,wagon_list,trans_date,trans_delay)
+            if not exim_train_number:
+                TrainDetails().request_soap_api(trans_delay,Constants.EXIM_RAKE)
+                exim_train_number = RakeInwardReadService.get_train_number(container_list,wagon_list,trans_date,trans_delay)
+
+        if rake_tx_type in [Constants.DOMESTIC_RAKE,Constants.HYBRID_RAKE]:
+            dom_train_number = DTMSRakeInwardReadService.get_train_number(container_list,wagon_list,trans_date,trans_delay)
+            if not dom_train_number:
+                TrainDetails().request_soap_api(trans_delay,Constants.DOMESTIC_RAKE)
+                dom_train_number = DTMSRakeInwardReadService.get_train_number(container_list,wagon_list,trans_date,trans_delay)
+
+        return Response(json.dumps({"exim_train_number":exim_train_number,"dom_train_number":dom_train_number}),status=200, mimetype='application/json')
+
+class UpdateRakeDetails(View):
+    @custom_exceptions
+    @api_auth_required
+    def put(self):
+        data = request.get_json()
+        rake_type = data.pop(Constants.RAKE_TYPE,"AR")
+        rake_tx_type = data.pop(Constants.RAKE_TX_TYPE,Constants.EXIM_RAKE)
+        rake_id = data.pop(Constants.RAKE_ID,None)
+        track_number = data.pop(Constants.TRACK_NUMBER,None)
+        exim_train_number = data.pop(Constants.EXIM_TRAIN_NUMBER,None)
+        dom_train_number =   data.pop(Constants.DOM_TRAIN_NUMBER,None)
+        trans_date = data.pop(Constants.KEY_TRANS_DATE,None)
+        trans_delay = int(request.args.get(Constants.KEY_TRANS_DELAY,2))
+        if trans_date:
+            trans_date = datetime.strptime(trans_date, '%Y-%m-%d %H:%M:%S').date()
+        sucess =  None
+        if rake_tx_type in [Constants.EXIM_RAKE,Constants.HYBRID_RAKE]:
+            sucess = RakeInwardReadService.update_rake_id_and_track_number(trans_date,trans_delay,exim_train_number,rake_id,track_number)
+        if rake_tx_type in [Constants.DOMESTIC_RAKE,Constants.HYBRID_RAKE]:
+            sucess = DTMSRakeInwardReadService.update_rake_id_and_track_number(trans_date,trans_delay,dom_train_number,rake_id,track_number)
+        if sucess:
+            return Response(json.dumps({"message":"rake_id and track_number updated"}),status=200, mimetype='application/json')
+        return Response(json.dumps({"message":"failed to update rake_id and track_number "}),status=400, mimetype='application/json')
 
 
 class RakeData(View):

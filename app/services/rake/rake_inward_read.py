@@ -98,7 +98,7 @@ class RakeInwardReadService:
             wagon["comm_desc"] = each["COMM_DESC"][0] if "COMM_DESC" in each else None
             wagon["comm_type"] = each["COMM_TYPE"][0] if "COMM_TYPE" in each else None
             wagon["final_destination"] = each["FIN_DSTN"][0] if "FIN_DSTN" in each else None
-            wagon["importer name"] = each["IMP_NAM"][0] if "IMP_NAM" in each else None
+            wagon["importer_name"] = each["IMP_NAM"][0] if "IMP_NAM" in each else None
             wagon["location"] = each["LOC"][0] if "LOC" in each else None
             wagon["rec_no"] = each["REC_NO"][0] if "REC_NO" in each else None
             wagon["container_stat"] = each["CTR_STAT"][0] if "CTR_STAT" in each else None
@@ -169,9 +169,9 @@ class RakeInwardReadService:
                 container_record[Constants.CONTAINER_STAT] = "E"
                 # category: "Import/Export/Domestic/Transhipment"
                 container_record[Constants.CATEGORY] = category
-                if data[i].container_stat.strip() == Constants.KEY_TRANSHIPMENT:
+                if data[i].container_stat and data[i].container_stat.strip() == Constants.KEY_TRANSHIPMENT:
                     container_record[Constants.CATEGORY] = "Transhipment"
-                if data[i].hazardious_status.strip() == Constants.KEY_NORMAL:
+                if data[i].hazardious_status and data[i].hazardious_status.strip() == Constants.KEY_NORMAL:
                     container_record[Constants.KEY_HAZARD] = Constants.KEY_CTMS_NORMAL
                 else:
                     container_record[Constants.KEY_HAZARD] = Constants.KEY_CTMS_HAZARDOUS
@@ -206,6 +206,38 @@ class RakeInwardReadService:
 
             response.append(container_record)
         return json.dumps(response)
+    
+    def get_train_number(container_list,wagon_list,trans_date,trans_delay):
+        train_number = None
+        start_date = trans_date - timedelta(days = trans_delay)
+        end_date =  trans_date + timedelta(days = trans_delay)
+        rake_query = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)>=start_date, cast(CCLSRake.trans_date, DATE)<=end_date)
+        if container_list:
+            data = rake_query.filter(CCLSRake.container_number.in_(container_list)).order_by(CCLSRake.trans_date.desc()).all()
+            train_number = data[0].train_number if data else None
+        if not train_number and wagon_list:
+            data = rake_query.filter(CCLSRake.wagon_number.in_(wagon_list)).order_by(CCLSRake.trans_date.desc()).all()
+            train_number = data[0].train_number if data else None
+        logger.info("exim train number %s, given trans_date: %s, trans_delay %s, wagon_list: %s,container_list : %s",train_number,str(trans_date),str(trans_delay),str(wagon_list),str(container_list) )
+        return train_number
+
+    
+    def update_rake_id_and_track_number(trans_date,trans_delay,train_number,rake_id,track_number):
+        start_date = trans_date - timedelta(days = trans_delay)
+        end_date =  trans_date + timedelta(days = trans_delay)
+        rake_query = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)>=start_date, cast(CCLSRake.trans_date, DATE)<=end_date).filter_by(train_number=train_number)
+        update_data = {}
+        if track_number:
+                update_data['track_number'] = track_number
+        if rake_id :
+            update_data['rake_id'] = rake_id
+        if update_data:
+            rake_query.update(dict(update_data))
+            if commit():
+                return True
+        return False
+
+
 
     # @query_debugger()
     # def get_ctms_details(start_date,end_date):

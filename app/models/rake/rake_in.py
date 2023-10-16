@@ -63,7 +63,7 @@ class CCLSRake(db.Model):
     comm_desc = db.Column(db.String(25))
     comm_type = db.Column(db.String(25))
     final_destination =  db.Column(db.String(25))
-    importer_name =  db.Column(db.String())
+    importer_name =  db.Column(db.String(200))
     location =  db.Column(db.String(25))
     rec_no = db.Column(db.String(25))
     
@@ -96,6 +96,7 @@ class DomesticContainers(db.Model):
     iso_code = db.Column(db.String(10))
     container_size = db.Column(db.Float())
     container_type = db.Column(db.String(10))
+    container_stat = db.Column(db.String(20))
     container_from_station = db.Column(db.String(10))
     container_to_station = db.Column(db.String(10))
     ldd_mt_flg = db.Column(db.String(5))

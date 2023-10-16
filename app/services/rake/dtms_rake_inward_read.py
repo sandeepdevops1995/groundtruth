@@ -209,6 +209,34 @@ class DTMSRakeInwardReadService:
     #         return DTMSRakeInwardReadService.format_dtms_data(rake_query)
     #     return rake_query
     
+    def get_train_number(container_list,wagon_list,trans_date,trans_delay):
+        train_number = None
+        start_date = trans_date - timedelta(days = trans_delay)
+        end_date =  trans_date + timedelta(days = trans_delay)
+        rake_query = DomesticContainers.query.filter(cast(DomesticContainers.trans_date, DATE)>=start_date, cast(DomesticContainers.trans_date, DATE)<=end_date)
+        if container_list:
+            data = rake_query.filter(DomesticContainers.container_number.in_(container_list)).order_by(DomesticContainers.trans_date.desc()).all()
+            train_number = data[0].train_number if data else None
+        if not train_number and wagon_list:
+            data = rake_query.filter(DomesticContainers.wagon_number.in_(wagon_list)).order_by(DomesticContainers.trans_date.desc()).all()
+            train_number = data[0].train_number if data else None
+        logger.info("dom train number %s, given trans_date: %s, trans_delay %s, wagon_list: %s,container_list : %s",train_number,str(trans_date),str(trans_delay),str(wagon_list),str(container_list) )
+        return train_number
+    
+    def update_rake_id_and_track_number(trans_date,trans_delay,train_number,rake_id,track_number):
+        start_date = trans_date - timedelta(days = trans_delay)
+        end_date =  trans_date + timedelta(days = trans_delay)
+        rake_query = DomesticContainers.query.filter(cast(DomesticContainers.trans_date, DATE)>=start_date, cast(DomesticContainers.trans_date, DATE)<=end_date).filter_by(train_number=train_number)
+        update_data = {}
+        if track_number:
+                update_data['track_number'] = track_number
+        if rake_id :
+            update_data['rake_id'] = rake_id
+        if update_data:
+            rake_query.update(dict(update_data))
+            if commit():
+                return True
+        return False
 
     @query_debugger()
     def get_dtms_train_no_details(train_no):

@@ -30,6 +30,8 @@ def register_controllers():
     api.add_resource(UpdateVGISurvey,Constants.VGI_SURVEY_ENDPOINT)
     api.add_resource(RakeInContainer,Constants.RAKE_INWARD_CONTAINER_ENDPOINT)
     api.add_resource(CclsResponseData,'/ccls_response_data')
+    api.add_resource(TrainNumberDetails,'/train_number')
+    api.add_resource(UpdateRakeDetails,'/update_ctms_rake_details')
     # api.add_resource(GtRangeData,'/gt_range_data')
     # api.add_resource(GtTrainData,'/gt_train_data')
 

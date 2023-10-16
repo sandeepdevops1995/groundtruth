@@ -383,6 +383,8 @@ OUT_LOCATION        = "out_location"
 OUT_PORT_LOCATION   = "out_port_location"
 ICD_LOCATIONS       = "icd_loc"
 USERS               = "users"
+EXIM_TRAIN_NUMBER   = "exim_train_number"
+DOM_TRAIN_NUMBER    = "dom_train_number"
 #container type mapping:
 
 CONTAINER_LENGTH_ISO_MAPPING ={

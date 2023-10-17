@@ -14,7 +14,7 @@ class PendancyContainer(db.Model):
     cargo_flag = db.Column(db.String(10))
     icd_loc_code = db.Column(db.String(10))
     stuffed_at = db.Column(db.String(10))
-    stack_loc = db.Column(db.String(10))
+    stack_loc = db.Column(db.String(20))
     sline_code = db.Column(db.String(10))
     gateway_port_code = db.Column(db.String(10))
     arrival_date = db.Column(db.DateTime())
@@ -28,6 +28,13 @@ class PendancyContainer(db.Model):
     hold_rels_flg = db.Column(db.String(30))
     hold_rels_flg_next = db.Column(db.String(10))
     q_no = db.Column(db.String(10))
+    container_category = db.Column(db.String(20))
+
+    # for Domestic containers
+    station_from = db.Column(db.String(10))
+    station_to  = db.Column(db.String(10))
+    ldd_mt_flg = db.Column(db.String(10))
+    commodity_code = db.Column(db.String(20))
     
 class RakePlan(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)

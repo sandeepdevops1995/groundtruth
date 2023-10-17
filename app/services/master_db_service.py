@@ -1422,3 +1422,41 @@ class MasterData():
                 count=count-1
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
                 MasterData.get_container_stat_details(count,isRetry)
+
+    @query_debugger()
+    def create_station_details(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            for each in data:
+                record = Station(**each)
+                db.session.add(record)
+            return commit()
+        except Exception as e:
+            logger.error('Error while querying database\n : {}'.format(str(e)))
+            if isRetry and count >= 0 :
+                count=count-1
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                MasterData.create_station_details(count,isRetry)
+
+    @query_debugger()
+    def get_station_details(filter_data=None,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                pass
+            if filter_data:
+                data = Station.query.filter_by(**filter_data).all()
+                return data
+            data = Station.query.all()
+            return data
+            
+        except Exception as e:
+            logger.error('Error while querying database\n : {}'.format(str(e)))
+            if isRetry and count >= 0 :
+                count=count-1
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                MasterData.get_station_details(count,isRetry)

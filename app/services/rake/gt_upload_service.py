@@ -1,4 +1,4 @@
-from app.models import CCLSRake, Diagnostics, PendancyContainer
+from app.models import CCLSRake, Diagnostics, PendancyContainer, CtrStat
 from app.logger import logger
 from app import postgres_db as db
 from sqlalchemy.exc import SQLAlchemyError
@@ -26,6 +26,11 @@ def upload_ccls_rake_date(rake_data):
 
 def upload_pendancy_data(data):
     for container in data:
+        if "ctrStat" in container and container["ctrStat"]:
+            container_stat = CtrStat.query.filter_by(ctr_stat=container["ctrStat"]).all()
+            container["ldd_mt_flg"] = container_stat[0].ldd_mt_flg if container_stat else None
+        if not container["ldd_mt_flg"]:
+            container["ldd_mt_flg"] = "L" if container["container_weight"] else "E"
         record = PendancyContainer(**container)
         db.session.add(record)
         commit()

@@ -29,3 +29,11 @@ class CtrStatMasterSchema(ma.SQLAlchemyAutoSchema):
         model = CtrStat
         fileds = ("ctr_stat", "imp_exp_flg","ldd_mt_flg","gw_port_cd")
         load_instance = True 
+
+class StationMasterSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Station
+        # exclude = ("id",)
+        # fields = '__all__'
+        fields = ("station_code", "station_name")
+        load_instance = True

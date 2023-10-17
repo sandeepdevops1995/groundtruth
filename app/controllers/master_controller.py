@@ -30,3 +30,24 @@ class ContainerStatDetails(View):
             return Response(json.dumps(response),status=200,mimetype='application/json')
         else:
             return Response(None,status=204,mimetype='application/json')
+        
+class StationDetails(View):
+    @custom_exceptions
+    # @api_auth_required
+    def post(self):
+        data = request.get_json()
+        if data:
+            if master_db.create_station_details(data):
+                return Response(json.dumps({"message":"success"}),status=200,mimetype='application/json')
+        return Response(json.dumps({"message":"failed to save"}),status=400,mimetype='application/json')
+    
+    @custom_exceptions
+    @api_auth_required
+    def get(self):
+        logger.info("GT,fetch station code master data")
+        response = master_db.get_station_details()
+        response = StationMasterSchema(many=True).dump(response)
+        if response:
+            return Response(json.dumps(response),status=200,mimetype='application/json')
+        else:
+            return Response(None,status=204,mimetype='application/json')

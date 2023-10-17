@@ -425,7 +425,10 @@ class UserDtls(db.Model):
     
 class Station(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
-    station_cd = db.Column(db.String(5))
+    area = db.Column(db.String(20))
+    cluster = db.Column(db.String(20))
+    alpha_code = db.Column(db.String(20))
+    station_code = db.Column(db.String(10))
     station_name = db.Column(db.String(50))
     
     __tablename__ = 'tm_station'

@@ -79,6 +79,8 @@ class PendancySummary(View):
             container_list = self.process_pendancy_summary(data['RR_EXP_MT_LST_LIVE'],PendencyType.EMPTY.value)
         elif  "RR_EXP_LDD_LST_JNPTMIX" in data:
             container_list = self.process_each_gateway_port(data["RR_EXP_LDD_LST_JNPTMIX"]["LIST_G_CTR_NO"]["G_CTR_NO"],None,PendencyType.LOADED.value)
+        elif "RR_DOM_LDD_LST" in data:
+            container_list = self.process_each_gateway_port(data["RR_DOM_LDD_LST"]["LIST_G_CTR_NO"]["G_CTR_NO"],None,PendencyType.LOADED.value,"Domestic")
         else:
             return Response(json.dumps({"message":"unknown file format"}),status=400,mimetype='application/json')
         if upload_pendancy_data(container_list):
@@ -96,16 +98,17 @@ class PendancySummary(View):
         return final_container_list
     
     
-    def process_each_gateway_port(self,data,port_code,pendency_type):
+    def process_each_gateway_port(self,data,port_code,pendency_type,category="Export"):
         container_list = []
         if isinstance(data,dict):
             data = [data]
         for pendancy_container in data:
             container = {}
-            container["sline_code"] = "OOCL"
-            container["container_weight"] = 10
+            # container["sline_code"] = "OOCL"
+            # container["container_weight"] = 10
             container["container_type"] = "GL"
             container["pendency_type"] = pendency_type
+            container["container_category"] = category
             if port_code:
                 container["gateway_port_code"] = port_code
             if "CTR_NO" in pendancy_container:
@@ -144,5 +147,13 @@ class PendancySummary(View):
                 container["hold_rels_flg"] = pendancy_container["HOLD_RELS_FLG"]
             if "GW_PORT_CD" in pendancy_container:
                 container["gateway_port_code"] = pendancy_container["GW_PORT_CD"]
+            if "STATION_FROM" in pendancy_container:
+                container["station_from"] = pendancy_container["STATION_FROM"]
+            if "STATION_TO" in pendancy_container:
+                container["station_to"] = pendancy_container["STATION_TO"]
+            if "COMM_CODE" in pendancy_container:
+                container["commodity_code"] = pendancy_container["COMM_CODE"]
+            if "LDD_MT_FLG" in pendancy_container:
+                container["ldd_mt_flg"] = pendancy_container["LDD_MT_FLG"]
             container_list.append(container)
         return container_list

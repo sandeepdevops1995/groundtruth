@@ -21,6 +21,7 @@ class PendancyService():
     def format_data_from_ccls(ccls_data,pendency_type,save_data=False):
         pendancy_list = []
         for each in ccls_data:
+            container_stat = None
             data = {}
             data["container_number"] = each["ctrNo"]
             data["container_life_number"] = each["ctrLifeNo"]
@@ -39,7 +40,7 @@ class PendancyService():
             data["seal_date"] = each["sealDate"]
             data["sbill_number"] = each["sbillNo"] if "sbillNo" in each else None
             data["sbill_date"] = each["sbillDt"] if "sbillDt" in each else None
-            data["cargo_type"] = each["crgType"] if "crgType" in each else None
+            data["cargo_flag"] = each["crgType"] if "crgType" in each else None
             data["pid_number"] = None
             data["odc_flag"] = each["odcFlg"]
             data["hold_flg"] = None
@@ -47,54 +48,45 @@ class PendancyService():
             data["hold_rels_flg_next"] = None
             data["q_no"] = None
             data["pendency_type"] = int(pendency_type)
+            data["container_category"] = "Export"
+            data["station_from"] = None
+            data["station_to"] = None
+            data["ldd_mt_flg"] = None
+            data["commodity_code"] = None
+
+            if each["ctrStat"]:
+                container_stat = CtrStat.query.filter_by(ctr_stat=each["ctrStat"]).all()
+                data["ldd_mt_flg"] = container_stat[0].ldd_mt_flg if container_stat else None
+            if not data["ldd_mt_flg"]:
+                logger.warn("container_stat not found in table, %s",each["ctrStat"])
+                data["ldd_mt_flg"] = "L" if data["container_weight"] else "E"
 
             if save_data:
                 PendancyService.save_in_db(data)
                 
+            # data["gw_port_cd"] = container_stat[0].gw_port_cd if container_stat else None
+            # data["imp_exp_flg"] = container_stat[0].imp_exp_flg if container_stat else None
             if data["container_weight"]:
                 data["container_weight"] = float(data["container_weight"])
-            # if data["seal_date"]:
-            #     data["seal_date"] = each["dtSeal"]
+
             if data["seal_date"]:
-                #data["seal_date"] = data["seal_date"].strftime("%Y-%m-%dT%H:%M:%S")
-                #data['seal_date'] = datetime.strptime(data['seal_date'], '%Y-%m-%d %H:%M:%S').isoformat()
+
                 data['seal_date'] = data['seal_date'].isoformat()
                 logger.warn("seal_date type:"+str(type(data['seal_date'])))
             else:
                 data['seal_date'] = datetime.now(tz.tzlocal()).replace(microsecond=0).isoformat()
-            """
-            if data["seal_datetime"]:
-                #data["seal_datetime"] = data["seal_datetime"].strftime("%Y-%m-%dT%H:%M:%S")
-                data['seal_datetime'] = datetime.strptime(data['seal_datetime'], '%Y-%m-%d %H:%M:%S').isoformat()
-                logger.warn("seal_datetime type:"+str(type(data['seal_datetime'])))
-            """
             if isinstance(data['arrival_date'], datetime) and data["arrival_date"]:
                 data["arrival_date"] = data["arrival_date"].strftime("%Y-%m-%dT%H:%M:%S")
             else:
                 logger.warn("arrival_date is not datetime format: "+str(data['arrival_date']))
-                ##data['arrival_date'] = None
                 data['arrival_date'] = datetime.now().replace(microsecond=0).isoformat()
-                ##data['arrival_date'] = datetime.now()
-                ##data['arrival_date'] = datetime.strptime(data['arrival_date'], '%Y-%m-%d %H:%M:%S').isoformat()
-                #data['arrival_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-                ###datetime.strptime(data["permit_date"], '%Y-%m-%d %H:%M:%S').isoformat() if data["permit_date"]
-                #data['arrival_date'] = datetime.now()
                 logger.warn("arrival_date type:"+str(type(data['arrival_date'])))
-                ##logger.warn("arrival_date value: "+data['arrival_date'])
             if data["container_life_number"]:
-                ##data["container_life_number"] = data["container_life_number"].strftime("%Y-%m-%dT%H:%M:%S")
-                #data['container_life_number'] = datetime.strptime(data['container_life_number'], '%Y-%m-%d %H:%M:%S').isoformat()
                 data['container_life_number'] = data['container_life_number'].isoformat()
                 logger.warn("container_life_number data type:"+str(type(data['container_life_number'])))
             if data["hold_rels_flg"]:
-                #data['hold_rels_flg'] = data['hold_rels_flg'].isoformat()
                 data['hold_rels_flg'] = datetime.now().replace(microsecond=0).isoformat()
                 logger.warn("hold rels flag data type:"+str(type(data['hold_rels_flg'])))
-                
-            container_stat = CtrStat.query.filter_by(ctr_stat=each["ctrStat"]).all()
-            data["imp_exp_flg"] = container_stat[0].imp_exp_flg if container_stat else None
-            data["ldd_mt_flg"] = container_stat[0].ldd_mt_flg if container_stat else None
-            data["gw_port_cd"] = container_stat[0].gw_port_cd if container_stat else None
 
             pendancy_list.append(data)
     
@@ -170,27 +162,16 @@ class PendancyService():
                             data = soap_service.get_express_pendancy_details(request_params)
                             if data:
                                 final_data += PendancyService.format_data_from_ccls(data,PendencyType.EXPRESS_LCL.value,True)
-
-                    # elif PendencyType.LCL.value == pendency_type:
-                    #     logger.info("fetching LCL pendancy containers"+str(gateway_ports))
-                    #     pass
-                    #     logger.info("fetching LCL peendancy containers")
-                    #     for port in gateway_ports:
-                    #         request_params = {'GW_PORT_CODE': port}
-                    #         data = soap_service.get_lcl_pendancy_details(request_params)
-                    #         if data:
-                    #             final_data += PendancyService.format_data_from_ccls(data,PendencyType.EXPRESS_LCL.value,True)
-
                 if final_data:
                     # data = PendancyService.format_data_from_ccls(final_data,True)
                     #logger.info("data fetched from CCLS service: "+str(data))
-                    return json.dumps(final_data)
+                    return final_data
             logger.info("data fetched from local db")
             data = []
             for each in pendency_types:
                 data += PendancyContainer.query.filter(PendancyContainer.gateway_port_code.in_(each['gateway_port']),PendancyContainer.pendency_type == int(each["pendency_type"])).all()
             data = db_functions(data).as_json()
-            return data
+            return json.loads(data)
         except Exception as e:
             logger.exception(str(e))
             if isRetry and count >= 0 :

@@ -205,10 +205,25 @@ class PendancyList(View):
         pendency_types = request.args.get(Constants.KEY_PENDENCY_TYPE,None)
         if pendency_types:
             logger.info("GT, pendacy list for pendency types: "+pendency_types)
-            response = PendancyService.get_pendancy_list(json.loads(pendency_types))
-            # response = self.format_data(response,gateway_ports)
-            response = response if response else json.dumps([])
-            return Response(response, status=200, mimetype='application/json')
+            pendency_types = json.loads(pendency_types)
+            exim_pendency_list = []
+            dom_pendency_list = []
+            exim_response = dom_response = {}
+            for each in pendency_types:
+                if "station_code" in each:
+                    dom_pendency_list.append(each)
+                else:
+                    exim_pendency_list.append(each)
+            if exim_pendency_list:
+                exim_response = PendancyService.get_pendancy_list(exim_pendency_list)
+            if dom_pendency_list:
+                dom_response = DTMSRakeOutwardReadService.get_outward_domestic_containers(dom_pendency_list)
+            response = []
+            if exim_response:
+                response += exim_response
+            if dom_response:
+                response += dom_response
+            return Response(json.dumps(response), status=200, mimetype='application/json')
         else:
             return Response(json.dumps({"message":"please provide pendancy types"}), status=400, mimetype='application/json')
     

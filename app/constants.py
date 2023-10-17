@@ -24,6 +24,7 @@ VGI_SURVEY_ENDPOINT = '/vgi_survey'
 RAKE_INWARD_CONTAINER_ENDPOINT = "/rake_inward_container"
 WAGON_ENDPOINT = '/wagon'
 GATEWAY_PORT_ENDPOINT = '/gateway_port'
+STATION_ENDPOINT = '/station'
 UPDATE_RAKE_CONTAINER_ENDPOINT = '/update_rake_container'
 CONTAINER_STAT_ENDPOINT = "/container_stat"
 TRACK_MASTER_DATA_ENDPOINT = '/track_mstr_data'

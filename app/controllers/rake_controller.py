@@ -26,7 +26,8 @@ class TrainDetails(View):
     @custom_exceptions
     # @api_auth_required
     def get(self):
-        train_number = request.args.get(Constants.TRAIN_NUMBER,None)
+        exim_train_number = request.args.get(Constants.EXIM_TRAIN_NUMBER,None)
+        dom_train_number = request.args.get(Constants.DOM_TRAIN_NUMBER,None)
         track_number = request.args.get(Constants.TRACK_NUMBER,None)
         rake_id = request.args.get(Constants.RAKE_ID,None)
         rake_type = request.args.get(Constants.RAKE_TYPE,"AR")
@@ -39,8 +40,6 @@ class TrainDetails(View):
         from_date = request.args.get(Constants.KEY_FROM_DATE,None)
         to_date = request.args.get(Constants.KEY_TO_DATE,None)
         data = {}
-        if train_number:
-            data["train_number"]=train_number
         if wagon_number:
             data["wagon_number"]=wagon_number
         if container_number:
@@ -53,27 +52,29 @@ class TrainDetails(View):
         if((not data)  and (not(from_date and to_date))):
             message = "please provide query parameters"
             return Response(json.dumps({"message":message}), status=400,mimetype='application/json')
-        logger.info('GT,Get request from the Rake service : {}'.format(train_number))
+        logger.info('GT,Get request from the Rake service : {},{}'.format(exim_train_number,dom_train_number))
         result = {}
         if rake_type == "AR":
             if from_date and to_date:
                 self.request_soap_api(trans_delay,rake_tx_type,from_date,to_date)
                 return Response({"message":"requested soap API"}, status=200, mimetype='application/json')
-            result = self.get_inward_summary_containers(data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date)
+            result = self.get_inward_summary_containers(data,rake_id,exim_train_number,dom_train_number,rake_tx_type,track_number,trans_delay,from_date,to_date)
         elif rake_type == "DE":
-            result = RakeOutwardPlanService.get_rake_plan(rake_id,train_number,track_number)
+            result = RakeOutwardPlanService.get_rake_plan(rake_id,exim_train_number,track_number)
         else:
             return Response({"mesaage":"unknown rake type"}, status=400, mimetype='application/json')
         logger.info('Conainer details response')
         return Response(result, status=200, mimetype='application/json')
     
 
-    def get_inward_summary_containers(self,data,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date):
+    def get_inward_summary_containers(self,data,exim_train_number,dom_train_number,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date):
         result = {}
-        if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE] :
+        if rake_tx_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE] and exim_train_number :
+            data['train_number'] = exim_train_number
             exim_containers = RakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
             result = json.loads(exim_containers) if exim_containers else {}
-        if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE]:
+        if rake_tx_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE] and dom_train_number :
+            data['train_number'] = dom_train_number
             dom_containers = DTMSRakeInwardReadService.get_train_details(data,rake_id,track_number,trans_delay,from_date=from_date,to_date=to_date)
             if dom_containers:
                 dom_containers = json.loads(dom_containers) if dom_containers else {}

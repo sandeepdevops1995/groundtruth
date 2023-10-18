@@ -44,7 +44,6 @@ class WarehouseTallySheetView(object):
     
     def get_ctms_job_obj(self,job_type,job_order,truck_number,container_number,bills,filter_date):
         query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==job_type))
-        # .filter(CTMSCargoJob.status==JobStatus.TALLYSHEET_GENERATED.value)
         if job_type==JobOrderType.CARTING_FCL.value:
             query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.carting_details.has(CartingCargoDetails.crn_number==job_order)))
             if filter_date:
@@ -68,7 +67,6 @@ class WarehouseTallySheetView(object):
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
             query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.delivery_details.has(DeliveryCargoDetails.gpm_number==job_order)))
             if filter_date:
-                print("filter_date----------",filter_date)
                 query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.delivery_details.has(DeliveryCargoDetails.gpm_created_date==filter_date)))
             if truck_number:
                 query_object = query_object.filter(CTMSCargoJob.truck_number==truck_number)
@@ -93,14 +91,19 @@ class WarehouseTallySheetView(object):
         
         query_object = db.session.query(MasterCargoDetails).filter(MasterCargoDetails.job_type==job_type)
         if job_type==JobOrderType.CARTING_FCL.value:
+            request_parameter = tally_sheet_data.get('crn_number')
             query_object = query_object.filter(MasterCargoDetails.carting_details.has(CartingCargoDetails.crn_number==tally_sheet_data.get('crn_number')))
         elif job_type==JobOrderType.CARTING_LCL.value:
+            request_parameter = tally_sheet_data.get('cargo_carting_number')
             query_object = query_object.filter(MasterCargoDetails.carting_details.has(CartingCargoDetails.carting_order_number==tally_sheet_data.get('cargo_carting_number')))
         elif job_type==JobOrderType.STUFFING_FCL.value or job_type==JobOrderType.STUFFING_LCL.value or job_type==JobOrderType.DIRECT_STUFFING.value:
+            request_parameter = tally_sheet_data.get('container_number')
             query_object = query_object.filter(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.container_number==tally_sheet_data.get('container_number')))
         elif job_type==JobOrderType.DE_STUFFING_FCL.value or job_type==JobOrderType.DE_STUFFING_LCL.value:
+            request_parameter = tally_sheet_data.get('container_number')
             query_object = query_object.filter(MasterCargoDetails.destuffing_details.has(DeStuffingCargoDetails.container_number==tally_sheet_data.get('container_number')))
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
+            request_parameter = tally_sheet_data.get('gpm_number')
             query_object = query_object.filter(MasterCargoDetails.delivery_details.has(DeliveryCargoDetails.gpm_number==tally_sheet_data.get('gpm_number')))
             tally_sheet_data['destuffing_date'] = self.get_destuffing_date_for_delivery(tally_sheet_data.get('container_number'))
         query_object = query_object.order_by(MasterCargoDetails.updated_at.desc()).first()
@@ -110,12 +113,17 @@ class WarehouseTallySheetView(object):
             if not is_exists:
                 master_job_request = CTMSCargoJobInsertSchema(context={'job_order_id': job_order_id,"job_type":job_type}).load(tally_sheet_data, session=db.session)
                 logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GENERATE_TALLYSHEET,LM.KEY_GENERATE_TALLYSHEET_DATA_CREATED_SUCCESSFULLY,tally_sheet_data))
+                db.session.add(master_job_request)
+                db.session.commit()
+                ctms_job_id   = master_job_request.id
+                user_id = tally_sheet_data.get('user_id')
+                from app.services.warehouse.wh_upload_tallysheet import WarehouseUploadTallySheetView
+                WarehouseUploadTallySheetView().upload_tallysheet_while_generation(ctms_job_id,request_parameter,job_type,user_id)
             else:
-                tally_sheet_data['id'] = ctms_query_object.id
-                master_job_request = CTMSCargoJobUpdateSchema().load(tally_sheet_data, instance=ctms_query_object, session=db.session)
+                #tally_sheet_data['id'] = ctms_query_object.id
+                # master_job_request = CTMSCargoJobUpdateSchema().load(tally_sheet_data, instance=ctms_query_object, session=db.session)
                 logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_GENERATE_TALLYSHEET,LM.KEY_GENERATE_TALLYSHEET_DATA_ALREADY_EXISTS,tally_sheet_data))
-            db.session.add(master_job_request)
-            db.session.commit()
+            
         else:
             raise DataNotFoundException("GTService: ccls data doesn't exists in database")
         

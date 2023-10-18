@@ -177,10 +177,32 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
         return obj.ctms_job_order.container_info.container_location_code  if obj.ctms_job_order.container_info else None
     
     def get_container_life(self,obj):
+        if obj.ctms_job_order.carting_details:
+            container_life = []
+            container_details = obj.ctms_job_order.carting_details.container_details
+            if container_details:
+                if isinstance(container_details,list):
+                    for each_container in container_details:
+                        container_life.append(each_container['container_life'])
+                else:
+                    container_life.append(container_details['container_life'])
+            container_life = container_life[0] if container_life else None
+            return container_life
         return obj.ctms_job_order.container_info.container_life  if obj.ctms_job_order.container_info else None
     
     def get_container_type(self,obj):
         # return obj.job_order.container_type if obj.container else None
+        if obj.ctms_job_order.carting_details:
+            container_type = []
+            container_details = obj.ctms_job_order.carting_details.container_details
+            if container_details:
+                if isinstance(container_details,list):
+                    for each_container in container_details:
+                        container_type.append(each_container['container_type'])
+                else:
+                    container_type.append(container_details['container_type'])
+            container_type = container_type[0] if container_type else None
+            return container_type
         return obj.ctms_job_order.container_info.container_type  if obj.ctms_job_order.container_info else None
     
     def get_container_size(self,obj):

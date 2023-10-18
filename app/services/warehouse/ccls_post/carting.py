@@ -1,10 +1,11 @@
 from app.enums import ContainerFlag
 from app.controllers.utils import convert_timestamp_to_ccls_date
+import time
 
 class BuildCartingObject(object):
     def __init__(self,data,user_id,trans_date_time):
-        self.ctrNo = self.ctrNo = "ABCD1234567" if data.get('container_number') is None else data.get('container_number')
-        self.ctrLifeNo = convert_timestamp_to_ccls_date(data.get('container_life')) if data.get('container_life') else None
+        self.ctrNo = data.get('container_number')[0] if data.get('container_number') else "ABCD1234567"
+        self.ctrLifeNo = convert_timestamp_to_ccls_date(data.get('container_life')) if data.get('container_life') else convert_timestamp_to_ccls_date(int(time.time())*1000)
         self.crn = data.get('crn_number',None)
         self.dtStUnldg = convert_timestamp_to_ccls_date(data.get('start_time')) if data.get('start_time') else None
         self.dtEndUnldg =  convert_timestamp_to_ccls_date(data.get('end_time')) if data.get('end_time') else None
@@ -23,7 +24,7 @@ class BuildCartingObject(object):
         self.whId = data.get('wh_id',None)
         self.gridNo = str(data.get('ccls_grid_locations')[0]) if data.get('ccls_grid_locations') else None
         self.crgType = data.get('cargo_type',None)
-        self.ctrSize = data.get('container_size',None)
+        self.ctrSize = data.get('container_size')[0] if data.get('container_size') else ""
         self.ctrType = data.get('container_type',None)
         self.fclLclFlg = ContainerFlag(int(data.get('container_flag',1))).name
         self.pvtCncrFlg = data.get('private_or_concor_labour_flag',None)

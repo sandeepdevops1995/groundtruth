@@ -12,8 +12,27 @@ from app.services.warehouse.database_service import WarehouseDB
 from app.models.warehouse.ctms_cargo_job import CTMSCargoJob
 import app.logging_message as LM
 from app.controllers.utils import convert_timestamp_to_ccls_date
+import time
 
 class WarehouseUploadTallySheetView(object):
+
+   def upload_tallysheet_while_generation(self,ctms_job_id,request_parameter,job_type,user_id):
+        query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.id==ctms_job_id).first()
+        data = WarehouseDB().get_tallysheet_details(query_object,request_parameter,job_type)
+        result = self.format_uploaded_data(data,job_type)
+        trans_date_time = int(time.time())*1000
+        trans_date_time = convert_timestamp_to_ccls_date(trans_date_time)
+        if job_type==JobOrderType.CARTING_FCL.value:
+           self.send_carting_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
+        elif job_type==JobOrderType.CARTING_LCL.value:
+           self.send_carting_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
+        elif job_type in  [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value]:
+           self.send_stuffing_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
+        elif job_type in  [JobOrderType.DE_STUFFING_FCL.value,JobOrderType.DE_STUFFING_LCL.value]:
+           self.send_destuffing_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
+        elif job_type in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
+           self.send_delivery_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
+        self.update_tallysheet_status_after_upload(ctms_job_id,request_parameter,job_type,trans_date_time)
 
    def upload_tallysheet(self,request_data):
         job_type = request_data.get('job_type')
@@ -32,8 +51,9 @@ class WarehouseUploadTallySheetView(object):
         status = self.is_tallysheet_already_uploaded(query_object)
         data = WarehouseDB().upload_tallysheet_details(query_object.all(),request_parameter,job_type)
         result,ctms_job_order_id_list,trucks = self.process_data(data,job_type)
-        if status==403:
-           return trucks,status
+        #if status==403:
+           #print("status------------",status)
+           #return trucks,status
         user_id = request_data.get('user_id')
         trans_date_time = convert_timestamp_to_ccls_date(request_data.get('trans_date_time'))
         if job_type==JobOrderType.CARTING_FCL.value:
@@ -50,7 +70,7 @@ class WarehouseUploadTallySheetView(object):
         return trucks,status
 
    def is_tallysheet_already_uploaded(self,query_object):
-      if query_object.filter(CTMSCargoJob.status==JobStatus.TALLYSHEET_UPLOADED.value):
+      if query_object.filter(CTMSCargoJob.status==JobStatus.TALLYSHEET_UPLOADED.value).first():
          return 403
       return 200
 
@@ -78,6 +98,19 @@ class WarehouseUploadTallySheetView(object):
          logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_REQUEST_DATA_FOR_UPLOAD_TALLYSHEET,'JT_'+str(job_type),request_parameter,job_details))
          upload_tallysheet_data(job_details,"CWHImportCrgLDGTS","cwhimportcrgldgts_client_ep","CWHImportCrgLDGTS_pt",request_parameter)
 
+
+   def format_uploaded_data(self,data,job_type):
+      result = []
+      cargo_details = data.pop('cargo_details')
+      for each_item in cargo_details:
+         each_item.update(data)
+         result.append(each_item)
+      return result
+   
+   def update_tallysheet_status_after_upload(self,ctms_job_order_id,request_parameter,job_type,trans_date_time):
+      db.session.query(CTMSCargoJob).filter(CTMSCargoJob.id==ctms_job_order_id).update({"status":JobStatus.TALLYSHEET_UPLOADED.value,"trans_date_time":trans_date_time})
+      db_response = db.session.commit()
+      logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_UPDATE_STATUS_AFTER_UPLOAD_TALLYSHEET,'JT_'+str(job_type),request_parameter,db_response))
 
    def process_data(self,data,job_type):
       result = []

@@ -151,6 +151,7 @@ class UpdateCargoDetails(object):
             cargo_details=cargo_details[0]
         if "stuffing_job_order" not in cargo_details or not cargo_details['stuffing_job_order']:
             cargo_details["stuffing_job_order"]='Y'
+        self.check_date_and_format_type(cargo_details,constants.CCLS_CRN_DATE)
         self.update_shipping_bill_details(cargo_details)
         self.update_container(cargo_details)
         cargo_details = self.update_stuffing_details_schema_for_serializer(cargo_details)

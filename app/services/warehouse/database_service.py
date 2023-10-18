@@ -28,7 +28,7 @@ class WarehouseDB(object):
     def print_tallysheet_details(self,query_object,request_parameter,job_type):
         result = []
         if query_object:
-            if job_type in [JobOrderType.DE_STUFFING_FCL.value,JobOrderType.DE_STUFFING_LCL.value]:
+            if job_type in [JobOrderType.DE_STUFFING_FCL.value,JobOrderType.DE_STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value]:
                 result = ViewTallySheetOrderSchema().dump(query_object)
             else:
                 result = ViewTallySheetOrderSchema().dump(query_object,many=True)

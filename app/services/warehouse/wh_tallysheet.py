@@ -56,12 +56,14 @@ class WarehouseTallySheetView(object):
                 query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.carting_details.has(CartingCargoDetails.con_date==filter_date)))
             if truck_number:
                 query_object = query_object.filter(CTMSCargoJob.truck_number==truck_number)
-        elif job_type==JobOrderType.STUFFING_FCL.value or job_type==JobOrderType.STUFFING_LCL.value or job_type==JobOrderType.DIRECT_STUFFING.value:
+        elif job_type==JobOrderType.STUFFING_FCL.value or job_type==JobOrderType.STUFFING_LCL.value:
             query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.crn_number==job_order)))
             if filter_date:
                 query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.crn_date==filter_date)))
             if container_number:
                 query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.container_number==container_number)))
+        elif job_type==JobOrderType.DIRECT_STUFFING.value:
+            query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.container_number==job_order)))
         elif job_type==JobOrderType.DE_STUFFING_FCL.value or job_type==JobOrderType.DE_STUFFING_LCL.value:
             query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.destuffing_details.has(DeStuffingCargoDetails.container_number==job_order)))
         elif job_type==JobOrderType.DELIVERY_FCL.value or job_type==JobOrderType.DELIVERY_LCL.value or job_type==JobOrderType.DIRECT_DELIVERY.value:
@@ -181,7 +183,7 @@ class WarehouseTallySheetView(object):
             query_object = self.get_ctms_job_obj(job_type,job_order,None,None,bills,filter_date)
         tallysheet_data = {}
         cargo_details = []
-        if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value,JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value,JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value]:
+        if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value,JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value,JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value]:
             result = WarehouseDB().print_tallysheet_details(query_object.all(),job_order,job_type)
             for each_item in result:
                 if job_type in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
@@ -245,8 +247,12 @@ class WarehouseTallySheetView(object):
                 con_number = tallysheet_data['cargo_carting_number']
                 query_object = db.session.query(CCLSCargoBillDetails).filter(CCLSCargoBillDetails.master_job_order_bill_details.has(MasterCargoDetails.carting_details.has(CartingCargoDetails.carting_order_number==con_number))).all()
             else:
-                crn_number = tallysheet_data['crn_number']
-                query_object = db.session.query(CCLSCargoBillDetails).filter(CCLSCargoBillDetails.master_job_order_bill_details.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.crn_number==crn_number))).all()
+                if job_type == JobOrderType.DIRECT_STUFFING.value:
+                    container_number = tallysheet_data['container_number']
+                    query_object = db.session.query(CCLSCargoBillDetails).filter(CCLSCargoBillDetails.master_job_order_bill_details.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.container_number==container_number))).all()
+                else:
+                    crn_number = tallysheet_data['crn_number']
+                    query_object = db.session.query(CCLSCargoBillDetails).filter(CCLSCargoBillDetails.master_job_order_bill_details.has(MasterCargoDetails.stuffing_details.has(StuffingCargoDetails.crn_number==crn_number))).all()
             result = CCLSCargoDetailsSchema().dump(query_object,many=True)
             total_package_count = 0
             for each_bill in result:

@@ -94,14 +94,14 @@ class DTMSRakeInwardReadService:
             wagon["destination_plct_time"] = each["DADDSTNPLCTTIME"]
             wagon["line_number"] = each["DACLINENUMB"]
             wagon["rlsd_time"] = each["DADRLSDTIME"]
-            wagon["wagon_number"] = each["DACWGONNUMB"]
+            wagon["wagon_number"] = each["DACWGONNUMB"].strip() if each["DACWGONNUMB"] else each["DACWGONNUMB"]
             wagon["wagon_type"] = each["DAVWGONTYPE"]
             wagon["sequence_number"] = each["DANSQNCNUMB"]
             wagon["wagon_ldd_mt"] = each["DACLEFLAG_WGON"]
             wagon["top_bottom_flag"] = each["DACTOPBTMFLAG"]
             wagon["man_wagon_cc"] = each["MANWGONCC"]
             wagon["container_id"] = each["DAVCNTRID"]
-            wagon["container_number"] = each["DACCNTRNUMB"]
+            wagon["container_number"] = each["DACCNTRNUMB"].strip() if each["DACCNTRNUMB"] else each["DACCNTRNUMB"]
             wagon["iso_code"] = each["DACCNTRTYPE"]
             wagon["container_size"] = each["DANCNTRSIZE"]
             wagon["container_type"] = each["DACCNTRTYPE"][2:4] if each["DACCNTRTYPE"] and len(each["DACCNTRTYPE"])>=4  else "GL"
@@ -199,6 +199,10 @@ class DTMSRakeInwardReadService:
             container_record[Constants.WAGON_NUMBER] = { Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:None}
             container_record[Constants.CONTAINER_STAT] = "E"
             container_record[Constants.CATEGORY] = "Domestic"
+            container_record[Constants.CONTAINER_STAT] = data[i].container_stat
+            container_record[Constants.KEY_CONTAINER_WEIGHT] = data[i].container_gross_weight
+            container_record[Constants.KEY_CONTAINER_SIZE] = data[i].container_size
+            container_record[Constants.KEY_CONTAINER_TYPE] = data[i].container_type
             response.append(container_record)
         return json.dumps(response)
 

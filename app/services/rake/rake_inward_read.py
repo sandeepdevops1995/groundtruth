@@ -166,7 +166,10 @@ class RakeInwardReadService:
                 container_record[Constants.KEY_SLINE_CODE] =  {Constants.VALUE : data[i].sline_code}
                 container_record[Constants.WAGON_NUMBER] = { Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:data[i].wagon_sequence_number}
                 # container_record[Constants.CONTAINER_STAT] = "L" if "container_gross_weight" in data[i] and data[i].container_gross_weight else "E"
-                container_record[Constants.CONTAINER_STAT] = "E"
+                container_record[Constants.CONTAINER_STAT] = data[i].container_stat
+                container_record[Constants.KEY_CONTAINER_WEIGHT] = data[i].container_gross_weight
+                container_record[Constants.KEY_CONTAINER_SIZE] = data[i].container_size
+                container_record[Constants.KEY_CONTAINER_TYPE] = data[i].container_type
                 # category: "Import/Export/Domestic/Transhipment"
                 container_record[Constants.CATEGORY] = category
                 if data[i].container_stat and data[i].container_stat.strip() == Constants.KEY_TRANSHIPMENT:

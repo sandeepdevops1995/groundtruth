@@ -386,6 +386,7 @@ ICD_LOCATIONS       = "icd_loc"
 USERS               = "users"
 EXIM_TRAIN_NUMBER   = "exim_train_number"
 DOM_TRAIN_NUMBER    = "dom_train_number"
+SEAL_DATE           = "seal_date"
 #container type mapping:
 
 CONTAINER_LENGTH_ISO_MAPPING ={

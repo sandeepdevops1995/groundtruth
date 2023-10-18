@@ -58,7 +58,7 @@ class TrainDetails(View):
             if from_date and to_date:
                 self.request_soap_api(trans_delay,rake_tx_type,from_date,to_date)
                 return Response({"message":"requested soap API"}, status=200, mimetype='application/json')
-            result = self.get_inward_summary_containers(data,rake_id,exim_train_number,dom_train_number,rake_tx_type,track_number,trans_delay,from_date,to_date)
+            result = self.get_inward_summary_containers(data,exim_train_number,dom_train_number,rake_id,rake_tx_type,track_number,trans_delay,from_date,to_date)
         elif rake_type == "DE":
             result = RakeOutwardPlanService.get_rake_plan(rake_id,exim_train_number,track_number)
         else:

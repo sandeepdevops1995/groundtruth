@@ -171,8 +171,13 @@ class DTMSRakeInwardReadService:
                 container_record[Constants.LDD_MT_FLAG] = {Constants.VALUE : data[i].ldd_mt_flg} 
                 container_record[Constants.KEY_SLINE_CODE] =  {Constants.VALUE : None}
                 container_record[Constants.WAGON_NUMBER] = { Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:None}
-                container_record[Constants.CONTAINER_STAT] = "E"
+                # container_record[Constants.CONTAINER_STAT] = "E"
                 container_record[Constants.CATEGORY] = "Domestic"
+                container_record[Constants.CONTAINER_STAT] = data[i].container_stat
+                container_record[Constants.KEY_CONTAINER_WEIGHT] = data[i].container_gross_weight
+                container_record[Constants.KEY_CONTAINER_SIZE] = data[i].container_size
+                container_record[Constants.KEY_CONTAINER_TYPE] = data[i].container_type
+                
                 response[Constants.CONTAINER_LIST].append(container_record)
         return json.dumps(response)
     

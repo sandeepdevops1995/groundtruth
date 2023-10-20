@@ -124,6 +124,8 @@ class WarehouseUploadTallySheetView(object):
          for each_item in cargo_details:
             if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value,JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
                trucks.append(each_item.get('truck_number'))
+            else:
+               trucks.append(each_item.get('container_number'))
             each_item.update(each_bill)
             result.append(each_item)
       return result,ctms_job_order_id_list,trucks

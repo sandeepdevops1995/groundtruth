@@ -521,8 +521,7 @@ class GateDbService:
             post_data[Constants.KEY_SOAP_G_USER_ID] = data["user_id"]
             post_data[Constants.KEY_SOAP_G_SLINE_CD] = data["sline_code"]
             post_data[Constants.KEY_SOAP_G_GATE_NO] = data["gate_no"]
-            if data["container_life_no"]:
-                post_data[Constants.KEY_SOAP_G_CTR_LIFE_NO] = datetime.strptime(data["container_life_no"], '%Y-%m-%d %H:%M:%S')
+            post_data[Constants.KEY_SOAP_G_CTR_LIFE_NO] = datetime.strptime(data["container_life_no"], '%Y-%m-%d %H:%M:%S') if data["container_life_no"] else None
             post_data[Constants.KEY_SOAP_G_DT_SEAL] = datetime.strptime(data["dt_seal"], '%Y-%m-%d %H:%M:%S')
             post_data[Constants.KEY_SOAP_G_HAZ_FLG] = "Y" if "hazard_status" in data and data["hazard_status"] else "N" 
             post_data[Constants.KEY_SOAP_G_STK_LOC] = data["stk_loc"] 

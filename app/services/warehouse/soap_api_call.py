@@ -134,6 +134,7 @@ def get_job_order_info(input_value,service_type,service_name,port_name,request_d
 
 def upload_tallysheet_data(job_info,service_type,service_name,port_name,request_parameter):
     try:
+        result = {}
         if config.IS_MOCK_ENABLED:
             logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_GET_REQUEST_TO_CCLS_TO_UPLOAD_TALLYSHEET,request_parameter,job_info))
             return "success"
@@ -152,8 +153,10 @@ def upload_tallysheet_data(job_info,service_type,service_name,port_name,request_
                 logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_UPLOAD_TALLYSHEET_TRIM_GRID_NO,request_parameter,wsdl_path,job_info['gridNo']))
             soap = zeep.Client(wsdl_path)
             update_env_ip_in_wsdl(soap,LM.KEY_UPLOAD_TALLYSHEET)
-            with soap.settings(raw_response=False):
-                result = soap.service.process(**job_info)
+            if config.IS_REQUIRED_TO_SEND_DATA_TO_CCLS:
+                with soap.settings(raw_response=False):
+                    result = soap.service.process(**job_info)
+                logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_DATA_SEND_TO_CCLS_WHILE_GENERATE_TALLYSHEET,request_parameter))
         logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_RESPONSE_FROM_CCLS_OF_UPLOAD_TALLYSHEET,request_parameter,result))
     except requests.exceptions.ConnectionError as e:
         raise ConnectionError('GTService: getting connection error while posting job details to ccls service').with_traceback(e.__traceback__)

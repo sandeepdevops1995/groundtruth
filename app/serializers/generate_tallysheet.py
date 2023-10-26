@@ -62,7 +62,7 @@ class CTMSCargoJobInsertSchema(ma.SQLAlchemyAutoSchema):
     end_time = fields.Integer(attribute='job_end_time')
     class Meta:
         model = CTMSCargoJob
-        fields = ("equipment_id", "ph_location", "start_time","end_time","total_package_count","total_no_of_packages_damaged","total_no_area","max_date_unloading","total_no_of_packages_excess","total_no_of_packages_short","gate_number","container_number","created_on_epoch","job_order_id","cargo_details","truck_number","serial_number","destuffing_date","seal_number")
+        fields = ("equipment_id", "ph_location", "start_time","end_time","total_package_count","total_no_of_packages_damaged","total_no_area","max_date_unloading","total_no_of_packages_excess","total_no_of_packages_short","gate_number","container_number","created_on_epoch","job_order_id","cargo_details","truck_number","serial_number","destuffing_date","seal_number","comments")
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE

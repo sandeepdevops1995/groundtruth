@@ -48,33 +48,9 @@ class WarehouseUploadTallySheetView(object):
             query_object = WarehouseTallySheetView().get_ctms_job_obj(job_type,request_parameter,None,None,bills,filter_date)
         if job_type in [JobOrderType.DE_STUFFING_FCL.value,JobOrderType.DE_STUFFING_LCL.value]:
            query_object = WarehouseTallySheetView().filter_with_bill_details(query_object,bills,job_type)
-        status = self.is_tallysheet_already_uploaded(query_object)
         data = WarehouseDB().upload_tallysheet_details(query_object.all(),request_parameter,job_type)
-        result,ctms_job_order_id_list,trucks = self.process_data(data,job_type)
-        #if status==403:
-           #print("status------------",status)
-           #return trucks,status
-        '''
-        user_id = request_data.get('user_id')
-        trans_date_time = convert_timestamp_to_ccls_date(request_data.get('trans_date_time'))
-        if job_type==JobOrderType.CARTING_FCL.value:
-           self.send_carting_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
-        elif job_type==JobOrderType.CARTING_LCL.value:
-           self.send_carting_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
-        elif job_type in  [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value]:
-           self.send_stuffing_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
-        elif job_type in  [JobOrderType.DE_STUFFING_FCL.value,JobOrderType.DE_STUFFING_LCL.value]:
-           self.send_destuffing_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
-        elif job_type in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
-           self.send_delivery_data_to_ccls(result,user_id,trans_date_time,request_parameter,job_type)
-        self.update_tallysheet_status(ctms_job_order_id_list,request_parameter,job_type,trans_date_time)
-        '''
-        return trucks,status
-
-   def is_tallysheet_already_uploaded(self,query_object):
-      if query_object.filter(CTMSCargoJob.status==JobStatus.TALLYSHEET_UPLOADED.value).first():
-         return 403
-      return 200
+        trucks_or_containers = self.process_data(data,job_type)
+        return trucks_or_containers
 
    def send_carting_data_to_ccls(self,result,user_id,trans_date_time,request_parameter,job_type):
       for each_job in result:
@@ -115,20 +91,16 @@ class WarehouseUploadTallySheetView(object):
       logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_UPDATE_STATUS_AFTER_UPLOAD_TALLYSHEET,'JT_'+str(job_type),request_parameter,db_response))
 
    def process_data(self,data,job_type):
-      result = []
-      ctms_job_order_id_list = []
-      trucks = []
+      trucks_or_containers = []
       for each_bill in data:
-         ctms_job_order_id_list.append(each_bill.get('id'))
          cargo_details = each_bill.pop('cargo_details')
          for each_item in cargo_details:
             if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value,JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
-               trucks.append(each_item.get('truck_number'))
+               trucks_or_containers.append(each_item.get('truck_number'))
             else:
-               trucks.append(each_item.get('container_number'))
+               trucks_or_containers.append(each_item.get('container_number'))
             each_item.update(each_bill)
-            result.append(each_item)
-      return result,ctms_job_order_id_list,trucks
+      return trucks_or_containers
    
    def update_tallysheet_status(self,ctms_job_order_id_list,request_parameter,job_type,trans_date_time):
       db.session.query(CTMSCargoJob).filter(CTMSCargoJob.id.in_(ctms_job_order_id_list)).update({"status":JobStatus.TALLYSHEET_UPLOADED.value,"trans_date_time":trans_date_time})

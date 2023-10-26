@@ -28,6 +28,7 @@ COMPOSE_IS_TRIM_GRID_NO_REQUIRED=${IS_TRIM_GRID_NO_REQUIRED}
 COMPOSE_IS_REVENUE_MOCK_ENABLED=${IS_REVENUE_MOCK_ENABLED}
 COMPOSE_REVENUE_WSDL_URL=${REVENUE_WSDL_URL}
 COMPOSE_CCLS_WSDL_URL=${CCLS_WSDL_URL}
+COMPOSE_IS_REQUIRED_TO_SEND_DATA_TO_CCLS=${IS_REQUIRED_TO_SEND_DATA_TO_CCLS}
 
 #read .env file in env folder
 env_file_path="./env/.env"
@@ -241,6 +242,13 @@ if ( [ $COMPOSE_CCLS_WSDL_URL ] ) then
 else 
     env_ccls_wsdl_url="$(sed -n -e 's/^.*CCLS_WSDL_URL.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
     export CCLS_WSDL_URL=$env_ccls_wsdl_url
+fi
+
+if ( [ $COMPOSE_IS_REQUIRED_TO_SEND_DATA_TO_CCLS ] ) then 
+    echo "is required to send data to ccls",${IS_REQUIRED_TO_SEND_DATA_TO_CCLS}
+else 
+    env_is_required_to_send_data_to_ccls="$(sed -n -e 's/^.*IS_REQUIRED_TO_SEND_DATA_TO_CCLS.*=//p' $env_file_path | tr -d \'\" | head -n 1 | tr -d ',' | xargs)"
+    export IS_REQUIRED_TO_SEND_DATA_TO_CCLS=$env_is_required_to_send_data_to_ccls
 fi
 
 }

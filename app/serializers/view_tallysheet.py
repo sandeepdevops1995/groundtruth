@@ -136,6 +136,7 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     cha_name = fields.Method("get_cha_name")
     serial_number = fields.Method("get_serial_number")
     seal_number = fields.Method("get_seal_number")
+    ccls_seal_number = fields.Method("get_ccls_seal_number")
     exporter_name = fields.Method("get_exporter_name")
     cargo_details = fields.Nested(CTMSbillDetailsSchema, many=True)
 
@@ -272,6 +273,8 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     
     def get_seal_number(self,obj):
         return obj.seal_number
+    
+    def get_ccls_seal_number(self,obj):
         return obj.ctms_job_order.seal_number
     
     def get_exporter_name(self,obj):
@@ -279,5 +282,5 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CTMSCargoJob
-        fields = ("id","cargo_carting_number","crn_number","gpm_number","gpm_date","total_package_count","job_type","container_flag","equipment_id","created_on_epoch",'container_number','job_start_time','job_end_time','sline_code','container_location_code','container_life','container_type','container_size','container_iso_code','private_or_concor_labour_flag','icd_location_code','handling_code','cargo_details',"gw_port_code","reserved_flag","contractor_job_order_no","contractor_job_order_date","gross_weight","cha_name","serial_number","destuffing_date","seal_number","created_at","updated_at","created_by","updated_by")
+        fields = ("id","cargo_carting_number","crn_number","gpm_number","gpm_date","total_package_count","job_type","container_flag","equipment_id","created_on_epoch",'container_number','job_start_time','job_end_time','sline_code','container_location_code','container_life','container_type','container_size','container_iso_code','private_or_concor_labour_flag','icd_location_code','handling_code','cargo_details',"gw_port_code","reserved_flag","contractor_job_order_no","contractor_job_order_date","gross_weight","cha_name","serial_number","ccls_seal_number","destuffing_date","seal_number","created_at","updated_at","created_by","updated_by",'comments')
         include_relationships = True

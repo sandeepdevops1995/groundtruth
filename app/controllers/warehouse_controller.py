@@ -37,9 +37,9 @@ class JobDetails(View):
     def post(self):
         request_data=request.json
         logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_GET_REQUEST_FROM_CTMS_FOR_UPLOAD_TALLYSHEET,'JT_'+str(request_data.get('job_type')),request_data.get('request_parameter')))
-        uploaded_trucks,status = WarehouseUploadTallySheetView().upload_tallysheet(request_data)
-        logger.info("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_TALLYSHEET_DATA_UPLOADED,'JT_'+str(request_data.get('job_type')),request_data.get('request_parameter'),uploaded_trucks))
-        return Response(json.dumps({"message":"tallysheet uploaded successfully",'uploaded_trucks':uploaded_trucks}), status=status, mimetype='application/json')
+        uploaded_trucks_or_containers = WarehouseUploadTallySheetView().upload_tallysheet(request_data)
+        logger.info("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_TALLYSHEET_DATA_UPLOADED,'JT_'+str(request_data.get('job_type')),request_data.get('request_parameter'),uploaded_trucks_or_containers))
+        return Response(json.dumps({"message":"tallysheet uploaded successfully",'uploaded_trucks_or_containers':uploaded_trucks_or_containers}), status=200, mimetype='application/json')
         
         
 class WarehouseTallySheet(View):

@@ -43,7 +43,12 @@ class WarehouseTallySheetView(object):
         return date_key_name
     
     def get_ctms_job_obj(self,job_type,job_order,truck_number,container_number,bills,filter_date):
-        query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==job_type))
+        if job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.DIRECT_STUFFING.value]:
+            query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type.in_([JobOrderType.STUFFING_FCL.value,JobOrderType.DIRECT_STUFFING.value])))
+        elif job_type in [JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value]:
+            query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type.in_([JobOrderType.DELIVERY_FCL.value,JobOrderType.DELIVERY_LCL.value,JobOrderType.DIRECT_DELIVERY.value])))
+        else:
+            query_object = db.session.query(CTMSCargoJob).filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.job_type==job_type))
         if job_type==JobOrderType.CARTING_FCL.value:
             query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.carting_details.has(CartingCargoDetails.crn_number==job_order)))
             if filter_date:

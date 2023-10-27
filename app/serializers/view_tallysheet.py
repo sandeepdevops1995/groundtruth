@@ -44,6 +44,7 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     importer_name = fields.Method("get_importer_name")
     no_of_packages_declared = fields.Method("get_no_of_packages_declared")
     cha_name = fields.Method("get_cha_name")
+    hsn_code = fields.Method("get_hsn_code")
 
     def get_shipping_bill(self, obj):
         return obj.ccls_bill.shipping_bill_number
@@ -64,7 +65,7 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
         return obj.ccls_bill.commodity.comm_cd if obj.ccls_bill.commodity else None
     
     def get_commodity_description(self, obj):
-        return obj.ccls_bill.commodity.comm_desc if obj.ccls_bill.commodity else None
+        return obj.ccls_bill.commodity.comm_desc if obj.ccls_bill and obj.ccls_bill.commodity else None
     
     def get_bill_date(self, obj):
         return obj.ccls_bill.bill_date
@@ -83,11 +84,14 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
     
     def get_cha_name(self, obj):
         return obj.ccls_bill.cha_name
+    
+    def get_hsn_code(self, obj):
+        return obj.ccls_bill.hsn_code
 
 
     class Meta:
         model = CTMSBillDetails
-        fields = ("id",'ctms_cargo_job_id',"shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","warehouse_name","stacking_type","bill_date","warehouse_id","ccls_grid_locations","gate_number","bol_date","exporter_name","importer_name","no_of_packages_declared","full_or_part_flag")
+        fields = ("id",'ctms_cargo_job_id',"shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","start_time","end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","warehouse_name","stacking_type","bill_date","warehouse_id","ccls_grid_locations","gate_number","bol_date","exporter_name","importer_name","no_of_packages_declared","full_or_part_flag",'hsn_code')
 
 
 class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
@@ -138,6 +142,9 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     seal_number = fields.Method("get_seal_number")
     ccls_seal_number = fields.Method("get_ccls_seal_number")
     exporter_name = fields.Method("get_exporter_name")
+    destuffing_plan_date = fields.Method("destuffing_plan_date")
+    cncl_flag = fields.Method("cncl_flag")
+    is_cargo_card_generated = fields.Method("is_cargo_card_generated")
     cargo_details = fields.Nested(CTMSbillDetailsSchema, many=True)
 
     def get_cargo_carting_number(self, obj):
@@ -280,7 +287,16 @@ class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):
     def get_exporter_name(self,obj):
         self.context['exporter_name'] =  obj.ctms_job_order.carting_details.exporter_name if obj.ctms_job_order.carting_details else None
 
+    def get_destuffing_plan_date(self,obj):
+        return obj.ctms_job_order.destuffing_details.destuffing_plan_date if obj.ctms_job_order.destuffing_details else None
+    
+    def get_cncl_flag(self,obj):
+        return obj.ctms_job_order.cncl_flag
+    
+    def get_is_cargo_card_generated(self,obj):
+        return obj.ctms_job_order.carting_details.is_cargo_card_generated if obj.ctms_job_order.carting_details else None
+
     class Meta:
         model = CTMSCargoJob
-        fields = ("id","cargo_carting_number","crn_number","gpm_number","gpm_date","total_package_count","job_type","container_flag","equipment_id","created_on_epoch",'container_number','job_start_time','job_end_time','sline_code','container_location_code','container_life','container_type','container_size','container_iso_code','private_or_concor_labour_flag','icd_location_code','handling_code','cargo_details',"gw_port_code","reserved_flag","contractor_job_order_no","contractor_job_order_date","gross_weight","cha_name","serial_number","ccls_seal_number","destuffing_date","seal_number","created_at","updated_at","created_by","updated_by",'comments')
+        fields = ("id","cargo_carting_number","crn_number","gpm_number","gpm_date","total_package_count","job_type","container_flag","equipment_id","created_on_epoch",'container_number','job_start_time','job_end_time','sline_code','container_location_code','container_life','container_type','container_size','container_iso_code','private_or_concor_labour_flag','icd_location_code','handling_code','cargo_details',"gw_port_code","reserved_flag","contractor_job_order_no","contractor_job_order_date","gross_weight","cha_name","serial_number","ccls_seal_number","destuffing_date","seal_number","created_at","updated_at","created_by","updated_by",'comments','destuffing_plan_date','cncl_flag','is_cargo_card_generated')
         include_relationships = True

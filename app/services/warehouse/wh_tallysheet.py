@@ -1,7 +1,7 @@
 from app.services.warehouse.database_service import WarehouseDB
 from app.enums import JobOrderType, JobStatus
 from app import postgres_db as db
-from app.models.warehouse.ctms_cargo_job import CTMSCargoJob
+from app.models.warehouse.ctms_cargo_job import CTMSCargoJob, CTMSBillDetails
 from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingCargoDetails, StuffingCargoDetails, DeStuffingCargoDetails, DeliveryCargoDetails, CCLSCargoBillDetails
 from app.serializers.generate_tallysheet import CTMSCargoJobInsertSchema
 from app.serializers.update_tallysheet import CTMSCargoJobUpdateSchema
@@ -80,6 +80,8 @@ class WarehouseTallySheetView(object):
     
     def filter_with_bill_details(self,query_object,bills,job_type):
         for each_bill in bills:
+            start_time = each_bill['start_time']
+            query_object = query_object.filter(CTMSCargoJob.cargo_details.any(CTMSBillDetails.start_time==start_time))
             if job_type in [JobOrderType.CARTING_FCL.value, JobOrderType.CARTING_LCL.value, JobOrderType.STUFFING_FCL.value, JobOrderType.STUFFING_LCL.value, JobOrderType.DIRECT_STUFFING.value]:
                 query_object = query_object.filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.shipping_bill_number==each_bill['bill_number'])))
                 # .filter(CTMSCargoJob.ctms_job_order.has(MasterCargoDetails.bill_details.any(CCLSCargoBillDetails.bill_date==each_bill['bill_date'])))
@@ -146,9 +148,17 @@ class WarehouseTallySheetView(object):
         elif job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value,JobOrderType.DE_STUFFING_FCL.value,JobOrderType.DE_STUFFING_LCL.value]:
             query_object = qs.filter(CTMSCargoJob.container_number==tally_sheet_data.get('container_number'))
         query_object = query_object.order_by(CTMSCargoJob.updated_at.desc())
+        query_object = self.check_start_time_exist_or_not(tally_sheet_data,query_object)
         if query_object.first():
             return True,query_object
         return False,None
+    
+    def check_start_time_exist_or_not(self,tally_sheet_data,query_object):
+        cargo_details = tally_sheet_data['cargo_details']
+        for each_bill in cargo_details:
+            start_time = each_bill['start_time']
+            query_object = query_object.filter(CTMSCargoJob.cargo_details.any(CTMSBillDetails.start_time==start_time))
+        return query_object
         
         
     def get_destuffing_date_for_delivery(self,container_number):

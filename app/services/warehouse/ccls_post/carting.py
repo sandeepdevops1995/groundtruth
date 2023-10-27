@@ -15,7 +15,7 @@ class BuildCartingObject(object):
         self.pkgCd = data.get('package_code',None)
         self.noPkgsUnldd = data.get('package_count',None)
         self.noPkgsDmg = int(data.get('damaged_count')) if data.get('damaged_count') else 0
-        self.crgCrdFlg = None
+        self.crgCrdFlg = data.get('is_cargo_card_generated',None)
         self.vehNo = data.get('truck_number',None)
         self.cnclFlg = data.get('cncl_flag',None)
         self.trnsDtTm = trans_date_time

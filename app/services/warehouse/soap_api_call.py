@@ -132,18 +132,21 @@ def get_job_order_info(input_value,service_type,service_name,port_name,request_d
         #raise Exception('GTService: getting internal error while fetching job details from ccls service').with_traceback(e.__traceback__)
     return result
 
-def upload_tallysheet_data(job_info,service_type,service_name,port_name,request_parameter):
+def upload_tallysheet_data(job_info,service_type,service_name,port_name,request_parameter,job_type):
     try:
         result = {}
+        start_time = datetime.now()
         if config.IS_MOCK_ENABLED:
             logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_GET_REQUEST_TO_CCLS_TO_UPLOAD_TALLYSHEET,request_parameter,job_info))
-            return "success"
-            wsdl_url = config.WSDL_URL+"/soa-infra/services/default/"+service_type+"/"+service_name+"?WSDL"
-            logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_GET_REQUEST_TO_CCLS_TO_UPLOAD_TALLYSHEET,request_parameter,wsdl_url,job_info))
-            soap = zeep.Client(wsdl=wsdl_url, 
-                        service_name=service_name,
-                        port_name=port_name)
-            result = soap.service.process(str(job_info))
+            service_url = service_name.strip('_ep')
+            wsdl_path = os.path.join(config.BASE_DIR,"modified_soap_wsdls_post",service_url+"_1.wsdl")
+            # return "success"
+            # wsdl_url = config.WSDL_URL+"/soa-infra/services/default/"+service_type+"/"+service_name+"?WSDL"
+            # logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_GET_REQUEST_TO_CCLS_TO_UPLOAD_TALLYSHEET,request_parameter,wsdl_url,job_info))
+            # soap = zeep.Client(wsdl=wsdl_url, 
+            #             service_name=service_name,
+            #             port_name=port_name)
+            # result = soap.service.process(str(job_info))
         else:
             service_url = service_name.strip('_ep')
             wsdl_path = os.path.join(config.BASE_DIR,"modified_soap_wsdls_post",service_url+"_1.wsdl")
@@ -158,6 +161,8 @@ def upload_tallysheet_data(job_info,service_type,service_name,port_name,request_
                     result = soap.service.process(**job_info)
                 logger.debug("{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_DATA_SEND_TO_CCLS_WHILE_GENERATE_TALLYSHEET,request_parameter))
         logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_RESPONSE_FROM_CCLS_OF_UPLOAD_TALLYSHEET,request_parameter,result))
+        end_time = datetime.now()
+        save_in_diagnostics(JobOrderType(job_type).name+":"+wsdl_path,str(job_info),{"output":str(result)},start_time,end_time,type=constants.KEY_CCLS_RESPONSE_TYPE)
     except requests.exceptions.ConnectionError as e:
         raise ConnectionError('GTService: getting connection error while posting job details to ccls service').with_traceback(e.__traceback__)
     except Exception as e:

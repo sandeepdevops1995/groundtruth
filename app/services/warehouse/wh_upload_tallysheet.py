@@ -56,32 +56,36 @@ class WarehouseUploadTallySheetView(object):
       for each_job in result:
          job_details = BuildCartingObject(each_job,user_id,trans_date_time).__dict__
          logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_REQUEST_DATA_FOR_UPLOAD_TALLYSHEET,'JT_'+str(job_type),request_parameter,job_details))
-         upload_tallysheet_data(job_details,"CWHExportCrgUNLDGTSWrite","cwhexportcrgunldgtsbpel_client_ep","CWHExportCrgUNLDGTSBPEL_pt",request_parameter)
+         upload_tallysheet_data(job_details,"CWHExportCrgUNLDGTSWrite","cwhexportcrgunldgtsbpel_client_ep","CWHExportCrgUNLDGTSBPEL_pt",request_parameter,job_type)
 
    def send_stuffing_data_to_ccls(self,result,user_id,trans_date_time,request_parameter,job_type):
       for each_job in result:
          job_details = BuildStuffingObject(each_job,user_id,trans_date_time).__dict__
          logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_REQUEST_DATA_FOR_UPLOAD_TALLYSHEET,'JT_'+str(job_type),request_parameter,job_details))
-         upload_tallysheet_data(job_details,"CWHExprtCrgDSTFWrite","cwhexprtcrgdstfwritebpel_client_ep","CWHExprtCrgDSTFWriteBPEL_pt",request_parameter)
+         upload_tallysheet_data(job_details,"CWHExprtCrgDSTFWrite","cwhexprtcrgdstfwritebpel_client_ep","CWHExprtCrgDSTFWriteBPEL_pt",request_parameter,job_type)
 
    def send_destuffing_data_to_ccls(self,result,user_id,trans_date_time,request_parameter,job_type):
       for each_job in result:
          job_details = BuildDeStuffingObject(each_job,user_id,trans_date_time).__dict__
          logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_REQUEST_DATA_FOR_UPLOAD_TALLYSHEET,'JT_'+str(job_type),request_parameter,job_details))
-         upload_tallysheet_data(job_details,"CWHImportCrgDSTFWrite","cwhimportcrgdstfwritebpel_client_ep","CWHImportCrgDSTFWriteBPEL_pt",request_parameter)
+         upload_tallysheet_data(job_details,"CWHImportCrgDSTFWrite","cwhimportcrgdstfwritebpel_client_ep","CWHImportCrgDSTFWriteBPEL_pt",request_parameter,job_type)
 
    def send_delivery_data_to_ccls(self,result,user_id,trans_date_time,request_parameter,job_type):
       for each_job in result:
          job_details = BuildDeliveryObject(each_job,user_id,trans_date_time).__dict__
          logger.debug("{},{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_UPLOAD_TALLYSHEET,LM.KEY_REQUEST_DATA_FOR_UPLOAD_TALLYSHEET,'JT_'+str(job_type),request_parameter,job_details))
-         upload_tallysheet_data(job_details,"CWHImportCrgLDGTS","cwhimportcrgldgts_client_ep","CWHImportCrgLDGTS_pt",request_parameter)
+         upload_tallysheet_data(job_details,"CWHImportCrgLDGTS","cwhimportcrgldgts_client_ep","CWHImportCrgLDGTS_pt",request_parameter,job_type)
 
 
    def format_uploaded_data(self,data,job_type):
       result = []
       cargo_details = data.pop('cargo_details')
+      no_of_bills=0
+      for each_item in cargo_details:
+         no_of_bills+=1
       for each_item in cargo_details:
          each_item.update(data)
+         each_item['no_of_bills'] = no_of_bills
          result.append(each_item)
       return result
    

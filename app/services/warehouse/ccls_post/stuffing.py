@@ -6,8 +6,8 @@ class BuildStuffingObject(object):
         self.ctrNo=data.get('container_number')
         self.ctrLifeNo=convert_timestamp_to_ccls_date(data.get('container_life')) if data.get('container_life') else None
         self.crn=data.get('crn_number',None)
-        self.dtStStf=convert_timestamp_to_ccls_date(data.get('start_time')) if data.get('start_time') else None
-        self.dtEndStf=convert_timestamp_to_ccls_date(data.get('end_time')) if data.get('end_time') else None
+        self.dtStStf=convert_timestamp_to_ccls_date(data.get('ctms_start_time')) if data.get('ctms_start_time') else None
+        self.dtEndStf=convert_timestamp_to_ccls_date(data.get('ctms_end_time')) if data.get('ctms_end_time') else None
         self.crgWt=data.get('packages_weight',None)
         self.sbillNo=data.get('shipping_bill',None)
         self.dtSbill=convert_timestamp_to_ccls_date(data.get('bill_date')) if data.get('bill_date') else None

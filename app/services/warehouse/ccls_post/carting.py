@@ -7,8 +7,8 @@ class BuildCartingObject(object):
         self.ctrNo = data.get('container_number')[0] if data.get('container_number') else "ABCD1234567"
         self.ctrLifeNo = convert_timestamp_to_ccls_date(data.get('container_life')) if data.get('container_life') else convert_timestamp_to_ccls_date(int(time.time())*1000)
         self.crn = data.get('crn_number') if data.get('crn_number') else data.get('cargo_carting_number',None)
-        self.dtStUnldg = convert_timestamp_to_ccls_date(data.get('start_time')) if data.get('start_time') else None
-        self.dtEndUnldg =  convert_timestamp_to_ccls_date(data.get('end_time')) if data.get('end_time') else None
+        self.dtStUnldg = convert_timestamp_to_ccls_date(data.get('ctms_start_time')) if data.get('ctms_start_time') else None
+        self.dtEndUnldg =  convert_timestamp_to_ccls_date(data.get('ctms_end_time')) if data.get('ctms_end_time') else None
         self.sbillNo = data.get('shipping_bill',None)
         self.dtSbill = convert_timestamp_to_ccls_date(data.get('bill_date')) if data.get('bill_date') else None
         self.commCd = data.get('commodity_code',None)

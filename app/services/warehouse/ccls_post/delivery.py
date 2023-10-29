@@ -30,8 +30,8 @@ class BuildDeliveryObject(object):
         self.pvtCncrFlg=data.get('private_or_concor_labour_flag',None)
         self.fullPartFlg=data.get('full_or_part_flag',None)
         self.gpNo=data.get('gpm_number',None)
-        self.dtStLdg=convert_timestamp_to_ccls_date(data.get('start_time')) if data.get('start_time') else None
-        self.dtEndLdg=convert_timestamp_to_ccls_date(data.get('end_time')) if data.get('end_time') else None
+        self.dtStLdg=convert_timestamp_to_ccls_date(data.get('ctms_start_time')) if data.get('ctms_start_time') else None
+        self.dtEndLdg=convert_timestamp_to_ccls_date(data.get('ctms_end_time')) if data.get('ctms_end_time') else None
         self.vehNo=data.get('truck_number',None)
         self.createdDate = data.get('created_at',None)
         self.createdBy = data.get('created_by',None)

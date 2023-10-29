@@ -228,8 +228,8 @@ class WarehouseTallySheetView(object):
         return tallysheet_data
     
     def update_start_and_end_time(self,tallysheet_data):
-        min_start_time = min(tallysheet_data['cargo_details'], key=lambda x:x['start_time'])['start_time'] if tallysheet_data['cargo_details'] else None
-        max_end_time = max(tallysheet_data['cargo_details'], key=lambda x:x['end_time'])['end_time'] if tallysheet_data['cargo_details'] else None
+        min_start_time = min(tallysheet_data['cargo_details'], key=lambda x:x['ctms_start_time'])['ctms_start_time'] if tallysheet_data['cargo_details'] else None
+        max_end_time = max(tallysheet_data['cargo_details'], key=lambda x:x['ctms_end_time'])['ctms_end_time'] if tallysheet_data['cargo_details'] else None
         tallysheet_data['start_time'] = min_start_time
         tallysheet_data['end_time'] = max_end_time
 

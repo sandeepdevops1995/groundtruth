@@ -34,8 +34,8 @@ class BuildDeliveryObject(object):
         self.dtEndLdg=convert_timestamp_to_ccls_date(data.get('ctms_end_time')) if data.get('ctms_end_time') else None
         self.vehNo=data.get('truck_number',None)
         self.createdDate = data.get('created_at',None)
-        self.createdBy = data.get('created_by',None)
+        self.createdBy = user_id#data.get('created_by',None)
         self.updatedDate = data.get('updated_at',None)
-        self.updatedBy = data.get('updated_by',None)
+        self.updatedBy = user_id#data.get('updated_by',None)
         self.errorMsg=None
         self.statusFlag=None

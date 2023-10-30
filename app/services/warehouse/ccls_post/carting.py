@@ -31,8 +31,8 @@ class BuildCartingObject(object):
         self.icdLocCd = data.get('icd_location_code',None)
         self.fullPartFlg=data.get('full_or_part_flag',None)
         self.createdDate = data.get('created_at',None)
-        self.createdBy = data.get('created_by',None)
+        self.createdBy = user_id#data.get('created_by',None)
         self.updatedDate = data.get('updated_at',None)
-        self.updatedBy = data.get('updated_by',None)
+        self.updatedBy = user_id#data.get('updated_by',None)
         self.errorMsg = None
         self.statusFlag = None

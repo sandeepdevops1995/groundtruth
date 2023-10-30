@@ -29,7 +29,7 @@ def upload_pendancy_data(data):
         if "ctrStat" in container and container["ctrStat"]:
             container_stat = CtrStat.query.filter_by(ctr_stat=container["ctrStat"]).all()
             container["ldd_mt_flg"] = container_stat[0].ldd_mt_flg if container_stat else None
-        if not container["ldd_mt_flg"]:
+        if not "ldd_mt_flg" in container or not container["ldd_mt_flg"]:
             container["ldd_mt_flg"] = "L" if container["container_weight"] else "E"
         record = PendancyContainer(**container)
         db.session.add(record)

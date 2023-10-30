@@ -181,6 +181,7 @@ class RakeData(View):
         rake_id = request.args.get(Constants.RAKE_ID,None)
         track_number = request.args.get(Constants.TRACK_NUMBER,None)
         rake_type = request.args.get(Constants.RAKE_TYPE,"AR")
+        trans_type = request.args.get(Constants.RAKE_TX_TYPE,"HYBRID")
         data = {}        
         if rake_id:
             data["rake_id"]=rake_id
@@ -193,11 +194,28 @@ class RakeData(View):
             message = "please provide query parameters"
             return Response(json.dumps({"message":message}), status=204,mimetype='application/json')
         logger.info('GT,Get request from the Rake service : {} {} {}'.format(rake_id,rake_number,track_number))
-        result = RakeInwardReadService.get_train_details(data)
-        if not json.loads(result):
-            result = DTMSRakeInwardReadService.get_train_details(data)
-        logger.info('Conainer details response')
-        return Response(result, status=200, mimetype='application/json')
+        result = {}
+        if trans_type in [Constants.EXIM_RAKE, Constants.HYBRID_RAKE]:
+            exim_containers = RakeInwardReadService.get_train_details(data)
+            result = json.loads(exim_containers) if exim_containers else {}
+        if trans_type in [Constants.DOMESTIC_RAKE, Constants.HYBRID_RAKE] :
+            dom_containers = DTMSRakeInwardReadService.get_train_details(data)
+            if dom_containers:
+                dom_containers = json.loads(dom_containers) if dom_containers else {}
+            if result and dom_containers:
+                if Constants.WAGON_LIST in dom_containers:
+                    if Constants.WAGON_LIST in result:
+                        result[Constants.WAGON_LIST] += dom_containers[Constants.WAGON_LIST]
+                    else:
+                        result[Constants.WAGON_LIST] = dom_containers[Constants.WAGON_LIST]
+                if Constants.CONTAINER_LIST in dom_containers:
+                    if Constants.CONTAINER_LIST in result:
+                        result[Constants.CONTAINER_LIST] += dom_containers[Constants.CONTAINER_LIST]
+                    else:
+                        result[Constants.CONTAINER_LIST] = dom_containers[Constants.CONTAINER_LIST]
+            elif dom_containers:
+                result = dom_containers
+        return Response(json.dumps(result), status=200, mimetype='application/json')
 
 class PendancyList(View):
     @custom_exceptions

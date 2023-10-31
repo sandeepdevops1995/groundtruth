@@ -99,7 +99,7 @@ class CTMSbillDetailsSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CTMSBillDetails
-        fields = ("id",'ctms_cargo_job_id',"shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","ctms_start_time","ctms_end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","warehouse_name","stacking_type","bill_date","warehouse_id","ccls_grid_locations","gate_number","bol_date","exporter_name","importer_name","no_of_packages_declared","full_or_part_flag",'hsn_code')
+        fields = ("id",'ctms_cargo_job_id',"shipping_bill", "bill_of_entry","bill_of_lading","package_code","package_count","package_weight","damaged_packages_weight","area","area_damaged","grid_locations","truck_number","ctms_start_time","ctms_end_time","cha_code","commodity_code","commodity_description","no_of_packages_damaged","warehouse_name","stacking_type","bill_date","warehouse_id","ccls_grid_locations","gate_number","bol_date","exporter_name","importer_name","no_of_packages_declared","full_or_part_flag",'hsn_code','from_packet','to_packet')
 
 
 class ViewTallySheetOrderSchema(ma.SQLAlchemyAutoSchema):

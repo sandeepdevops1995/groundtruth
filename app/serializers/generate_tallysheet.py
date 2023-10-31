@@ -29,7 +29,7 @@ class CTMSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
     
     class Meta:
         model = CTMSBillDetails
-        fields = ("full_or_part_destuff", "package_count","damaged_count","area_of_cargo","grid_number","grid_locations","ccls_grid_locations","packages_weight","damaged_packages_weight","start_time","end_time","warehouse_name","concor_warehouse_id","stacking_type","area_of_damaged_cargo","gate_number","full_or_part_flag")
+        fields = ("full_or_part_destuff", "package_count","damaged_count","area_of_cargo","grid_number","grid_locations","ccls_grid_locations","packages_weight","damaged_packages_weight","start_time","end_time","warehouse_name","concor_warehouse_id","stacking_type","area_of_damaged_cargo","gate_number","full_or_part_flag","from_packet","to_packet")
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE

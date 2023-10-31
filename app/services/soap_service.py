@@ -239,6 +239,33 @@ def update_inward_rake(rake_data,api_url="Inward Write"):
         logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = {}
         return result
+
+def update_domestic_inward_rake(rake_data,api_url="DOM Yard INWARD Write"):
+    result = []
+    try:
+        wsdl_url = config.WSDL_URL+'/soa-infra/services/default/DTMSRakeWrite/dtmsrakewrite_client_ep?WSDL'
+        soap = zeep.Client(wsdl=wsdl_url, 
+                        service_name="dtmsrakewrite_client_ep",
+                        port_name="DTMSRakeWrite_pt")
+        logger.debug('Update DOM Inward Rake Details, soap service request with data : '+ str(rake_data))
+        start_time = datetime.now()
+        result = soap.service.process(**rake_data)
+        end_time = datetime.now()
+        save_in_diagnostics(api_url,{"data":str(rake_data)},{"output":str(result)},start_time,end_time)
+        logger.debug('Update DOM Inward Rake Details, soap service response : '+ str(result))
+        return result
+    except Exception as e:
+        logger.exception('Update DOM Inward rake details, Exception : '+str(e))
+        failed_data = {
+            "method_name":"update_domestic_inward_rake",
+            "request_data":{
+                "rake_data":rake_data
+            }
+        }
+        failed_data=json.dumps(failed_data, default=str)
+        cache.rpush("ground_truth_queue",failed_data)
+        logger.debug("Added to cache retry mechanism, details:  " +failed_data)
+        return result
     
 def get_pendancy_details(gateway_port_data,api_url="/pendency_containers"):
     try: 
@@ -400,13 +427,16 @@ def update_outward_rake(rake_data,api_url="EXIM Yard Outward Write"):
         result = {}
         return result          
 
-def update_domestic_inward_rake(rake_data,api_url="DOM Yard Outward Write"):
+def update_domestic_outward_rake(rake_data,api_url="DOM Yard Outward Write"):
     result = []
+    logger.info("Soap API is not integrated for VGO Survey , requested_data : "+str(rake_data))
+    return result
+    # TODO: SOAP API Integraton is pending
     try:
-        wsdl_url = config.WSDL_URL+'/soa-infra/services/default/DTMSRakeWrite/dtmsrakewrite_client_ep?WSDL'
+        wsdl_url = config.WSDL_URL+''
         soap = zeep.Client(wsdl=wsdl_url, 
-                        service_name="dtmsrakewrite_client_ep",
-                        port_name="DTMSRakeWrite_pt")
+                        service_name="",
+                        port_name="")
         logger.debug('Update DOM Outward Rake Details, soap service request with data : '+ str(rake_data))
         start_time = datetime.now()
         result = soap.service.process(**rake_data)
@@ -417,7 +447,7 @@ def update_domestic_inward_rake(rake_data,api_url="DOM Yard Outward Write"):
     except Exception as e:
         logger.exception('Update DOM Domestic outward rake details, Exception : '+str(e))
         failed_data = {
-            "method_name":"update_domestic_inward_rake",
+            "method_name":"update_domestic_outward_rake",
             "request_data":{
                 "rake_data":rake_data
             }
@@ -480,3 +510,30 @@ def update_domestic_container_stack_location(stack_data):
         cache.rpush("ground_truth_queue",failed_data)
         logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         return result
+        
+def get_domestic_yard_container_details(data):
+    try:
+        logger.debug('Get Domestic Yard Container Details, soap service request with data : '+ str(data))
+        wsdl_url = config.WSDL_URL+'/soa-infra/services/default/DTMSYard/dtmsyardinvbpel_client_ep?WSDL'
+        soap = zeep.Client(wsdl=wsdl_url, 
+                        service_name="dtmsyardinvbpel_client_ep",
+                        port_name="DTMSYardInvBPEL_pt",transport=transport)
+        start_time = datetime.now()
+        result = soap.service.process(**data)
+        end_time = datetime.now()
+        save_in_diagnostics(Constants.DTMS_CONTAINER_DETAILS,{"data":str(data)},{"output":str(result)},start_time,end_time)
+        logger.debug('Get Domestic Yard Container Details,soap service response : '+ str(result))
+        return result
+    except Exception as e:
+        logger.exception('Get Domestic Yard Container Details, Exception : '+str(e))
+        failed_data = {
+            "method_name":"get_domestic_yard_container_details",
+            "request_data":{
+                "data":data
+            }
+        }
+        failed_data=json.dumps(failed_data, default=str)
+        cache.rpush("ground_truth_queue",failed_data)
+        logger.debug("Added to cache retry mechanism, details:  " +failed_data)
+        result = {}
+        return result 

@@ -77,6 +77,44 @@ class YardDbService:
         elif stack_location == "Track":
             return "RS"
         return stack_location
+    
+    def get_domestic_container_details(container_number,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+               pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                data = {"ctr_number":container_number}
+                response  = get_domestic_yard_container_details(data)
+                result = YardDbService.format_domestic_container_details(response)
+                return result
+        except Exception as e:
+            logger.exception('Get Domestic Container Details, Exception : '+str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
+                YardDbService.get_domestic_container_details(data,count)
+        return{}
 
-        
-        
+    def format_domestic_container_details(ccls_data):
+        data = {}
+        data["terminal_code"] = ccls_data["davtrmncode"]
+        data["container_number"] = ccls_data["daccntrnumb"]
+        data["container_size"] = ccls_data["dancntrsize"]
+        data["container_type"] = ccls_data["daccntrtype"]
+        data["loaded_empty_flag"] = ccls_data["dacleflag"]
+        data["container_special_flag"] = ccls_data["daccntrspclflag"]
+        data["stack_location"] = ccls_data["dacstcklocn"]
+        data["prev_stack_location"] = ccls_data["dacprevstcklocn"]
+        data["ISO_DSO_flag"] = ccls_data["dacisodsoflag"]
+        data["crntstts"] = ccls_data["daccrntstts"]
+        data["crntstts_time"] = ccls_data["dadcrntsttstime"].strftime("%Y-%m-%dT%H:%M:%S")
+        data["prvsstts"] = ccls_data["davprvsstts"]
+        data["csf_code"] = ccls_data["dacsfcode"]
+        data["cbtgstrg_flag"] = ccls_data["daccbtgstrgflag"]
+        data["container_weight"] = float(ccls_data["dancntrcc"])
+        data["container_tare_weight"] = float(ccls_data["dancntrtare"])
+        data["seal_number"] = ccls_data["dannumbseal"]
+        data["handling_over_date"] = ccls_data["dadhndgoverdate"].strftime("%Y-%m-%dT%H:%M:%S")
+        data["sline_code"] = ccls_data["dacshiplinecode"]
+        data["vldt_flag"] = ccls_data["dacvldtflag"]
+        data["container_owner_flag"] = ccls_data["daccntrownerflag"]

@@ -7,7 +7,7 @@ from app.controllers.rake_controller import *
 from app.controllers.warehouse_controller import JobDetails,WarehouseTallySheet,WarehouseCommodities,WarehousePrintTallySheet, WarehouseRevenue,GetRevenueInfo
 from app.controllers.GT_upload_controller import TrainSummary,PendancySummary
 from app.controllers.master_controller import *
-from app.controllers.yard_controller import StackLocation
+from app.controllers.yard_controller import StackLocation,DomesticContainerDetails
 
 import app.constants as Constants 
 
@@ -28,6 +28,7 @@ def register_controllers():
     api.add_resource(UpdateCGISurvey,Constants.CGI_SURVEY_ENDPOINT)
     api.add_resource(UpdateCGOSurvey,Constants.CGO_SURVEY_ENDPOINT)
     api.add_resource(UpdateVGISurvey,Constants.VGI_SURVEY_ENDPOINT)
+    api.add_resource(UpdateVGOSurvey,Constants.VGO_SURVEY_ENDPOINT)
     api.add_resource(RakeInContainer,Constants.RAKE_INWARD_CONTAINER_ENDPOINT)
     api.add_resource(CclsResponseData,'/ccls_response_data')
     api.add_resource(TrainNumberDetails,'/train_number')
@@ -50,6 +51,7 @@ def register_controllers():
     api.add_resource(PendancyList,Constants.PENDANCY_CONTAINERS_ENDPOINT)
     api.add_resource(DomesticPendancyList,Constants.DOMESTIC_PENDENCY_CONTAINERS_ENDPOINT)
     api.add_resource(UpdateRakeContainerDetails,Constants.UPDATE_RAKE_CONTAINER_ENDPOINT)
+    api.add_resource(DomesticContainerDetails,Constants.DTMS_CONTAINER_DETAILS)
     
     
     # Warehouse

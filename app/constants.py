@@ -21,11 +21,13 @@ TRACK_DETAILS = '/track_details'
 CGI_SURVEY_ENDPOINT = '/cgi_survey'
 CGO_SURVEY_ENDPOINT = '/cgo_survey'
 VGI_SURVEY_ENDPOINT = '/vgi_survey'
+VGO_SURVEY_ENDPOINT = '/vgo_survey'
 RAKE_INWARD_CONTAINER_ENDPOINT = "/rake_inward_container"
 WAGON_ENDPOINT = '/wagon'
 GATEWAY_PORT_ENDPOINT = '/gateway_port'
 STATION_ENDPOINT = '/station'
 UPDATE_RAKE_CONTAINER_ENDPOINT = '/update_rake_container'
+DTMS_CONTAINER_DETAILS = '/dtms_container_details'
 CONTAINER_STAT_ENDPOINT = "/container_stat"
 TRACK_MASTER_DATA_ENDPOINT = '/track_mstr_data'
 

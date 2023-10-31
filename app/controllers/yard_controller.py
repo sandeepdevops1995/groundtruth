@@ -43,3 +43,18 @@ class StackLocation(View):
         result = YardDbService.update_container_location(data)
         logger.info('Conainer Stack Location  details response: {}'.format(result))
         return soap_API_response(result)
+    
+class DomesticContainerDetails(View):
+    @custom_exceptions
+    @api_auth_required
+    def get(self):
+        container_no = request.args.get(Constants.KEY_CN_NUMBER)
+        response = {}
+        if container_no:
+            response =  YardDbService.get_domestic_container_details(container_no)
+        else:
+            return Response({"message":"container number is mandatory"}, status=400, mimetype='application/json')
+        if response:
+            return Response(response, status=200, mimetype='application/json')
+        else:
+            return Response(response, status=204, mimetype='application/json')

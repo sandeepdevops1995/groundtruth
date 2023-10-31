@@ -37,7 +37,7 @@ class PendancyService():
             data["gateway_port_code"] = each["gwPortCd"]
             data["arrival_date"] = each["arrDate"]
             data["seal_number"] = each["sealNo"]
-            data["seal_date"] = each["sealDate"]
+            data["seal_date"] = each["dtSeal"]
             data["sbill_number"] = each["sbillNo"] if "sbillNo" in each else None
             data["sbill_date"] = each["sbillDt"] if "sbillDt" in each else None
             data["cargo_flag"] = each["crgType"] if "crgType" in each else None
@@ -137,13 +137,13 @@ class PendancyService():
                             data = soap_service.get_empty_pendancy_details(request_params)
                             if data:
                                 for obj in data:
-                                    obj['ctrType'] = 'N/A'
-                                    obj['ctrActyCd'] = 'N/A'
-                                    obj['stfAt'] = 'N/A'
+                                    obj['ctrType'] = None
+                                    obj['ctrActyCd'] = None
+                                    obj['stfAt'] = None
                                     obj['arrDate'] = None
-                                    obj['sealDate'] = None
-                                    obj['sealNo'] = 'N/A'
-                                    obj['odcFlg'] = 'N/A'
+                                    obj['dtSeal'] = obj['dtActy']
+                                    obj['sealNo'] = None
+                                    obj['odcFlg'] = None
                                     obj['wt'] = 0
                                 final_data += PendancyService.format_data_from_ccls(data,PendencyType.EMPTY.value,True)
 

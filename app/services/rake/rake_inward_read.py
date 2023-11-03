@@ -170,6 +170,7 @@ class RakeInwardReadService:
                 container_record[Constants.KEY_CONTAINER_WEIGHT] = data[i].container_gross_weight
                 container_record[Constants.KEY_CONTAINER_SIZE] = data[i].container_size
                 container_record[Constants.KEY_CONTAINER_TYPE] = data[i].container_type
+                container_record[Constants.KEY_TRAIN_DEPT_TIME] = str(data[i].train_dept)
                 # category: "Import/Export/Domestic/Transhipment"
                 container_record[Constants.CATEGORY] = category
                 if data[i].container_stat and data[i].container_stat.strip() == Constants.KEY_TRANSHIPMENT:

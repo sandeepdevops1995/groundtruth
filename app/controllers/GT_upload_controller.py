@@ -73,7 +73,7 @@ class PendancySummary(View):
         data = get_xml_file_data_to_dict()
         if "RR_EXP_LDD_LST" in data:
             container_list = self.process_pendancy_summary(data['RR_EXP_LDD_LST'],PendencyType.LOADED.value)
-        if "RR_EXP_LCL_LST" in data:
+        elif "RR_EXP_LCL_LST" in data:
             container_list = self.process_pendancy_summary(data['RR_EXP_LCL_LST'],PendencyType.EXPRESS_LCL.value)
         elif "RR_EXP_LDD_BLK" in data:
             container_list = self.process_pendancy_summary(data['RR_EXP_LDD_BLK'],PendencyType.BLOCK.value)

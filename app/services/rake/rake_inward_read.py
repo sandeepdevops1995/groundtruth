@@ -49,12 +49,12 @@ class RakeInwardReadService:
             if 'rake_id' in query_values:
                 missed_containers = MissedInwardContainers.query.filter_by(rake_id=query_values['rake_id'],trans_type=Constants.EXIM_RAKE).all()
                 data = data + missed_containers
-            if not data and "train_number" in query_values:
-                logger.info("fetch train details from soap service for train number "+query_values['train_number'])
-                result = soap_service.get_exim_train_details(train_number=query_values['train_number'])
-                if result:
-                    logger.info("Data exists in Soap Servcie for given train number "+query_values['train_number'])
-                    data = RakeInwardReadService.save_in_db(result)
+            # if not data and "train_number" in query_values:
+            #     logger.info("fetch train details from soap service for train number "+query_values['train_number'])
+            #     result = soap_service.get_exim_train_details(train_number=query_values['train_number'])
+            #     if result:
+            #         logger.info("Data exists in Soap Servcie for given train number "+query_values['train_number'])
+            #         data = RakeInwardReadService.save_in_db(result)
             return RakeInwardReadService.format_rake_data(data)
             
         except Exception as e:

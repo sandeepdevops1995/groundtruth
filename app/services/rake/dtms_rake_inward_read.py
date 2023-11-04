@@ -55,12 +55,12 @@ class DTMSRakeInwardReadService:
                 missed_containers = MissedInwardContainers.query.filter_by(rake_id=query_values['rake_id'],trans_type=Constants.DOMESTIC_RAKE).all()
                 if missed_containers:
                     missed_container_data = json.loads(RakeInwardReadService.format_rake_data(missed_containers,category="Domestic"))
-            if not data and "train_number" in query_values:
-                logger.info("fetch train details from soap service for train number "+query_values['train_number'])
-                result = soap_service.get_domestic_train_details(train_number=query_values['train_number'])
-                if result:
-                    logger.info("Data exists in Soap Servcie for given train number "+query_values['train_number'])
-                    data = DTMSRakeInwardReadService.save_in_db(result)
+            # if not data and "train_number" in query_values:
+            #    logger.info("fetch train details from soap service for train number "+query_values['train_number'])
+            #    result = soap_service.get_domestic_train_details(train_number=query_values['train_number'])
+            #    if result:
+            #        logger.info("Data exists in Soap Servcie for given train number "+query_values['train_number'])
+            #        data = DTMSRakeInwardReadService.save_in_db(result)
             domestic_containers = json.loads(DTMSRakeInwardReadService.format_rake_data(data))
             if missed_container_data:
                 if domestic_containers:
@@ -126,7 +126,7 @@ class DTMSRakeInwardReadService:
                 result = DomesticContainers.query.filter_by(**query_fields)
                 if result.all():
                     result.update(dict(wagon))
-                    logger.info("Updated existing wagon")
+                    # logger.info("Updated existing wagon")
                 else:
                     db.session.add(wagon_model)
                 commit()

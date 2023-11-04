@@ -60,7 +60,7 @@ class CCLSRake(db.Model):
     error_msg = db.Column(db.String(100))
     status_flg = db.Column(db.String(1), nullable=True)
     track_number = db.Column(db.String(10), nullable=True)
-    comm_desc = db.Column(db.String(25))
+    comm_desc = db.Column(db.String(200))
     comm_type = db.Column(db.String(25))
     final_destination =  db.Column(db.String(25))
     importer_name =  db.Column(db.String(200))

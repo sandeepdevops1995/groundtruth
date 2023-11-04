@@ -184,7 +184,8 @@ def get_exim_train_details(train_number='',from_date='', to_date = ''):
     
 def get_domestic_train_details(train_number='',from_date='', to_date = ''):
     try:
-        wsdl_url = config.WSDL_URL+'/soa-infra/services/default/DTMSRakeInwardProcess/dtmsrakeinwardapi_client_ep?WSDL'
+        #wsdl_url = config.WSDL_URL+'/soa-infra/services/default/DTMSRakeInwardProcess/dtmsrakeinwardapi_client_ep?WSDL'
+        wsdl_url = "http://10.1.100.102:8001/soa-infra/services/default/DTMSRakeInwardProcess/dtmsrakeinwardapi_client_ep?WSDL"
         soap = zeep.Client(wsdl=wsdl_url, 
                         service_name="dtmsrakeinwardapi_client_ep",
                         port_name="DTMSRakeInwardAPI_pt",transport=transport)

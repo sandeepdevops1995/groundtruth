@@ -32,7 +32,7 @@ class RakeOutwardWriteService():
         if Constants.KEY_DT_WTR in data:
             rake_data[Constants.KEY_SOAP_DT_WTR] = datetime.strptime(data[Constants.KEY_DT_WTR], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_EQUIPMENT_ID in data:
-            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data[Constants.KEY_EQUIPMENT_ID]].value if data[Constants.KEY_EQUIPMENT_ID] else "CHE"
+            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data[Constants.KEY_EQUIPMENT_ID]].value if data[Constants.KEY_EQUIPMENT_ID] else "RTG9"
         if Constants.KEY_GATEWAY_PORT_CD in data:
             rake_data[Constants.KEY_SOAP_GATEWAY_PORT_CD] = data[Constants.KEY_GATEWAY_PORT_CD]
         if Constants.KEY_CONTAINER_LIFE_NUMBER in data:
@@ -49,6 +49,8 @@ class RakeOutwardWriteService():
             rake_data[Constants.KEY_SOAP_SLINE_CODE] = data[Constants.KEY_SLINE_CODE]
         if Constants.ISO_CODE in data:
             rake_data[Constants.KEY_SOAP_ISO_CODE] = data[Constants.ISO_CODE]
+        if Constants.KEY_LDD_MT_FLG in data:
+            rake_data[Constants.KEY_SOAP_LDD_MT_FLG] = data[Constants.KEY_LDD_MT_FLG]
         if Constants.KEY_CONTAINER_SIZE in data:
             rake_data[Constants.KEY_SOAP_CONTAINER_SIZE] = data[Constants.KEY_CONTAINER_SIZE]
         if Constants.KEY_CONTAINER_TYPE in data:
@@ -67,10 +69,10 @@ class RakeOutwardWriteService():
             rake_data[Constants.KEY_SOAP_ATTRIBUTE1] = data[Constants.KEY_ATTRIBUTE1]
         if Constants.KEY_ATTRIBUTE2 in data:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE2] = data[Constants.KEY_ATTRIBUTE2]
-        if Constants.KEY_ATTRIBUTE3 in data:
-            rake_data[Constants.KEY_SOAP_ATTRIBUTE3] = data[Constants.KEY_ATTRIBUTE3]
-        if Constants.KEY_ATTRIBUTE4 in data:
-            rake_data[Constants.KEY_SOAP_ATTRIBUTE4] = data[Constants.KEY_ATTRIBUTE4]
+        if 'wagon_status' in data:
+            rake_data[Constants.KEY_SOAP_ATTRIBUTE3] = data['wagon_status']
+        if 'seal_number' in data:
+            rake_data[Constants.KEY_SOAP_ATTRIBUTE4] = data['seal_number']
         if Constants.KEY_ATTRIBUTE5 in data:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE5] = data[Constants.KEY_ATTRIBUTE5]
         if Constants.KEY_ATTRIBUTE6 in data:
@@ -92,7 +94,7 @@ class RakeOutwardWriteService():
         if Constants.KEY_READ_FLG in data:
             rake_data[Constants.KEY_SOAP_READ_FLG] = data[Constants.KEY_READ_FLG]
         if Constants.KEY_EQUIPMENT_NAME in data:
-            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data["equipment_name"]].value if data["equipment_name"] else "CHE"
+            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data["equipment_name"]].value if data["equipment_name"] else "RTG9"
         return rake_data
             
     @query_debugger()

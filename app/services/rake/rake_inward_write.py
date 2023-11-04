@@ -85,11 +85,11 @@ class RakeInwardWriteService():
         if Constants.KEY_DT_PLACEMENT in data:
             rake_data[Constants.KEY_SOAP_DT_PLACEMENT] = datetime.strptime(data[Constants.KEY_DT_PLACEMENT], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_EQUIPMENT_ID in data:
-            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data[Constants.KEY_EQUIPMENT_ID]].value if data[Constants.KEY_EQUIPMENT_ID] else "CHE"
+            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data[Constants.KEY_EQUIPMENT_ID]].value if data[Constants.KEY_EQUIPMENT_ID] else "RTG9"
         if Constants.KEY_ATTRIBUTE1 in data:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE1] = data[Constants.KEY_ATTRIBUTE1]
-        if Constants.KEY_ATTRIBUTE2 in data:
-            rake_data[Constants.KEY_SOAP_ATTRIBUTE2] = data[Constants.KEY_ATTRIBUTE2]
+        if 'wagon_status' in data:
+            rake_data[Constants.KEY_SOAP_ATTRIBUTE2] = data['wagon_status']
         if Constants.KEY_ATTRIBUTE3 in data:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE3] = data[Constants.KEY_ATTRIBUTE3]
         if Constants.KEY_ATTRIBUTE4 in data:
@@ -115,7 +115,7 @@ class RakeInwardWriteService():
         if Constants.KEY_READ_FLG in data:
             rake_data[Constants.KEY_SOAP_READ_FLG] = data[Constants.KEY_READ_FLG]
         if "equipment_name" in data:
-            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data["equipment_name"]].value if data["equipment_name"] else "CHE"
+            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data["equipment_name"]].value if data["equipment_name"] else "RTG9"
         return rake_data
         
         

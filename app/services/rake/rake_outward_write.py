@@ -69,8 +69,8 @@ class RakeOutwardWriteService():
             rake_data[Constants.KEY_SOAP_ATTRIBUTE1] = data[Constants.KEY_ATTRIBUTE1]
         if Constants.KEY_ATTRIBUTE2 in data:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE2] = data[Constants.KEY_ATTRIBUTE2]
-        if 'wagon_status' in data:
-            rake_data[Constants.KEY_SOAP_ATTRIBUTE3] = data['wagon_status']
+        if Constants.KEY_ATTRIBUTE3 in data:
+            rake_data[Constants.KEY_SOAP_ATTRIBUTE3] = data[Constants.KEY_ATTRIBUTE3]
         if 'seal_number' in data:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE4] = data['seal_number']
         if Constants.KEY_ATTRIBUTE5 in data:

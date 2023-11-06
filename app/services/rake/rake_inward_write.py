@@ -88,8 +88,8 @@ class RakeInwardWriteService():
             rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data[Constants.KEY_EQUIPMENT_ID]].value if data[Constants.KEY_EQUIPMENT_ID] else "RTG9"
         if Constants.KEY_ATTRIBUTE1 in data:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE1] = data[Constants.KEY_ATTRIBUTE1]
-        if 'wagon_status' in data:
-            rake_data[Constants.KEY_SOAP_ATTRIBUTE2] = data['wagon_status']
+        if Constants.KEY_ATTRIBUTE2 in data:
+            rake_data[Constants.KEY_SOAP_ATTRIBUTE2] = data[Constants.KEY_ATTRIBUTE2]
         if Constants.KEY_ATTRIBUTE3 in data:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE3] = data[Constants.KEY_ATTRIBUTE3]
         if Constants.KEY_ATTRIBUTE4 in data:

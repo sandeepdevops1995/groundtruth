@@ -103,9 +103,10 @@ class RakeInwardReadService:
             wagon["rec_no"] = each["REC_NO"][0] if "REC_NO" in each else None
             wagon["container_stat"] = each["CTR_STAT"][0] if "CTR_STAT" in each else None
             wagon["hazardious_status"] = each["HAZ_FLAG"][0] if "HAZ_FLAG" in each else None
+            wagon["wagon_ldd_mt"] = "L" if wagon["container_number"] else "E"
     
             if "SEAL_NO" in each:
-                wagon["seal_number"] = each["SEAL_NO"][0 ]
+                wagon["seal_number"] = each["SEAL_NO"][0]
             
             query_fields = {"wagon_number" : wagon["wagon_number"],
              "container_number" : wagon["container_number"],
@@ -153,7 +154,7 @@ class RakeInwardReadService:
             response[Constants.WAGON_LIST] = []
             response[Constants.CONTAINER_LIST] = []
             for i in range(len(data)):
-                wagon_record = {Constants.WAGON_NUMBER :{ Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:data[i].wagon_sequence_number}}
+                wagon_record = {Constants.WAGON_NUMBER :{ Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:data[i].wagon_sequence_number,Constants.WAGON_LDD_MT:str(data[i].wagon_ldd_mt)}}
                 response[Constants.WAGON_LIST].append(wagon_record)
                 container_record ={}
                 container_record[Constants.CONTAINER_NUMBER] = {Constants.VALUE : data[i].container_number}
@@ -164,7 +165,7 @@ class RakeInwardReadService:
                 container_record[Constants.ISO_CODE] = {Constants.VALUE : data[i].iso_code if data[i].iso_code else str(data[i].container_size)+str(data[i].container_type) if data[i].container_size and data[i].container_type else None}
                 container_record[Constants.LDD_MT_FLAG] = {Constants.VALUE : data[i].ldd_mt_flg} 
                 container_record[Constants.KEY_SLINE_CODE] =  {Constants.VALUE : data[i].sline_code}
-                container_record[Constants.WAGON_NUMBER] = { Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:data[i].wagon_sequence_number}
+                container_record[Constants.WAGON_NUMBER] = wagon_record[Constants.WAGON_NUMBER]
                 # container_record[Constants.CONTAINER_STAT] = "L" if "container_gross_weight" in data[i] and data[i].container_gross_weight else "E"
                 container_record[Constants.CONTAINER_STAT] = data[i].container_stat
                 container_record[Constants.KEY_CONTAINER_WEIGHT] = data[i].container_gross_weight
@@ -181,6 +182,7 @@ class RakeInwardReadService:
                     container_record[Constants.KEY_HAZARD] = Constants.KEY_CTMS_HAZARDOUS
 
                 response[Constants.CONTAINER_LIST].append(container_record)
+                logger.info("fetched CCLS data %s",response)
         return json.dumps(response)
     
 

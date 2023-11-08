@@ -390,6 +390,7 @@ USERS               = "users"
 EXIM_TRAIN_NUMBER   = "exim_train_number"
 DOM_TRAIN_NUMBER    = "dom_train_number"
 SEAL_DATE           = "seal_date"
+WAGON_LDD_MT        = "wagon_ldd_mt"
 #container type mapping:
 
 CONTAINER_LENGTH_ISO_MAPPING ={

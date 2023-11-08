@@ -121,6 +121,7 @@ class MissedInwardContainers(db.Model):
     rake_type = db.Column(db.String(5), nullable=True)
     wagon_number = db.Column(db.BigInteger(), nullable=True)
     wagon_sequence_number = db.Column(db.Integer(), nullable=True)
+    wagon_ldd_mt = db.Column(db.String(1), nullable=True)
     container_number = db.Column(db.String(11))
     container_life_number = db.Column(db.DateTime(), nullable=True) 
     container_size = db.Column(db.Integer(), nullable=True)
@@ -147,4 +148,3 @@ class MissedInwardContainers(db.Model):
     track_number = db.Column(db.String(10), nullable=True)
     trans_type = db.Column(db.String(10), nullable=True)
     train_dept = db.Column(db.DateTime())
-    wagon_ldd_mt = db.Column(db.String(5))

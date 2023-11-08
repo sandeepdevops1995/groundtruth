@@ -114,11 +114,11 @@ class DTMSRakeInwardReadService:
             wagon["container_net_weight"] = each["DANNETWGHT"]
             wagon["container_gross_weight"] = each["DANGROSSWGHT"]
             wagon["trans_date"] = each["DADWITHDRAWLTIME"]
+            wagon["wagon_ldd_mt"] = "L" if wagon["container_number"] else "E"
             query_fields = {"wagon_number" : wagon["wagon_number"],
              "container_number" : wagon["container_number"],
             "trans_date" : wagon["trans_date"],
             "train_number" : wagon["train_number"]}
-            wagon["wagon_ldd_mt"] = "L" if wagon["container_number"] else "E"
             
             # save in CCLSRake
             wagon_model = DomesticContainers(**wagon)

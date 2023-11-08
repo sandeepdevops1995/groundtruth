@@ -160,7 +160,7 @@ class DTMSRakeInwardReadService:
             response[Constants.WAGON_LIST] = []
             response[Constants.CONTAINER_LIST] = []
             for i in range(len(data)):
-                wagon_record = {Constants.WAGON_NUMBER :{ Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:None,Constants.WAGON_LDD_MT:str(data[i].wagon_ldd_mt)}}
+                wagon_record = {Constants.WAGON_NUMBER :{ Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:None,Constants.WAGON_LDD_MT:data[i].wagon_ldd_mt}}
                 response[Constants.WAGON_LIST].append(wagon_record)
                 container_record ={}
                 container_record[Constants.CONTAINER_NUMBER] = {Constants.VALUE : data[i].container_number}

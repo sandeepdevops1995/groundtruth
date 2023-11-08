@@ -150,6 +150,7 @@ class RakeInwardReadService:
             response[Constants.TRACK_NUMBER] = data[0].track_number
             response[Constants.RAKE_NUMBER]  = data[0].rake_number
             response[Constants.TRAIN_NUMBER]  = data[0].train_number
+            response[Constants.KEY_TRAIN_DEPT_TIME] = str(data[0].train_dept)
             response[Constants.RAKE_TYPE] = data[0].rake_type
             response[Constants.WAGON_LIST] = []
             response[Constants.CONTAINER_LIST] = []

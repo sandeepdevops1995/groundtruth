@@ -112,6 +112,10 @@ class RakeInwardReadService:
             # "container_life_number" : wagon["container_life_number"],
             "trans_date" : wagon["trans_date"],
             "train_number" : wagon["train_number"]}
+            if wagon["container_number"]:
+                wagon["wagon_ldd_mt"] = "L"
+            else:
+                wagon["wagon_ldd_mt"] = "E"
             
             # save in CCLSRake
             wagon_model = CCLSRake(**wagon)
@@ -153,7 +157,7 @@ class RakeInwardReadService:
             response[Constants.WAGON_LIST] = []
             response[Constants.CONTAINER_LIST] = []
             for i in range(len(data)):
-                wagon_record = {Constants.WAGON_NUMBER :{ Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:data[i].wagon_sequence_number}}
+                wagon_record = {Constants.WAGON_NUMBER :{ Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:data[i].wagon_sequence_number,Constants.LDD_MT_FLAG:data[i].wagon_ldd_mt}}
                 response[Constants.WAGON_LIST].append(wagon_record)
                 container_record ={}
                 container_record[Constants.CONTAINER_NUMBER] = {Constants.VALUE : data[i].container_number}
@@ -164,7 +168,7 @@ class RakeInwardReadService:
                 container_record[Constants.ISO_CODE] = {Constants.VALUE : data[i].iso_code if data[i].iso_code else str(data[i].container_size)+str(data[i].container_type) if data[i].container_size and data[i].container_type else None}
                 container_record[Constants.LDD_MT_FLAG] = {Constants.VALUE : data[i].ldd_mt_flg} 
                 container_record[Constants.KEY_SLINE_CODE] =  {Constants.VALUE : data[i].sline_code}
-                container_record[Constants.WAGON_NUMBER] = { Constants.NUMBER : str(data[i].wagon_number),Constants.KEY_ID:data[i].wagon_sequence_number}
+                container_record[Constants.WAGON_NUMBER] = wagon_record[Constants.WAGON_NUMBER]
                 # container_record[Constants.CONTAINER_STAT] = "L" if "container_gross_weight" in data[i] and data[i].container_gross_weight else "E"
                 container_record[Constants.CONTAINER_STAT] = data[i].container_stat
                 container_record[Constants.KEY_CONTAINER_WEIGHT] = data[i].container_gross_weight
@@ -181,6 +185,7 @@ class RakeInwardReadService:
                     container_record[Constants.KEY_HAZARD] = Constants.KEY_CTMS_HAZARDOUS
 
                 response[Constants.CONTAINER_LIST].append(container_record)
+        print(response)
         return json.dumps(response)
     
 

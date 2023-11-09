@@ -104,7 +104,7 @@ class DTMSRakeInwardReadService:
             wagon["container_number"] = each["DACCNTRNUMB"].strip() if each["DACCNTRNUMB"] else each["DACCNTRNUMB"]
             wagon["iso_code"] = each["DACCNTRTYPE"]
             wagon["container_size"] = each["DANCNTRSIZE"]
-            wagon["container_type"] = each["DACCNTRTYPE"][2:4] if each["DACCNTRTYPE"] and len(each["DACCNTRTYPE"])>=4  else "GL"
+            wagon["container_type"] = each["DACCNTRTYPE"]
             wagon["container_from_station"] = each["DAVSTTNFROM_CNTR"]
             wagon["container_to_station"] = each["DAVSTTNTO_CNTR"]
             wagon["ldd_mt_flg"] = each["DACLEFLAG_CNTR"]

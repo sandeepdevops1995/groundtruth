@@ -29,7 +29,7 @@ class DTMSRakeOutwardReadService:
             data["commodity_code"] = each["DAVCMDTCODE"]
             data["pendency_type"] = int(pendency_type)
             data["container_size"] = 20 if each["DACCNTRTYPE"] and each["DACCNTRTYPE"].startswith('2') else 40
-            data["container_type"] = each["DACCNTRTYPE"][2:] if each["DACCNTRTYPE"] else 'GL'
+            data["container_type"] = each["DACCNTRTYPE"]
             data["container_category"] = "Domestic"
             # data["container_tare_weight"] = float(each["MANTARE"])
             # data[""] = each["DACSRVCMODE"]

@@ -78,16 +78,25 @@ class WarehouseUploadTallySheetView(object):
 
 
    def format_uploaded_data(self,data,job_type):
+      total_package_count = data.get('total_package_count',0)
       result = []
       cargo_details = data.pop('cargo_details')
       no_of_bills=0
       for each_item in cargo_details:
          no_of_bills+=1
       for each_item in cargo_details:
+         self.get_short_or_excess(total_package_count,each_item)
          each_item.update(data)
          each_item['no_of_bills'] = no_of_bills
          result.append(each_item)
       return result
+   
+   def get_short_or_excess(self,total_package_count,each_item):
+      package_count = each_item.get('package_count')
+      if total_package_count>package_count:
+         each_item['short'] = total_package_count-package_count
+      elif package_count>total_package_count:
+         each_item['excess'] = package_count-total_package_count
    
    def update_tallysheet_status_after_upload(self,ctms_job_order_id,request_parameter,job_type,trans_date_time):
       db.session.query(CTMSCargoJob).filter(CTMSCargoJob.id==ctms_job_order_id).update({"status":JobStatus.TALLYSHEET_UPLOADED.value,"trans_date_time":trans_date_time})

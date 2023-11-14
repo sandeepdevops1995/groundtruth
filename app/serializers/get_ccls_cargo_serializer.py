@@ -53,6 +53,7 @@ class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
     gpm_created_date = fields.Method("get_gpm_created_date")
     fcl_or_lcl = fields.Integer(data_key='container_flag')
     container_number = fields.Method("get_container_number")
+    container_life = fields.Method("get_container_life")
     container_size = fields.Method("get_container_size")
     is_cargo_card_generated = fields.Method("get_is_cargo_card_generated")
     stuffing_job_order = fields.Method("get_stuffing_job_order")
@@ -122,8 +123,13 @@ class GetCCLSJobSchema(ma.SQLAlchemyAutoSchema):
     
     def get_gpm_valid_date(self,obj):
         return obj.delivery_details.gpm_valid_date if obj.delivery_details else None
+    
+    def get_container_life(self,obj):
+        if obj.carting_details:
+            return None
+        return obj.container_info.container_life  if obj.container_info else None
 
     class Meta:
         model = MasterCargoDetails
-        fields = ("cargo_carting_number", "container_flag", "container_number","container_size","crn_number","gpm_number","gpm_created_date","truck_details","bill_details","is_cargo_card_generated","sline_code","stuffing_job_order","destuffing_job_order","crn_date","con_date","gpm_valid_date","seal_number")
+        fields = ("cargo_carting_number", "container_flag", "container_number","container_size","crn_number","gpm_number","gpm_created_date","truck_details","bill_details","is_cargo_card_generated","sline_code","stuffing_job_order","destuffing_job_order","crn_date","con_date","gpm_valid_date","seal_number","container_life")
         include_relationships = True

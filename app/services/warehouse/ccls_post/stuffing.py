@@ -40,3 +40,5 @@ class BuildStuffingObject(object):
         self.updatedBy = user_id#data.get('updated_by',None)
         self.errorMsg=None
         self.statusFlag=None
+        self.attribute1 = data.get('short',0)
+        self.attribute2 = data.get('excess',0)

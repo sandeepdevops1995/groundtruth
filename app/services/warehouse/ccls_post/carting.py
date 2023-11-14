@@ -4,8 +4,8 @@ import time
 
 class BuildCartingObject(object):
     def __init__(self,data,user_id,trans_date_time):
-        self.ctrNo = data.get('container_number')[0] if data.get('container_number') else "ABCD1234567"
-        self.ctrLifeNo = convert_timestamp_to_ccls_date(data.get('container_life')) if data.get('container_life') else convert_timestamp_to_ccls_date(int(time.time())*1000)
+        self.ctrNo = data.get('container_number')[0] if data.get('container_number') else None
+        self.ctrLifeNo = convert_timestamp_to_ccls_date(data.get('container_life')) if data.get('container_life') else None
         self.crn = data.get('crn_number') if data.get('crn_number') else data.get('cargo_carting_number',None)
         self.dtStUnldg = convert_timestamp_to_ccls_date(data.get('ctms_start_time')) if data.get('ctms_start_time') else None
         self.dtEndUnldg =  convert_timestamp_to_ccls_date(data.get('ctms_end_time')) if data.get('ctms_end_time') else None

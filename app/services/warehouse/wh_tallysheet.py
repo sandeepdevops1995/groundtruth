@@ -238,10 +238,10 @@ class WarehouseTallySheetView(object):
         cargo_details = tallysheet_data['cargo_details']
         df = pd.DataFrame(cargo_details)
         aggregation_functions = self.build_aggregate_function(cargo_details)
-        group_by_key = 'truck_number'
+        group_by_key = ['truck_number','ctms_start_time']
         if job_type in [JobOrderType.STUFFING_FCL.value,JobOrderType.STUFFING_LCL.value,JobOrderType.DIRECT_STUFFING.value]:
-            group_by_key = 'container_number'
-        df = df.groupby(df[group_by_key]).aggregate(aggregation_functions)
+            group_by_key = ['container_number']
+        df = df.groupby(group_by_key).aggregate(aggregation_functions)
         result = json.loads(df.to_json(orient="records"))
         tallysheet_data['cargo_details'] = result
 

@@ -1,6 +1,5 @@
 from app.enums import ContainerFlag
 from app.controllers.utils import convert_timestamp_to_ccls_date
-import time
 
 class BuildCartingObject(object):
     def __init__(self,data,user_id,trans_date_time):
@@ -37,5 +36,5 @@ class BuildCartingObject(object):
         self.errorMsg = None
         self.statusFlag = None
         self.attribute1 = data.get('short',0)
-        self.attribute2 = data.get('excessPkg',0)
+        self.attribute2 = data.get('excess',0)
         self.attribute3 = data.get('full_or_part_flag',None)

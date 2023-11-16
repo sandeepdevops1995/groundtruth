@@ -3,6 +3,7 @@ from app import postgres_db as db
 from app.serializers.commodity_serializer import CCLSCommodityList
 from app.models.master.warehouse import Commodity as WarehouseCommodity
 from app.serializers.view_tallysheet import ViewTallySheetOrderSchema
+from app.serializers.get_data_to_send_ccls import GetTallySheetOrderSchema
 import app.logging_message as LM
 from app.models.warehouse.ccls_cargo_details import MasterCargoDetails, CartingCargoDetails, StuffingCargoDetails, DeStuffingCargoDetails, DeliveryCargoDetails
 from app.serializers.get_ccls_cargo_serializer import GetCCLSJobSchema
@@ -15,6 +16,13 @@ class WarehouseDB(object):
         result = {}
         if query_object:
             result = ViewTallySheetOrderSchema().dump(query_object)
+        logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_VIEW_TALLYSHEET,LM.KEY_FETCH_TALLYSHEET_DATA_FROM_DATABASE,'JT_'+str(job_type),request_parameter,result))
+        return result
+    
+    def get_tallysheet_details_for_ccls(self,query_object,request_parameter,job_type):
+        result = {}
+        if query_object:
+            result = GetTallySheetOrderSchema().dump(query_object)
         logger.debug("{},{},{},{},{},{}".format(LM.KEY_CCLS_SERVICE,LM.KEY_CCLS_WAREHOUSE,LM.KEY_VIEW_TALLYSHEET,LM.KEY_FETCH_TALLYSHEET_DATA_FROM_DATABASE,'JT_'+str(job_type),request_parameter,result))
         return result
     

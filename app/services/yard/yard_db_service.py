@@ -93,10 +93,12 @@ class YardDbService:
                 count=count-1 
                 time.sleep(Constants.KEY_RETRY_TIMEDELAY) 
                 YardDbService.get_domestic_container_details(data,count)
-        return{}
+        return {}
 
     def format_domestic_container_details(ccls_data):
         data = {}
+        if not ccls_data:
+            return data
         data["terminal_code"] = ccls_data["davtrmncode"]
         data["container_number"] = ccls_data["daccntrnumb"]
         data["container_size"] = ccls_data["dancntrsize"]
@@ -107,14 +109,15 @@ class YardDbService:
         data["prev_stack_location"] = ccls_data["dacprevstcklocn"]
         data["ISO_DSO_flag"] = ccls_data["dacisodsoflag"]
         data["crntstts"] = ccls_data["daccrntstts"]
-        data["crntstts_time"] = ccls_data["dadcrntsttstime"].strftime("%Y-%m-%dT%H:%M:%S")
+        data["crntstts_time"] = ccls_data["dadcrntsttstime"].strftime("%Y-%m-%d %H:%M:%S") if ccls_data["dadcrntsttstime"] else None
         data["prvsstts"] = ccls_data["davprvsstts"]
         data["csf_code"] = ccls_data["dacsfcode"]
         data["cbtgstrg_flag"] = ccls_data["daccbtgstrgflag"]
         data["container_weight"] = float(ccls_data["dancntrcc"])
         data["container_tare_weight"] = float(ccls_data["dancntrtare"])
         data["seal_number"] = ccls_data["dannumbseal"]
-        data["handling_over_date"] = ccls_data["dadhndgoverdate"].strftime("%Y-%m-%dT%H:%M:%S")
+        data["handling_over_date"] = ccls_data["dadhndgoverdate"].strftime("%Y-%m-%d %H:%M:%S") if ccls_data["dadhndgoverdate"] else None
         data["sline_code"] = ccls_data["dacshiplinecode"]
         data["vldt_flag"] = ccls_data["dacvldtflag"]
         data["container_owner_flag"] = ccls_data["daccntrownerflag"]
+        return data

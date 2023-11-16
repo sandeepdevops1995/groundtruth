@@ -538,3 +538,32 @@ def get_domestic_yard_container_details(data):
         logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = {}
         return result 
+
+
+def get_wagon_details(wagon_number):
+    result = []
+    try:
+        wsdl_url = config.WSDL_URL+'/soa-infra/services/default/WagonMaster/wagonmasterbpel_client_ep?WSDL'
+        soap = zeep.Client(wsdl=wsdl_url, 
+                        service_name="wagonmasterbpel_client_ep",
+                        port_name="WagonMasterBPEL_pt")
+        logger.debug('Get wagon details, soap service request with data wagon_number: '+ str(wagon_number))
+        start_time = datetime.now()
+        data =  {'WagonNumber': wagon_number}
+        result = soap.service.process(**data)
+        end_time = datetime.now()
+        save_in_diagnostics(Constants.WAGON_VALIDATION_ENDPOINT,{"data":str(data)},{"output":str(result)},start_time,end_time)
+        logger.debug('Get wagon details, soap service response : '+ str(result))
+        return result
+    except Exception as e:
+        logger.exception('Get wagon details, , Exception : '+str(e))
+        failed_data = {
+            "method_name":"get_wagon_details",
+            "request_data":{
+                "wagon_number":wagon_number
+            }
+        }
+        failed_data=json.dumps(failed_data, default=str)
+        cache.rpush("ground_truth_queue",failed_data)
+        logger.debug("Added to cache retry mechanism, details:  " +failed_data)
+        return result

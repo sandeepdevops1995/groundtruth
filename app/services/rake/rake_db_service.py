@@ -220,6 +220,29 @@ class RakeDbService:
                 RakeDbService.get_wagon_master_data(wagon_number,count)
 
     @query_debugger()
+    def validate_wagon_number(wagon_number,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
+        try:
+            response = {}
+            if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:
+                pass
+            elif config.GROUND_TRUTH == GroundTruthType.SOAP.value:
+                data  = soap_service.get_wagon_details(wagon_number)
+                if data :
+                    if data == "TRUE":
+                        response[wagon_number] =  True
+                    else:
+                        response[wagon_number] =  False
+            return response
+            
+        except Exception as e:
+            logger.exception(str(e))
+            if isRetry and count >= 0 :
+                count=count-1 
+                time.sleep(Constants.KEY_RETRY_TIMEDELAY)
+                RakeDbService.validate_wagon_number(wagon_number,count)
+
+    
+    @query_debugger()
     def add_gateway_port_to_master_data(data,count=Constants.KEY_RETRY_COUNT,isRetry=Constants.KEY_RETRY_VALUE):
         try:
             if config.GROUND_TRUTH == GroundTruthType.ORACLE.value:

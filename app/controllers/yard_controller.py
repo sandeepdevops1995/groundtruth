@@ -5,6 +5,7 @@ from flask import json, Response,request
 from app.services.decorator_service import custom_exceptions, api_auth_required
 from app.logger import logger
 from app.controllers.utils import soap_API_response,View
+import json
 
 # this is a common function to retrieve master data from CCLS tables
 def get_master_data_common(name):
@@ -55,6 +56,6 @@ class DomesticContainerDetails(View):
         else:
             return Response({"message":"container number is mandatory"}, status=400, mimetype='application/json')
         if response:
-            return Response(response, status=200, mimetype='application/json')
+            return Response(json.dumps(response), status=200, mimetype='application/json')
         else:
             return Response(response, status=204, mimetype='application/json')

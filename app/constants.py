@@ -24,6 +24,7 @@ VGI_SURVEY_ENDPOINT = '/vgi_survey'
 VGO_SURVEY_ENDPOINT = '/vgo_survey'
 RAKE_INWARD_CONTAINER_ENDPOINT = "/rake_inward_container"
 WAGON_ENDPOINT = '/wagon'
+WAGON_VALIDATION_ENDPOINT = '/validate_wagon'
 GATEWAY_PORT_ENDPOINT = '/gateway_port'
 STATION_ENDPOINT = '/station'
 UPDATE_RAKE_CONTAINER_ENDPOINT = '/update_rake_container'
@@ -58,6 +59,7 @@ EXIM_EXPRESS_PENDANCY_WSDL = "EXIMRakeOutwardReadExpress_02092023.wsdl"
 #time format in db:
 TIME_FORMAT ="%Y-%m-%d %H:%M:%S"
 #Keys
+KEY_WAGONS_LIST = "wagons_list"
 KEY_NUMBER = "number"
 KEY_CN_NUMBER= "container_number"
 KEY_CN_LIFE_NUMBER = "container_life_number"

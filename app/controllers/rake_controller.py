@@ -402,6 +402,18 @@ class GatewayPortsMaster(View):
             return Response(None,status=204,mimetype='application/json')
     
             
+class ValidateWagon(View):
+    @api_auth_required
+    def get(self):
+        wagon_number = request.args.get(Constants.KEY_WAGON_NUMBER,None)
+        logger.info("GT,validate wagon details"+wagon_number)
+        if wagon_number:
+            response =  db_service.validate_wagon_number(wagon_number)
+            if response:
+                return Response(json.dumps(response),status=200,mimetype='application/json')
+            return Response(status=204,mimetype='application/json')
+        return Response({"message" : "please provide with wagons_list"},status=400,mimetype='application/json')
+
 class UpdateInwardRakeDetails(View):
     @custom_exceptions
     @api_auth_required

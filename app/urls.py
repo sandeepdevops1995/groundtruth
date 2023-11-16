@@ -45,6 +45,7 @@ def register_controllers():
     
     # Yard
     api.add_resource(WagonMaster,Constants.WAGON_ENDPOINT)
+    api.add_resource(ValidateWagon,Constants.WAGON_VALIDATION_ENDPOINT)
     api.add_resource(GatewayPortsMaster,Constants.GATEWAY_PORT_ENDPOINT)
     api.add_resource(StationDetails,Constants.STATION_ENDPOINT)
     api.add_resource(StackLocation,Constants.STACK_LOCATION_ENDPOINT)

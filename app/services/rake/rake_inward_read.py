@@ -235,13 +235,17 @@ class RakeInwardReadService:
         rake_query = CCLSRake.query.filter(cast(CCLSRake.trans_date, DATE)>=start_date, cast(CCLSRake.trans_date, DATE)<=end_date).filter_by(train_number=train_number)
         update_data = {}
         if track_number:
-                update_data['track_number'] = track_number
+            update_data['track_number'] = track_number
         if rake_id :
             update_data['rake_id'] = rake_id
         if update_data:
-            rake_query.update(dict(update_data))
-            if commit():
-                return True
+            if rake_query.all():
+                rake_query.update(dict(update_data))
+                if commit():
+                    print(rake_query.all())
+                    logger.info("updated EXIM track number for the train number %s, given trans_date: %s, trans_delay %s, rake_id: %s,track_number : %s",train_number,str(trans_date),str(trans_delay),str(rake_id),track_number )
+                    return True
+        logger.error("failed to update EXIM track number for the train number %s, given trans_date: %s, trans_delay %s, rake_id: %s,track_number : %s",train_number,str(trans_date),str(trans_delay),str(rake_id),track_number )
         return False
 
 

@@ -148,7 +148,7 @@ class UpdateRakeDetails(View):
         exim_train_number = data.pop(Constants.EXIM_TRAIN_NUMBER,None)
         dom_train_number =   data.pop(Constants.DOM_TRAIN_NUMBER,None)
         trans_date = data.pop(Constants.KEY_TRANS_DATE,None)
-        trans_delay = int(request.args.get(Constants.KEY_TRANS_DELAY,2))
+        trans_delay = int(data.pop(Constants.KEY_TRANS_DELAY,2))
         if trans_date:
             trans_date = datetime.strptime(trans_date, '%Y-%m-%d %H:%M:%S').date()
         sucess =  None

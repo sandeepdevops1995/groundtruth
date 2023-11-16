@@ -240,13 +240,16 @@ class DTMSRakeInwardReadService:
         rake_query = DomesticContainers.query.filter(cast(DomesticContainers.trans_date, DATE)>=start_date, cast(DomesticContainers.trans_date, DATE)<=end_date).filter_by(train_number=train_number)
         update_data = {}
         if track_number:
-                update_data['track_number'] = track_number
+            update_data['track_number'] = track_number
         if rake_id :
             update_data['rake_id'] = rake_id
         if update_data:
-            rake_query.update(dict(update_data))
-            if commit():
-                return True
+            if rake_query.all():
+                rake_query.update(dict(update_data))
+                if commit():
+                    logger.info("updated DOM track number for the train number %s, given trans_date: %s, trans_delay %s, rake_id: %s,track_number : %s",train_number,str(trans_date),str(trans_delay),str(rake_id),track_number )
+                    return True
+        logger.error("failed to update DOM track number for the train number %s, given trans_date: %s, trans_delay %s, rake_id: %s,track_number : %s",train_number,str(trans_date),str(trans_delay),str(rake_id),track_number )
         return False
 
     @query_debugger()

@@ -20,7 +20,7 @@ class RakeInwardWriteService():
         rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = "TEST"
         if  Constants.KEY_TRAIN_NUMBER in data :
             rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = data[Constants.KEY_TRAIN_NUMBER] if data[Constants.KEY_TRAIN_NUMBER] else "TEST"
-        if Constants.KEY_DT_ACTUAL_DEPART in data:
+        if Constants.KEY_DT_ACTUAL_DEPART in data and data[Constants.KEY_DT_ACTUAL_DEPART]:
             rake_data[Constants.KEY_SOAP_DT_ACTUAL_DEPART] = datetime.strptime(data[Constants.KEY_DT_ACTUAL_DEPART], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_IMP_EXP_FLG in data:
             rake_data[Constants.KEY_SOAP_IMP_EXP_FLG] = data[Constants.KEY_IMP_EXP_FLG]
@@ -42,7 +42,7 @@ class RakeInwardWriteService():
             rake_data[Constants.KEY_SOAP_NO_EMPTY_TEU_ARRIVAL] = data[Constants.KEY_NO_EMPTY_TEU_ARRIVAL]    
         if Constants.KEY_CONTAINER_NUMBER in data:
             rake_data[Constants.KEY_SOAP_CONTAINER_NUMBER] = data[Constants.KEY_CONTAINER_NUMBER]
-        if Constants.KEY_CONTAINER_LIFE_NUMBER in data:
+        if Constants.KEY_CONTAINER_LIFE_NUMBER in data and data[Constants.KEY_CONTAINER_LIFE_NUMBER]:
             rake_data[Constants.KEY_SOAP_CONTAINER_LIFE_NUMBER] = datetime.strptime(data[Constants.KEY_CONTAINER_LIFE_NUMBER], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_SLINE_CODE in data:
             rake_data[Constants.KEY_SOAP_SLINE_CODE] = data[Constants.KEY_SLINE_CODE]
@@ -60,7 +60,7 @@ class RakeInwardWriteService():
             rake_data[Constants.KEY_SOAP_FCL_LCL_FLG] = data[Constants.KEY_FCL_LCL_FLG]
         if Constants.KEY_WAGON_NUMBER in data:
             rake_data[Constants.KEY_SOAP_WAGON_NUMBER] = data[Constants.KEY_WAGON_NUMBER]
-        if Constants.KEY_WAGON_LIFE_NUMBER in data:
+        if Constants.KEY_WAGON_LIFE_NUMBER in data and data[Constants.KEY_WAGON_LIFE_NUMBER]:
             rake_data[Constants.KEY_SOAP_WAGON_LIFE_NUMBER] = datetime.strptime(data[Constants.KEY_WAGON_LIFE_NUMBER].split('.')[0], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_WAGON_TYPE in data:
             rake_data[Constants.KEY_SOAP_WAGON_TYPE] = data[Constants.KEY_WAGON_TYPE]
@@ -96,9 +96,9 @@ class RakeInwardWriteService():
             rake_data[Constants.KEY_SOAP_ATTRIBUTE4] = data[Constants.KEY_ATTRIBUTE4]
         if Constants.KEY_ATTRIBUTE5 in data:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE5] = data[Constants.KEY_ATTRIBUTE5]
-        if Constants.KEY_ATTRIBUTE6 in data:
+        if Constants.KEY_ATTRIBUTE6 in data and data[Constants.KEY_ATTRIBUTE6]:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE6] = datetime.strptime(data[Constants.KEY_ATTRIBUTE6], '%Y-%m-%d %H:%M:%S')
-        if Constants.KEY_ATTRIBUTE7 in data:
+        if Constants.KEY_ATTRIBUTE7 in data and data[Constants.KEY_ATTRIBUTE7]:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE7] = datetime.strptime(data[Constants.KEY_ATTRIBUTE7], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_CREATED_AT in data:
             rake_data[Constants.KEY_SOAP_CREATED_AT] = datetime.strptime(data[Constants.KEY_CREATED_AT], '%Y-%m-%d %H:%M:%S')

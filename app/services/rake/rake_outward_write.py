@@ -14,7 +14,7 @@ from app.enums import EquipmentNames
 class RakeOutwardWriteService():
     def format_data_to_ccls_format(data):
         rake_data = {}
-        if Constants.KEY_CONTAINER_NUMBER in data:
+        if Constants.KEY_CONTAINER_NUMBER in data and data[Constants.KEY_CONTAINER_NUMBER]:
             container_number = data[Constants.KEY_CONTAINER_NUMBER]
             if container_number.startswith("CXNU"):
                 return {}
@@ -23,23 +23,23 @@ class RakeOutwardWriteService():
             rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = "TEST_TRAIN" if data[Constants.KEY_TRAIN_NUMBER] else "TEST_TRAIN"
         else :
             rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = "TEST_TRAIN"
-        if Constants.KEY_DT_DESP in data:
+        if Constants.KEY_DT_DESP in data and data[Constants.KEY_DT_DESP]:
             rake_data[Constants.KEY_SOAP_DT_DESP] = datetime.strptime(data[Constants.KEY_DT_DESP], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_RAKE_NUMBER in data:
             rake_data[Constants.KEY_SOAP_RAKE_NUMBER] = data[Constants.KEY_RAKE_NUMBER]
         if Constants.KEY_HLD_TRACK_NUMBER in data:
             rake_data[Constants.KEY_SOAP_HLD_TRACK_NUMBER] = data[Constants.KEY_HLD_TRACK_NUMBER]
-        if Constants.KEY_DT_WTR in data:
+        if Constants.KEY_DT_WTR in data and data[Constants.KEY_DT_WTR]:
             rake_data[Constants.KEY_SOAP_DT_WTR] = datetime.strptime(data[Constants.KEY_DT_WTR], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_EQUIPMENT_ID in data:
             rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data[Constants.KEY_EQUIPMENT_ID]].value if data[Constants.KEY_EQUIPMENT_ID] else "RTG9"
         if Constants.KEY_GATEWAY_PORT_CD in data:
             rake_data[Constants.KEY_SOAP_GATEWAY_PORT_CD] = data[Constants.KEY_GATEWAY_PORT_CD]
-        if Constants.KEY_CONTAINER_LIFE_NUMBER in data:
+        if Constants.KEY_CONTAINER_LIFE_NUMBER in data and data[Constants.KEY_CONTAINER_LIFE_NUMBER]:
             rake_data[Constants.KEY_SOAP_CONTAINER_LIFE_NUMBER] = datetime.strptime(data[Constants.KEY_CONTAINER_LIFE_NUMBER], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_WAGON_NUMBER in data:
             rake_data[Constants.KEY_SOAP_WAGON_NUMBER] = data[Constants.KEY_WAGON_NUMBER]
-        if Constants.KEY_WAGON_LIFE_NUMBER in data:
+        if Constants.KEY_WAGON_LIFE_NUMBER in data and data[Constants.KEY_WAGON_LIFE_NUMBER]:
             rake_data[Constants.KEY_SOAP_WAGON_LIFE_NUMBER] = datetime.strptime(data[Constants.KEY_WAGON_LIFE_NUMBER], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_WAGON_TYPE in data:
             rake_data[Constants.KEY_SOAP_WAGON_TYPE] = data[Constants.KEY_WAGON_TYPE]
@@ -75,9 +75,9 @@ class RakeOutwardWriteService():
             rake_data[Constants.KEY_SOAP_ATTRIBUTE4] = data['seal_number']
         if Constants.KEY_ATTRIBUTE5 in data:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE5] = data[Constants.KEY_ATTRIBUTE5]
-        if Constants.KEY_ATTRIBUTE6 in data:
+        if Constants.KEY_ATTRIBUTE6 in data and data[Constants.KEY_ATTRIBUTE6]:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE6] = datetime.strptime(data[Constants.KEY_ATTRIBUTE6], '%Y-%m-%d %H:%M:%S')
-        if Constants.KEY_ATTRIBUTE7 in data:
+        if Constants.KEY_ATTRIBUTE7 in data and data[Constants.KEY_ATTRIBUTE7]:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE7] = datetime.strptime(data[Constants.KEY_ATTRIBUTE7], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_CREATED_AT in data:
             rake_data[Constants.KEY_SOAP_CREATED_AT] = datetime.strptime(data[Constants.KEY_CREATED_AT], '%Y-%m-%d %H:%M:%S')

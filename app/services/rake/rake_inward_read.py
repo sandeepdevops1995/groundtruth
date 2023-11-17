@@ -169,7 +169,7 @@ class RakeInwardReadService:
                 container_record[Constants.WAGON_NUMBER] = wagon_record[Constants.WAGON_NUMBER]
                 # container_record[Constants.CONTAINER_STAT] = "L" if "container_gross_weight" in data[i] and data[i].container_gross_weight else "E"
                 container_record[Constants.CONTAINER_STAT] = data[i].container_stat
-                container_record[Constants.KEY_CONTAINER_WEIGHT] = data[i].container_gross_weight
+                container_record[Constants.KEY_CONTAINER_WEIGHT] = float(data[i].container_gross_weight) if data[i].container_gross_weight else data[i].container_gross_weight
                 container_record[Constants.KEY_CONTAINER_SIZE] = data[i].container_size
                 container_record[Constants.KEY_CONTAINER_TYPE] = data[i].container_type
                 container_record[Constants.KEY_TRAIN_DEPT_TIME] = str(data[i].train_dept)

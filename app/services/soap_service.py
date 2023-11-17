@@ -429,15 +429,11 @@ def update_outward_rake(rake_data,api_url="EXIM Yard Outward Write"):
         return result          
 
 def update_domestic_outward_rake(rake_data,api_url="DOM Yard Outward Write"):
-    result = []
-    logger.info("Soap API is not integrated for VGO Survey , requested_data : "+str(rake_data))
-    return result
-    # TODO: SOAP API Integraton is pending
     try:
-        wsdl_url = config.WSDL_URL+''
+        wsdl_url = config.WSDL_URL+'/soa-infra/services/default/DTMSRakeWrite/dtmsrakewrite_client_ep?WSDL'
         soap = zeep.Client(wsdl=wsdl_url, 
-                        service_name="",
-                        port_name="")
+                        service_name="dtmsrakewrite_client_ep",
+                        port_name="DTMSRakeWrite_pt")
         logger.debug('Update DOM Outward Rake Details, soap service request with data : '+ str(rake_data))
         start_time = datetime.now()
         result = soap.service.process(**rake_data)

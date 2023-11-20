@@ -10,7 +10,7 @@ class CartingJobUpdateSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CartingCargoDetails
-        fields = ("id","crn_number", "crn_date", "carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag","max_date_unloading","contractor_job_order_no","contractor_job_order_date","exporter_name")
+        fields = ("id","crn_number", "crn_date", "carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag","max_date_unloading","contractor_job_order_no","contractor_job_order_date","exporter_name","container_details")
         include_relationships = True
         load_instance = True
  
@@ -18,7 +18,7 @@ class StuffingJobUpdateSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = StuffingCargoDetails
-        fields = ("id","container_number", "stuffing_job_order", "crn_number", "cargo_weight_in_crn","gw_port_code")
+        fields = ("id","container_number", "stuffing_job_order", "crn_number", "cargo_weight_in_crn","gw_port_code","crn_date")
         include_relationships = True
         load_instance = True
 

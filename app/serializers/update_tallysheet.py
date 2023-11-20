@@ -27,7 +27,7 @@ class CTMSCargoJobUpdateSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = CTMSCargoJob
-        fields = ("total_package_count","total_no_of_packages_damaged","total_no_area","max_date_unloading","total_no_of_packages_excess","total_no_of_packages_short","cargo_details",'updated_at')
+        fields = ("total_package_count","total_no_of_packages_damaged","total_no_area","max_date_unloading","total_no_of_packages_excess","total_no_of_packages_short","cargo_details",'updated_at','truck_number','comments')
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE

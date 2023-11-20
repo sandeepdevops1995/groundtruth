@@ -8,6 +8,6 @@ class TruckDetails(db.Model):
     truck_arrival_date = db.Column(db.BigInteger())
     job_order_id = db.Column(db.BigInteger, db.ForeignKey('ccls_master_cargo_details.id'))
     master_job_order_truck = db.relationship("MasterCargoDetails", back_populates="truck_details", lazy='joined')
-    created_at = db.Column(db.DateTime(), default=datetime.utcnow())
+    created_at = db.Column(db.DateTime(), default=datetime.now())
     
     __tablename__ = 'truck_details'

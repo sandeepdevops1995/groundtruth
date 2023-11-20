@@ -25,8 +25,8 @@ class MasterCargoDetails(db.Model):
     delivery_details = db.relationship("DeliveryCargoDetails", back_populates="delivery_job", lazy='joined')
     bill_details = db.relationship('CCLSCargoBillDetails', back_populates='master_job_order_bill_details', lazy='joined')
     ccls_cargo_master = db.relationship("CTMSCargoJob", back_populates='ctms_job_order', lazy='joined')
-    created_at = db.Column(db.DateTime(), default=datetime.utcnow())
-    updated_at = db.Column(db.DateTime(), default=datetime.utcnow())
+    created_at = db.Column(db.DateTime(), default=datetime.now())
+    updated_at = db.Column(db.DateTime(), default=datetime.now())
     created_by = db.Column(db.String(100), nullable=True)
     updated_by = db.Column(db.String(100), nullable=True)
 
@@ -50,6 +50,7 @@ class CartingCargoDetails(db.Model):
     contractor_job_order_no = db.Column(db.String(20), nullable=True)
     contractor_job_order_date = db.Column(db.BigInteger(), nullable=True)
     exporter_name = db.Column(db.String(100), nullable=True)
+    container_details = db.Column(db.JSON(), default=list, nullable=True)
     carting_job = db.relationship("MasterCargoDetails", back_populates="carting_details", lazy='joined')
 
     __tablename__ = 'ccls_carting_cargo_details'
@@ -58,6 +59,7 @@ class StuffingCargoDetails(db.Model):
     id =  db.Column(db.BigInteger(), primary_key=True)
     container_number = db.Column(db.String(20))
     crn_number = db.Column(db.String(20), nullable=True)
+    crn_date = db.Column(db.BigInteger(), nullable=True)
     stuffing_job_order = db.Column(db.String(20), nullable=True)
     cargo_weight_in_crn = db.Column(db.Float(), nullable=True)
     # hsn_code = db.Column(db.String(20), nullable=True)
@@ -74,6 +76,7 @@ class DeStuffingCargoDetails(db.Model):
     destuffing_plan_date = db.Column(db.BigInteger(), nullable=True)
     handling_code = db.Column(db.String(20), nullable=True)
     hld_rls_flag = db.Column(db.String(1), nullable=True)
+    forwarder = db.Column(db.String(100), nullable=True)
     destuffing_job = db.relationship("MasterCargoDetails", back_populates="destuffing_details", lazy='joined')
 
     __tablename__ = 'ccls_destuffing_cargo_details'
@@ -112,6 +115,6 @@ class CCLSCargoBillDetails(db.Model):
     job_order_id = db.Column(db.BigInteger, db.ForeignKey('ccls_master_cargo_details.id'))
     master_job_order_bill_details = db.relationship("MasterCargoDetails", back_populates="bill_details", lazy='joined')
     ctms_cargo_details = db.relationship("CTMSBillDetails", back_populates="ccls_bill", lazy='joined')
-    created_at = db.Column(db.DateTime(), default=datetime.utcnow())
+    created_at = db.Column(db.DateTime(), default=datetime.now())
     
     __tablename__ = 'ccls_cargo_bill_details'

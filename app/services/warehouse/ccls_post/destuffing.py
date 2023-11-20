@@ -24,8 +24,8 @@ class BuildDeStuffingObject(object):
         self.area=int(data.get('area_of_cargo')) if data.get('area_of_cargo') else 0
         self.commAreaDmg=int(data.get('area_of_damaged_cargo')) if data.get('area_of_damaged_cargo') else 0
         self.fclLclFlg=ContainerFlag(int(data.get('container_flag',1))).name
-        self.dstfStDt=convert_timestamp_to_ccls_date(data.get('start_time')) if data.get('start_time') else None
-        self.dstfEndDt=convert_timestamp_to_ccls_date(data.get('end_time')) if data.get('end_time') else None
+        self.dstfStDt=convert_timestamp_to_ccls_date(data.get('ctms_start_time')) if data.get('ctms_start_time') else None
+        self.dstfEndDt=convert_timestamp_to_ccls_date(data.get('ctms_end_time')) if data.get('ctms_end_time') else None
         self.slineCd=data.get('sline_code',None)
         self.hndgCd=data.get('handling_code',None)
         self.gridNo=str(data.get('ccls_grid_locations')[0]) if data.get('ccls_grid_locations') else None
@@ -38,8 +38,10 @@ class BuildDeStuffingObject(object):
         self.pvtCncrFlg=data.get('private_or_concor_labour_flag',None)
         self.vehNo=data.get('truck_number',None)
         self.createdDate = data.get('created_at',None)
-        self.createdBy = data.get('created_by',None)
+        self.createdBy = user_id#data.get('created_by',None)
         self.updatedDate = data.get('updated_at',None)
-        self.updatedBy = data.get('updated_by',None)
+        self.updatedBy = user_id#data.get('updated_by',None)
         self.errorMsg=None
         self.statusFlag=None
+        self.attribute1 = data.get('short',0)
+        self.attribute2 = data.get('excess',0)

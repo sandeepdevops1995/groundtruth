@@ -65,6 +65,7 @@ class EquipmentNames(enum.Enum):
     SANY01 = "R-S1"
     SANY02 = "R-S2"
     SANY03 = "R-S3"
+    FLT01 = "FRK1"
 
 class RevenueType(enum.Enum):
     EXPORT_FCL_REVENUE=1

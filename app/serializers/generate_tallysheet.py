@@ -9,6 +9,7 @@ from app.logger import logger
 import app.logging_message as LM
 import config
 from app.models.warehouse.ccls_cargo_details import MasterCargoDetails
+from app.enums import JobOrderType
 
 class CTMSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
 
@@ -28,7 +29,7 @@ class CTMSBillDetailsInsertSchema(ma.SQLAlchemyAutoSchema):
     
     class Meta:
         model = CTMSBillDetails
-        fields = ("full_or_part_destuff", "package_count","damaged_count","area_of_cargo","grid_number","grid_locations","ccls_grid_locations","packages_weight","damaged_packages_weight","start_time","end_time","warehouse_name","concor_warehouse_id","stacking_type","area_of_damaged_cargo","gate_number","full_or_part_flag")
+        fields = ("full_or_part_destuff", "package_count","damaged_count","area_of_cargo","grid_number","grid_locations","ccls_grid_locations","packages_weight","damaged_packages_weight","start_time","end_time","warehouse_name","concor_warehouse_id","stacking_type","area_of_damaged_cargo","gate_number","full_or_part_flag","from_packet","to_packet")
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE
@@ -41,6 +42,8 @@ class CTMSCargoJobInsertSchema(ma.SQLAlchemyAutoSchema):
     @pre_load()
     def change_data(self, data, **kwargs):
         job_type = self.context.get('job_type')
+        if job_type in [JobOrderType.CARTING_FCL.value,JobOrderType.CARTING_LCL.value]:
+            data['container_number'] = None
         db_obj = db.session.query(CTMSCargoJob).join(MasterCargoDetails).filter(MasterCargoDetails.job_type==job_type).order_by(CTMSCargoJob.id.desc()).first()
         if db_obj:
                 serial_number = int(db_obj.serial_number) if db_obj.serial_number else int(config.TS_SERIAL_NUMBER)
@@ -59,7 +62,7 @@ class CTMSCargoJobInsertSchema(ma.SQLAlchemyAutoSchema):
     end_time = fields.Integer(attribute='job_end_time')
     class Meta:
         model = CTMSCargoJob
-        fields = ("equipment_id", "ph_location", "start_time","end_time","total_package_count","total_no_of_packages_damaged","total_no_area","max_date_unloading","total_no_of_packages_excess","total_no_of_packages_short","gate_number","container_number","created_on_epoch","job_order_id","cargo_details","truck_number","serial_number","destuffing_date","seal_number")
+        fields = ("equipment_id", "ph_location", "start_time","end_time","total_package_count","total_no_of_packages_damaged","total_no_area","max_date_unloading","total_no_of_packages_excess","total_no_of_packages_short","gate_number","container_number","created_on_epoch","job_order_id","cargo_details","truck_number","serial_number","destuffing_date","seal_number","comments")
         include_relationships = True
         load_instance = True
         unknown = EXCLUDE

@@ -9,12 +9,14 @@ class UpdateCargoDetails(object):
 
     def update_carting_details_schema_for_serializer(self,cargo_details):
         container_info, carting_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["crn_number","crn_date","carting_order_number","con_date","is_cargo_card_generated","cha_code","gw_port_code","party_code","reserve_flag","max_date_unloading","contractor_job_order_no","contractor_job_order_date","exporter_name"]])
-        cargo_details['container_info'] = json.loads(json.dumps(cargo_details['Container_details'], default=datetime_handler))[0] if 'Container_details' in cargo_details and cargo_details['Container_details'] else container_info
+        # cargo_details['container_info'] = json.loads(json.dumps(cargo_details['Container_details'], default=datetime_handler))[0] if 'Container_details' in cargo_details and cargo_details['Container_details'] else container_info
+        cargo_details['container_info'] = {}#json.loads(json.dumps(cargo_details['Container_details'], default=datetime_handler))[0] if 'Container_details' in cargo_details and cargo_details['Container_details'] else container_info
+        carting_details['container_details'] = json.loads(json.dumps(cargo_details['Container_details'], default=datetime_handler)) if 'Container_details' in cargo_details else container_info
         cargo_details['carting_details'] = carting_details
         return cargo_details
     
     def update_stuffing_details_schema_for_serializer(self,cargo_details):
-        container_info, stuffing_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["container_number","stuffing_job_order","cargo_weight_in_crn","crn_number","gw_port_code"]])
+        container_info, stuffing_details = map(lambda keys: {x: cargo_details[x] if x in cargo_details else None for x in keys}, [["container_number","container_type","container_size","container_iso_code","container_location_code","container_life"], ["container_number","stuffing_job_order","cargo_weight_in_crn","crn_number","crn_date","gw_port_code"]])
         cargo_details['container_info'] = container_info
         cargo_details['stuffing_details'] = stuffing_details
         return cargo_details
@@ -149,6 +151,7 @@ class UpdateCargoDetails(object):
             cargo_details=cargo_details[0]
         if "stuffing_job_order" not in cargo_details or not cargo_details['stuffing_job_order']:
             cargo_details["stuffing_job_order"]='Y'
+        self.check_date_and_format_type(cargo_details,constants.CCLS_CRN_DATE)
         self.update_shipping_bill_details(cargo_details)
         self.update_container(cargo_details)
         cargo_details = self.update_stuffing_details_schema_for_serializer(cargo_details)

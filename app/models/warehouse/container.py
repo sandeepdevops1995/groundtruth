@@ -10,6 +10,6 @@ class Container(db.Model):
     container_location_code = db.Column(db.String(20), nullable=True)
     container_life = db.Column(db.BigInteger(), nullable=True)
     master_job_container = db.relationship("MasterCargoDetails", back_populates="container_info", lazy='joined')
-    created_at = db.Column(db.DateTime(), default=datetime.utcnow())
+    created_at = db.Column(db.DateTime(), default=datetime.now())
     
     __tablename__ = 'container'

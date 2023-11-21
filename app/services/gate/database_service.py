@@ -191,7 +191,11 @@ class GateDbService:
                                 "permit_type":None,
                                 "permit_details":{"container_life_no" : result['CtrLifeNumber'],
                                                   "container_status" : result['ContainerStatus'],
-                                                  "sline_code" : result['SlineCode']
+                                                  "sline_code" : result['SlineCode'],
+                                                  "vehicle_owned_by" : result["VehicleOwenedBy"] if "VehicleOwenedBy" in result else None,
+                                                  "factory_in_time": result["FactoryInDateTime"].strftime("%Y-%m-%d %H:%M:%S") if "FactoryInDateTime" in result and result["FactoryInDateTime"] else None,
+                                                  "factory_out_time" : result["FactoryOutDateTime"].strftime("%Y-%m-%d %H:%M:%S") if "FactoryOutDateTime" in result and result["FactoryOutDateTime"] else None,
+                                                  "factory_reach_time":result["FactoryReachDateTime"].strftime("%Y-%m-%d %H:%M:%S") if "FactoryReachDateTime" in result and result["FactoryReachDateTime"] else None
                                                 },
                                 "POD":None,
                                 "bill_info":[ {
@@ -202,10 +206,6 @@ class GateDbService:
                                     },],
                                 "truck":{
                                     "gt_truck_no":result['VechileNumber'],
-                                    "vehicle_owned_by" : result["VehicleOwenedBy"] if "VehicleOwenedBy" in result else None,
-                                    "factory_in_time": result["FactoryInDateTime"].strftime("%Y-%m-%d %H:%M:%S") if "FactoryInDateTime" in result and result["FactoryInDateTime"] else None,
-                                    "factory_out_time" : result["FactoryOutDateTime"].strftime("%Y-%m-%d %H:%M:%S") if "FactoryOutDateTime" in result and result["FactoryOutDateTime"] else None,
-                                    "factory_reach_time":result["FactoryReachDateTime"].strftime("%Y-%m-%d %H:%M:%S") if "FactoryReachDateTime" in result and result["FactoryReachDateTime"] else None,
                                     "driver_name":None,
                                     "driver_number":None,
                                     "driver_license":None

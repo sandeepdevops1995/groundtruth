@@ -32,7 +32,7 @@ class RakeOutwardWriteService():
         if Constants.KEY_DT_WTR in data and data[Constants.KEY_DT_WTR]:
             rake_data[Constants.KEY_SOAP_DT_WTR] = datetime.strptime(data[Constants.KEY_DT_WTR], '%Y-%m-%d %H:%M:%S')
         if Constants.KEY_EQUIPMENT_ID in data:
-            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data[Constants.KEY_EQUIPMENT_ID]].value if data[Constants.KEY_EQUIPMENT_ID] else "RTG9"
+            rake_data[Constants.KEY_SOAP_EQUIPMENT_ID] = EquipmentNames[data[Constants.KEY_EQUIPMENT_ID]].value if data[Constants.KEY_EQUIPMENT_ID] else None
         if Constants.KEY_GATEWAY_PORT_CD in data:
             rake_data[Constants.KEY_SOAP_GATEWAY_PORT_CD] = data[Constants.KEY_GATEWAY_PORT_CD]
         if Constants.KEY_CONTAINER_LIFE_NUMBER in data and data[Constants.KEY_CONTAINER_LIFE_NUMBER]:

@@ -19,6 +19,7 @@ class DTMSRakeOutwardWriteService:
     def format_data_to_ccls_format(data):
         rake_data = {}
         rake_data["trainNumber"] = "TEST"
+        rake_data["INOUT_FLAG"] = "O"
         if  Constants.KEY_TRAIN_NUMBER in data :
             rake_data["trainNumber"] = data[Constants.KEY_TRAIN_NUMBER] if data[Constants.KEY_TRAIN_NUMBER] else "TEST"
         if  Constants.KEY_ORIGIN_STATION in data:
@@ -33,16 +34,26 @@ class DTMSRakeOutwardWriteService:
             rake_data["containerType"] = data[Constants.KEY_CONTAINER_TYPE]
         if Constants.KEY_WAGON_NUMBER in data:
             rake_data["wagonNumber"] = float(data[Constants.KEY_WAGON_NUMBER])
+        if "wagon_origin_station" in data:
+            rake_data["WAGON_ORIGINATING_STATION"] = data["wagon_origin_station"]
+        if Constants.KEY_ATTRIBUTE2 in data:
+            rake_data["WAGON_LOADED_EMPTY_FLAG"] = data[Constants.KEY_ATTRIBUTE2]
         if Constants.KEY_SEAL_NUMBER in data:
             rake_data["sealNumber"] = data[Constants.KEY_SEAL_NUMBER]
         if Constants.KEY_CONTAINER_STAT in data:
             rake_data["containerStatus"] = data[Constants.KEY_CONTAINER_STAT]
+        if Constants.KEY_HLD_TRACK_NUMBER in data:
+            rake_data["LINE_NUMBER"] = data[Constants.KEY_HLD_TRACK_NUMBER]
+        if Constants.KEY_ORIGIN_STATION in data:
+            rake_data["CONTAINER_ORIGIN_STATION"] = data[Constants.KEY_ORIGIN_STATION]
+        if Constants.KEY_DEST_STATION in data:
+            rake_data["CONTAINER_DESTINATION_STATION"] = data[Constants.KEY_DEST_STATION]
         if Constants.KEY_HAZARD_STATUS in data:
             rake_data[Constants.KEY_SOAP_HAZARD_STATUS] = data[Constants.KEY_HAZARD_STATUS]        
         if Constants.KEY_ATTRIBUTE1 in data:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE1] = data[Constants.KEY_ATTRIBUTE1]
-        if Constants.KEY_ATTRIBUTE2 in data:
-            rake_data[Constants.KEY_SOAP_ATTRIBUTE2] = data[Constants.KEY_ATTRIBUTE2]
+        # if Constants.KEY_ATTRIBUTE2 in data:
+        #     rake_data[Constants.KEY_SOAP_ATTRIBUTE2] = data[Constants.KEY_ATTRIBUTE2]
         if Constants.KEY_ATTRIBUTE3 in data:
             rake_data[Constants.KEY_SOAP_ATTRIBUTE3] = data[Constants.KEY_ATTRIBUTE3]
         if Constants.KEY_ATTRIBUTE4 in data:

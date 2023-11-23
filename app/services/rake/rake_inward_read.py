@@ -181,7 +181,7 @@ class RakeInwardReadService:
                     container_record[Constants.KEY_HAZARD] = Constants.KEY_CTMS_NORMAL
                 else:
                     container_record[Constants.KEY_HAZARD] = Constants.KEY_CTMS_HAZARDOUS
-
+                container_record[Constants.CARGO_TYPE] = container_record[Constants.KEY_HAZARD]
                 response[Constants.CONTAINER_LIST].append(container_record)
                 logger.info("fetched CCLS data %s",response)
         return json.dumps(response)

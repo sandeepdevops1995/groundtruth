@@ -182,7 +182,7 @@ class DTMSRakeInwardReadService:
                     container_record[Constants.KEY_HAZARD] = Constants.KEY_CTMS_HAZARDOUS
                 else:
                     container_record[Constants.KEY_HAZARD] = Constants.KEY_CTMS_NORMAL
-                
+                container_record[Constants.CARGO_TYPE] = container_record[Constants.KEY_HAZARD]
                 response[Constants.CONTAINER_LIST].append(container_record)
                 logger.info("fetched DTMS data %s",response)
         return json.dumps(response)

@@ -168,7 +168,7 @@ class DTMSRakeInwardReadService:
                 container_record[Constants.LINER_SEAL] = {Constants.VALUE : None,Constants.SEAL_DATE: None}
                 container_record[Constants.CUSTOM_SEAL] = {Constants.VALUE : data[i].seal_number,Constants.SEAL_DATE: None}
                 container_record[Constants.POD] = data[i].container_to_station
-                container_record[Constants.ISO_CODE] = data[i].container_type
+                container_record[Constants.ISO_CODE] = {Constants.VALUE : data[i].container_type}
                 container_record[Constants.LDD_MT_FLAG] = {Constants.VALUE : data[i].ldd_mt_flg} 
                 container_record[Constants.KEY_SLINE_CODE] =  {Constants.VALUE : None}
                 container_record[Constants.WAGON_NUMBER] = wagon_record[Constants.WAGON_NUMBER]
@@ -176,7 +176,7 @@ class DTMSRakeInwardReadService:
                 container_record[Constants.CATEGORY] = "Domestic"
                 container_record[Constants.CONTAINER_STAT] = data[i].container_stat
                 container_record[Constants.KEY_CONTAINER_WEIGHT] = float(data[i].container_gross_weight) if data[i].container_gross_weight else data[i].container_gross_weight
-                container_record[Constants.KEY_CONTAINER_SIZE] = data[i].container_size
+                container_record[Constants.KEY_CONTAINER_SIZE] = int(data[i].container_size) if data[i].container_size else data[i].container_size
                 container_record[Constants.KEY_CONTAINER_TYPE] = data[i].container_type
                 if data[i].mac_hazard_flag and data[i].mac_hazard_flag.strip() == 'Y':
                     container_record[Constants.KEY_HAZARD] = Constants.KEY_CTMS_HAZARDOUS
@@ -212,7 +212,7 @@ class DTMSRakeInwardReadService:
             container_record[Constants.CATEGORY] = "Domestic"
             container_record[Constants.CONTAINER_STAT] = data[i].container_stat
             container_record[Constants.KEY_CONTAINER_WEIGHT] = float(data[i].container_gross_weight) if data[i].container_gross_weight else data[i].container_gross_weight
-            container_record[Constants.KEY_CONTAINER_SIZE] = data[i].container_size
+            container_record[Constants.KEY_CONTAINER_SIZE] = int(data[i].container_size) if data[i].container_size else data[i].container_size
             container_record[Constants.KEY_CONTAINER_TYPE] = data[i].container_type
             response.append(container_record)
         return json.dumps(response)

@@ -16,11 +16,11 @@ class DTMSGateWriteService:
 
     def format_data_to_ccls_format(data,soap_data={}):
         if "factory_in_time" in data:
-            soap_data[Constants.KEY_SOAP_G_DTMS_FACTORY_IN_TIME] = datetime.strptime("factory_in_time", '%Y-%m-%d %H:%M:%S').isoformat() if data["factory_in_time"] else None
+            soap_data[Constants.KEY_SOAP_G_DTMS_FACTORY_IN_TIME] = datetime.strptime(data["factory_in_time"], '%Y-%m-%d %H:%M:%S').isoformat() if data["factory_in_time"] else None
         if "factory_out_time" in data:
-            soap_data[Constants.KEY_SOAP_G_DTMS_FACTORY_OUT_TIME] = datetime.strptime("factory_out_time", '%Y-%m-%d %H:%M:%S').isoformat() if data["factory_out_time"] else None
+            soap_data[Constants.KEY_SOAP_G_DTMS_FACTORY_OUT_TIME] = datetime.strptime(data["factory_out_time"], '%Y-%m-%d %H:%M:%S').isoformat() if data["factory_out_time"] else None
         if "factory_reach_time" in data:
-            soap_data[Constants.KEY_SOAP_G_DTMS_FACTORY_REACH_TIME] = datetime.strptime("factory_reach_time", '%Y-%m-%d %H:%M:%S').isoformat() if data["factory_reach_time"] else None
+            soap_data[Constants.KEY_SOAP_G_DTMS_FACTORY_REACH_TIME] = datetime.strptime(data["factory_reach_time"], '%Y-%m-%d %H:%M:%S').isoformat() if data["factory_reach_time"] else None
         if "user_id" in data:
             soap_data[Constants.KEY_SOAP_G_DTMS_USER_ID] = data['user_id']
         if 'reason_code' in data:

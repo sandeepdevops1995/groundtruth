@@ -20,7 +20,7 @@ class RakeOutwardWriteService():
                 return {}
             rake_data[Constants.KEY_SOAP_CONTAINER_NUMBER] = container_number
         if  Constants.KEY_TRAIN_NUMBER in data :
-            rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = "TEST_TRAIN" if data[Constants.KEY_TRAIN_NUMBER] else "TEST_TRAIN"
+            rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = data[Constants.KEY_TRAIN_NUMBER] if data[Constants.KEY_TRAIN_NUMBER] else "TEST_TRAIN"
         else :
             rake_data[Constants.KEY_SOAP_TRAIN_NUMBER] = "TEST_TRAIN"
         if Constants.KEY_DT_DESP in data and data[Constants.KEY_DT_DESP]:

@@ -26,7 +26,7 @@ class DTMSGateWriteService:
         if 'reason_code' in data:
             soap_data[Constants.KEY_SOAP_G_DTMS_REASON_CODE] = data['reason_code']
         if Constants.KEY_ATTRIBUTE1 in data:
-            soap_data[Constants.KEY_SOAP_ATTRIBUTE1] = data[Constants.KEY_ATTRIBUTE1]
+            soap_data[Constants.KEY_SOAP_ATTRIBUTE1] = data['seal_no']
         if Constants.KEY_ATTRIBUTE2 in data:
             soap_data[Constants.KEY_SOAP_ATTRIBUTE2] = data[Constants.KEY_ATTRIBUTE2]
         if Constants.KEY_ATTRIBUTE3 in data:

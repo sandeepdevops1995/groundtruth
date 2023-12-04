@@ -25,7 +25,9 @@ class DTMSGateWriteService:
             soap_data[Constants.KEY_SOAP_G_DTMS_USER_ID] = data['user_id']
         if 'reason_code' in data:
             soap_data[Constants.KEY_SOAP_G_DTMS_REASON_CODE] = data['reason_code']
-        if Constants.KEY_ATTRIBUTE1 in data:
+        if 'vehicle_owned_by' in data:
+            soap_data[Constants.KEY_SOAP_G_DTMS_CARGO_LDD_EMPTY_FLAG_VEH] = data['vehicle_owned_by']
+        if 'seal_no' in data:
             soap_data[Constants.KEY_SOAP_ATTRIBUTE1] = data['seal_no']
         if Constants.KEY_ATTRIBUTE2 in data:
             soap_data[Constants.KEY_SOAP_ATTRIBUTE2] = data[Constants.KEY_ATTRIBUTE2]
@@ -67,7 +69,6 @@ class DTMSGateWriteService:
                 soap_data[Constants.KEY_SOAP_G_DTMS_IN_OUT_TIMEIN] = datetime.strptime(data['gate_in_time'], '%Y-%m-%d %H:%M:%S').isoformat() if data['gate_in_time'] else None
                 soap_data[Constants.KEY_SOAP_G_DTMS_CTR_IN_OUT_FLAG] = 'I'
             soap_data[Constants.KEY_SOAP_G_DTMS_CARGO_CONTAINER_FLAG] = 'T'
-            # soap_data[Constants.KEY_SOAP_G_DTMS_CARGO_LDD_EMPTY_FLAG_VEH] = "L" if data["is_empty_or_laden"]=="Laden" else "E"
             DTMSGateWriteService.format_data_to_ccls_format(data,soap_data)
             return soap_data
         except Exception as e:

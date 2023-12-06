@@ -31,7 +31,7 @@ class DTMSRakeOutwardWriteService:
         if Constants.KEY_CONTAINER_SIZE in data:
             rake_data["containerSize"] = float(data[Constants.KEY_CONTAINER_SIZE])
         if Constants.KEY_CONTAINER_TYPE in data:
-            rake_data["containerType"] = data[Constants.KEY_CONTAINER_TYPE]
+            rake_data["containerType"] = data[Constants.KEY_CONTAINER_TYPE][-2:] if data[Constants.KEY_CONTAINER_TYPE] else data[Constants.KEY_CONTAINER_TYPE]
         if Constants.KEY_WAGON_NUMBER in data:
             rake_data["wagonNumber"] = float(data[Constants.KEY_WAGON_NUMBER])
         if "wagon_origin_station" in data:

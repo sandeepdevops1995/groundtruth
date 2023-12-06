@@ -177,10 +177,10 @@ class RakeInwardReadService:
                 container_record[Constants.CATEGORY] = category
                 if data[i].container_stat and data[i].container_stat.strip() == Constants.KEY_TRANSHIPMENT:
                     container_record[Constants.CATEGORY] = "Transhipment"
-                if data[i].hazardious_status and data[i].hazardious_status.strip() == Constants.KEY_NORMAL:
-                    container_record[Constants.KEY_HAZARD] = Constants.KEY_CTMS_NORMAL
-                else:
+                if data[i].hazardious_status and data[i].hazardious_status.strip() == Constants.KEY_CCLS_HAZARD:
                     container_record[Constants.KEY_HAZARD] = Constants.KEY_CTMS_HAZARDOUS
+                else:
+                    container_record[Constants.KEY_HAZARD] = Constants.KEY_CTMS_NORMAL
                 container_record[Constants.CARGO_TYPE] = container_record[Constants.KEY_HAZARD]
                 response[Constants.CONTAINER_LIST].append(container_record)
                 logger.info("fetched CCLS data %s",response)

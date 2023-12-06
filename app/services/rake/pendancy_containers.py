@@ -137,7 +137,7 @@ class PendancyService():
                             data = soap_service.get_empty_pendancy_details(request_params)
                             if data:
                                 for obj in data:
-                                    obj['ctrType'] = None
+                                    obj['ctrType'] = 'GL'
                                     obj['ctrActyCd'] = None
                                     obj['stfAt'] = None
                                     obj['arrDate'] = None

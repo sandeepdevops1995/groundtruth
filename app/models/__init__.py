@@ -4,6 +4,7 @@ from app.models.rake.rake_in import *
 from app.models.rake.rake_out import *
 from app.models.diagnostics import *
 from app.models.yard.kycl import *
+from app.models.yard.domestic_yard import *
 from app.models.gate.permits import *
 from app.models.master.container import *
 from app.models.master.rake import *

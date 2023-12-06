@@ -1,6 +1,6 @@
 from app.controllers.utils import View
 from app.services.decorator_service import custom_exceptions, api_auth_required
-from app.services.rake.gt_upload_service import upload_ccls_rake_date, upload_pendancy_data
+from app.services.rake.gt_upload_service import upload_ccls_rake_date, upload_pendancy_data,upload_dtms_data
 from app.enums import PendencyType
 
 import xmltodict
@@ -159,3 +159,15 @@ class PendancySummary(View):
                 container["ldd_mt_flg"] = pendancy_container["LDD_MT_FLG"]
             container_list.append(container)
         return container_list
+    
+
+class DTMSYard(View):
+    @custom_exceptions
+    # @api_auth_required
+    def post(self):
+        data = request.get_json() 
+        if upload_dtms_data(data):
+            return Response(json.dumps({"message":"success"}), status=200, mimetype='application/json')
+        else:
+            return Response(json.dumps({"message":"failed to save"}), status=400, mimetype='application/json')
+            

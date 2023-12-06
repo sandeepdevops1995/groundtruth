@@ -523,15 +523,15 @@ def get_domestic_yard_container_details(data):
         return result
     except Exception as e:
         logger.exception('Get Domestic Yard Container Details, Exception : '+str(e))
-        failed_data = {
-            "method_name":"get_domestic_yard_container_details",
-            "request_data":{
-                "data":data
-            }
-        }
-        failed_data=json.dumps(failed_data, default=str)
-        cache.rpush("ground_truth_queue",failed_data)
-        logger.debug("Added to cache retry mechanism, details:  " +failed_data)
+        # failed_data = {
+        #     "method_name":"get_domestic_yard_container_details",
+        #     "request_data":{
+        #         "data":data
+        #     }
+        # }
+        # failed_data=json.dumps(failed_data, default=str)
+        # cache.rpush("ground_truth_queue",failed_data)
+        # logger.debug("Added to cache retry mechanism, details:  " +failed_data)
         result = {}
         return result 
 

@@ -1,4 +1,4 @@
-from app.models import CCLSRake, Diagnostics, PendancyContainer, CtrStat
+from app.models import CCLSRake, Diagnostics, PendancyContainer, CtrStat, DTMSContainerLocation
 from app.logger import logger
 from app import postgres_db as db
 from sqlalchemy.exc import SQLAlchemyError
@@ -36,6 +36,12 @@ def upload_pendancy_data(data):
         commit()
     return True
 
+def upload_dtms_data(data):
+    from app.models.yard.domestic_yard import DTMSContainerLocation
+    for container in data:
+        record = DTMSContainerLocation(**container)
+        db.session.add(record)
+    return commit()
 
 def save_in_diagnostics(url,request,response,start_time,end_time,type=None):
     diag = Diagnostics(url=url,request=request,response=response,start_time=start_time,end_time=end_time,type=type)

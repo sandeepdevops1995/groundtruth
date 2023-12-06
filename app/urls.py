@@ -5,7 +5,7 @@ from app.controllers.gate_controller import *
 from app.controllers.rake_controller import *
 # from app.controllers.warehouse_controller import WarehouseData
 from app.controllers.warehouse_controller import JobDetails,WarehouseTallySheet,WarehouseCommodities,WarehousePrintTallySheet, WarehouseRevenue,GetRevenueInfo
-from app.controllers.GT_upload_controller import TrainSummary,PendancySummary
+from app.controllers.GT_upload_controller import TrainSummary,PendancySummary,DTMSYard
 from app.controllers.master_controller import *
 from app.controllers.yard_controller import StackLocation,DomesticContainerDetails
 
@@ -41,6 +41,7 @@ def register_controllers():
     api.add_resource(TrainSummary,'/upload_train_summary')      # input: CCLS XML file
     api.add_resource(GroundTruthData,'/rake_ground_truth')      # input: OUR JSON Format data
     api.add_resource(PendancySummary,'/pendancy_summary')       # input: CCLS PENDANCY XML file 
+    api.add_resource(DTMSYard,'/dtms_yard')
     
     
     # Yard

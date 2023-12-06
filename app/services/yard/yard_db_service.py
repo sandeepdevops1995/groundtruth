@@ -2,12 +2,14 @@ from app.services.decorator_service import query_debugger
 from app.services.soap_service import *
 from app.services.gate.database_service import GateDbService
 from app.services.yard.yard_write import YardWriteService
-from app.models import KyclContainerLocation
+from app.models.utils import db_functions
+from app.models import KyclContainerLocation,DTMSContainerLocation
 from app.logger import logger
 from app.constants import GroundTruthType
 import app.constants as Constants
 from app import engine as e
 from sqlalchemy.sql import text
+from sqlalchemy import desc
 import time
 import config
 import os
@@ -86,7 +88,12 @@ class YardDbService:
                 data = {"ctr_number":container_number}
                 response  = get_domestic_yard_container_details(data)
                 result = YardDbService.format_domestic_container_details(response)
-                return result
+                if result:
+                    return result
+            if config.ENABLE_TEST_DB_READ:
+                data = DTMSContainerLocation.query.filter_by(container_number=container_number).order_by(desc('id')).first()
+                return json.loads(db_functions(data).as_json())
+            return result
         except Exception as e:
             logger.exception('Get Domestic Container Details, Exception : '+str(e))
             if isRetry and count >= 0 :

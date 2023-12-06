@@ -168,9 +168,10 @@ class PendancyService():
                     return final_data
             logger.info("data fetched from local db")
             data = []
-            for each in pendency_types:
-                data += PendancyContainer.query.filter(PendancyContainer.gateway_port_code.in_(each['gateway_port']),PendancyContainer.pendency_type == int(each["pendency_type"])).all()
-            data = db_functions(data).as_json()
+            if config.ENABLE_TEST_DB_READ:
+                for each in pendency_types:
+                    data += PendancyContainer.query.filter(PendancyContainer.gateway_port_code.in_(each['gateway_port']),PendancyContainer.pendency_type == int(each["pendency_type"])).all()
+                data = db_functions(data).as_json()
             return json.loads(data)
         except Exception as e:
             logger.exception(str(e))

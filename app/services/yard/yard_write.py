@@ -12,6 +12,7 @@ from app.enums import EquipmentNames
 class YardWriteService:
     def format_data_to_ccls_format(data):
         rake_data = {}
+        rake_data[Constants.KEY_SOAP_STATUS_FLG] = 'Y'
         if Constants.KEY_CONTAINER_NUMBER in data:
             rake_data[Constants.KEY_SOAP_CONTAINER_NUMBER] = data[Constants.KEY_CONTAINER_NUMBER]
         if Constants.KEY_CONTAINER_LIFE_NUMBER in data:

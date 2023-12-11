@@ -104,14 +104,12 @@ def redis_scheduleTask():
         from app.redis_config import cache
         import json
         import time
-        failed_data_list = cache.lrange("ground_truth_queue",0,-1)
-        if failed_data_list:
-            # cache.ltrim("ground_truth_queue", -1, 0)
-            failed_data_list.reverse()
-            for failed_data in failed_data_list:
+        for i in range(cache.llen("ground_truth_queue")):
+            failed_data = cache.lpop("ground_truth_queue")
+            if failed_data:
                 failed_data = json.loads(failed_data)
                 method = eval(failed_data['method_name'])
                 request_data = failed_data['request_data']
-                # logger.debug("Removed from cache retry mechanism, details:  " +str(failed_data))
-                # method(**request_data)
-                # time.sleep(config.REDIS_TASK_SLEEP_TIME)
+                logger.debug("Removed from cache retry mechanism, details:  " +str(failed_data))
+                method(**request_data)
+                time.sleep(config.REDIS_TASK_SLEEP_TIME)

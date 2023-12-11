@@ -373,7 +373,7 @@ class WagonMaster(View):
     # @api_auth_required
     def get(self):
         wagon_number = request.args.get(Constants.KEY_NUMBER,None)
-        logger.info("GT,fetch wagon master data",wagon_number)
+        logger.info("GT,fetch wagon master data for wagon {}".format(wagon_number))
         response =  db_service.get_wagon_master_data(wagon_number)
         response = WagonMasterSchema(many=True).dump(response)
         if response:
